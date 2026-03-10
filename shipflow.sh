@@ -57,15 +57,66 @@ show_menu() {
     echo -e "  ${CYAN}9)${NC} More Options - Publish, Logs, Help..."
     echo -e "  ${CYAN}m)${NC} Mobile Guide - Setup Android + Expo pas à pas"
     echo ""
-    echo -e "  ${CYAN}0)${NC} Exit"
+    echo -e "  ${CYAN}x)${NC} Exit"
     echo ""
 }
 
 # ShipFlow overview — Tasks, Priorities, Changelog, Audit Log
 show_shipflow_menu() {
-    local SHIPFLOW_DATA="${SHIPFLOW_DATA_DIR:-/home/claude/ShipFlow/ShipFlow}"
+    local SHIPFLOW_DATA="${SHIPFLOW_DATA_DIR:-/home/claude/shipflow_data}"
     local TASKS_FILE="$SHIPFLOW_DATA/TASKS.md"
     local AUDIT_FILE="$SHIPFLOW_DATA/AUDIT_LOG.md"
+
+    # First-run: create data directory with starter files if missing
+    if [ ! -d "$SHIPFLOW_DATA" ]; then
+        mkdir -p "$SHIPFLOW_DATA"
+        cat > "$SHIPFLOW_DATA/TASKS.md" << 'TASKS_EOF'
+# Master Project Tracker
+
+> **Priority:** 🔴 P0 blocker · 🟠 P1 high · 🟡 P2 normal · 🟢 P3 low · ⚪ deferred
+> **Status:** 📋 todo · 🔄 in progress · ✅ done · ⛔ blocked · 💤 deferred
+
+---
+
+## Dashboard
+
+| # | Project | Phase | Status | Top Priority |
+|---|---------|-------|--------|--------------|
+
+**Legend:** 🟢 Stable · 🟡 Active · 🟠 Planning · 🔴 Blocked · ⚪ Empty
+
+---
+
+## Backlog
+
+| Pri | Task | Status |
+|-----|------|--------|
+| 🟡 | Add first project with /shipflow-init | 📋 todo |
+TASKS_EOF
+        cat > "$SHIPFLOW_DATA/AUDIT_LOG.md" << 'AUDIT_EOF'
+# Audit Log
+
+> Populated by `/shipflow-audit` skills. Each entry follows the format:
+> `### Audit: [Domain] — [Project] (YYYY-MM-DD)`
+
+---
+AUDIT_EOF
+        cat > "$SHIPFLOW_DATA/PROJECTS.md" << 'PROJECTS_EOF'
+# Projects
+
+## Project Registry
+
+| Name | Path | Stack |
+|------|------|-------|
+
+## Domain Applicability
+
+| Project | Code | Design | Copy | SEO | GTM | Translate | Deps | Perf |
+|---------|------|--------|------|-----|-----|-----------|------|------|
+PROJECTS_EOF
+        echo -e "${GREEN}✅ Created data directory: $SHIPFLOW_DATA${NC}"
+        sleep 1
+    fi
     local CHANGELOG_FILE="$(dirname "${BASH_SOURCE[0]}")/CHANGELOG.md"
 
     while true; do
@@ -90,7 +141,7 @@ show_shipflow_menu() {
         echo -e "  ${CYAN}3)${NC} 📝 Changelog   — View recent changes"
         echo -e "  ${CYAN}4)${NC} 📊 Audit Log   — Review quality scores"
         echo ""
-        echo -e "  ${CYAN}0)${NC} ← Back"
+        echo -e "  ${CYAN}x)${NC} ← Back"
         echo ""
         echo -e "${YELLOW}Your choice:${NC} \c"
         read -r sf_choice
@@ -148,7 +199,7 @@ show_shipflow_menu() {
                     sleep 2
                 fi
                 ;;
-            0|q|Q)
+            x|X|q|Q)
                 return 0
                 ;;
             *)
@@ -316,7 +367,7 @@ show_help() {
                     page=$((page - 1))
                 fi
                 ;;
-            0|q|Q)
+            x|X|q|Q)
                 return
                 ;;
             [1-4])
@@ -346,7 +397,7 @@ show_advanced_menu() {
         echo -e "  ${CYAN}8)${NC} 🧹 CleanUp Space - Free space (light/aggressive)"
         echo -e "  ${CYAN}9)${NC} ⬆️  Updates - Check & update packages"
         echo ""
-        echo -e "  ${CYAN}0)${NC} ← Back to Main Menu"
+        echo -e "  ${CYAN}x)${NC} ← Back to Main Menu"
         echo ""
 
         echo -e "${YELLOW}Your choice:${NC} \c"
@@ -424,7 +475,7 @@ show_advanced_menu() {
 
                 echo -e "${BLUE}Options:${NC}"
                 echo -e "  ${CYAN}1)${NC} 🔄 Reset Session Identity (generate new pattern)"
-                echo -e "  ${CYAN}0)${NC} ← Back"
+                echo -e "  ${CYAN}x)${NC} ← Back"
                 echo ""
                 echo -e "${YELLOW}Your choice:${NC} \c"
                 read -r session_choice
@@ -616,7 +667,7 @@ EOF
                 updates_menu
                 refresh_menu_status_cache_sync >/dev/null 2>&1 || true
                 ;;
-            0)
+            x|X)
                 return 0
                 ;;
             *)
@@ -668,7 +719,7 @@ main() {
                 echo -e "  ${CYAN}1)${NC} 🔍 Auto-detect project in /root"
                 echo -e "  ${CYAN}2)${NC} 📁 Custom local path"
                 echo -e "  ${CYAN}3)${NC} 🚀 Deploy from GitHub"
-                echo -e "  ${CYAN}0)${NC} Cancel"
+                echo -e "  ${CYAN}x)${NC} Cancel"
                 echo ""
                 echo -e "${YELLOW}Your choice:${NC} \c"
                 read -r deploy_choice
@@ -760,7 +811,7 @@ main() {
                             deploy_github_project "$SELECTED_REPO"
                         fi
                         ;;
-                    0)
+                    x|X)
                         echo -e "${BLUE}Cancelled${NC}"
                         ;;
                     *)
@@ -848,7 +899,7 @@ main() {
                 show_mobile_guide
                 ;;
 
-            0)
+            x|X)
                 echo -e "${GREEN}👋 Goodbye!${NC}"
                 exit 0
                 ;;

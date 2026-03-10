@@ -222,6 +222,29 @@ else
     success "Répertoire de configuration existe: $DOKPLOY_DIR"
 fi
 
+# Claude Code skills — symlinks individuels vers ShipFlow/.claude/skills/
+SHIPFLOW_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SHIPFLOW_DIR/.claude/skills" ]; then
+    mkdir -p "$HOME/.claude/skills"
+    for skill_dir in "$SHIPFLOW_DIR/.claude/skills"/*/; do
+        skill_name=$(basename "$skill_dir")
+        if [ ! -e "$HOME/.claude/skills/$skill_name" ]; then
+            ln -s "$skill_dir" "$HOME/.claude/skills/$skill_name"
+            echo -e "  ${GREEN}✅ Skill linked:${NC} $skill_name"
+        fi
+    done
+fi
+
+# shipflow_data — créer le dossier de données utilisateur si absent
+SHIPFLOW_DATA="${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}"
+if [ ! -d "$SHIPFLOW_DATA" ]; then
+    mkdir -p "$SHIPFLOW_DATA"
+    echo "# Tasks" > "$SHIPFLOW_DATA/TASKS.md"
+    echo "# Audit Log" > "$SHIPFLOW_DATA/AUDIT_LOG.md"
+    echo "# Projects" > "$SHIPFLOW_DATA/PROJECTS.md"
+    echo -e "  ${GREEN}✅ Created:${NC} $SHIPFLOW_DATA"
+fi
+
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║${NC}          ${YELLOW}Installation terminée !${NC}              ${CYAN}║${NC}"
