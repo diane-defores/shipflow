@@ -235,7 +235,7 @@ echo -e "   ${CYAN}gh auth login${NC}"
 echo ""
 echo -e "2. ${YELLOW}Lancer le menu DevServer${NC} :"
 echo -e "   ${CYAN}cd /root/dokploy/cli${NC}"
-echo -e "   ${CYAN}./menu_simple_color.sh${NC}"
+echo -e "   ${CYAN}./shipflow.sh${NC}"
 echo ""
 
 # Résumé des installations

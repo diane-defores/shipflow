@@ -2085,7 +2085,14 @@ init_flox_env() {
         elif [ "$pm" = "yarn" ] && [ -f "yarn.lock" ]; then
             flox activate -- yarn install 2>&1 | grep -v "Progress:" || true
         elif [ -f "package.json" ]; then
-            flox activate -- npm install 2>&1 | grep -v "npm WARN" || true
+            local npm_output
+            npm_output=$(flox activate -- npm install 2>&1)
+            if echo "$npm_output" | grep -q "ERESOLVE"; then
+                echo -e "${YELLOW}⚠️  Conflit de peer deps détecté, retry avec --legacy-peer-deps...${NC}"
+                flox activate -- npm install --legacy-peer-deps 2>&1 | grep -v "npm WARN" || true
+            else
+                echo "$npm_output" | grep -v "npm WARN" || true
+            fi
         fi
         echo -e "${GREEN}✅ Dépendances installées${NC}"
     elif [ "$lang" = "python" ]; then
@@ -2186,7 +2193,9 @@ detect_dev_command() {
     if [ -f "package.json" ]; then
         # Detect framework from package.json
         local framework=""
-        if grep -q '"astro"' package.json; then
+        if grep -q '"expo"' package.json || grep -q '"expo-router"' package.json; then
+            framework="expo"
+        elif grep -q '"astro"' package.json; then
             framework="astro"
         elif grep -q '"next"' package.json; then
             framework="next"
@@ -2209,6 +2218,9 @@ detect_dev_command() {
         # Build command based on framework and port
         if [ -n "$framework" ]; then
             case "$framework" in
+                expo)
+                    echo "npx expo start --dev-client --tunnel"
+                    ;;
                 astro)
                     echo "$pm_cmd dev -- --port \$PORT"
                     ;;
@@ -2331,10 +2343,16 @@ env_start() {
 
     # Detect dev command
     local dev_cmd=$(detect_dev_command "$project_dir")
-    
+
     if [ -z "$dev_cmd" ] || [ "$dev_cmd" = "echo 'No dev command detected'" ]; then
         warning "Aucune commande de dev détectée pour $env_name"
         return 1
+    fi
+
+    # Expo/React Native projects use a tunnel — no fixed port needed
+    local is_expo=false
+    if [[ "$dev_cmd" == *"expo start"* ]]; then
+        is_expo=true
     fi
 
     local port=""
@@ -2363,8 +2381,10 @@ env_start() {
         fi
     fi
 
-    # If no persistent port found, find an available one
-    if [ -z "$port" ]; then
+    # If no persistent port found, find an available one (skip for Expo tunnel projects)
+    if [ "$is_expo" = "true" ]; then
+        echo -e "${BLUE}📱 Projet Expo — pas de port fixe (tunnel Metro)${NC}"
+    elif [ -z "$port" ]; then
         port=$(find_available_port 3000)
         [ -z "$port" ] && return 1
         echo -e "${BLUE}🔌 Nouveau port assigné: $port${NC}"
@@ -2410,8 +2430,22 @@ env_start() {
         inner_cmd="env PORT=$port $final_cmd"
     fi
 
-    # Create persistent ecosystem file
-    cat > "$pm2_config" <<EOF
+    # Create persistent ecosystem file (Expo has no PORT)
+    if [ "$is_expo" = "true" ]; then
+        cat > "$pm2_config" <<EOF
+module.exports = {
+  apps: [{
+    name: "$env_name",
+    cwd: "$project_dir",
+    script: "bash",
+    args: ["-c", "flox activate -- $dev_cmd"],
+    autorestart: false,
+    watch: false
+  }]
+};
+EOF
+    else
+        cat > "$pm2_config" <<EOF
 module.exports = {
   apps: [{
     name: "$env_name",
@@ -2426,32 +2460,40 @@ module.exports = {
   }]
 };
 EOF
-    
+    fi
+
     echo -e "${GREEN}✅ Fichier ecosystem.config.cjs créé/mis à jour${NC}"
 
-    # Inject web inspector before starting the dev server
-    (cd "$project_dir" && init_web_inspector)
+    # Inject web inspector before starting the dev server (skip for Expo)
+    if [ "$is_expo" = "false" ]; then
+        (cd "$project_dir" && init_web_inspector)
+    fi
 
     # Atomic cleanup of existing process (Priority 3 #11: Fix race condition)
     # Use pm2 delete with idempotent operation (no check-then-act)
     pm2 delete "$env_name" 2>/dev/null || true
 
-    # Kill any lingering processes on the port to avoid zombies
-    if command -v fuser >/dev/null 2>&1; then
+    # Kill any lingering processes on the port to avoid zombies (skip for Expo)
+    if [ "$is_expo" = "false" ] && command -v fuser >/dev/null 2>&1; then
         fuser -k "$port/tcp" 2>/dev/null || true
     fi
 
     # Small delay to ensure port is fully released
     sleep 0.5
-    
+
     pm2 start "$pm2_config"
     pm2 save >/dev/null 2>&1
 
     # Invalidate cache after PM2 state change
     invalidate_pm2_cache
 
-    success "Projet $env_name démarré sur le port $port"
-    log INFO "Started environment: $env_name on port $port at $project_dir"
+    if [ "$is_expo" = "true" ]; then
+        success "Projet $env_name (Expo) démarré — URL tunnel dans: pm2 logs $env_name"
+        log INFO "Started Expo environment: $env_name at $project_dir"
+    else
+        success "Projet $env_name démarré sur le port $port"
+        log INFO "Started environment: $env_name on port $port at $project_dir"
+    fi
 }
 
 # -----------------------------------------------------------------------------
@@ -2877,7 +2919,12 @@ batch_start_all() {
         ((count++))
         echo -e "${BLUE}[$count/$total] Starting $name...${NC}"
         if env_start "$name" >/dev/null 2>&1; then
-            echo -e "  ${GREEN}✅ $name started${NC}"
+            local port=$(get_pm2_app_data "$name" "port")
+            if [ -n "$port" ]; then
+                echo -e "  ${GREEN}✅ $name${NC} ${CYAN}→ :$port${NC}"
+            else
+                echo -e "  ${GREEN}✅ $name${NC} ${CYAN}→ tunnel (expo logs)${NC}"
+            fi
         else
             echo -e "  ${RED}❌ $name failed to start${NC}"
             log ERROR "Batch start failed for $name"
@@ -2923,7 +2970,12 @@ batch_restart_all() {
         ((count++))
         echo -e "${BLUE}[$count/$total] Restarting $name...${NC}"
         if env_restart "$name" >/dev/null 2>&1; then
-            echo -e "  ${GREEN}✅ $name restarted${NC}"
+            local port=$(get_pm2_app_data "$name" "port")
+            if [ -n "$port" ]; then
+                echo -e "  ${GREEN}✅ $name${NC} ${CYAN}→ :$port${NC}"
+            else
+                echo -e "  ${GREEN}✅ $name${NC} ${CYAN}→ tunnel (expo logs)${NC}"
+            fi
         else
             echo -e "  ${RED}❌ $name failed to restart${NC}"
             log ERROR "Batch restart failed for $name"
@@ -3312,13 +3364,22 @@ deploy_github_project() {
         echo ""
         echo -e "${BLUE}🌐 Access URLs:${NC}"
         echo -e "  • Local: ${CYAN}http://localhost:$port${NC}"
+    else
+        echo ""
+        echo -e "${BLUE}📱 Projet mobile (Expo)${NC}"
+        echo -e "  • URL tunnel: ${CYAN}pm2 logs $project_name --lines 30${NC}"
+        echo -e "  • Installe l'APK dev build sur ton téléphone, puis scan le QR"
     fi
 
     echo ""
     echo -e "${YELLOW}📝 Next steps:${NC}"
     echo -e "  • View logs: Option 7 → View Logs → Select '$project_name'"
     echo -e "  • Edit code: cd $project_dir"
-    echo -e "  • Publish web: Option 6 (Publish to Web)"
+    if [ -z "$port" ]; then
+        echo -e "  • APK build (1 seule fois): eas build --profile development --platform android"
+    else
+        echo -e "  • Publish web: Option 6 (Publish to Web)"
+    fi
     echo ""
 
     log INFO "Successfully deployed GitHub project: $repo_name"
