@@ -1,95 +1,127 @@
 ---
 name: shipflow-ship
-description: Stage, commit, and push all changes to the remote repository
-disable-model-invocation: true
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*)
-argument-hint: [optional commit message]
+description: Ship the session — commit, push, update tasks + changelog, save memory, wrap context. One report. Use this at end of session when ready to push.
+argument-hint: [optional commit message or notes]
 ---
 
 ## Context
 
-- Current git status: !`git status`
-- Current git diff (staged and unstaged): !`git diff HEAD`
-- Current branch: !`git branch --show-current`
-- Recent commits for style reference: !`git log --oneline -5`
+- Current directory: !`pwd`
+- Current date: !`date '+%Y-%m-%d'`
+- Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
+- Git diff stat: !`git diff HEAD --stat 2>/dev/null || echo ""`
+- Current branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
+- Recent commits (style reference): !`git log --oneline -5 2>/dev/null || echo "no commits"`
+- Master TASKS.md: !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No TASKS.md"`
+- Existing CHANGELOG: !`head -20 CHANGELOG.md 2>/dev/null || echo "no CHANGELOG.md"`
 
 ## Your task
 
-Ship all current changes: stage everything, commit, and push.
+Close the session and ship — all steps inline, no sub-skills. ONE report at the end. Do NOT invoke shipflow-end, shipflow-tasks, or shipflow-changelog.
 
-### Workspace root detection
+### Step 1 — Workspace root detection
 
-If the current directory has no `.git` directory (not a git repo itself) BUT contains multiple project subdirectories — you are at the **workspace root**. Use **AskUserQuestion**:
-- Question: "Which project should I ship?"
+If the current directory has no `.git` directory BUT contains project subdirectories with changes, use **AskUserQuestion**:
+- "Which project should I ship?"
+- One option per project with uncommitted changes
 - `multiSelect: false`
-- One option per project that has uncommitted changes (run `git -C [path] status --porcelain` for each)
-- Only list projects with actual changes
 
-Then `cd` into the selected project and continue with the steps below.
+Then work inside that project for all remaining steps.
 
-### Steps
+### Step 2 — Summarize session (internal, no output)
 
-1. **Review the changes** shown above. Identify all modified, added, and deleted files.
-2. **Update TASKS.md first** — invoke `shipflow-tasks` to mark completed items and capture new tasks before committing, so the task state is included in the commit:
-   ```
-   Skill("shipflow-tasks")
-   ```
-3. **Stage all changes** using `git add -A`. If you spot untracked files that look like secrets (`.env`, credentials, tokens) and they are NOT in `.gitignore`, warn the user and stop — do not commit.
-4. **Write a commit message** that:
-   - Follows the style of recent commits shown above
-   - Is concise (1-2 sentences) and focuses on the "why" not the "what"
-   - If the user provided an argument (`$ARGUMENTS`), use it as the commit message or as guidance for the message
-   - Ends with: `Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`
-5. **Create the commit** using a HEREDOC for the message to preserve formatting.
-6. **Push to the remote** using `git push`. If the branch has no upstream, use `git push -u origin <branch>`.
-7. **Confirm success** by running `git status` after push.
+From the conversation, silently identify:
+- What was completed this session
+- What was started but not finished
+- Any decisions worth saving to memory
 
-### Also: update CHANGELOG
+### Step 3 — Update TASKS.md (silent, no sub-skill)
 
-After a successful push, update the changelog automatically — no need to ask:
+Using the master TASKS.md from context:
+- Mark completed items: `📋 todo` → `✅ done` (or `- [ ]` → `- [x]`)
+- Add new tasks discovered this session under the right section
+- Update master `/home/claude/shipflow_data/TASKS.md` — always, even from a sub-project
+- If a local `TASKS.md` also exists, update both
+- Use Edit or Write tool. No output at this step.
 
-- **Update CHANGELOG.md** — invoke the `shipflow-changelog` skill to append an entry for the commit just pushed.
+### Step 4 — Update CHANGELOG.md (silent, no sub-skill)
 
+Using the recent commits from context:
+- Group commits into Keep a Changelog categories: Added / Changed / Fixed / Security / Removed
+- Consolidate related commits into single human-readable entries
+- Skip CI, formatting, merge, and changelog-update commits
+- Prepend a new `## [Unreleased] — [date]` entry to CHANGELOG.md (or create it)
+- No tagging question — just write the entry
+- No output at this step.
+
+### Step 5 — Save decisions to memory (silent MCP)
+
+For each significant decision or discovery from Step 2, call `context_decide` with a one-sentence summary.
+
+Skip if no meaningful decisions were made. No output at this step.
+
+### Step 6 — Stage and commit
+
+Check for secrets before staging:
+- If untracked `.env`, credential, or token files are NOT in `.gitignore`, warn the user and stop
+
+Stage and commit:
+```bash
+git add -A
+git commit -m "[message from $ARGUMENTS or derived from session summary]
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
-Skill("shipflow-changelog")
+
+Use a HEREDOC for the commit message. Follow the style of recent commits.
+
+### Step 7 — Push
+
+```bash
+git push
+# If no upstream: git push -u origin <branch>
 ```
 
-### Also: sync ShipFlow data
+### Step 8 — Wrap session context (silent MCP)
 
-After all of the above, check if `/home/claude/ShipFlow` has uncommitted changes (TASKS.md or AUDIT_LOG.md may have been updated during this session). If yes, auto-commit and push ShipFlow too:
+Call `session_wrap` to persist the context store for the next session. Skip gracefully if unavailable.
 
+### Step 9 — Sync ShipFlow (silent housekeeping)
+
+If `/home/claude/ShipFlow` has uncommitted changes, auto-commit and push:
 ```bash
 cd /home/claude/ShipFlow && git add -A && git diff --cached --quiet || git commit -m "sync" && git push
 ```
 
-This is silent housekeeping — don't report it unless it fails.
+Only report this if it fails.
 
-### Final: delivery report
-
-After everything is done (commit pushed, changelog updated, ShipFlow synced), output a delivery report in English using this exact format:
+### Step 10 — ONE combined report
 
 ```
-All pushed. Here's what was shipped in this commit:
+## Shipped — [date]
 
-  What's in [SHORT_SHA]
-  - [bullet 1: one-line description of a change]
-  - [bullet 2]
-  - [bullet 3]
-  - ... (one bullet per logical change, based on the diff)
+**[SHORT_SHA]** — "[commit message]" → [branch]
 
-  Next priorities (TASKS.md):
-  1. [emoji] [top priority task]
-  2. [emoji] [second priority task]
-  3. [emoji] [third priority task]
+**What changed:**
+- [bullet per logical change from diff — specific, not vague]
+
+**Session closed:**
+- Completed: [item], [item]
+- In progress: [item — where it stands]
+- Decisions saved: [decision or "none"]
+
+**Up next:**
+1. [emoji] [top TASKS.md priority]
+2. [emoji] [second priority]
+3. [emoji] [third priority]
+
+[✓ Pushed] or [⚠️  Push failed: reason]
 ```
 
-- `[SHORT_SHA]` = the short commit hash (7 chars) from `git log --oneline -1`
-- Bullets = derived from the actual diff — be specific and concrete, not vague
-- Priorities = pulled from TASKS.md (top 3 non-completed items, with appropriate emoji: 🔴 urgent, 🟡 in progress, 🟢 ready, ⚪ backlog)
+### Rules
 
-### Important
-
-- Do all of the above in a single message using parallel tool calls where possible.
-- If there are no changes to commit, inform the user and stop.
-- Never force push. Never skip hooks.
-- If the push fails, report the error clearly — do not retry automatically.
+- Do NOT call shipflow-end, shipflow-tasks, or shipflow-changelog — all steps are inline
+- Do NOT output anything before Step 10 — one report only
+- Do NOT force push to main/master
+- Do NOT commit secrets or credentials
+- If nothing to commit, say so in the report and still do Steps 3–5 and 8
+- Keep the final report under 30 lines
