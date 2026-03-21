@@ -400,3 +400,4 @@ RECOMMENDED FIRST ACTIONS
 - **If the market looks bad, say so clearly.** A good consultant saves the client from bad investments. A NO-GO verdict is valuable.
 - **Language**: Write the report in the same language as the user's query. If French query → French report.
 - **Cost awareness**: A full market study typically costs $2-5 in DataForSEO credits. Warn the user upfront.
+- **Accents français obligatoires.** Lors de la rédaction de rapports en français, vérifier systématiquement que TOUS les accents sont présents et corrects (é, è, ê, à, â, ù, û, ô, î, ï, ç, œ, æ). Les accents manquants sont une faute d'orthographe. Relire chaque texte produit pour s'assurer qu'aucun accent n'a été oublié — c'est une erreur très fréquente à corriger impérativement.

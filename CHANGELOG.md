@@ -1,5 +1,10 @@
 # ShipFlow Changelog
 
+## [2026-03-21] - French Accent Enforcement in Content Skills
+
+### Changed
+- 7 content-creation skills now enforce mandatory French accent verification (é, è, ê, à, â, ù, û, ô, î, ï, ç, œ, æ) on all generated French content: audit-copy, audit-translate, enrich, docs, changelog, audit-seo, market-study
+
 ## [2026-03-07] - Disk Cleanup & Dev Command Fixes
 
 ### Changed

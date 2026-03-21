@@ -156,3 +156,4 @@ Detect documentation gaps and suggest what to document.
 - Don't over-document. Simple, self-explanatory code doesn't need comments.
 - For component docs, include the actual prop types from the source code.
 - Keep README concise — link to detailed docs instead of putting everything in one file.
+- **Accents français obligatoires.** Lors de toute création ou modification de contenu en français, vérifier systématiquement que TOUS les accents sont présents et corrects (é, è, ê, à, â, ù, û, ô, î, ï, ç, œ, æ). Les accents manquants sont une faute d'orthographe. Relire chaque texte produit pour s'assurer qu'aucun accent n'a été oublié — c'est une erreur très fréquente à corriger impérativement.

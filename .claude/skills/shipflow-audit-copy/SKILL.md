@@ -285,3 +285,4 @@ Create either file if missing.
 - All rewrites must fit UI constraints (button width, card height, etc.).
 - Never change copy that's clearly a direct quote or testimonial.
 - In project mode, build a mini style guide from findings. Standardize terminology at the source.
+- **Accents français obligatoires.** Lors de toute création ou modification de contenu en français, vérifier systématiquement que TOUS les accents sont présents et corrects (é, è, ê, à, â, ù, û, ô, î, ï, ç, œ, æ). Les accents manquants sont une faute d'orthographe. Relire chaque texte produit pour s'assurer qu'aucun accent n'a été oublié — c'est une erreur très fréquente à corriger impérativement.

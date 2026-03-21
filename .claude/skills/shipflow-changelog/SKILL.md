@@ -122,3 +122,4 @@ If tagging: replace `[Unreleased]` with the version number and create the tag.
 - Never delete existing changelog entries — only prepend new ones.
 - Each entry should be understandable by a user, not a developer. "Fix login issue" > "Fix auth token refresh in useSession hook".
 - If there are no meaningful changes to report, say so instead of creating an empty entry.
+- **Accents français obligatoires.** Lors de toute création ou modification de contenu en français, vérifier systématiquement que TOUS les accents sont présents et corrects (é, è, ê, à, â, ù, û, ô, î, ï, ç, œ, æ). Les accents manquants sont une faute d'orthographe. Relire chaque texte produit pour s'assurer qu'aucun accent n'a été oublié — c'est une erreur très fréquente à corriger impérativement.
