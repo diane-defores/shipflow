@@ -17,7 +17,7 @@ argument-hint: [optional commit message or notes]
 
 ## Your task
 
-Close the session and ship — all steps inline, no sub-skills. ONE report at the end. Do NOT invoke shipflow-end, shipflow-tasks, or shipflow-changelog.
+Close the session and ship — recap + commit + push. All steps inline. ONE report at the end.
 
 ### Step 1 — Workspace root detection
 
@@ -33,30 +33,31 @@ Then work inside that project for all remaining steps.
 From the conversation, silently identify:
 - What was completed this session
 - What was started but not finished
+- Key files modified (from git diff stat in context)
 - Any decisions worth saving to memory
 
-### Step 3 — Update TASKS.md (silent, no sub-skill)
+### Step 3 — Update TASKS.md (silent)
 
 Using the master TASKS.md from context:
-- Mark completed items: `📋 todo` → `✅ done` (or `- [ ]` → `- [x]`)
+- Mark completed items: `🔄 in progress` → `✅ done` and `📋 todo` → `✅ done`
+- Mark partially done items with `🔄 in progress`
 - Add new tasks discovered this session under the right section
 - Update master `/home/claude/shipflow_data/TASKS.md` — always, even from a sub-project
 - If a local `TASKS.md` also exists, update both
-- Use Edit or Write tool. No output at this step.
-
-### Step 4 — Update CHANGELOG.md (silent, no sub-skill)
-
-Using the recent commits from context:
-- Group commits into Keep a Changelog categories: Added / Changed / Fixed / Security / Removed
-- Consolidate related commits into single human-readable entries
-- Skip CI, formatting, merge, and changelog-update commits
-- Prepend a new `## [Unreleased] — [date]` entry to CHANGELOG.md (or create it)
-- No tagging question — just write the entry
 - No output at this step.
 
-### Step 5 — Save decisions to memory (silent MCP)
+### Step 4 — Update CHANGELOG.md (silent)
 
-For each significant decision or discovery from Step 2, call `context_decide` with a one-sentence summary.
+Using the session summary and git diff:
+- Group changes into Keep a Changelog categories: Added / Changed / Fixed / Security / Removed
+- Consolidate related changes into single human-readable entries
+- Skip CI, formatting, merge, and changelog-update commits
+- Prepend a new `## [date]` entry to CHANGELOG.md (or update today's entry if it exists)
+- No output at this step.
+
+### Step 5 — Save decisions to memory (silent)
+
+For each significant decision or discovery from Step 2, save to memory if useful for future conversations.
 
 Skip if no meaningful decisions were made. No output at this step.
 
@@ -81,11 +82,7 @@ git push
 # If no upstream: git push -u origin <branch>
 ```
 
-### Step 8 — Wrap session context (silent MCP)
-
-Call `session_wrap` to persist the context store for the next session. Skip gracefully if unavailable.
-
-### Step 9 — Sync ShipFlow (silent housekeeping)
+### Step 8 — Sync ShipFlow (silent housekeeping)
 
 If `/home/claude/ShipFlow` has uncommitted changes, auto-commit and push:
 ```bash
@@ -94,7 +91,7 @@ cd /home/claude/ShipFlow && git add -A && git diff --cached --quiet || git commi
 
 Only report this if it fails.
 
-### Step 10 — ONE combined report
+### Step 9 — ONE combined report
 
 ```
 ## Shipped — [date]
@@ -119,9 +116,8 @@ Only report this if it fails.
 
 ### Rules
 
-- Do NOT call shipflow-end, shipflow-tasks, or shipflow-changelog — all steps are inline
-- Do NOT output anything before Step 10 — one report only
+- Do NOT output anything before Step 9 — one report only
 - Do NOT force push to main/master
 - Do NOT commit secrets or credentials
-- If nothing to commit, say so in the report and still do Steps 3–5 and 8
+- If nothing to commit, say so in the report and still do Steps 3–5
 - Keep the final report under 30 lines
