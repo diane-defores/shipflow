@@ -397,6 +397,7 @@ show_advanced_menu() {
         echo -e "  ${CYAN}7)${NC} 📖 Help - How ShipFlow works"
         echo -e "  ${CYAN}8)${NC} 🧹 CleanUp Space - Free space (light/aggressive)"
         echo -e "  ${CYAN}9)${NC} ⬆️  Updates - Check & update packages"
+        echo -e "  ${CYAN}t)${NC} 🔧 Tools Status - Voir les outils installés"
         echo ""
         echo -e "  ${CYAN}x)${NC} ← Back to Main Menu"
         echo ""
@@ -668,6 +669,10 @@ EOF
                 updates_menu
                 refresh_menu_status_cache_sync >/dev/null 2>&1 || true
                 ;;
+            t|T)
+                # Tools Status
+                show_tools_status
+                ;;
             x|X)
                 return 0
                 ;;
@@ -677,16 +682,38 @@ EOF
         esac
 
         echo ""
-        echo -e "${YELLOW}Press Enter to continue...${NC}"
+        echo -e "${YELLOW}Appuie sur Entrée pour continuer...${NC}"
         read -r
     done
 }
 
 # Main function
 main() {
-    # Check prerequisites on first run
-    if ! check_prerequisites; then
-        exit 1
+    # Marker file: verbose check only on first run or if tools are missing
+    local marker="$HOME/.shipflow_setup_done"
+
+    if [ ! -f "$marker" ]; then
+        # First launch ever — show full tools status
+        clear
+        print_header
+        if ! check_prerequisites; then
+            echo -e "${YELLOW}Appuie sur Entrée pour quitter...${NC}"
+            read -r
+            exit 1
+        fi
+        touch "$marker"
+        echo -e "${YELLOW}Appuie sur Entrée pour continuer...${NC}"
+        read -r
+    else
+        # Daily use — silent check, only block if critical tools missing
+        if ! check_prerequisites "quiet"; then
+            clear
+            print_header
+            check_prerequisites
+            echo -e "${YELLOW}Appuie sur Entrée pour quitter...${NC}"
+            read -r
+            exit 1
+        fi
     fi
 
     # Clean up orphan projects at startup
@@ -937,7 +964,7 @@ main() {
         esac
 
         echo ""
-        echo -e "${YELLOW}Press Enter to continue...${NC}"
+        echo -e "${YELLOW}Appuie sur Entrée pour continuer...${NC}"
         read -r
     done
 }

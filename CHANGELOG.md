@@ -1,5 +1,17 @@
 # ShipFlow Changelog
 
+## [2026-03-21] - Tools Status Feedback & First-Run Check
+
+### Changed
+- `check_prerequisites()`: now shows a verbose summary of all 9 tools with versions and status (✅/❌/⚠️) instead of silently passing
+- Tools check is verbose on first launch only (marker file `~/.shipflow_setup_done`), silent on daily use
+- If required tools are missing, shows a loud red banner with install command
+
+### Added
+- `show_tools_status()` function for on-demand tool status display
+- Advanced menu option `t) Tools Status` to check installed tools anytime
+- Tools checked: node, pm2, git, flox, caddy, python3, jq, gh, fuser
+
 ## [2026-03-21] - Multi-user Install & French Accent Enforcement
 
 ### Changed

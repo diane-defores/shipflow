@@ -941,52 +941,98 @@ except Exception as e:
 #
 # Description:
 #   Checks for critical tools (pm2, node) and warns about missing optional
-#   tools (flox, git, jq, python3). Fails if critical tools are missing.
+#   tools (flox, git, jq, python3). Shows a clear visual summary so the user
+#   always knows the state. Fails if critical tools are missing.
 #
 # Arguments:
-#   None
+#   $1 - "quiet" to skip the summary (default: verbose)
 #
 # Returns:
 #   0 - All required tools present
 #   1 - Missing required tools
-#
-# Outputs:
-#   Error messages for missing required tools
-#   Warning messages for missing optional tools
-#
-# Example:
-#   check_prerequisites || exit 1
 # -----------------------------------------------------------------------------
 check_prerequisites() {
+    local mode="${1:-verbose}"
     local missing=()
     local warnings=()
+    local ok_count=0
+    local total_count=0
 
-    # Critical tools
-    for cmd in pm2 node; do
-        if ! command -v "$cmd" >/dev/null 2>&1; then
-            missing+=("$cmd")
+    # All tools: name|required|version_cmd
+    local -a tools=(
+        "node|required|node --version"
+        "pm2|required|pm2 --version"
+        "git|optional|git --version"
+        "flox|optional|flox --version 2>&1 | head -1"
+        "caddy|optional|caddy version 2>&1 | head -1"
+        "python3|optional|python3 --version"
+        "jq|optional|jq --version"
+        "gh|optional|gh --version 2>&1 | head -1"
+        "fuser|optional|fuser -V 2>&1 | head -1"
+    )
+
+    if [ "$mode" != "quiet" ]; then
+        echo -e "${BLUE}🔍 Vérification des outils...${NC}"
+        echo ""
+    fi
+
+    for entry in "${tools[@]}"; do
+        local cmd="${entry%%|*}"
+        local rest="${entry#*|}"
+        local level="${rest%%|*}"
+        local ver_cmd="${rest#*|}"
+        total_count=$((total_count + 1))
+
+        if command -v "$cmd" >/dev/null 2>&1; then
+            ok_count=$((ok_count + 1))
+            if [ "$mode" != "quiet" ]; then
+                local ver
+                ver=$(eval "$ver_cmd" 2>/dev/null | head -1 | sed 's/^[[:space:]]*//')
+                echo -e "  ${GREEN}✅ $cmd${NC} — $ver"
+            fi
+        else
+            if [ "$level" = "required" ]; then
+                missing+=("$cmd")
+                [ "$mode" != "quiet" ] && echo -e "  ${RED}❌ $cmd${NC} — ${RED}REQUIS, manquant !${NC}"
+            else
+                warnings+=("$cmd")
+                [ "$mode" != "quiet" ] && echo -e "  ${YELLOW}⚠️  $cmd${NC} — optionnel, non installé"
+            fi
         fi
     done
 
-    # Optional but recommended tools
-    for cmd in flox git python3; do
-        if ! command -v "$cmd" >/dev/null 2>&1; then
-            warnings+=("$cmd")
+    if [ "$mode" != "quiet" ]; then
+        echo ""
+        if [ ${#missing[@]} -gt 0 ]; then
+            echo -e "${RED}╔══════════════════════════════════════════════════════════╗${NC}"
+            echo -e "${RED}║  ⛔  Outils requis manquants : ${missing[*]}${NC}"
+            echo -e "${RED}║  Lancez : ${YELLOW}sudo ./install.sh${RED} pour installer${NC}"
+            echo -e "${RED}╚══════════════════════════════════════════════════════════╝${NC}"
+        elif [ ${#warnings[@]} -gt 0 ]; then
+            echo -e "  ${GREEN}$ok_count/$total_count outils OK${NC} — ${YELLOW}${#warnings[@]} optionnel(s) manquant(s)${NC}"
+        else
+            echo -e "  ${GREEN}✅ $ok_count/$total_count outils OK — tout est prêt !${NC}"
         fi
-    done
+        echo ""
+    fi
 
     if [ ${#missing[@]} -gt 0 ]; then
-        error "Missing required tools: ${missing[*]}"
-        info "Run: ./install.sh or install manually"
         return 1
     fi
 
-    if [ ${#warnings[@]} -gt 0 ]; then
-        warning "Optional tools missing: ${warnings[*]}"
-        info "Some features may not work properly"
-    fi
-
     return 0
+}
+
+# show_tools_status - Display full tools status (for menu use)
+show_tools_status() {
+    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    echo -e "              ${YELLOW}État des outils${NC}"
+    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    echo ""
+    check_prerequisites "verbose"
+    echo -e "${BLUE}💡 Pour installer les outils manquants :${NC}"
+    echo -e "   ${CYAN}sudo ./install.sh${NC}"
+    echo ""
 }
 
 # -----------------------------------------------------------------------------
