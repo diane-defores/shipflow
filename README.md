@@ -34,7 +34,7 @@ ShipFlow/
 ├── lib.sh                  # Bibliotheque partagee (ports, PM2, Flox, Caddy)
 ├── config.sh               # Configuration (130+ variables)
 ├── install.sh              # Installation dependances (PM2, Flox, Caddy, etc.)
-├── .claude/skills/         # 39 skills Claude Code (shipflow-*, openspec-*)
+├── skills/                 # 35 skills Claude Code (sf-*)
 ├── .claude/statusline-starship.sh  # Status bar Claude Code
 ├── local/                  # Tunnels SSH (machine locale)
 │   ├── dev-tunnel.sh       # Creation auto des tunnels
@@ -52,7 +52,7 @@ ShipFlow/
 - Environnements Flox isoles
 - Publication web HTTPS (Caddy + DuckDNS gratuit)
 - Cache PM2 (32x plus rapide)
-- 39 skills Claude Code integres
+- 35 skills Claude Code integrees
 
 ## Technologies
 

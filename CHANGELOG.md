@@ -1,5 +1,27 @@
 # ShipFlow Changelog
 
+## [2026-03-23] - RAM Monitoring, Dual-Mode Menus, Architecture Refactor
+
+### Added
+- RAM monitoring in header: `Free: 59G | Mem: 21G` with low-memory alerts
+- System Monitor merged into Health Check (`h`): RAM overview, visual bar, top processes, long-running detection (24h+)
+- Dashboard shows per-app uptime with idle detection and inline stop prompt
+- Config: `SHIPFLOW_MEM_WARN_GB`, `SHIPFLOW_PROCESS_LONG_RUNNING_HOURS`, `SHIPFLOW_MONITOR_TOP_N`
+- `menu_gum.sh` — pure gum-styled menus with instant single-keypress shortcuts
+- `menu_bash.sh` — pure bash fallback menus
+- `ui_pause()` replacing all scattered pause points
+- `ui_choose` auto-selects `gum choose` (≤5 items) or `gum filter` (>5 items)
+
+### Changed
+- All menu shortcuts: numbers → letters (d=Dashboard, e=Deploy, r=Restart, etc.)
+- `shipflow.sh` reduced from 1078 to 48 lines (thin launcher)
+- All action handlers and menu definitions moved to lib.sh
+- Stdin flush between menu cycles to prevent residual keypress issues
+
+### Removed
+- Mixed gum/bash menu code — replaced by two dedicated menu files
+- `show_menu()`, `show_advanced_menu()` — replaced by `run_menu()` per menu file
+
 ## [2026-03-22] - Skill Architecture Overhaul & Copywriting Audit
 
 ### Added

@@ -121,6 +121,19 @@ export SHIPFLOW_DISK_WARN_GB="${SHIPFLOW_DISK_WARN_GB:-5}"
 export SHIPFLOW_MENU_STATUS_CACHE_TTL="${SHIPFLOW_MENU_STATUS_CACHE_TTL:-120}"
 
 # ============================================================================
+# MEMORY (RAM) MONITORING CONFIGURATION
+# ============================================================================
+
+# Low memory warning threshold in GB (shows alert in menu header)
+export SHIPFLOW_MEM_WARN_GB="${SHIPFLOW_MEM_WARN_GB:-4}"
+
+# Hours after which a process is flagged as "long-running" in System Monitor
+export SHIPFLOW_PROCESS_LONG_RUNNING_HOURS="${SHIPFLOW_PROCESS_LONG_RUNNING_HOURS:-24}"
+
+# Number of top processes to show in System Monitor
+export SHIPFLOW_MONITOR_TOP_N="${SHIPFLOW_MONITOR_TOP_N:-15}"
+
+# ============================================================================
 # TOOL REQUIREMENTS
 # ============================================================================
 
