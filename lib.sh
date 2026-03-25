@@ -2321,9 +2321,44 @@ get_github_username() {
     gh api user --jq .login 2>/dev/null
 }
 
+# Detect whether a pubspec project is Flutter or plain Dart
+detect_pubspec_kind() {
+    local project_dir=$1
+
+    cd "$project_dir" || return 1
+
+    if [ ! -f "pubspec.yaml" ]; then
+        return 1
+    fi
+
+    if grep -Eq '^[[:space:]]*flutter:' "pubspec.yaml"; then
+        echo "flutter"
+    else
+        echo "dart"
+    fi
+}
+
+# Detect a likely Dart entrypoint for server-style apps
+detect_dart_entrypoint() {
+    local project_dir=$1
+
+    cd "$project_dir" || return 1
+
+    if [ -f "bin/server.dart" ]; then
+        echo "bin/server.dart"
+    elif [ -f "bin/main.dart" ]; then
+        echo "bin/main.dart"
+    elif [ -f "main.dart" ]; then
+        echo "main.dart"
+    elif [ -f "bin/${project_dir##*/}.dart" ]; then
+        echo "bin/${project_dir##*/}.dart"
+    fi
+}
+
 # Detect project type and return package manager info
 detect_project_type() {
     local project_dir=$1
+    local pubspec_kind=""
     
     cd "$project_dir" || return 1
     
@@ -2341,6 +2376,13 @@ detect_project_type() {
         echo "rust:cargo"
     elif [ -f "go.mod" ]; then
         echo "go:go"
+    elif [ -f "pubspec.yaml" ]; then
+        pubspec_kind=$(detect_pubspec_kind "$project_dir")
+        if [ "$pubspec_kind" = "dart" ]; then
+            echo "dart:dart"
+        else
+            echo "flutter:flutter"
+        fi
     else
         echo "generic:none"
     fi
@@ -2408,6 +2450,13 @@ init_flox_env() {
         go)
             echo -e "${BLUE}🐹 Installation de Go...${NC}"
             flox install go
+            ;;
+        dart)
+            echo -e "${BLUE}🎯 Projet Dart détecté — installation de Dart...${NC}"
+            flox install dart
+            ;;
+        flutter)
+            echo -e "${BLUE}🦋 Projet Flutter détecté — utilisation du SDK Flutter système${NC}"
             ;;
         generic)
             echo -e "${YELLOW}📄 Projet générique - environnement Flox de base${NC}"
@@ -2525,6 +2574,7 @@ fix_port_config() {
 detect_dev_command() {
     local project_dir=$1
     local port=$2  # Port à utiliser
+    local pubspec_kind=""
     
     cd "$project_dir" || return 1
     
@@ -2601,9 +2651,80 @@ detect_dev_command() {
         echo "cargo run"
     elif [ -f "go.mod" ]; then
         echo "go run ."
+    elif [ -f "pubspec.yaml" ]; then
+        pubspec_kind=$(detect_pubspec_kind "$project_dir")
+        if [ "$pubspec_kind" = "dart" ]; then
+            local dart_entrypoint=""
+            dart_entrypoint=$(detect_dart_entrypoint "$project_dir")
+            if [ -n "$dart_entrypoint" ]; then
+                echo "dart pub get && dart run $dart_entrypoint"
+            else
+                echo "dart pub get && dart run"
+            fi
+        elif [ -x "./pm2-web.sh" ]; then
+            echo "./pm2-web.sh"
+        elif [ -x "./build.sh" ]; then
+            echo "./build.sh --serve"
+        elif [ -d "web" ]; then
+            echo "export PATH=/home/claude/.flutter-sdk/bin:\$PATH && flutter config --enable-web >/dev/null 2>&1 || true && flutter pub get && flutter run -d web-server --web-hostname 0.0.0.0 --web-port \$PORT"
+        else
+            echo "echo 'Flutter project detected but no web target or pm2 entrypoint found' && exit 1"
+        fi
     else
         echo "echo 'No dev command detected'"
     fi
+}
+
+escape_single_quotes_for_bash() {
+    printf "%s" "$1" | sed "s/'/'\"'\"'/g"
+}
+
+project_has_doppler_manifest() {
+    local project_dir=$1
+
+    [ -f "$project_dir/doppler.yaml" ] || [ -f "$project_dir/.doppler.yaml" ]
+}
+
+project_has_doppler_scope() {
+    local project_dir=$1
+    local doppler_state_file="$HOME/.doppler/.doppler.yaml"
+    local current_dir=""
+
+    [ -f "$doppler_state_file" ] || return 1
+
+    current_dir="$project_dir"
+    while [ -n "$current_dir" ] && [ "$current_dir" != "/" ]; do
+        if grep -Fq "    $current_dir:" "$doppler_state_file"; then
+            return 0
+        fi
+        current_dir=$(dirname "$current_dir")
+    done
+
+    return 1
+}
+
+should_enable_doppler() {
+    local project_dir=$1
+    local mode="${SHIPFLOW_DOPPLER_MODE:-auto}"
+
+    if ! command -v doppler >/dev/null 2>&1; then
+        return 1
+    fi
+
+    case "$mode" in
+        always)
+            return 0
+            ;;
+        never)
+            return 1
+            ;;
+        auto|*)
+            if project_has_doppler_manifest "$project_dir" || project_has_doppler_scope "$project_dir"; then
+                return 0
+            fi
+            return 1
+            ;;
+    esac
 }
 
 # ============================================================================
@@ -2695,6 +2816,7 @@ env_start() {
 
     local port=""
     local doppler_prefix=""
+    local doppler_enabled=false
     # Check for existing port and doppler in ecosystem.config.cjs - PROPER PARSING
     if [ -f "$pm2_config" ]; then
         # Use Node.js to properly parse the config file
@@ -2715,8 +2837,14 @@ env_start() {
             local has_doppler=$(echo "$config_data" | python3 -c "import sys, json; d = json.load(sys.stdin); print('true' if d.get('hasDoppler') else 'false')" 2>/dev/null)
             if [ "$has_doppler" = "true" ]; then
                 doppler_prefix="doppler run -- "
+                doppler_enabled=true
             fi
         fi
+    fi
+
+    if [ "$doppler_enabled" != "true" ] && should_enable_doppler "$project_dir"; then
+        doppler_prefix="doppler run -- "
+        doppler_enabled=true
     fi
 
     # If no persistent port found, find an available one (skip for Expo tunnel projects)
@@ -2757,15 +2885,30 @@ env_start() {
     fi
     
     echo -e "${BLUE}🚀 Commande: $dev_cmd${NC}"
-    
+    if [ "$doppler_enabled" = "true" ]; then
+        echo -e "${BLUE}🔐 Doppler: activé (${SHIPFLOW_DOPPLER_MODE:-auto})${NC}"
+    else
+        echo -e "${BLUE}🔐 Doppler: désactivé${NC}"
+    fi
+
     # Replace $PORT in dev_cmd with actual port value
     local final_cmd="${dev_cmd//\$PORT/$port}"
+    local runtime_cmd="$final_cmd"
 
     # For Doppler projects, override PORT after doppler injects its env vars
     # to prevent Doppler's PORT value from taking precedence over ShipFlow's assignment
-    local inner_cmd="$final_cmd"
     if [ -n "$doppler_prefix" ]; then
-        inner_cmd="env PORT=$port $final_cmd"
+        runtime_cmd="env PORT=$port $final_cmd"
+    fi
+
+    local escaped_runtime_cmd
+    escaped_runtime_cmd=$(escape_single_quotes_for_bash "$runtime_cmd")
+
+    local pm2_launch_cmd=""
+    if [ "$is_expo" = "true" ]; then
+        pm2_launch_cmd="flox activate -- bash -lc '$escaped_runtime_cmd'"
+    else
+        pm2_launch_cmd="export PORT=$port && flox activate -- ${doppler_prefix}bash -lc '$escaped_runtime_cmd'"
     fi
 
     # Create persistent ecosystem file (Expo has no PORT)
@@ -2776,7 +2919,7 @@ module.exports = {
     name: "$env_name",
     cwd: "$project_dir",
     script: "bash",
-    args: ["-c", "flox activate -- $dev_cmd"],
+    args: ["-lc", "$pm2_launch_cmd"],
     autorestart: false,
     watch: false
   }]
@@ -2789,7 +2932,7 @@ module.exports = {
     name: "$env_name",
     cwd: "$project_dir",
     script: "bash",
-    args: ["-c", "export PORT=$port && flox activate -- ${doppler_prefix}${inner_cmd}"],
+    args: ["-lc", "$pm2_launch_cmd"],
     env: {
       PORT: $port
     },
@@ -2800,12 +2943,12 @@ module.exports = {
 EOF
     fi
 
-    echo -e "${GREEN}✅ Fichier ecosystem.config.cjs créé/mis à jour${NC}"
-
-    # Inject web inspector before starting the dev server (skip for Expo)
-    if [ "$is_expo" = "false" ]; then
-        (cd "$project_dir" && init_web_inspector)
+    if [ ! -f "$pm2_config" ]; then
+        error "Impossible de créer $pm2_config"
+        return 1
     fi
+
+    echo -e "${GREEN}✅ Fichier ecosystem.config.cjs créé/mis à jour${NC}"
 
     # Atomic cleanup of existing process (Priority 3 #11: Fix race condition)
     # Use pm2 delete with idempotent operation (no check-then-act)
@@ -2819,11 +2962,21 @@ EOF
     # Small delay to ensure port is fully released
     sleep 0.5
 
-    pm2 start "$pm2_config"
+    if ! pm2 start "$pm2_config"; then
+        error "Échec du démarrage PM2 pour $env_name"
+        return 1
+    fi
     pm2 save >/dev/null 2>&1
 
     # Invalidate cache after PM2 state change
     invalidate_pm2_cache
+
+    local started_status
+    started_status=$(get_pm2_status "$env_name")
+    if [ "$started_status" != "online" ] && [ "$started_status" != "launching" ]; then
+        error "PM2 n'a pas démarré $env_name correctement (statut: ${started_status:-unknown})"
+        return 1
+    fi
 
     if [ "$is_expo" = "true" ]; then
         success "Projet $env_name (Expo) démarré — URL tunnel dans: pm2 logs $env_name"
@@ -2899,6 +3052,60 @@ env_stop() {
 generate_css_selector() {
     local element="$1"
     echo "css-selector-for-$element" | sed 's/[^a-zA-Z0-9_-]/-/g'
+}
+
+remove_next_script_import_if_unused() {
+    local layout_file=$1
+
+    [ -f "$layout_file" ] || return 0
+
+    if grep -q 'shipflow-inspector' "$layout_file"; then
+        return 0
+    fi
+
+    if grep -q 'import Script from "next/script";' "$layout_file" && ! grep -q '<Script' "$layout_file"; then
+        sed -i '/import Script from "next\/script";/d' "$layout_file"
+    fi
+}
+
+remove_web_inspector_snippet() {
+    local target_file=$1
+
+    [ -f "$target_file" ] || return 0
+
+    perl -0pi -e 's/\s*<!-- shipflow-inspector -->\s*<script src="\/shipflow-inspector\.js" defer><\/script>\s*//g' "$target_file"
+    perl -0pi -e 's/\s*<Script src="\/shipflow-inspector\.js" strategy="afterInteractive" id="shipflow-inspector" \/>\s*//g' "$target_file"
+}
+
+web_inspector_is_enabled() {
+    if [ -f "public/shipflow-inspector.js" ]; then
+        return 0
+    fi
+
+    if [ -f "index.html" ] && grep -q 'shipflow-inspector' "index.html"; then
+        return 0
+    fi
+
+    local layout=""
+    for layout in src/layouts/*.astro \
+        app/layout.tsx app/layout.jsx src/app/layout.tsx src/app/layout.jsx \
+        apps/*/app/layout.tsx apps/*/app/layout.jsx apps/*/src/app/layout.tsx apps/*/src/app/layout.jsx \
+        packages/*/app/layout.tsx packages/*/app/layout.jsx packages/*/src/app/layout.tsx packages/*/src/app/layout.jsx; do
+        [ -f "$layout" ] || continue
+        if grep -q 'shipflow-inspector' "$layout"; then
+            return 0
+        fi
+    done
+
+    local app_dir=""
+    for app_dir in apps/* packages/*; do
+        [ -d "$app_dir" ] || continue
+        if [ -f "$app_dir/public/shipflow-inspector.js" ]; then
+            return 0
+        fi
+    done
+
+    return 1
 }
 
 # Initialize web inspector
@@ -3050,25 +3257,26 @@ toggle_web_inspector() {
 
     cd "$project_dir" || return 1
 
-    if [ -f "public/shipflow-inspector.js" ]; then
+    if web_inspector_is_enabled; then
         # Disable: remove JS file
         rm -f "public/shipflow-inspector.js"
 
         # Remove injected lines from index.html
         if [ -f "index.html" ]; then
-            sed -i '/shipflow-inspector/d' "index.html"
+            remove_web_inspector_snippet "index.html"
         fi
 
         # Remove from Astro layouts
         for layout in src/layouts/*.astro; do
             [ -f "$layout" ] || continue
-            sed -i '/shipflow-inspector/d' "$layout"
+            remove_web_inspector_snippet "$layout"
         done
 
         # Remove from Next.js layouts
         for candidate in "app/layout.tsx" "app/layout.jsx" "src/app/layout.tsx" "src/app/layout.jsx"; do
             [ -f "$candidate" ] || continue
-            sed -i '/shipflow-inspector/d' "$candidate"
+            remove_web_inspector_snippet "$candidate"
+            remove_next_script_import_if_unused "$candidate"
         done
 
         # Remove from monorepo app layouts
@@ -3077,7 +3285,8 @@ toggle_web_inspector() {
             rm -f "$app_dir/public/shipflow-inspector.js" 2>/dev/null
             for candidate in "$app_dir/app/layout.tsx" "$app_dir/app/layout.jsx" "$app_dir/src/app/layout.tsx" "$app_dir/src/app/layout.jsx"; do
                 [ -f "$candidate" ] || continue
-                sed -i '/shipflow-inspector/d' "$candidate"
+                remove_web_inspector_snippet "$candidate"
+                remove_next_script_import_if_unused "$candidate"
             done
         done
 
@@ -4420,7 +4629,7 @@ action_deploy() {
                 \( -name "node_modules" -o -name ".git" -o -name "venv" -o -name ".venv" \
                    -o -name "__pycache__" -o -name "target" -o -name ".next" -o -name ".nuxt" \
                    -o -name "dist" -o -name ".cache" -o -name ".pnpm" -o -name ".yarn" \) -prune \
-                -o -type f \( -name "package.json" -o -name "requirements.txt" -o -name "Cargo.toml" -o -name "go.mod" \) -print 2>/dev/null | while read -r manifest; do
+                -o -type f \( -name "package.json" -o -name "requirements.txt" -o -name "Cargo.toml" -o -name "go.mod" -o -name "pubspec.yaml" \) -print 2>/dev/null | while read -r manifest; do
                 proj_dir=$(dirname "$manifest")
                 case "$proj_dir" in
                     "$PROJECTS_DIR"/.*) continue ;;
@@ -5018,6 +5227,9 @@ show_help() {
                 echo -e "${BLUE}├──────────────────┼────────────────────────────────────┤${NC}"
                 echo -e "${BLUE}│${NC} ${CYAN}Go${NC}               ${BLUE}│${NC} go.mod                             ${BLUE}│${NC}"
                 echo -e "${BLUE}│${NC}                  ${BLUE}│${NC} → go run .                         ${BLUE}│${NC}"
+                echo -e "${BLUE}├──────────────────┼────────────────────────────────────┤${NC}"
+                echo -e "${BLUE}│${NC} ${CYAN}Flutter/Dart${NC}     ${BLUE}│${NC} pubspec.yaml                       ${BLUE}│${NC}"
+                echo -e "${BLUE}│${NC}                  ${BLUE}│${NC} → flutter web / dart run          ${BLUE}│${NC}"
                 echo -e "${BLUE}└──────────────────┴────────────────────────────────────┘${NC}"
                 echo ""
                 echo -e "${GREEN}📦 FRAMEWORKS AUTO-DETECTED${NC}"
@@ -5027,6 +5239,8 @@ show_help() {
                 echo -e "  ${CYAN}•${NC} Vite        → ${YELLOW}npm dev -- --port \$PORT --host${NC}"
                 echo -e "  ${CYAN}•${NC} Nuxt        → ${YELLOW}npm dev --port \$PORT${NC}"
                 echo -e "  ${CYAN}•${NC} Expo        → ${YELLOW}npx expo start --dev-client --tunnel${NC}"
+                echo -e "  ${CYAN}•${NC} Flutter Web → ${YELLOW}flutter run -d web-server --web-port \$PORT${NC}"
+                echo -e "  ${CYAN}•${NC} Dart        → ${YELLOW}dart pub get && dart run${NC}"
                 echo -e "  ${CYAN}•${NC} Django      → ${YELLOW}python manage.py runserver 0.0.0.0:\$PORT${NC}"
                 echo -e "  ${CYAN}•${NC} Flask/FastAPI → ${YELLOW}python app.py${NC} or ${YELLOW}python main.py${NC}"
                 echo ""
@@ -5040,7 +5254,7 @@ show_help() {
                 echo ""
                 echo -e "  Inject a visual element selector into your web app:"
                 echo ""
-                echo -e "  ${CYAN}•${NC} Toggle via ${YELLOW}Advanced → Toggle Web Inspector${NC}"
+                echo -e "  ${CYAN}•${NC} Inject/remove manually via ${YELLOW}Advanced → Toggle Web Inspector${NC}"
                 echo -e "  ${CYAN}•${NC} Shows numbered buttons on every ${YELLOW}<div>${NC} element"
                 echo -e "  ${CYAN}•${NC} ${GREEN}Click${NC} → Copy XPath to clipboard"
                 echo -e "  ${CYAN}•${NC} ${GREEN}Long-press${NC} → Screenshot menu:"
@@ -5050,7 +5264,7 @@ show_help() {
                 echo ""
                 echo -e "${GREEN}🖥️  ERUDA CONSOLE${NC}"
                 echo ""
-                echo -e "  Mobile-friendly developer console injected automatically:"
+                echo -e "  Mobile-friendly developer console injected with the inspector script:"
                 echo ""
                 echo -e "  ${CYAN}•${NC} View console.log output"
                 echo -e "  ${CYAN}•${NC} Inspect network requests"

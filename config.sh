@@ -178,6 +178,12 @@ export SHIPFLOW_CADDYFILE="${SHIPFLOW_CADDYFILE:-/etc/caddy/Caddyfile}"
 # Directory for storing cached credentials (chmod 700)
 export SHIPFLOW_SECRETS_DIR="${SHIPFLOW_SECRETS_DIR:-$HOME/.shipflow}"
 
+# Doppler integration mode:
+# - auto: use Doppler when local/scoped project config is detected
+# - always: always wrap app launch with doppler run if doppler is installed
+# - never: never use Doppler automatically
+export SHIPFLOW_DOPPLER_MODE="${SHIPFLOW_DOPPLER_MODE:-auto}"
+
 # ============================================================================
 # SESSION IDENTITY CONFIGURATION
 # ============================================================================
