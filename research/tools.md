@@ -176,3 +176,42 @@ Plateforme API-first pour agents vocaux IA. 500K+ devs, latence <500ms, 100+ lan
 - Modèle économique non encore révélé — risque de pivot tarifaire brutal.
 
 **Quand revisiter :** Quand ContentFlowz développera les agents autonomes long-running. Surveiller leur modèle de monétisation.
+
+---
+
+## Impôts.gouv.fr PDP — Registre facturation électronique obligatoire
+
+**Lien :** https://www.impots.gouv.fr/je-consulte-la-liste-des-plateformes-agreees
+**Date de veille :** 2026-04-04
+**Business :** GoCharbon (7/10)
+
+**Pourquoi c'est intéressant :**
+- Réforme obligatoire pour TOUTES les entreprises françaises — contenu evergreen à forte valeur SEO pour le blog entrepreneur.
+- ~150 PDP agréées (Qonto, Pennylane, Indy, Axonaut, Sellsy, Sage, Cegid). Comparatifs encore rares dans l'écosystème blog francophone.
+- Potentiel d'affiliation avec les PDP (Pennylane, Indy, Axonaut ont des programmes partenaires).
+
+**Précautions :**
+- Réglementation en cours de déploiement — les informations changent vite. L'article devra être maintenu à jour.
+- Ne pas recommander une PDP sans l'avoir testée ou sans données objectives.
+
+**Quand revisiter :** Immédiatement — fenêtre SEO ouverte, peu de concurrence sur ce contenu.
+
+---
+
+## Funbooker — Marketplace française de réservation d'activités/loisirs
+
+**Lien :** https://www.funbooker.com/
+**Date de veille :** 2026-04-04
+**Business :** PlaisirSurprise (7/10), GoCharbon (5/10)
+
+**Pourquoi c'est intéressant :**
+- Concurrent direct de PlaisirSurprise sur le segment booking d'expériences. SAS, 339K€ capital, RCS Nanterre, hébergé AWS.
+- Stack paiement riche : CB, Apple Pay, Google Pay, PayPal + chèques cadeaux ANCV et Illicado — à intégrer dans PlaisirSurprise pour le segment luxe/cadeau.
+- Structure juridique et mentions légales comme référence pour nos propres pages (CNIL n°2101743, format marketplace).
+- Sujet d'article GoCharbon : portrait d'entreprise française du loisir (modèle marketplace, levées, croissance).
+
+**Précautions :**
+- Ne pas copier les mentions légales mot pour mot — adapter à notre structure juridique propre.
+- Les chèques cadeaux (ANCV, Illicado) nécessitent des conventions spécifiques avec les émetteurs.
+
+**Quand revisiter :** Quand PlaisirSurprise abordera l'intégration paiements et la rédaction des mentions légales.
