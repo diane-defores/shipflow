@@ -16,6 +16,8 @@ argument-hint: [file-path | "global"] (omit for full project)
 - Component files: !`find src/components -name "*.astro" -o -name "*.tsx" -o -name "*.vue" 2>/dev/null | grep -v node_modules | sort`
 - Legacy patterns: !`grep -rn --include="*.{js,ts,jsx,tsx,astro,vue}" -E '\balert\(|\bconfirm\(|\bprompt\(|\bdocument\.write\(' src/ 2>/dev/null | head -20 || echo "none found"`
 - Deprecated HTML: !`grep -rn --include="*.{astro,vue,tsx,jsx,html}" -iE '<marquee|<blink|<center|<font ' src/ 2>/dev/null | head -20 || echo "none found"`
+- Dialog vs div[role=dialog]: !`grep -rn --include="*.{astro,vue,tsx,jsx,html}" -E '<div[^>]+role=["\x27]dialog' src/ 2>/dev/null | head -10 || echo "none found"`
+- Hardcoded colors: !`grep -rn --include="*.{astro,vue,tsx,jsx,css,scss}" -E '#[0-9a-fA-F]{3,6}\b|rgb\(|rgba\(' src/ 2>/dev/null | grep -v node_modules | wc -l || echo "0"`
 
 ## Pre-check : contexte marque
 
@@ -122,11 +124,13 @@ Score each category **A/B/C/D** (A = excellent, D = critical issues). Be strict 
   - Flag any media-query that only changes `font-size` — likely replaceable with a single `clamp()` declaration
 
 #### 3. Color & Contrast
-- [ ] WCAG AA contrast ratios (4.5:1 text, 3:1 large text/UI)
+- [ ] WCAG AA contrast ratios (4.5:1 text, 3:1 large text/UI). Note: WCAG 3.0 draft uses APCA (perceptual) — check both when time allows
 - [ ] Color is not the only way to convey information
-- [ ] Consistent color token usage (no hardcoded hex outside design system)
+- [ ] Consistent color token usage (no hardcoded hex outside design system) — prefer `oklch()` (perceptually uniform) over `hsl()`/`hex`
+- [ ] Hover/tint/shade variants use `color-mix(in oklch, var(--brand) 70%, white)` rather than hand-picked hex — one token change re-derives the palette
+- [ ] `color-mix()` declarations have a static fallback line above them (old browsers drop the whole rule otherwise)
 - [ ] Interactive elements have visible focus/hover/active states
-- [ ] Dark mode support if the project uses it
+- [ ] Dark mode: `<meta name="color-scheme" content="light dark">` + root `color-scheme: light dark` + CSS uses `light-dark(<light>, <dark>)` — eliminates `@media (prefers-color-scheme: dark)` duplication
 
 #### 4. Responsiveness
 - [ ] Mobile-first or gracefully responsive (no horizontal scroll)
@@ -174,6 +178,31 @@ Score each category **A/B/C/D** (A = excellent, D = critical issues). Be strict 
 - [ ] No inline `onclick="..."` handlers — use framework event handling
 - [ ] No jQuery when using a modern framework
 - [ ] No `innerHTML` for user-facing content (XSS risk)
+- [ ] Modals use `<dialog>` + `showModal()` — NOT `<div role="dialog">` (native focus trap, Esc, backdrop, top-layer for free)
+- [ ] Lightweight menus/tooltips/disclosures use HTML `popover` attribute — NOT `<dialog>` (popovers have no `aria-modal`)
+- [ ] Custom overlays apply `inert` to siblings, NOT `aria-hidden` (aria-hidden on focusable subtree = WCAG fail)
+- [ ] No JS-toggled parent classes to style by child state (`.card.has-image`) — use `:has()` (`.card:has(img)`) — 95%+ support in 2026
+
+#### 9. Modern CSS (2026 baseline)
+- [ ] Components appearing in multiple layout contexts use `@container` with `container-type: inline-size` on wrapper — NOT `@media` (media queries respond to viewport, not actual component space)
+- [ ] Avoid `container-type: size` (height queries) except on fixed-dimension dashboards (expensive — ~10-15ms layout cost per pass at scale)
+- [ ] `:has()` selectors are child-scoped (`:has(> img)` not `:has(img)`) — bare descendant `:has()` forces full subtree walks on every mutation
+- [ ] Cross-document navigation uses `@view-transition { navigation: auto }` + `view-transition-name` on hero elements (Baseline Oct 2025 — free smooth MPA transitions)
+- [ ] All `::view-transition-*` animations wrapped in `@media (prefers-reduced-motion: no-preference)`
+- [ ] Sibling card grids with cross-card alignment use `grid-template-rows: subgrid` on the card (fixes "buttons at different heights")
+- [ ] Scroll-driven animations (`animation-timeline: scroll()` / `view()`) gated by `@media (prefers-reduced-motion: no-preference)` AND only animate `transform`/`opacity` (compositor-only)
+- [ ] Tooltips/dropdowns use CSS `anchor-name`/`position-anchor` + `popover` attribute — NOT Floating UI/Popper (Baseline 2026, ~91% traffic)
+- [ ] Long lists and off-screen sections use `content-visibility: auto` + `contain-intrinsic-size: auto <px>` (30-50% faster initial render)
+
+#### 10. AI-Generated Code Smells
+Flag these patterns — v0, bolt, lovable, Figma Make produce ~160 issues/app on average, 90%+ have a11y failures:
+- [ ] No conflicting Tailwind utilities on same element (`grid flex`, `w-full w-64`, `p-2 p-6`) — AI pattern: adds classes without removing old ones
+- [ ] No dynamic Tailwind class concatenation (`` `text-${color}-500` ``) — JIT scans plain text; concatenated classes get purged
+- [ ] No hardcoded hex/rgb inside components — use design tokens
+- [ ] `<div onClick>` always has `role="button"` + `tabIndex={0}` + `onKeyDown` (Enter/Space) — top a11y failure in AI-generated apps
+- [ ] All images have `alt`; all form inputs have `<label>` (not placeholder-only)
+- [ ] All interaction states present: `:focus-visible`, `:disabled`, loading, error, empty
+- [ ] Forms use HTML5 constraint validation (`required`, `pattern`, `type="email"`) before custom JS validation
 
 ### Step 3: Fix what you can
 

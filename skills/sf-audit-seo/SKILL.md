@@ -16,6 +16,8 @@ argument-hint: [file-path | "global"] (omit for full project)
 - SEO/head component: !`find src -name "*seo*" -o -name "*head*" -o -name "*meta*" 2>/dev/null | grep -v node_modules | head -10 || echo "none found"`
 - Astro config: !`cat astro.config.* 2>/dev/null | head -50 || echo "no astro config"`
 - Content files count: !`find src/content -type f 2>/dev/null | wc -l || echo "0"`
+- llms.txt: !`test -f public/llms.txt && echo "present" || echo "MISSING — AEO gap"`
+- AI crawler rules: !`grep -iE 'GPTBot|ClaudeBot|PerplexityBot|Google-Extended|OAI-SearchBot|CCBot' public/robots.txt 2>/dev/null || echo "no explicit AI crawler rules"`
 
 ## Pre-check : contexte business
 
@@ -100,10 +102,13 @@ Score each category **A/B/C/D**. Be strict — production SEO standard.
 
 #### 1. Meta Tags & Head
 - [ ] `<title>` present, 50-60 characters, includes primary keyword
-- [ ] `<meta description>` present, 150-160 characters, includes CTA
+- [ ] `<meta description>` present, 150-160 characters, includes CTA (note: AI Overviews often rewrite this — the opening H1 paragraph matters more now)
 - [ ] `<meta robots>` allows indexing (or intentionally noindex)
 - [ ] `<link rel="canonical">` present and correct (absolute URL)
 - [ ] `<html lang="xx">` matches content language
+- [ ] `<meta name="author">` with real person name (not "editorial team") — direct E-E-A-T signal
+- [ ] `article:published_time` + `article:modified_time` on content pages (Perplexity heavily prefers content <90 days old)
+- [ ] `hreflang` lowercase format (`fr-fr` not `fr-FR`), self-referencing per language, **never** canonical across languages
 - [ ] No duplicate meta tags
 
 #### 2. Open Graph & Social
@@ -123,17 +128,21 @@ Score each category **A/B/C/D**. Be strict — production SEO standard.
 
 #### 4. Content & Keywords
 - [ ] Primary keyword appears in: title, H1, first paragraph, URL
-- [ ] Keyword density is natural (1-2%, not stuffed)
-- [ ] Related/LSI keywords are present
+- [ ] **Semantic completeness over keyword density** — page covers the full entity/concept, not just keyword repetition (entity coverage correlates 4.2x more with AI citation than keyword density)
+- [ ] **First 200 words answer the primary query directly** — no warm-up intro (AI engines extract opening content for relevance scoring)
+- [ ] **Each H2/H3 opens with a bold 1-sentence summary** (Gemini/AI Overviews extract "nuggets" from the first 40-50 words of each section)
+- [ ] **Semantic chunking** — each section is one self-contained, citable concept (2-4 sentence paragraphs)
+- [ ] **≥3 unique data points / original insights** per article (Information Gain — 4x AI citation rate)
+- [ ] **Entity-rich language** — named tools, companies, standards, people (15+ recognized entities → 4.8x citation rate)
 - [ ] Content length is competitive for keyword intent
 - [ ] No duplicate content with other pages
 
 #### 5. Images & Media
 - [ ] All `<img>` have descriptive `alt` text
-- [ ] Images use modern formats (WebP/AVIF)
+- [ ] **AVIF-first** — `<picture>` with AVIF source, WebP fallback, JPEG safety net (AVIF is ~50% smaller than JPEG at equal quality)
 - [ ] Images have explicit `width` and `height` (prevents CLS)
 - [ ] Below-fold images are lazy-loaded
-- [ ] Hero/LCP image is NOT lazy-loaded (`fetchpriority="high"`)
+- [ ] Hero/LCP image is NOT lazy-loaded (`fetchpriority="high"`, `loading="eager"`)
 
 #### 6. Technical SEO
 - [ ] URLs are clean (lowercase, hyphens)
@@ -145,11 +154,26 @@ Score each category **A/B/C/D**. Be strict — production SEO standard.
 - [ ] Breadcrumbs present for nested pages
 
 #### 7. Performance (SEO-impacting)
+- [ ] **INP (Interaction to Next Paint) < 200ms** — replaced FID in March 2024 as Core Web Vital; 200-500ms = needs improvement, >500ms = poor. Check for long main-thread tasks, debounced input handlers
+- [ ] **LCP < 2.5s**, **CLS < 0.1** (other Core Web Vitals thresholds)
 - [ ] No render-blocking resources in `<head>`
 - [ ] Critical CSS inlined or loaded early
 - [ ] Fonts use `font-display: swap`
 - [ ] No massive JS bundles for static content
 - [ ] Third-party scripts are deferred
+- [ ] **Speculation Rules API** — `<script type="speculationrules">` prefetch/prerender for predictable navigation (product flows, blog-to-blog). Chromium-only but free win
+
+#### 8. AI Visibility (AEO / GEO)
+- [ ] `/llms.txt` at site root (markdown summary, <5000 tokens, links to key pages)
+- [ ] `/llms-full.txt` with full content in markdown (recommended for docs sites)
+- [ ] `robots.txt` explicitly allows target AI crawlers: `GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `OAI-SearchBot`, `CCBot`
+- [ ] Content is server-rendered (AI crawlers don't execute JS reliably)
+- [ ] FAQ section wrapped in `QAPage` or `FAQPage` schema (+58% ChatGPT citation rate vs plain Article)
+- [ ] `SpeakableSpecification` marks 1-2 summary passages (3.1x voice/AI citation boost)
+- [ ] Author `Person` schema with `sameAs` (LinkedIn/Wikipedia), `hasCredential`, `knowsAbout`
+- [ ] First-person experience markers in YMYL content ("I tested", "in our case study", specific outcomes/numbers)
+- [ ] Primary source citations inside content (outbound links to research, gov data, official docs)
+- [ ] Canonical brand name used consistently everywhere (never "Our Product" vs "ProductX" vs "the tool")
 
 ### Step 3: Fix
 
@@ -169,7 +193,8 @@ Heading Structure  [A/B/C/D] — one-line summary
 Content & Keywords [A/B/C/D] — one-line summary
 Images & Media     [A/B/C/D] — one-line summary
 Technical SEO      [A/B/C/D] — one-line summary
-Performance        [A/B/C/D] — one-line summary
+Performance        [A/B/C/D] — INP, LCP, CLS summary
+AI Visibility      [A/B/C/D] — AEO/GEO readiness
 ─────────────────────────────────────
 OVERALL            [A/B/C/D]
 
@@ -212,12 +237,14 @@ Then proceed to **GLOBAL MODE** with the selected projects.
 - [ ] Pagination uses `rel="next"` / `rel="prev"` if applicable
 
 #### Performance (SEO-critical)
-- [ ] SSG/SSR used (not client-side rendering for content)
+- [ ] SSG/SSR used (not client-side rendering for content — AI crawlers don't execute JS reliably)
 - [ ] HTML served with proper content
-- [ ] Images optimized
-- [ ] LCP image eagerly loaded
+- [ ] Core Web Vitals at p75: **LCP < 2.5s**, **INP < 200ms** (replaced FID in March 2024), **CLS < 0.1**
+- [ ] Images optimized — AVIF-first via `<picture>` with WebP/JPEG fallbacks
+- [ ] LCP image eagerly loaded (`fetchpriority="high"`, `loading="eager"`)
 - [ ] No render-blocking resources
 - [ ] Fonts use `font-display: swap`
+- [ ] Speculation Rules API for predictable navigation paths (optional, big win)
 
 ### Phase 2: On-Page SEO — Systematic Scan
 
@@ -251,17 +278,51 @@ Map the internal link graph:
 2. Which important pages are under-linked?
 3. Are anchor texts descriptive?
 4. Does navigation reinforce page hierarchy?
+5. Topic cluster check: pillar pages linked from 2-5 spokes, spokes linked back to pillar + siblings. Body links pass ~5x more equity than nav/footer.
+
+### Phase 5.5: AI Visibility (AEO / GEO)
+
+**Goal:** ensure the site is discoverable, ingestible, and citable by ChatGPT, Perplexity, Claude, and Google AI Overviews.
+
+#### LLM Accessibility
+- [ ] `/llms.txt` at site root — markdown summary, <5000 tokens, links to key canonical pages
+- [ ] `/llms-full.txt` with full content in markdown (recommended for docs/knowledge sites)
+- [ ] `robots.txt` explicitly allows desired AI crawlers: `GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `OAI-SearchBot`, `CCBot`
+- [ ] Server-rendered HTML for all indexable content (AI crawlers don't execute JS reliably)
+
+#### Citation-Ready Content Structure
+- [ ] First 200 words of every page answer its primary query directly (no warm-up intro)
+- [ ] Each H2/H3 opens with a bold 1-sentence summary ("nugget extraction" target)
+- [ ] Sections are semantically chunked — one concept per section, citable in isolation (2-4 sentence paragraphs, ~256-512 tokens)
+- [ ] Question-form headings where topic supports it ("How does X work?", "What is Y?")
+- [ ] FAQ block on every major page, wrapped in `QAPage` or `FAQPage` schema
+- [ ] ≥3 unique data points / original insights per article (Information Gain)
+- [ ] Named author with `Person` schema (`sameAs`, `hasCredential`, `knowsAbout`)
+
+#### AI-Specific Structured Data
+- [ ] `Person` schema for author with `sameAs` (LinkedIn/Wikipedia), `hasCredential`, `knowsAbout`
+- [ ] `SpeakableSpecification` marking the article's summary passages (3.1x voice/AI citation boost)
+- [ ] `QAPage`/`FAQPage` on FAQ pages (+58% ChatGPT citation rate vs plain Article)
+- [ ] `HowTo` for tutorials; `Dataset` for data tables; `Review`/`Rating` for reviews
+- [ ] `Organization` schema on homepage (founder, `areaServed`, `knowsAbout`)
+
+#### Off-Site AI Signals (report-only, document gaps)
+- [ ] Brand name used consistently everywhere (never "Our Product" vs "ProductX" vs "the tool")
+- [ ] Flag if client lacks Wikipedia presence or Reddit discussion (GEO gap — 46.7% of Perplexity citations reference Reddit; 47.9% of ChatGPT factual citations reference Wikipedia)
+- [ ] Recent publish/update date prominently visible in body (Perplexity freshness filter <90 days)
 
 ### Phase 6: Fix
 
 Fix all issues in code. Priority:
 1. **Missing/broken meta tags** — highest SEO impact
-2. **Missing structured data** — add JSON-LD
-3. **Heading hierarchy** — semantic corrections
-4. **Image alt text** — descriptive alts everywhere
-5. **Internal linking gaps** — add contextual links
-6. **Sitemap/robots.txt** — ensure completeness
-7. **Performance** — lazy loading, fonts, images
+2. **Missing structured data** — add JSON-LD (including AI-specific types: `Person`, `SpeakableSpecification`, `QAPage`)
+3. **llms.txt + AI crawler rules** — generate if missing, the biggest AEO quick win of 2026
+4. **Heading hierarchy** — semantic corrections
+5. **First-200-words direct answer** — rewrite intros that don't answer the query
+6. **Image alt text + AVIF** — descriptive alts and modern formats
+7. **Internal linking gaps** — add contextual links, topic cluster structure
+8. **Sitemap/robots.txt** — ensure completeness
+9. **Performance** — INP <200ms, LCP <2.5s, lazy loading, fonts, images
 
 ### Phase 7: Report
 
@@ -289,6 +350,13 @@ INTERNAL LINKING
   Avg links/page:    X
   Orphan pages:      [list]
   Under-linked:      [list]
+
+AI VISIBILITY (AEO/GEO)
+  llms.txt:          [present / missing]
+  AI crawlers:       [explicit / implicit / blocked]
+  QAPage/HowTo:      X pages with AI-friendly schema
+  Speakable:         X pages
+  Author schema:     X/Y articles
 
 PAGE-BY-PAGE
   /                  [A/B/C/D]
