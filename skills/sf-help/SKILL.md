@@ -41,7 +41,7 @@ Quick reference for the skill system, modes, and workflows.
 
 | Skill | Purpose | Arguments |
 |-------|---------|-----------|
-| `/sf-ship` | Stage, commit, push | `"commit message"` |
+| `/sf-ship` | Quick ship by default; full close+ship with explicit keyword | `"commit message"`, `end la tache`, `skip-check` |
 | `/sf-check` | Typecheck + lint + build + test | `[check types]`, `fix`, `nofix` |
 | `/sf-deploy` | Full deploy: check → ship → restart → verify | `skip-check` |
 | `/sf-status` | Cross-project git dashboard | (none) |
@@ -176,8 +176,8 @@ Provide explicit arguments and prompts don't appear:
 
 ### Ship something
 ```bash
-/sf-check                    # Verify everything passes
-/sf-ship "Feature description"  # Commit + push
+/sf-ship "Feature description"  # Quick mode (default): commit + push
+/sf-ship "end la tache"         # Full mode: updates tasks/changelog + commit + push
 /sf-tasks                    # Mark completed, get next
 ```
 

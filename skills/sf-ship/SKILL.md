@@ -1,7 +1,7 @@
 ---
 name: sf-ship
-description: Ship the session — commit, push, update tasks + changelog, save memory, wrap context. One report. Use this at end of session when ready to push.
-argument-hint: [optional commit message or notes]
+description: Ship changes quickly by default (commit + push). Run full session-closing flow only when explicitly requested.
+argument-hint: [optional: commit message | "end la tache" for full close | skip-check]
 ---
 
 ## Context
@@ -17,9 +17,41 @@ argument-hint: [optional commit message or notes]
 
 ## Your task
 
-Close the session and ship — recap + commit + push. All steps inline. ONE report at the end.
+`sf-ship` has two modes.
 
-### Step 1 — Workspace root detection
+### Mode 1 — Quick ship (default)
+
+Default behavior when `$ARGUMENTS` does NOT include end-of-task keywords:
+- `end la tache`
+- `end`
+- `fin`
+- `close task`
+
+Quick mode is optimized for fast iteration:
+1. Optional lightweight checks (skip if `skip-check` is present)
+2. Stage
+3. Commit
+4. Push
+5. One short report
+
+Do NOT update TASKS.md or CHANGELOG.md in quick mode.
+
+### Mode 2 — Full close + ship (explicit)
+
+Only when `$ARGUMENTS` includes one of the end-of-task keywords above:
+1. Summarize session
+2. Update TASKS.md (master + local)
+3. Update CHANGELOG.md
+4. Save decisions to memory
+5. Run checks (unless `skip-check`)
+6. Stage, commit, push
+7. One full closing report
+
+Use this mode when the task is truly finished and should be formally closed.
+
+---
+
+## Step 1 — Workspace root detection
 
 If the current directory has no `.git` directory BUT contains project subdirectories with changes, use **AskUserQuestion**:
 - "Which project should I ship?"
@@ -28,117 +60,90 @@ If the current directory has no `.git` directory BUT contains project subdirecto
 
 Then work inside that project for all remaining steps.
 
-### Step 2 — Summarize session (internal, no output)
+## Step 2 — Decide mode
 
-From the conversation, silently identify:
-- What was completed this session
-- What was started but not finished
-- Key files modified (from git diff stat in context)
-- Any decisions worth saving to memory
+Inspect `$ARGUMENTS`:
+- if it contains `end la tache`, `end`, `fin`, or `close task` -> `full`
+- otherwise -> `quick`
 
-### Step 3 — Update TASKS.md (silent)
+## Step 3 — Safety checks before staging
 
-Using the master TASKS.md from context:
-- Mark completed items: `🔄 in progress` → `✅ done` and `📋 todo` → `✅ done`
-- Mark partially done items with `🔄 in progress`
-- Add new tasks discovered this session under the right section
-- Update master `/home/claude/shipflow_data/TASKS.md` — always, even from a sub-project
-- If a local `TASKS.md` also exists, update both
-- No output at this step.
+Check for secrets:
+- if untracked `.env`, credential, or token files are not ignored, stop and warn
 
-### Step 4 — Update CHANGELOG.md (silent)
+## Step 4 — Pre-checks
 
-Using the session summary and git diff:
-- Group changes into Keep a Changelog categories: Added / Changed / Fixed / Security / Removed
-- Consolidate related changes into single human-readable entries
-- Skip CI, formatting, merge, and changelog-update commits
-- Prepend a new `## [date]` entry to CHANGELOG.md (or update today's entry if it exists)
-- No output at this step.
+If mode is `quick`:
+- run lightweight checks only when practical
+- skip all checks when `$ARGUMENTS` includes `skip-check`
 
-### Step 5 — Save decisions to memory (silent)
+If mode is `full`:
+- run normal checks (unless `skip-check`)
 
-For each significant decision or discovery from Step 2, save to memory if useful for future conversations.
+Checks policy:
+- if `package.json` exists: run typecheck and lint scripts if present
+- do NOT run full build here by default
+- if `test_*.sh` exists and shell files changed: run `bash -n` on touched shell files
 
-Skip if no meaningful decisions were made. No output at this step.
+If a check fails:
+- stop and report failure
+- suggest rerun with `skip-check` if user wants to force ship
 
-### Step 6 — Pre-checks (typecheck, lint)
+## Step 5 — Full-mode bookkeeping (only in full mode)
 
-Avant de commit, vérifier que le code est clean. Détecter le stack depuis le contexte.
+Only for mode `full`:
+- update master TASKS.md and local TASKS.md when relevant
+- update CHANGELOG.md with meaningful grouped entries
+- save useful decisions to memory
 
-**NE JAMAIS lancer de build ici.** Le build tourne en CI / sur Vercel au push — le refaire en local casse le flow (longue attente, artefacts polluants, faux positifs). Typecheck + lint suffisent pour attraper les erreurs locales.
+Skip this step entirely in quick mode.
 
-**Si package.json existe :**
-1. Lancer le typecheck s'il existe (`npm run typecheck` / `pnpm typecheck`)
-2. Lancer le lint s'il existe (`npm run lint` / `pnpm lint`)
-
-**Si scripts de test bash existent** (`test_*.sh`) :
-1. Lancer `bash -n` sur les `.sh` modifiés (syntax check)
-
-**Si un check échoue** : STOP. Afficher l'erreur et proposer :
-- "Le check a échoué. Corriger avant de ship ? Ou forcer le push sans check (`/sf-ship skip-check`) ?"
-
-**Si `$ARGUMENTS` contient "skip-check"** : sauter cette étape entièrement.
-
-### Step 7 — Stage and commit
-
-Check for secrets before staging:
-- If untracked `.env`, credential, or token files are NOT in `.gitignore`, warn the user and stop
+## Step 6 — Stage and commit
 
 Stage and commit:
 ```bash
 git add -A
-git commit -m "[message from $ARGUMENTS or derived from session summary]
+git commit -m "[message from $ARGUMENTS or derived summary]
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
 
-Use a HEREDOC for the commit message. Follow the style of recent commits.
+Use a HEREDOC for commit message.
 
-### Step 8 — Push
+## Step 7 — Push
 
 ```bash
 git push
-# If no upstream: git push -u origin <branch>
+# if no upstream: git push -u origin <branch>
 ```
 
-### Step 9 — Sync ShipFlow (silent housekeeping)
+## Step 8 — One report
 
-If `/home/claude/ShipFlow` has uncommitted changes, auto-commit and push:
-```bash
-cd /home/claude/ShipFlow && git add -A && git diff --cached --quiet || git commit -m "sync" && git push
+Quick mode report:
+```text
+## Shipped (Quick) — [date]
+
+[SHORT_SHA] — "[commit message]" -> [branch]
+Checks: [passed / skipped / failed]
+Mode: quick (commit + push only)
+[✓ Pushed] or [push failure]
 ```
 
-Only report this if it fails.
+Full mode report:
+```text
+## Shipped (Full) — [date]
 
-### Step 10 — ONE combined report
-
-```
-## Shipped — [date]
-
-**[SHORT_SHA]** — "[commit message]" → [branch]
-
-**Pre-checks:** [✓ all passed / ⚠ skipped / ✗ failed at lint]
-
-**What changed:**
-- [bullet per logical change from diff — specific, not vague]
-
-**Session closed:**
-- Completed: [item], [item]
-- In progress: [item — where it stands]
-- Decisions saved: [decision or "none"]
-
-**Up next:**
-1. [emoji] [top TASKS.md priority]
-2. [emoji] [second priority]
-3. [emoji] [third priority]
-
-[✓ Pushed] or [⚠️  Push failed: reason]
+[SHORT_SHA] — "[commit message]" -> [branch]
+Checks: [passed / skipped / failed]
+Tasks/Changelog: updated
+Session closed: [completed/in-progress summary]
+[✓ Pushed] or [push failure]
 ```
 
-### Rules
+## Rules
 
-- Do NOT output anything before Step 10 — one report only (exception: pre-check failure in Step 6)
+- Quick mode is the default
+- Full close flow requires explicit end-of-task keyword
 - Do NOT force push to main/master
-- Do NOT commit secrets or credentials
-- If nothing to commit, say so in the report and still do Steps 3–5
-- Pre-checks can be skipped with "skip-check" in `$ARGUMENTS` (ex: `/sf-ship skip-check`)
-- Keep the final report under 30 lines
+- Do NOT commit secrets
+- If nothing to commit, say so clearly
+- Keep report concise
