@@ -90,6 +90,16 @@ The key rule is simple:
 - reduce ambiguity before coding
 - verify against the contract before closing
 
+## TASKS vs BACKLOG
+
+Use both files on purpose:
+
+- `TASKS.md` = active, prioritized, executable work
+- `BACKLOG.md` = deferred ideas, parking lot, non-committed items
+
+Promotion rule:
+- move an item from `BACKLOG.md` to `TASKS.md` only when it is ready to be worked on now (clear enough, prioritized enough, and scoped enough)
+
 ## Repository Layout
 
 ```text

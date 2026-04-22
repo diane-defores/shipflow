@@ -136,6 +136,11 @@ Provide explicit arguments and prompts don't appear:
 3. **Dashboard sync**: Update the Dashboard table when project phases change
 4. **Prefix items**: Backlog entries include project name (e.g., `- tubeflow: Add dark mode`)
 
+### TASKS vs BACKLOG convention
+- `TASKS.md` = active, prioritized, executable work
+- `BACKLOG.md` = deferred ideas and parking lot
+- Promote from `BACKLOG.md` to `TASKS.md` only when the item is ready to be executed now
+
 ---
 
 ## Workflow Cycle
