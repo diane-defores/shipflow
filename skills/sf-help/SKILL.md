@@ -183,8 +183,8 @@ Provide explicit arguments and prompts don't appear:
 
 ### Fix a bug
 ```bash
-/sf-fix "short bug description"    # Triage and route
-# If local and clear -> direct fix flow
+/sf-fix "short bug description"    # Triage + direct fix or route
+# If local and clear -> fix now, then verify
 # If ambiguous/non-trivial -> /sf-spec -> /sf-ready -> /sf-start
 ```
 

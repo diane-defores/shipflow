@@ -1,6 +1,6 @@
 ---
 name: sf-fix
-description: Bug-first entrypoint. Triage a bug quickly, decide fix path (direct vs spec-driven), then start the right workflow.
+description: Bug-first entrypoint. Triage a bug quickly, then either fix it directly or route to the spec-driven path.
 argument-hint: <bug description, error message, or failing behavior>
 ---
 
@@ -18,9 +18,9 @@ argument-hint: <bug description, error message, or failing behavior>
 
 Use bug language, not session language.
 
-`sf-fix` is the bug-oriented alias that decides whether the issue should:
-- go through a direct local fix path, or
-- go through spec-first path before implementation.
+`sf-fix` is the bug-oriented entrypoint that decides whether the issue should:
+- be fixed directly now, or
+- go through a spec-first path before implementation.
 
 ### Routing rule
 
@@ -50,15 +50,17 @@ Collect only what is needed:
 
 Read only the 3-5 most relevant files and classify the bug as `direct` or `spec-first`.
 
-### Step 3 — Choose the path
+### Step 3 — Choose the path and execute
 
 If `direct`:
-- run the same startup behavior as `sf-start` for this bug task
+- implement the fix directly
+- keep scope local to the classified delta
 - mark task `in progress` in TASKS tracking
-- produce a short execution plan
+- run relevant checks for the changed area
+- run `sf-verify` logic after the fix to confirm closure
 
 If `spec-first`:
-- do not start coding
+- do not code yet
 - explicitly route to:
   1. `/sf-spec [bug title]`
   2. `/sf-ready [bug title or spec path]`
@@ -73,6 +75,7 @@ Output:
 
 Classification: [direct / spec-first]
 Reason: [short rationale]
+Action taken: [fixed directly / routed]
 
 Next step:
 - [exact command to run]
@@ -86,3 +89,4 @@ Scope estimate: [small / medium / large]
 - Prefer spec-first when ambiguity could create rework
 - Never hide uncertainty; route early instead
 - Keep triage short and actionable
+- If direct-fix verification fails or reveals broader ambiguity, reroute to spec-first

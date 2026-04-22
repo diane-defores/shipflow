@@ -7,7 +7,7 @@ ShipFlow V3 shifts iteration upstream.
 Bug intake entrypoint:
 
 ```text
-sf-fix -> route to direct path or spec-first path
+sf-fix -> fix directly or route to spec-first path
 ```
 
 For non-trivial work, the default flow is:
@@ -40,11 +40,11 @@ The goal is not to remove iteration. The goal is to move ambiguity reduction bef
 Use `sf-fix` when your intent is "fix a bug" rather than "start a session."
 
 It performs a short triage and routes the bug:
-- local and clear -> direct fix path
+- local and clear -> direct fix now
 - ambiguous or non-trivial -> spec-first path
 
 Typical routed outcomes:
-- direct: `sf-start -> implementation -> sf-verify -> sf-end`
+- direct: `sf-fix -> implementation -> sf-verify -> sf-end`
 - spec-first: `sf-spec -> sf-ready -> sf-start -> implementation -> sf-verify -> sf-end`
 
 ### 1. `sf-explore`
@@ -224,7 +224,7 @@ Shortcut rules:
 ### Small local bug fix
 
 ```text
-sf-fix -> sf-start -> implementation -> sf-verify -> sf-end
+sf-fix -> implementation -> sf-verify -> sf-end
 ```
 
 ### New feature with ambiguity
