@@ -69,6 +69,24 @@ ShipFlow work artifacts are produced to run and govern the work. They include:
 
 ShipFlow artifacts use a standard YAML frontmatter schema. This makes them searchable, auditable, and safe to pass between skills.
 
+Skill-aligned artifact templates live in `templates/artifacts/`. They should encode the structures expected by the active skills (`sf-spec`, `sf-ready`, `sf-verify`, `sf-review`, `sf-research`) instead of replacing those conventions. The current templates cover:
+
+- `spec`
+- `business_context`
+- `brand_context`
+- `audit_report`
+- `verification_report`
+- `readiness_report`
+- `decision_record`
+
+Validate metadata with:
+
+```bash
+tools/shipflow_metadata_lint.py
+```
+
+The linter is intentionally dependency-free. It checks the default ShipFlow artifact locations (`specs/`, `docs/`, `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`) and can also receive explicit files or folders.
+
 Minimum metadata:
 
 ```yaml

@@ -1,3 +1,30 @@
+---
+artifact: spec
+metadata_schema_version: "1.0"
+artifact_version: "1.0.0"
+project: ShipFlow
+created: "2026-04-25"
+updated: "2026-04-25"
+status: reviewed
+source_skill: sf-spec
+scope: install
+owner: Diane
+user_story: "En tant qu'utilisateur ShipFlow sur Codex CLI, je veux voir le nom de conversation et l'état du contexte directement dans l'interface, afin de garder le bon fil de travail et d'anticiper la compaction sans quitter mon flux."
+confidence: medium
+risk_level: medium
+security_impact: none
+docs_impact: yes
+linked_systems:
+  - install.sh
+  - README.md
+  - CHANGELOG.md
+depends_on: []
+supersedes: []
+evidence:
+  - "Spec migrated after implementation during ShipFlow metadata adoption"
+next_step: "/sf-verify Codex TUI defaults"
+---
+
 Title
 Codex TUI: afficher le nom de conversation et le contexte dans ShipFlow
 

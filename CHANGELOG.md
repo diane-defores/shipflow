@@ -1,5 +1,16 @@
 # ShipFlow Changelog
 
+## [Unreleased]
+
+### Added
+- Dependency-free ShipFlow metadata linter for specs and project decision-contract documents
+- Skill-aligned artifact templates for specs, business context, brand context, audits, verification, readiness, review, research, and decision records
+- `sf-resume` — fast current-thread recap skill with task status bullets, close/keep-open verdict, and one critical reminder
+
+### Changed
+- Existing Codex TUI spec migrated to the ShipFlow metadata frontmatter schema
+- Workflow documentation now links metadata doctrine to executable templates and linting
+
 ## [2026-04-25] - Contract metadata versioning across skills
 
 ### Added

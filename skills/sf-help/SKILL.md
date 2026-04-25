@@ -23,6 +23,7 @@ Quick reference for the skill system, modes, and workflows.
 | `/sf-priorities` | Re-rank by impact/effort matrix | `impact`, `effort`, `blockers`, `quick-wins` |
 | `/sf-backlog` | Capture ideas, defer non-urgent | `add "idea"`, `defer`, `review`, `clean` |
 | `/sf-review` | Session summary, update docs | `daily`, `weekly`, `sprint`, `release` |
+| `/sf-resume` | Ultra-fast current-thread recap and close/keep-open verdict | `court`, `ultra-court` |
 
 ### Audit (8 domains)
 
