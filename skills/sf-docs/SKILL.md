@@ -100,6 +100,11 @@ Operational tracking files are explicitly excluded from mandatory metadata front
 
 They are trackers/registries, not decision contracts. Do not add frontmatter to them during docs audit/update. If a tracker contains a durable decision, spec, business rule, or research conclusion, extract that content into a dedicated ShipFlow artifact with metadata and leave the tracker entry as a pointer or task.
 
+Location rule:
+- `shipflow_data` hosts tracking and registry files, not the canonical copy of per-project decision documents.
+- `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, specs, research, and decision records should live in the project repository they govern.
+- During docs audit/update, do not "centralize" project decision docs into `shipflow_data` unless the user explicitly wants an inventory or backup copy. Prefer updating the in-repo source of truth.
+
 When adopting ShipFlow in an existing project, migrate old ShipFlow docs without metadata by adding the standard frontmatter. Preserve the body and only infer fields that are evident; use `unknown` or `medium|low` confidence instead of inventing proof.
 
 ---
@@ -363,7 +368,7 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
    - Version sync : les dépendances référencées existent-elles encore avec la version attendue ? Les specs/reviews/audits qui dépendent d'une ancienne version doivent-ils être marqués à rechecker ?
    - Si incohérence trouvée : proposer la correction avec **AskUserQuestion** "Le BUSINESS.md mentionne [X] mais le code montre [Y]. Je mets à jour ?"
 
-   Stocker les fichiers dans `~/shipflow_data/projects/[name]/` et symlinker si pas déjà fait.
+   Stocker les fichiers directement dans le repo du projet. `shipflow_data` peut référencer l'existence de ces contrats, mais ne doit pas en devenir la copie canonique par défaut.
 
 3. **Classer les problèmes techniques par priorité :**
    - **P0** : drift dangereux (doc qui induit en erreur — mauvaises commandes, fonctions supprimées)

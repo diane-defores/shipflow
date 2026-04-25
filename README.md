@@ -193,6 +193,11 @@ For internal ShipFlow files, this schema is mandatory: specs, reviews, audit rep
 
 Operational tracking files are intentionally excluded from the mandatory artifact schema: `TASKS.md`, `AUDIT_LOG.md`, and `PROJECTS.md` are trackers/registries, not decision contracts. Keep them fast to edit. If a task entry contains a durable decision, spec, or business rule, extract that durable content into a dedicated artifact with metadata instead of adding frontmatter to the tracker itself.
 
+Location rule:
+- `shipflow_data` is the control plane for shared tracking and registry files.
+- Each project repository is the canonical home for its own `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, specs, research, and decision records.
+- Do not duplicate or symlink project decision-contract documents into `shipflow_data` by default. `shipflow_data` may reference that the contracts exist, but should not host the canonical copy of per-project business or technical documentation.
+
 Application runtime content keeps the schema required by the application. Blog posts, Astro content collections, MDX pages, and app-rendered docs must keep their framework-compatible frontmatter. ShipFlow can enrich compatible fields, but it must not break the app parser.
 
 ### Business documentation is technical documentation

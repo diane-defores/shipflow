@@ -168,6 +168,7 @@ Run any skill from `~/` (no project markers) and it asks **"Which project(s)?"**
 - Do not hide uncertainty. If proof is partial, metadata should say `confidence: medium|low`, `status: draft|partial|reviewed`, or `risk_level: medium|high`.
 - Application content keeps its project schema. This includes `src/content/**`, blog posts, SEO pages, framework docs, MDX content, and any file parsed by the app runtime.
 - Existing ShipFlow artifacts without metadata should be migrated to the standard schema during adoption or the next time the relevant skill touches them.
+- `shipflow_data` is the control plane for trackers and registry files. Per-project business, brand, guideline, spec, research, and decision docs should live in the project repo, not in `shipflow_data`.
 
 ### Honest closure and shipping
 - `sf-end`, `sf-review`, and `sf-ship` must distinguish "work tracked and summarized" from "product actually validated".

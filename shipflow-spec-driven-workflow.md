@@ -105,6 +105,13 @@ Operational tracking files are not ShipFlow decision artifacts and do not requir
 
 Do not migrate those files just to satisfy the artifact schema. If they contain durable decisions, extract those decisions into separate versioned artifacts and leave the tracker readable.
 
+Location rule:
+
+- `shipflow_data` is the control plane for cross-project tracking (`TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`).
+- Per-project decision artifacts belong in the project repository that they govern.
+- `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, specs, research, and decision records should be edited and versioned in the repo they affect, not duplicated into `shipflow_data`.
+- If `shipflow_data` needs visibility, add a reference or inventory entry, not a second canonical copy.
+
 Skill-aligned artifact templates live in `templates/artifacts/`. They should encode the structures expected by the active skills (`sf-spec`, `sf-ready`, `sf-verify`, `sf-review`, `sf-research`) instead of replacing those conventions. The current templates cover:
 
 - `spec`

@@ -161,9 +161,11 @@ Before editing `/home/claude/shipflow_data/PROJECTS.md` here, or `/home/claude/s
 
 ### Step 5: Generate business & brand context files
 
-Créer les fichiers de contexte business/marque dans le dossier `~/shipflow_data/projects/[name]/`. Ces fichiers vivent hors du repo git (données personnelles) et sont symlinkés dans le projet, comme TASKS.md.
+Créer les fichiers de contexte business/marque directement dans le repo du projet. Ces documents sont des contrats de décision du projet et leur source canonique doit rester au plus près du code, des specs et de la documentation qu'ils gouvernent.
 
-**Pour chaque fichier** : vérifier d'abord s'il existe déjà (fichier ou symlink) dans le projet. Si oui, sauter.
+`shipflow_data` reste réservé au tracking partagé (`TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`). Ne pas y déplacer `BUSINESS.md`, `BRANDING.md` ou `GUIDELINES.md` par défaut.
+
+**Pour chaque fichier** : vérifier d'abord s'il existe déjà dans le projet. Si oui, sauter.
 
 BUSINESS.md, BRANDING.md et GUIDELINES.md sont des artefacts ShipFlow, pas de simples notes. Ils doivent commencer par un frontmatter YAML ShipFlow avec `metadata_schema_version`, `artifact_version`, `status`, `confidence`, `risk_level`, `evidence`, `next_review`, `depends_on` et `supersedes`. À l'initialisation, utiliser `metadata_schema_version: "1.0"` et `artifact_version: "0.1.0"` tant que le contenu n'a pas été revu explicitement par l'utilisateur; passer à `artifact_version: "1.0.0"` seulement si les réponses utilisateur couvrent les décisions essentielles sans placeholder.
 
@@ -173,7 +175,7 @@ Utiliser **AskUserQuestion** pour recueillir le contexte business :
 - Question : "Décris ton projet en une phrase — qu'est-ce que ça fait et pour qui ?"
 - (texte libre via "Other")
 
-Puis générer `~/shipflow_data/projects/[name]/BUSINESS.md` et symlinker :
+Puis générer `[project_dir]/BUSINESS.md` :
 
 ```markdown
 ---
@@ -236,7 +238,7 @@ Utiliser **AskUserQuestion** :
   - **Décontracté & fun** — "Familier, emojis OK, humour"
   - **Technique & précis** — "Documentation style, pas de fluff"
 
-Puis générer `~/shipflow_data/projects/[name]/BRANDING.md` et symlinker :
+Puis générer `[project_dir]/BRANDING.md` :
 
 ```markdown
 ---
@@ -293,7 +295,7 @@ next_step: "/sf-docs update"
 
 Générer automatiquement depuis ce qui a été détecté en Step 1 + CLAUDE.md. Pas de question à l'utilisateur — c'est technique.
 
-`~/shipflow_data/projects/[name]/GUIDELINES.md` :
+`[project_dir]/GUIDELINES.md` :
 
 ```markdown
 ---
@@ -339,15 +341,6 @@ next_step: "/sf-docs audit"
 
 ## Outils et services
 [Auth, payments, analytics, CMS, hosting — détectés en Step 1]
-```
-
-#### Symlinks
-
-Pour chaque fichier créé :
-```bash
-ln -s ~/shipflow_data/projects/[name]/BUSINESS.md [project_dir]/BUSINESS.md
-ln -s ~/shipflow_data/projects/[name]/BRANDING.md [project_dir]/BRANDING.md
-ln -s ~/shipflow_data/projects/[name]/GUIDELINES.md [project_dir]/GUIDELINES.md
 ```
 
 ### Step 6: Create CHANGELOG.md + update master TASKS.md
