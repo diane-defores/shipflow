@@ -1,3 +1,31 @@
+---
+artifact: technical_guidelines
+metadata_schema_version: "1.0"
+artifact_version: "0.1.0"
+project: ShipFlow
+created: "2026-01-13"
+updated: "2026-03-11"
+status: draft
+source_skill: unknown
+scope: ports-pm2-ecosystem
+owner: unknown
+confidence: medium
+risk_level: medium
+security_impact: unknown
+docs_impact: yes
+linked_systems:
+  - lib.sh
+  - ecosystem.config.cjs
+  - local/dev-tunnel.sh
+depends_on: []
+supersedes: []
+evidence:
+  - "Document title and body describe ShipFlow automatic port allocation and PM2 ecosystem behavior"
+  - "Git history shows creation on 2026-01-13 and latest tracked update on 2026-03-11"
+next_review: "unknown"
+next_step: "/sf-docs audit ECOSYSTEM-AND-PORTS.md"
+---
+
 # 🔌 Gestion automatique des ports et ecosystem PM2
 
 ## 📋 Vue d'ensemble

@@ -1,3 +1,31 @@
+---
+artifact: technical_guidelines
+metadata_schema_version: "1.0"
+artifact_version: "0.1.0"
+project: ShipFlow
+created: "2026-04-22"
+updated: "2026-04-25"
+status: draft
+source_skill: unknown
+scope: spec-driven-workflow
+owner: unknown
+confidence: medium
+risk_level: medium
+security_impact: unknown
+docs_impact: yes
+linked_systems:
+  - skills/
+  - templates/artifacts/
+  - tools/shipflow_metadata_lint.py
+depends_on: []
+supersedes: []
+evidence:
+  - "Document title and body define ShipFlow V3 workflow doctrine and artifact metadata rules"
+  - "Git history shows creation on 2026-04-22 and latest tracked update on 2026-04-25"
+next_review: "unknown"
+next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
+---
+
 # ShipFlow V3: Spec-Driven Workflow
 
 ## Summary
@@ -69,6 +97,14 @@ ShipFlow work artifacts are produced to run and govern the work. They include:
 
 ShipFlow artifacts use a standard YAML frontmatter schema. This makes them searchable, auditable, and safe to pass between skills.
 
+Operational tracking files are not ShipFlow decision artifacts and do not require metadata frontmatter:
+
+- `TASKS.md` tracks active work and backlog items.
+- `AUDIT_LOG.md` tracks audit history.
+- `PROJECTS.md` tracks project registry and domain applicability.
+
+Do not migrate those files just to satisfy the artifact schema. If they contain durable decisions, extract those decisions into separate versioned artifacts and leave the tracker readable.
+
 Skill-aligned artifact templates live in `templates/artifacts/`. They should encode the structures expected by the active skills (`sf-spec`, `sf-ready`, `sf-verify`, `sf-review`, `sf-research`) instead of replacing those conventions. The current templates cover:
 
 - `spec`
@@ -77,6 +113,8 @@ Skill-aligned artifact templates live in `templates/artifacts/`. They should enc
 - `audit_report`
 - `verification_report`
 - `readiness_report`
+- `review_report`
+- `research_report`
 - `decision_record`
 
 Validate metadata with:
