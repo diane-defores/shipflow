@@ -376,6 +376,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 Always configure the Shipflow codebase MCP server and Context7 MCP for this project by writing (or updating) `.claude/settings.json`.
 
+If Clerk is detected in the project, propose adding the Clerk MCP and configure it when the user accepts.
+Detection signals:
+- `@clerk/*` in `package.json`
+- source-level Clerk integration such as `clerkMiddleware`, `ClerkProvider`, or `@clerk/*` imports
+
 If Convex is detected in the project, propose adding the Convex MCP and configure it when the user accepts.
 Detection signals:
 - `convex/` directory
@@ -407,6 +412,14 @@ Base config:
 }
 ```
 
+If Clerk is accepted, add:
+
+```json
+"clerk": {
+  "url": "https://mcp.clerk.com/mcp"
+}
+```
+
 If Convex is accepted, add:
 
 ```json
@@ -427,10 +440,16 @@ If Vercel is accepted, add:
 - Replace `[ABSOLUTE_PROJECT_PATH]` with the actual absolute path of the project.
 - If `.claude/settings.json` already exists and has `mcpServers`, merge the base keys plus accepted detected integrations without overwriting other entries.
 - Always add `codebase` to `disabledMcpServers` so the MCP is installed but inactive by default.
+- Do not add `clerk` to `disabledMcpServers` by default when it is enabled for the project.
 - Do not add `context7` to `disabledMcpServers` by default. Context7 should be available for current official docs, but only consumes model context when a tool call retrieves documentation.
 - Do not add `convex` or `vercel` to `disabledMcpServers` by default when they are enabled for the project.
 - Create `.claude/` directory if needed.
 - Skip silently if `/home/claude/shipflow/tools/codebase-mcp/server.py` doesn't exist.
+
+Operational guidance:
+- Clerk MCP is for current SDK snippets and implementation patterns, not live auth-state inspection.
+- Clerk CLI is for diagnostics and config operations such as `clerk doctor`, `clerk env pull`, `clerk config pull`, `clerk config patch`, and `clerk api`.
+- For real auth-flow proof, use browser automation such as Playwright.
 
 Also append the codebase-mcp usage protocol to the generated `CLAUDE.md` (after the Commands section):
 

@@ -32,8 +32,11 @@ Le but n'est pas de "faire passer Playwright à tout prix".
 Le but est de localiser précisément le point de rupture et de produire un diagnostic exploitable par la suite du workflow.
 
 Références locales à charger selon le contexte:
+- `references/clerk-tooling.md` pour choisir entre Clerk MCP, Clerk CLI et Playwright selon le type de bug
 - `references/clerk.md` pour Clerk, Next.js, middleware, redirects, sessions, Google social connection via Clerk
+- `references/vercel-tooling.md` pour choisir entre Vercel MCP et Vercel CLI sur les sujets de déploiement, logs et runtime
 - `references/google-oauth.md` pour les règles OAuth Google, redirect URI, state, consent screen, limites d'automatisation
+- `references/convex-tooling.md` pour choisir entre Convex MCP, Convex CLI et sync de config d'auth
 - `references/convex-clerk.md` pour les apps qui propagent l'identité Clerk vers Convex
 - `references/playwright-auth.md` pour la méthode de preuve navigateur, les stratégies de session et les règles de secret hygiene
 - `references/astro-clerk.md` pour les sites Astro avec `@clerk/astro`, SSR, middleware et Account Portal
@@ -119,8 +122,10 @@ Lire seulement les fichiers les plus pertinents avant d'agir:
 - pages ou composants du flow cassé
 
 Charger les références locales pertinentes avant de conclure:
-- Clerk ou `@clerk/*` détecté -> lire `references/clerk.md`
+- Clerk ou `@clerk/*` détecté -> lire `references/clerk-tooling.md` puis `references/clerk.md`
+- Vercel ou problème de runtime/deploy/logs détecté -> lire `references/vercel-tooling.md`
 - Google OAuth direct ou social login Google -> lire `references/google-oauth.md`
+- Convex détecté -> lire `references/convex-tooling.md`
 - Convex avec Clerk ou session backend Convex -> lire `references/convex-clerk.md`
 - Diagnostic Playwright, session persistée, preuve navigateur ou auth automatisée -> lire `references/playwright-auth.md`
 - Astro ou `@clerk/astro` détecté -> lire `references/astro-clerk.md`

@@ -4615,8 +4615,22 @@ CHANGELOG_EOF
     fi
 
     # Detect project-scoped MCP integrations from explicit project signals.
+    local enable_clerk_mcp=0
     local enable_vercel_mcp=0
     local enable_convex_mcp=0
+    if [ -f "$project_dir/package.json" ] && grep -Eq '"@clerk/[^"]+"' "$project_dir/package.json" 2>/dev/null; then
+        enable_clerk_mcp=1
+    elif grep -RIsE \
+        --exclude-dir=node_modules \
+        --exclude-dir=.git \
+        --exclude-dir=.next \
+        --exclude-dir=dist \
+        --exclude-dir=build \
+        --exclude-dir=.vercel \
+        'clerkMiddleware|ClerkProvider|@clerk/' \
+        "$project_dir" >/dev/null 2>&1; then
+        enable_clerk_mcp=1
+    fi
     if [ -f "$project_dir/vercel.json" ] || [ -f "$project_dir/.vercel/project.json" ]; then
         enable_vercel_mcp=1
     elif [ -f "$project_dir/package.json" ] && grep -Eq '"(@vercel/[^"]+|vercel)"' "$project_dir/package.json" 2>/dev/null; then
@@ -4628,8 +4642,10 @@ CHANGELOG_EOF
         enable_convex_mcp=1
     fi
 
+    local clerk_block=""
     local vercel_block=""
     local convex_block=""
+    [ "$enable_clerk_mcp" -eq 1 ] && clerk_block=$',\n    "clerk": {\n      "url": "https://mcp.clerk.com/mcp"\n    }'
     [ "$enable_vercel_mcp" -eq 1 ] && vercel_block=$',\n    "vercel": {\n      "url": "https://mcp.vercel.com"\n    }'
     [ "$enable_convex_mcp" -eq 1 ] && convex_block=$',\n    "convex": {\n      "command": "npx",\n      "args": ["-y", "convex@latest", "mcp", "start"]\n    }'
 
@@ -4652,7 +4668,7 @@ CHANGELOG_EOF
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
-    }${vercel_block}${convex_block}
+    }${clerk_block}${vercel_block}${convex_block}
   },
   "disabledMcpServers": ["codebase"]
 }
@@ -4691,6 +4707,20 @@ cfg.setdefault('mcpServers', {})['context7'] = {
 print(json.dumps(cfg, indent=2))
 " > "$tmp_file" && mv "$tmp_file" "$settings_file"
             log INFO "Merged Context7 MCP into existing settings.json for $project_name"
+        fi
+        if [ "$enable_clerk_mcp" -eq 1 ] && ! grep -q '"clerk"' "$settings_file"; then
+            local tmp_file
+            tmp_file=$(mktemp)
+            python3 -c "
+import json, sys
+with open('$settings_file') as f:
+    cfg = json.load(f)
+cfg.setdefault('mcpServers', {})['clerk'] = {
+    'url': 'https://mcp.clerk.com/mcp'
+}
+print(json.dumps(cfg, indent=2))
+" > "$tmp_file" && mv "$tmp_file" "$settings_file"
+            log INFO "Merged Clerk MCP into existing settings.json for $project_name"
         fi
         if [ "$enable_vercel_mcp" -eq 1 ] && ! grep -q '"vercel"' "$settings_file"; then
             local tmp_file

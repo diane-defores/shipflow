@@ -96,14 +96,68 @@ fi
 
 echo ""
 
-# 3. Configurer PM2 pour démarrer au boot
+# 3. Installer les CLI Node globales utiles
+npm config set prefix /usr/local
+
+if command -v vercel >/dev/null 2>&1; then
+    success "Vercel CLI déjà installé: $(vercel --version 2>/dev/null | head -n1)"
+else
+    info "Installation de Vercel CLI..."
+    npm install -g vercel
+    hash -r 2>/dev/null
+
+    if command -v vercel >/dev/null 2>&1; then
+        success "Vercel CLI installé: $(vercel --version 2>/dev/null | head -n1)"
+    else
+        error "Échec de l'installation de Vercel CLI"
+        exit 1
+    fi
+fi
+
+echo ""
+
+if command -v convex >/dev/null 2>&1; then
+    success "Convex CLI déjà installé: $(convex --version 2>/dev/null | head -n1)"
+else
+    info "Installation de Convex CLI..."
+    npm install -g convex
+    hash -r 2>/dev/null
+
+    if command -v convex >/dev/null 2>&1; then
+        success "Convex CLI installé: $(convex --version 2>/dev/null | head -n1)"
+    else
+        error "Échec de l'installation de Convex CLI"
+        exit 1
+    fi
+fi
+
+echo ""
+
+if command -v clerk >/dev/null 2>&1; then
+    success "Clerk CLI déjà installé: $(clerk --version 2>/dev/null | head -n1)"
+else
+    info "Installation de Clerk CLI..."
+    npm install -g clerk
+    hash -r 2>/dev/null
+
+    if command -v clerk >/dev/null 2>&1; then
+        success "Clerk CLI installé: $(clerk --version 2>/dev/null | head -n1)"
+    else
+        error "Échec de l'installation de Clerk CLI"
+        exit 1
+    fi
+fi
+
+echo ""
+
+# 4. Configurer PM2 pour démarrer au boot
 info "Configuration de PM2 pour démarrage automatique..."
 pm2 startup systemd -u root --hp /root >/dev/null 2>&1
 success "PM2 configuré pour démarrer automatiquement"
 
 echo ""
 
-# 4. Installer Flox
+# 5. Installer Flox
 if command -v flox >/dev/null 2>&1; then
     FLOX_VERSION=$(flox --version 2>&1 | head -n1)
     success "Flox déjà installé: $FLOX_VERSION"
@@ -134,7 +188,7 @@ fi
 
 echo ""
 
-# 5. Installer les outils système nécessaires
+# 6. Installer les outils système nécessaires
 info "Vérification des outils système..."
 
 TOOLS_TO_CHECK=("git" "curl" "python3" "ss" "jq" "fuser")
@@ -172,7 +226,7 @@ fi
 
 echo ""
 
-# 6. Vérifier/Installer GitHub CLI
+# 7. Vérifier/Installer GitHub CLI
 if command -v gh >/dev/null 2>&1; then
     GH_VERSION=$(gh --version | head -n1)
     success "GitHub CLI déjà installé: $GH_VERSION"
@@ -207,7 +261,7 @@ fi
 
 echo ""
 
-# 7. Installer PyYAML pour la gestion des fichiers compose
+# 8. Installer PyYAML pour la gestion des fichiers compose
 info "Installation de PyYAML..."
 if python3 -c "import yaml" 2>/dev/null; then
     success "PyYAML déjà installé"
@@ -219,7 +273,7 @@ fi
 
 echo ""
 
-# 8. Installer Caddy (pour publication web)
+# 9. Installer Caddy (pour publication web)
 if command -v caddy >/dev/null 2>&1; then
     CADDY_VERSION=$(caddy version | head -n1)
     success "Caddy déjà installé: $CADDY_VERSION"
@@ -241,7 +295,7 @@ fi
 
 echo ""
 
-# 9. Créer le répertoire de configuration
+# 10. Créer le répertoire de configuration
 DOKPLOY_DIR="/etc/dokploy/compose"
 if [ ! -d "$DOKPLOY_DIR" ]; then
     info "Création du répertoire de configuration..."
@@ -324,6 +378,24 @@ configure_convex_mcp() {
             .mcpServers.convex = {
                 "command": "npx",
                 "args": ["-y", "convex@latest", "mcp", "start"]
+            }
+        ' "$settings_file" > "${settings_file}.tmp" \
+            && mv "${settings_file}.tmp" "$settings_file"
+    fi
+}
+
+# Clerk MCP — remote MCP for Clerk SDK patterns and implementation guides.
+configure_clerk_mcp() {
+    local target_home="$1"
+    local settings_file="$target_home/.claude/settings.json"
+    mkdir -p "$target_home/.claude"
+    if [ ! -f "$settings_file" ]; then
+        echo '{}' > "$settings_file"
+    fi
+    if command -v jq >/dev/null 2>&1; then
+        jq '
+            .mcpServers.clerk = {
+                "url": "https://mcp.clerk.com/mcp"
             }
         ' "$settings_file" > "${settings_file}.tmp" \
             && mv "${settings_file}.tmp" "$settings_file"
@@ -493,6 +565,117 @@ configure_codex_tui() {
     rm -f "$cleaned_file"
 }
 
+configure_codex_rmcp() {
+    local target_home="$1"
+    local codex_dir="$target_home/.codex"
+    local config_file="$codex_dir/config.toml"
+    local tmp_file="$config_file.tmp.$$"
+    local cleaned_file="$config_file.cleaned-rmcp.$$"
+
+    mkdir -p "$codex_dir"
+    [ -f "$config_file" ] || touch "$config_file"
+
+    awk '
+        BEGIN {
+            in_shipflow_block = 0
+        }
+        /^# >>> shipflow codex rmcp >>>$/ {
+            in_shipflow_block = 1
+            next
+        }
+        /^# <<< shipflow codex rmcp <<<$/ {
+            in_shipflow_block = 0
+            next
+        }
+        in_shipflow_block {
+            next
+        }
+        {
+            print
+        }
+    ' "$config_file" > "$cleaned_file"
+
+    local has_beta_table
+    local has_rmcp
+
+    has_beta_table=$(awk '
+        BEGIN { found = 0 }
+        /^\[[[:space:]]*beta[[:space:]]*\][[:space:]]*$/ { found = 1 }
+        END { print found }
+    ' "$cleaned_file")
+
+    has_rmcp=$(awk '
+        BEGIN {
+            in_beta = 0
+            found = 0
+        }
+        /^[[:space:]]*beta[[:space:]]*\.[[:space:]]*rmcp[[:space:]]*=/ {
+            found = 1
+        }
+        /^\[[[:space:]]*beta[[:space:]]*\][[:space:]]*$/ {
+            in_beta = 1
+            next
+        }
+        /^\[[^]]+\][[:space:]]*$/ {
+            in_beta = 0
+            next
+        }
+        in_beta && /^[[:space:]]*rmcp[[:space:]]*=/ {
+            found = 1
+        }
+        END { print found }
+    ' "$cleaned_file")
+
+    if [ "$has_rmcp" -eq 1 ]; then
+        cat "$cleaned_file" > "$tmp_file"
+    elif [ "$has_beta_table" -eq 1 ]; then
+        awk '
+            BEGIN {
+                in_beta = 0
+                inserted = 0
+            }
+            /^\[[[:space:]]*beta[[:space:]]*\][[:space:]]*$/ {
+                in_beta = 1
+                print
+                next
+            }
+            in_beta && /^\[[^]]+\][[:space:]]*$/ {
+                if (inserted == 0) {
+                    print "# >>> shipflow codex rmcp >>>"
+                    print "rmcp = true"
+                    print "# <<< shipflow codex rmcp <<<"
+                    inserted = 1
+                }
+                in_beta = 0
+                print
+                next
+            }
+            {
+                print
+            }
+            END {
+                if (in_beta == 1 && inserted == 0) {
+                    print "# >>> shipflow codex rmcp >>>"
+                    print "rmcp = true"
+                    print "# <<< shipflow codex rmcp <<<"
+                }
+            }
+        ' "$cleaned_file" > "$tmp_file"
+    else
+        {
+            printf '# >>> shipflow codex rmcp >>>\n'
+            printf '[beta]\n'
+            printf 'rmcp = true\n'
+            printf '# <<< shipflow codex rmcp <<<\n'
+            printf '\n'
+            cat "$cleaned_file"
+        } > "$tmp_file"
+    fi
+
+    mv "$tmp_file" "$config_file"
+    rm -f "$cleaned_file"
+}
+
 # Context7 MCP for Codex — stdio transport, enabled by default.
 configure_codex_context7_mcp() {
     local target_home="$1"
@@ -580,6 +763,36 @@ configure_codex_convex_mcp() {
         printf 'args = ["-y", "convex@latest", "mcp", "start"]\n'
         printf 'enabled = true\n'
         printf '# <<< shipflow codex convex mcp <<<\n'
+    } >> "$tmp_file"
+
+    mv "$tmp_file" "$config_file"
+}
+
+# Clerk MCP for Codex — remote HTTP transport, enabled by default.
+configure_codex_clerk_mcp() {
+    local target_home="$1"
+    local codex_dir="$target_home/.codex"
+    local config_file="$codex_dir/config.toml"
+    local tmp_file="$config_file.tmp.$$"
+
+    mkdir -p "$codex_dir"
+    [ -f "$config_file" ] || touch "$config_file"
+
+    awk '
+        /^# >>> shipflow codex clerk mcp >>>$/ { skip = 1; next }
+        /^# <<< shipflow codex clerk mcp <<</ { skip = 0; next }
+        /^\[mcp_servers\.clerk\]$/ { skip = 1; next }
+        /^\[/ && $0 !~ /^\[mcp_servers\.clerk\]$/ && skip == 1 { skip = 0 }
+        !skip { print }
+    ' "$config_file" > "$tmp_file"
+
+    {
+        printf '\n'
+        printf '# >>> shipflow codex clerk mcp >>>\n'
+        printf '[mcp_servers.clerk]\n'
+        printf 'url = "https://mcp.clerk.com/mcp"\n'
+        printf 'enabled = true\n'
+        printf '# <<< shipflow codex clerk mcp <<<\n'
     } >> "$tmp_file"
 
     mv "$tmp_file" "$config_file"
@@ -674,10 +887,13 @@ setup_user() {
     configure_context7_mcp "$user_home"
     configure_vercel_mcp "$user_home"
     configure_convex_mcp "$user_home"
+    configure_clerk_mcp "$user_home"
     configure_codex_tui "$user_home"
+    configure_codex_rmcp "$user_home"
     configure_codex_context7_mcp "$user_home"
     configure_codex_vercel_mcp "$user_home"
     configure_codex_convex_mcp "$user_home"
+    configure_codex_clerk_mcp "$user_home"
     configure_skills "$user_home"
     configure_aliases "$user_home"
     configure_data "$user_home"
@@ -726,6 +942,9 @@ echo ""
 echo -e "${BLUE}🎯 Résumé :${NC}"
 echo -e "  • Node.js: $(command -v node >/dev/null 2>&1 && echo '✅' || echo '❌')"
 echo -e "  • PM2: $(command -v pm2 >/dev/null 2>&1 && echo '✅' || echo '❌')"
+echo -e "  • Vercel CLI: $(command -v vercel >/dev/null 2>&1 && echo '✅' || echo '❌')"
+echo -e "  • Convex CLI: $(command -v convex >/dev/null 2>&1 && echo '✅' || echo '❌')"
+echo -e "  • Clerk CLI: $(command -v clerk >/dev/null 2>&1 && echo '✅' || echo '❌')"
 echo -e "  • Flox: $(command -v flox >/dev/null 2>&1 && echo '✅' || echo '⚠️ Installation manuelle requise')"
 echo -e "  • GitHub CLI: $(command -v gh >/dev/null 2>&1 && echo '✅' || echo '❌')"
 echo -e "  • Caddy: $(command -v caddy >/dev/null 2>&1 && echo '✅' || echo '⚠️ Installation manuelle requise')"

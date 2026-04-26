@@ -75,6 +75,13 @@ The install is idempotent and keeps user config outside the ShipFlow-managed blo
 It also provisions the default MCP set used by ShipFlow:
 - `context7` in `~/.claude/settings.json` and `~/.codex/config.toml`
 - `vercel` in `~/.claude/settings.json` and `~/.codex/config.toml`
+- `convex` in `~/.claude/settings.json` and `~/.codex/config.toml`
+- `clerk` in `~/.claude/settings.json` and `~/.codex/config.toml`
+
+ShipFlow also installs the terminal tooling commonly needed to operate those integrations:
+- `vercel`
+- `convex`
+- `clerk`
 
 If your Codex version does not expose one of these items (for example `thread`), adjust interactively in Codex:
 
