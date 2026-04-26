@@ -1,6 +1,6 @@
 ---
 name: sf-changelog
-description: "Auto-generate CHANGELOG.md from git history — Keep a Changelog format, grouped and categorized"
+description: "Args: since-tag, since-date, or all. Auto-generate CHANGELOG.md from git history — Keep a Changelog format, grouped and categorized"
 argument-hint: '[since-tag | since-date | "all"] (omit for since last entry)'
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: sf-design-playground
-description: "Scaffold a live design system playground page — visualizes all tokens (colors, fonts, sizes, spacings, motions) with real-time editing via sliders/pickers and 3 export modes (copy, save, file)"
+description: "Args: route-path. Scaffold a live design system playground page — visualizes all tokens (colors, fonts, sizes, spacings, motions) with real-time editing via sliders/pickers and 3 export modes (copy, save, file)"
 disable-model-invocation: true
 argument-hint: '[route-path] (default: /design-system)'
 ---

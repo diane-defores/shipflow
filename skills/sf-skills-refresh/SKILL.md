@@ -1,6 +1,6 @@
 ---
 name: sf-skills-refresh
-description: "Rafraîchir les skills avec l'état de l'art récent — recherche web en parallèle, puis applique les nouveautés (AEO/GEO, WCAG, CSS 2026, AI-slop, etc.) aux SKILL.md sans les réécrire"
+description: "Args: skill-name optional. Rafraîchir les skills avec l'état de l'art récent — recherche web en parallèle, puis applique les nouveautés (AEO/GEO, WCAG, CSS 2026, AI-slop, etc.) aux SKILL.md sans les réécrire"
 disable-model-invocation: true
 argument-hint: '[skill-name] (omit to pick multiple)'
 ---

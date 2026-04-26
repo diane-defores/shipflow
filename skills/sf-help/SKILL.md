@@ -1,6 +1,6 @@
 ---
 name: sf-help
-description: Cheatsheet for the full task tracking and audit system — skills, modes, prompts, workflows
+description: "Args: optional tasks/audit/workflows/prompts. Cheatsheet for the full task tracking and audit system — skills, modes, prompts, workflows"
 disable-model-invocation: true
 argument-hint: [optional: tasks, audit, workflows, prompts]
 ---

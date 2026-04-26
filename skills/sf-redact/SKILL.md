@@ -1,6 +1,6 @@
 ---
 name: sf-redact
-description: "Rédiger du contenu original long format — articles de blog, guides informationnels, éditoriaux — adapté à la marque, l'audience et la voix de l'auteur du projet"
+description: "Args: count, format, and optional subject. Rédiger du contenu original long format — articles de blog, guides informationnels, éditoriaux — adapté à la marque, l'audience et la voix de l'auteur du projet"
 disable-model-invocation: true
 argument-hint: '<nombre> <format> [sujet] (ex: "3 blog", "1 editorial IA en éducation", "2 informational")'
 ---

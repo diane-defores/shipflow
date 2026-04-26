@@ -1,6 +1,6 @@
 ---
 name: sf-docs
-description: Générer, auditer et harmoniser la documentation — README, API docs, component docs, audit de cohérence, migration frontmatter, ou fichier spécifique
+description: "Args: file-path, readme, api, components, audit, update, metadata, or migrate-frontmatter. Générer, auditer et harmoniser la documentation — README, API docs, component docs, audit de cohérence, migration frontmatter, ou fichier spécifique"
 disable-model-invocation: true
 argument-hint: [file-path | "readme" | "api" | "components" | "audit" | "update" | "metadata" | "migrate-frontmatter"]
 ---

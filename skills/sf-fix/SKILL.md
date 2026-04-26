@@ -1,6 +1,6 @@
 ---
 name: sf-fix
-description: Bug-first entrypoint. Triage a bug quickly, then either fix it directly or route to the spec-driven path.
+description: "Args: bug description, error message, or failing behavior. Bug-first entrypoint. Triage a bug quickly, then either fix it directly or route to the spec-driven path."
 argument-hint: <bug description, error message, or failing behavior>
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: sf-resume
-description: SF résume / SF resume — summarize the current conversation thread very quickly in 3 to 5 concise bullets, list task statuses, and say whether the user can safely close the conversation or what important context might be lost.
+description: "Args: optional: court | ultra-court. SF résume / SF resume — summarize the current conversation thread very quickly in 3 to 5 concise bullets, list task statuses, and say whether the user can safely close the conversation or what important context might be lost."
 disable-model-invocation: false
 argument-hint: [optional: court | ultra-court]
 ---

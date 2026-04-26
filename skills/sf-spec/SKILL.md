@@ -1,6 +1,6 @@
 ---
 name: sf-spec
-description: Créer une spécification technique prête à implémenter — par conversation, investigation du code, et documentation structurée. Ancre la solution dans une user story claire avant de coder.
+description: "Args: optional: description de ce qu'on veut construire. Créer une spécification technique prête à implémenter — par conversation, investigation du code, et documentation structurée. Ancre la solution dans une user story claire avant de coder."
 argument-hint: [optional: description de ce qu'on veut construire]
 ---
 

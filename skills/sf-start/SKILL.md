@@ -1,6 +1,6 @@
 ---
 name: sf-start
-description: Execute a task end-to-end from kickoff to implementation. Use spec-first guardrails when the scope is non-trivial.
+description: "Args: task description or TASKS.md item. Execute a task end-to-end from kickoff to implementation. Use spec-first guardrails when the scope is non-trivial."
 argument-hint: <task description or TASKS.md item>
 ---
 

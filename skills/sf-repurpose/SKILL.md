@@ -1,6 +1,6 @@
 ---
 name: sf-repurpose
-description: Repurpose either the current work conversation or user-supplied source content into faithful documentation, marketing content, release notes, FAQs, or content angles. Use when a paragraph, article, feature discussion, or source text should be transformed into reusable content without inventing beyond the source.
+description: "Args: optional focus or target surface. Repurpose either the current work conversation or user-supplied source content into faithful documentation, marketing content, release notes, FAQs, or content angles. Use when a paragraph, article, feature discussion, or source text should be transformed into reusable content without inventing beyond the source."
 argument-hint: [optional focus such as "doc", "marketing", "full", "release notes", "faq", "newsletter", or a target surface]
 ---
 

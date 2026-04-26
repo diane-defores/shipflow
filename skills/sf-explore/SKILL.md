@@ -1,6 +1,6 @@
 ---
 name: sf-explore
-description: Mode réflexion — explorer une idée, investiguer un problème, clarifier un besoin avant de coder. Interdit d'écrire du code.
+description: "Args: optional subject or question. Mode réflexion — explorer une idée, investiguer un problème, clarifier un besoin avant de coder. Interdit d'écrire du code."
 argument-hint: [optional: sujet ou question à explorer]
 ---
 

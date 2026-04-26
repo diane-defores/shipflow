@@ -1,6 +1,6 @@
 ---
 name: sf-end
-description: End a task — summarize what was done, mark task done in TASKS.md, update CHANGELOG.md. Does NOT commit or push. Use when finishing a task but not ready to ship.
+description: "Args: optional summary or notes. End a task — summarize what was done, mark task done in TASKS.md, update CHANGELOG.md. Does NOT commit or push. Use when finishing a task but not ready to ship."
 argument-hint: [optional summary or notes]
 ---
 

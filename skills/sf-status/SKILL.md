@@ -1,6 +1,6 @@
 ---
 name: sf-status
-description: Quick cross-project git dashboard — branches, uncommitted changes, sync status, last commits, with selectable view mode
+description: "Args: optional: all | issues | dirty. Quick cross-project git dashboard — branches, uncommitted changes, sync status, last commits, with selectable view mode"
 disable-model-invocation: true
 argument-hint: [optional: all | issues | dirty]
 ---

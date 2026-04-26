@@ -1,6 +1,6 @@
 ---
 name: sf-audit-copy
-description: "Professional copywriting review — single page (with argument) or full project audit (no argument)"
+description: "Args: file-path or \"global\"; omit for full project. Professional copywriting review — single page (with argument) or full project audit (no argument)"
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

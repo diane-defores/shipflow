@@ -1,6 +1,6 @@
 ---
 name: sf-init
-description: "Bootstrap a new project for ShipFlow tracking — detect stack, generate CLAUDE.md, create TASKS.md, register in PROJECTS.md"
+description: "Args: project path optional. Bootstrap a new project for ShipFlow tracking — detect stack, generate CLAUDE.md, create TASKS.md, register in PROJECTS.md"
 disable-model-invocation: true
 argument-hint: '[project-path] (omit to init current directory)'
 ---

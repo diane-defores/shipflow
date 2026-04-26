@@ -1,6 +1,6 @@
 ---
 name: sf-test
-description: Guided manual QA after implementation — prompts the user through concrete test steps, captures structured results, writes TEST_LOG.md, and opens BUGS.md entries when failures are found.
+description: "Args: optional: feature, flow, bug id, --retest BUG-ID, --prod, --preview, --local. Guided manual QA after implementation — prompts the user through concrete test steps, captures structured results, writes TEST_LOG.md, and opens BUGS.md entries when failures are found."
 argument-hint: [optional: feature, flow, bug id, --retest BUG-ID, --prod, --preview, --local]
 ---
 

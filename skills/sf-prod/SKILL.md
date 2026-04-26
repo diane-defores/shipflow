@@ -1,6 +1,6 @@
 ---
 name: sf-prod
-description: Vérifier que la prod fonctionne après un push — status du deploy, logs Vercel, health check de l'URL live
+description: "Args: optional project name or URL. Vérifier que la prod fonctionne après un push — status du deploy, logs Vercel, health check de l'URL live"
 argument-hint: [optional: project name or URL]
 ---
 

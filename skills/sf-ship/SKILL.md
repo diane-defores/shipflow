@@ -1,6 +1,6 @@
 ---
 name: sf-ship
-description: Ship changes quickly by default (commit + push). Run full session-closing flow only when explicitly requested.
+description: "Args: skip-check, all-dirty/ship-all/tout-dirty, end/fin/close task. Ship changes quickly by default (commit + push). Run full session-closing flow only when explicitly requested."
 argument-hint: [optional: commit message | "end la tache" for full close | skip-check | all-dirty]
 ---
 

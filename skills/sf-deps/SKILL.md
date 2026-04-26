@@ -1,6 +1,6 @@
 ---
 name: sf-deps
-description: "Deep dependency audit — vulnerabilities, outdated packages, unused deps, license compliance, type definitions, configuration health"
+description: "Args: global or omit. Deep dependency audit — vulnerabilities, outdated packages, unused deps, license compliance, type definitions, configuration health"
 disable-model-invocation: true
 argument-hint: '["global"] (omit for current project)'
 ---

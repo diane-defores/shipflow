@@ -1,6 +1,6 @@
 ---
 name: sf-check
-description: Run typecheck, lint, and build for the current project, then fix any errors found
+description: "Args: fix or nofix. Run typecheck, lint, and build for the current project, then fix any errors found"
 disable-model-invocation: true
 argument-hint: [fix|nofix]
 ---

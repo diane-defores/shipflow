@@ -1,6 +1,6 @@
 ---
 name: sf-audit
-description: "Master audit — launches all 8 domain audits (code, design, copy, seo, gtm, translate, deps, perf) in parallel agents. Works on a single file or the full project."
+description: "Args: file-path or \"global\"; omit for full project. Master audit — launches all 8 domain audits (code, design, copy, seo, gtm, translate, deps, perf) in parallel agents. Works on a single file or the full project."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

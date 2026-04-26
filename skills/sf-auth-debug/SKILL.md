@@ -1,6 +1,6 @@
 ---
 name: sf-auth-debug
-description: Diagnostiquer un bug d'authentification dans un navigateur réel avec Playwright MCP — Clerk, Supabase Auth, OAuth, Google login, cookies, callbacks, middleware, redirects, sessions.
+description: "Args: bug auth, URL, provider, or flow. Diagnostiquer un bug d'authentification dans un navigateur réel avec Playwright MCP — Clerk, Supabase Auth, OAuth, Google login, cookies, callbacks, middleware, redirects, sessions."
 argument-hint: <bug auth, URL, provider, ou flow à diagnostiquer>
 ---
 
