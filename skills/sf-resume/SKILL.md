@@ -14,8 +14,9 @@ Give the user a fast closure snapshot of the current conversation only.
 This skill is for users who feel lost across many chats and need to know:
 - what was done in this thread
 - what is still planned or in progress
+- whether some tasks mentioned earlier were quietly dropped, forgotten, or left implicit
 - whether they can close the conversation
-- what important context, idea, risk, or next step would be lost if they close it now
+- what important context, idea, risk, next step, or product angle would be lost if they close it now
 
 ## Speed Rules
 
@@ -48,7 +49,7 @@ Use this structure:
 
 **Statut**: Tu peux fermer / Garde ouvert / À vérifier avant de fermer.
 
-**À ne pas oublier**: point critique, idée business/projet/code, risque, décision ou prochaine action qui serait facile à perdre.
+**À ne pas oublier**: précise s'il reste un écart entre les tâches évoquées et les tâches réellement menées à terme, s'il y a un oubli concret probable, ou s'il existe une piste produit intéressante à creuser ensuite.
 ```
 
 ## Status Labels
@@ -67,13 +68,27 @@ Use:
 
 ## What Counts as "À ne pas oublier"
 
-Pick the single highest-value item from:
-- an unverified implementation
-- a file or command that still needs checking
-- an unresolved product/business decision
-- a next action the user explicitly cared about
-- a discovered risk, bug, dependency, or deployment issue
-- a useful idea that was mentioned but not captured elsewhere
+Use this line as a compact coverage check of the thread, not just as a generic reminder.
+
+It must answer, as directly as possible:
+- did we actually finish the tasks we said we would do in this conversation
+- is there a concrete discussed item that seems easy to forget
+- is there a promising product or strategy angle mentioned in passing that deserves later follow-up
+
+Prioritize in this order:
+- a mismatch between discussed tasks and completed tasks
+- a concrete forgotten follow-up, verification, decision, or deliverable
+- a high-value idea or product angle worth capturing for later
+- if none of the above exists, explicitly say that nothing important seems missing
+
+When relevant, name the gap plainly:
+- `On a parlé de X mais ce n'est pas fait.`
+- `Y a été commencé mais pas confirmé.`
+- `Aucun oubli concret repéré dans ce thread.`
+- `Piste à creuser plus tard: Z.`
+
+Do not invent hidden work. If the thread only shows discussion, mark it as not completed.
+Do not claim "rien à signaler" unless the thread actually looks closed and coherent.
 
 If there is nothing meaningful, say:
 
@@ -88,4 +103,5 @@ If there is nothing meaningful, say:
 - No generic recap.
 - No more than 5 task bullets.
 - If the thread has more than 5 tasks, merge related items and keep only the most important.
+- The "À ne pas oublier" line should be concrete, slightly adversarial, and optimized to catch omission rather than to sound polite.
 - If evidence is unclear, mark the item `À vérifier avant de fermer` in the status line rather than overstating completion.

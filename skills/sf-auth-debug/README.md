@@ -1,0 +1,58 @@
+# sf-auth-debug
+
+> Diagnose a broken authentication flow in a real browser with Playwright, then pinpoint the exact failure step instead of guessing from code alone.
+
+## What It Does
+
+`sf-auth-debug` is ShipFlow's browser-auth diagnosis skill. It consumes the existing bug report or spec, reproduces the auth flow with Playwright when possible, and isolates where the flow breaks across UI triggers, Clerk/OAuth configuration, redirects, middleware, cookies, sessions, and post-login app behavior.
+
+It is designed for cases where static code reading is not enough because the failure only becomes clear once the real browser flow runs.
+
+## Who It's For
+
+- Founders debugging login issues on their own apps
+- Developers working on Clerk, OAuth, Google login, or protected app flows
+- Teams that need reproducible browser-level evidence before fixing auth bugs
+
+## When To Use It
+
+- when login, callback, or session behavior is broken in the browser
+- when a Clerk or OAuth bug needs real-flow reproduction
+- when redirects, cookies, or middleware behavior look wrong
+- when a spec or bug report exists but the exact browser failure point is still unclear
+- after an auth fix to confirm the original break is actually gone
+
+## What You Give It
+
+- a bug description, spec, or failing auth flow
+- ideally the environment, URL, provider, expected behavior, and observed behavior
+- optionally existing repro steps or known error messages
+
+## What You Get Back
+
+- the exact failure point in the auth flow
+- browser-level evidence: URLs, page state, visible errors, and useful network/console signals
+- a primary diagnosis category tied to code or configuration
+- the next recommended fix or verification step
+
+## Typical Examples
+
+```bash
+/sf-auth-debug login with Google returns to sign-in page
+/sf-auth-debug Clerk callback fails on staging after Google auth
+/sf-auth-debug users authenticate but land on a blank dashboard
+```
+
+## Limits
+
+- It does not guarantee a fully automated Google login flow.
+- MFA, captcha, device approval, WebAuthn, and similar human-gated steps may block full automation.
+- It is a diagnostic skill, not a replacement for `sf-fix`, `sf-start`, or `sf-verify`.
+
+## Related Skills
+
+- `sf-fix` for quick bug triage and direct fixes
+- `sf-spec` when the auth bug still lacks a clear contract
+- `sf-start` to implement the chosen fix path
+- `sf-verify` to confirm the repaired auth flow is ready to ship
+- `sf-prod` if the issue only appears after deployment

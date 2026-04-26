@@ -1,7 +1,7 @@
 ---
 artifact: business_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: "shipflow"
 created: "2026-04-26"
 updated: "2026-04-26"
@@ -12,9 +12,9 @@ owner: "unknown"
 confidence: medium
 risk_level: medium
 business_model: "not defined yet; current hypothesis is a simple sales motion for solo founders with autonomy-first product and documentation"
-target_audience: "solo founders shipping server-hosted apps, websites, or software and relying on AI agents without wanting fragile handoffs"
-value_proposition: "unify server delivery operations and AI execution framing so solo founders lose less context, reduce ambiguity, and guide agents through explicit contracts"
-market: "solo founders and highly autonomous technical builders running simple product sales cycles"
+target_audience: "solo founders first, plus small technical teams shipping server-hosted apps, websites, or software and relying on AI agents without wanting fragile handoffs"
+value_proposition: "unify server delivery operations and AI execution framing so solo founders and small technical teams lose less context, reduce ambiguity, and guide agents through explicit contracts"
+market: "solo founders first, with adjacent fit for small technical teams and highly autonomous builders running simple product sales cycles"
 security_impact: yes
 docs_impact: yes
 evidence:
@@ -39,6 +39,7 @@ ShipFlow exists to help solo founders ship and operate software with AI agents w
 ## Audience
 
 - Solo founders shipping real products, not toy repos.
+- Small technical teams that want the same execution discipline without a heavy process layer.
 - Autonomous technical builders who publish and maintain apps, websites, or software on servers.
 - Users who already feel the pain of weak agent handoffs, repeated re-explanation, and context loss.
 
@@ -47,6 +48,7 @@ ShipFlow exists to help solo founders ship and operate software with AI agents w
 - ShipFlow combines server environment operations and AI delivery framing in one operating model.
 - The core value is not raw speed. The core value is less lost context, less ambiguity, and stronger handoffs between the founder and the agents.
 - ShipFlow helps solo founders launch, publish, and maintain software simply while also giving AI agents a clearer frame for execution.
+- The product narrative stays solo-founder-first, but the same operating model can work well for small teams that want more rigor without enterprise overhead.
 - It is a unified framework between AI delivery and server environment management, not two unrelated tools placed next to each other.
 
 ## Business Model
@@ -58,7 +60,7 @@ ShipFlow exists to help solo founders ship and operate software with AI agents w
 ## Market
 
 - Primary market assumption: solo founders who need autonomy, clarity, and a practical operating model for agent-assisted shipping.
-- Secondary market assumption: small technical teams may still fit later, but they are not the primary narrative to optimize for now.
+- Secondary market assumption: small technical teams are a legitimate adjacent fit, but they are not the primary narrative to optimize for now.
 - Current scope does not support broad beginner-market positioning; the product still reads as technical and operator-oriented.
 
 ## Evidence

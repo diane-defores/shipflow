@@ -1,7 +1,7 @@
 ---
 artifact: gtm_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: "shipflow"
 created: "2026-04-26"
 updated: "2026-04-26"
@@ -11,7 +11,7 @@ scope: gtm
 owner: "unknown"
 confidence: low
 risk_level: medium
-target_segment: "solo founders and autonomous technical builders evaluating a clearer way to ship with AI agents"
+target_segment: "solo founders first, with adjacent fit for small technical teams and autonomous technical builders evaluating a clearer way to ship with AI agents"
 offer: "a unified framework that combines server delivery operations, explicit task contracts, and verification-oriented agent workflows"
 channels: "documentation-first discovery, technical content, demos, founder education, and autonomy-oriented positioning"
 proof_points: "context routing docs, spec-first workflow, metadata contracts, linter, verification and audit skills, plus concrete server delivery tooling"
@@ -40,6 +40,7 @@ next_step: "/sf-docs audit GTM.md"
 ## Target Segment
 
 - Solo founders who already feel the pain of weak AI execution loops.
+- Small technical teams that want stronger delivery discipline without turning the workflow into a heavy process stack.
 - Autonomous technical users who want stronger delivery discipline rather than generic AI enthusiasm.
 
 ## Offer
@@ -47,6 +48,7 @@ next_step: "/sf-docs audit GTM.md"
 - ShipFlow should be presented as a unified framework for reliable AI-assisted software delivery and simple server operations.
 - The offer is stronger when framed around reduced ambiguity, explicit contracts, better verification, and stronger handoffs, not raw coding speed.
 - The first public story should stay simple: ShipFlow helps solo founders ship with agents without losing context.
+- Small teams should still be able to recognize themselves in the product, but as a secondary audience rather than the lead headline.
 
 ## Positioning
 
@@ -54,7 +56,7 @@ next_step: "/sf-docs audit GTM.md"
 - Not “just a server CLI with PM2 helpers”.
 - Not “just a methodology or a bundle of prompts for agents”.
 - Not a general-purpose PaaS or platform manager.
-- Best current positioning: a unified framework between AI delivery and server environment management for solo founders.
+- Best current positioning: a unified framework between AI delivery and server environment management for solo founders, with clear applicability to small technical teams.
 
 ## Channels
 

@@ -1,0 +1,131 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+import NavBar from "../../components/NavBar.astro";
+import SkillCard from "../../components/SkillCard.astro";
+
+const categoryOrder = [
+  "Core Workflow",
+  "Audits",
+  "Context & Docs",
+  "Research & Growth",
+  "Operations",
+  "Meta & Utility"
+] as const;
+
+const skills = (await getCollection("skills")).sort((a, b) => a.data.order - b.data.order);
+const featuredSkills = skills.filter((skill) => skill.data.featured);
+const groupedSkills = categoryOrder.map((category) => ({
+  category,
+  skills: skills.filter((skill) => skill.data.category === category)
+}));
+---
+
+<BaseLayout
+  title="ShipFlow Skills | Public workflow catalog"
+  description="Explore every ShipFlow skill, what problem it solves, and how it fits into a stronger solo-founder workflow."
+>
+  <main class="page-shell">
+    <NavBar />
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Skills Catalog</p>
+        <h1 class="page-title">A skill is a public workflow move, not just an internal prompt.</h1>
+        <p>
+          ShipFlow skills break the operating model into reusable actions:
+          triage a bug, shape a spec, verify readiness, audit a system, or
+          research a market before you waste build time. The point is not more
+          prompt cleverness. The point is fewer weak handoffs.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="cta-panel">
+        <p class="eyebrow">How To Read This</p>
+        <h2>Use the hub to find the right move for the problem in front of you.</h2>
+        <p>
+          Some skills help you frame work before code starts. Others audit
+          quality, sharpen documentation, or reduce wasted effort in research,
+          GTM, and operations. Start with the pain point, then follow the
+          related-skill links to see the full loop.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Featured Skills</p>
+        <h2>The core moves most founders will touch first.</h2>
+      </div>
+      <div class="skill-grid">
+        {
+          featuredSkills.map((skill) => (
+            <SkillCard
+              href={`/skills/${skill.slug}`}
+              title={skill.data.title}
+              category={skill.data.category}
+              tagline={skill.data.tagline}
+              summary={skill.data.summary}
+              relatedSkills={skill.data.related_skills}
+              featured={true}
+            />
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      groupedSkills.map(
+        ({ category, skills: categorySkills }) =>
+          categorySkills.length > 0 && (
+            <section class="section">
+              <div class="section-heading">
+                <p class="eyebrow">{category}</p>
+                <h2>{categorySkills.length} public pages in this category.</h2>
+                <p>
+                  Each page explains the operator problem, the practical output,
+                  and where that skill fits in a real founder workflow.
+                </p>
+              </div>
+              <div class="skill-grid">
+                {
+                  categorySkills.map((skill) => (
+                    <SkillCard
+                      href={`/skills/${skill.slug}`}
+                      title={skill.data.title}
+                      category={skill.data.category}
+                      tagline={skill.data.tagline}
+                      summary={skill.data.summary}
+                      relatedSkills={skill.data.related_skills}
+                    />
+                  ))
+                }
+              </div>
+            </section>
+          )
+      )
+    }
+
+    <section class="section">
+      <div class="docs-panel">
+        <div>
+          <p class="eyebrow">Need The Internal Contracts?</p>
+          <h2>The public skill pages explain the workflow. The docs explain the machinery behind it.</h2>
+          <p>
+            If you want the execution doctrine, not just the public outcome,
+            move next to the docs and the repository contracts.
+          </p>
+        </div>
+        <div class="docs-links">
+          <a class="docs-link" href="/docs">Documentation Overview</a>
+          <a class="docs-link" href="https://github.com/dianedef/ShipFlow/tree/main/skills">Skills on GitHub</a>
+          <a class="docs-link" href="https://github.com/dianedef/ShipFlow/blob/main/shipflow-spec-driven-workflow.md">Workflow Doctrine</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
