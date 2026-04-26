@@ -124,6 +124,59 @@ const decisionDocs = [
     </section>
 
     <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Tracking Discipline</p>
+        <h2>The master tracker is not the local backlog.</h2>
+        <p>
+          ShipFlow treats tracking layers explicitly. It distinguishes the
+          global multi-project tracker, the project section inside that master,
+          and the local `TASKS.md` of the repository itself. Those levels are
+          related, but they are not interchangeable.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>Three levels, three meanings</h3>
+          <p>
+            `/home/claude/shipflow_data/TASKS.md` is the master tracker for
+            multiple projects. A project section inside that file is still part
+            of the master view. `./TASKS.md` is the local operational tracker
+            for one repository.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Historical done work is not active backlog</h3>
+          <p>
+            If the master contains historical completed work, that history can
+            be imported as useful context. It should not be copied mechanically
+            into a new local backlog as if it were still active work.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>When a local TASKS.md is created later</h3>
+          <p>
+            ShipFlow re-reads the project history from the master, then
+            separates active backlog from historical completed context. The
+            local tracker should be cleaner and more project-shaped than the
+            master source it was derived from.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Precision in language matters</h3>
+          <p>
+            ShipFlow should not say “the tracker did not exist” without naming
+            which level it means: the master tracker, the project section inside
+            it, or the local `TASKS.md` file.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="cta-panel">
         <p class="eyebrow">Execution Logic</p>
         <h2>Use the docs as product contracts, not as passive notes.</h2>
