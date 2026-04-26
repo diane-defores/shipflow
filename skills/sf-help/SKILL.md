@@ -281,7 +281,7 @@ Provide explicit arguments and prompts don't appear:
 
 ### Choose execution model
 ```bash
-/sf-model specs/my-spec.md      # Recommend model + reasoning + fallbacks
+/sf-model specs/my-spec.md      # Recommend Codex/OpenAI or Claude model + fallbacks
 /sf-start specs/my-spec.md      # Reuses the same routing logic internally
 ```
 

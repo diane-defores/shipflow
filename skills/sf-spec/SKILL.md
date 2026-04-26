@@ -61,7 +61,7 @@ Les snapshots de `TASKS.md` lus ici sont informatifs seulement.
 - Chercher des docs existantes (CLAUDE.md, README, docs/)
 - Si l'utilisateur mentionne du code spécifique, scanner les fichiers concernés
 - Repérer le stack technique, les patterns, la structure du projet
-- Si la feature ou le bug dépend d'un framework, SDK, service, API, auth, build, migration, cache, routing ou intégration externe, appliquer `../references/documentation-freshness-gate.md` avant de figer l'approche.
+- Si la feature ou le bug dépend d'un framework, SDK, service, API, auth, build, migration, cache, routing ou intégration externe, appliquer `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` avant de figer l'approche.
 
 **Poser des questions informées** — pas des questions génériques, mais des questions ancrées dans ce qu'on a trouvé :
 - "Le `AuthService` valide dans le controller — on suit ce pattern ou on crée un validateur dédié ?"
@@ -255,7 +255,7 @@ Couvrir : promesse principale de la user story, `Success Behavior`, `Error Behav
 - **Risques** : points sensibles identifiés (sécurité, perf, données)
 - **Documentation Coherence** : docs, README, guides, FAQ, onboarding, pricing, changelog, exemples ou support à aligner, ou `None, because ...`
 - **Execution Notes** : 3-5 fichiers à lire d'abord, approche d'implémentation en étapes avant code, contraintes explicites (packages à utiliser/éviter, patterns existants, flux de données, abstractions à éviter, limites de scope), ordre d'exécution, commandes de validation, stop conditions / cas de reroute
-- **Fresh External Docs** : inclure dans `Dependencies` ou `Execution Notes` les docs officielles consultées quand `../references/documentation-freshness-gate.md` se déclenche, ou `fresh-docs not needed` si le changement est entièrement local
+- **Fresh External Docs** : inclure dans `Dependencies` ou `Execution Notes` les docs officielles consultées quand `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` se déclenche, ou `fresh-docs not needed` si le changement est entièrement local
 
 Quand le scope touche auth, permissions, données, intégrations, paiement, admin, contenu riche, prompts, fichiers, ou automatisations, exiger dans la spec :
 - hypothèses de confiance

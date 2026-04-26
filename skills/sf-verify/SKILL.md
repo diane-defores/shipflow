@@ -134,7 +134,7 @@ Vérifier que les artefacts ShipFlow utilisés pour implémenter le travail sont
 
 ### Step 3.5 — Vérifier la documentation officielle actuelle
 
-Appliquer `../references/documentation-freshness-gate.md` au travail vérifié.
+Appliquer `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` au travail vérifié.
 
 Si le diff, la spec ou la description dépend d'un framework, SDK, service, API, auth/session, build, migration, cache, routing ou intégration externe :
 - vérifier que la dépendance et sa version locale ont été identifiées quand c'est possible

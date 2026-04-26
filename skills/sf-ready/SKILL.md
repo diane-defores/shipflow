@@ -102,7 +102,7 @@ Contrôler :
 - `artifact: spec`, `metadata_schema_version`, `artifact_version`, `source_skill`, `created`, `updated`, `status`, `scope`, `risk_level`, `security_impact`, `docs_impact` sont renseignés
 - `depends_on` liste les versions des docs business/techniques utilisées par la spec, ou explicite `unknown` pendant migration
 - aucune dépendance business/technique utilisée par la spec n'est connue comme `stale` sans revue explicite
-- la Documentation Freshness Gate de `../references/documentation-freshness-gate.md` est satisfaite quand la spec dépend d'un framework, SDK, service, API, auth, build, migration ou intégration externe : source Context7 ou docs officielles actuelle nommée, version locale notée si disponible, et pas de `fresh-docs gap` non assumé
+- la Documentation Freshness Gate de `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` est satisfaite quand la spec dépend d'un framework, SDK, service, API, auth, build, migration ou intégration externe : source Context7 ou docs officielles actuelle nommée, version locale notée si disponible, et pas de `fresh-docs gap` non assumé
 - `Status` est `draft` ou `reviewed`, pas déjà `ready` sans vérification
 - aucun `TBD`, `TODO`, placeholder ou formulation vague critique
 - `Open Questions` est `None`

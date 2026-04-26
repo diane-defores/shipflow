@@ -73,7 +73,7 @@ Prefer decision-forcing questions such as:
 
 Read only the 3-5 most relevant files and classify the bug as `direct` or `spec-first`.
 
-Apply the shared Documentation Freshness Gate from `../references/documentation-freshness-gate.md` during triage when the bug may depend on current framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Local repo versions and patterns come first; Context7 official docs come next; official web docs are the fallback.
+Apply the shared Documentation Freshness Gate from `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` during triage when the bug may depend on current framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Local repo versions and patterns come first; Context7 official docs come next; official web docs are the fallback.
 
 During triage, verify four things before choosing `direct`:
 - **User story fit**: the expected fix is clearly tied to the promised user outcome

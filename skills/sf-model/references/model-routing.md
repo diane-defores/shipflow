@@ -1,58 +1,74 @@
 # ShipFlow Model Routing
 
-Vérifié contre les docs OpenAI le 2026-04-24.
+OpenAI latest-model guidance checked with the official OpenAI Docs MCP on 2026-04-26.
+Claude Code aliases checked against official Anthropic Claude Code model configuration docs on 2026-04-26.
 
-Cette référence doit rester courte. Si une question dépend du "latest", de la disponibilité exacte ou d'un changement récent, revalider contre la doc OpenAI officielle avant de répondre.
+This reference must stay short. If a question depends on "latest", exact availability, default model, pricing, or a recent change, revalidate against official provider docs before answering.
 
-## Short model map
+## Freshness sources
+
+- OpenAI: use `mcp__openaiDeveloperDocs__fetch_openai_doc` for `https://developers.openai.com/api/docs/guides/latest-model.md` before making latest/current/default model claims.
+- Claude Code: prefer aliases from Anthropic docs (`opusplan`, `opus`, `sonnet`, `sonnet[1m]`, `haiku`) instead of dated slugs unless the user asks for a full model name.
+- Never invent pricing, model availability, context windows, or provider-specific parameters.
+
+## Codex/OpenAI map
 
 - `gpt-5.5`
-  - modèle premium actuel pour tâches complexes, ambiguës ou à fort coût d'erreur
-  - disponible dans Codex avec contexte 400K
-  - plus cher par token que `gpt-5.4`, donc à réserver aux cas où la qualité prime
+  - premium current model for complex, ambiguous, tool-heavy, product-spec-to-plan, and high-error-cost work
+  - starts well at `medium` reasoning; use `high` or `xhigh` only when the task justifies latency/cost
 - `gpt-5.4`
-  - option premium équilibrée quand `gpt-5.5` serait surdimensionné
-  - bon choix pour architecture et arbitrages importants avec meilleur contrôle du coût
+  - premium balanced option when `gpt-5.5` is likely overkill or cost control matters
+  - good fit for bounded architecture and important tradeoffs
 - `gpt-5.4-mini`
-  - meilleur point d'entrée vitesse/coût/qualité pour petites et moyennes tâches
-  - bon choix pour triage, exploration, sous-tâches et itérations répétées
+  - speed/cost/quality entry point for small and medium tasks
+  - good for triage, exploration, sub-tasks, and repeated iterations
 - `gpt-5.3-codex`
-  - spécialisé coding agentique
-  - bon fit pour refacto, debugging long, sessions d'implémentation multi-fichiers, usage intensif des outils
+  - coding-agentic fit for refactors, hard debugging, multi-file implementation, terminal-heavy work
 - `gpt-5.3-codex-spark`
-  - à utiliser quand la vitesse locale prime, surtout pour deltas UI ou changements ciblés
+  - fastest local iteration path, especially for UI deltas or tightly scoped edits
 - `gpt-5.2`
-  - génération précédente
-  - à éviter par défaut, sauf continuité de comportement ou préférence utilisateur
+  - previous generation; avoid by default except continuity or explicit user preference
 
-## Routing matrix
+## Codex/OpenAI routing matrix
 
 | Situation | Primary | Reasoning | Fast fallback | Cheap fallback |
 | --- | --- | --- | --- | --- |
-| Spec ambiguë, arbitrage, architecture | `gpt-5.5` | `high` | `gpt-5.4` | `gpt-5.4-mini` |
-| Implémentation multi-fichiers, refacto, bug difficile | `gpt-5.3-codex` | `medium` ou `high` | `gpt-5.3-codex-spark` | `gpt-5.4-mini` |
-| Petite feature claire, fix local, triage | `gpt-5.4-mini` | `medium` | `gpt-5.3-codex-spark` | `gpt-5.4-mini` |
-| Itération UI ciblée | `gpt-5.3-codex-spark` | `low` ou `medium` | `gpt-5.4-mini` | `gpt-5.4-mini` |
-| Longue boucle agentique en terminal | `gpt-5.3-codex` | `medium` | `gpt-5.5` | `gpt-5.4-mini` |
-| Budget serré sur une dizaine de petits chantiers | `gpt-5.4-mini` | `low` ou `medium` | `gpt-5.3-codex-spark` | `gpt-5.4-mini` |
+| Ambiguous spec, architecture, high error cost | `gpt-5.5` | `high` | `gpt-5.4` | `gpt-5.4-mini` |
+| Bounded premium architecture or tradeoff | `gpt-5.4` | `medium` or `high` | `gpt-5.4-mini` | `gpt-5.4-mini` |
+| Multi-file implementation, refactor, hard bug | `gpt-5.3-codex` | `medium` or `high` | `gpt-5.3-codex-spark` | `gpt-5.4-mini` |
+| Small feature, local fix, triage | `gpt-5.4-mini` | `low` or `medium` | `gpt-5.3-codex-spark` | `gpt-5.4-mini` |
+| Targeted UI iteration | `gpt-5.3-codex-spark` | `low` or `medium` | `gpt-5.4-mini` | `gpt-5.4-mini` |
+| Long terminal-heavy agentic loop | `gpt-5.3-codex` | `medium` | `gpt-5.5` | `gpt-5.4-mini` |
+
+## Claude Code map
+
+- `opusplan`
+  - hybrid alias: Opus during Plan Mode, Sonnet during execution
+  - best default for difficult work that benefits from explicit planning before implementation
+- `opus`
+  - strongest Claude Code alias for complex reasoning, architecture, adversarial review, and high-error-cost decisions
+- `sonnet`
+  - balanced default for daily coding, implementation, debugging, and most ShipFlow execution loops
+- `sonnet[1m]`
+  - Sonnet with extended context for very long sessions or large codebase context
+  - use only when context length is the main constraint
+- `haiku`
+  - fast and efficient alias for simple tasks, triage, classification, and cheap side work
+
+## Claude Code routing matrix
+
+| Situation | Primary | Behavior | Fast fallback | Cheap fallback |
+| --- | --- | --- | --- | --- |
+| Plan-heavy architecture or ambiguous spec | `opusplan` | Opus for planning, Sonnet for execution | `sonnet` | `haiku` |
+| High-risk reasoning, review, security, product arbitration | `opus` | maximum reasoning quality | `opusplan` | `sonnet` |
+| Daily multi-file coding or debugging | `sonnet` | balanced execution | `haiku` for side tasks | `haiku` |
+| Very long Claude Code session/context | `sonnet[1m]` | extended context Sonnet | `sonnet` | `haiku` |
+| Small local fix, triage, classification | `haiku` | fastest/cheapest | `sonnet` | `haiku` |
 
 ## Default heuristics
 
-- Si tu hésites entre `gpt-5.5` et `gpt-5.3-codex` :
-  - prends `gpt-5.5` si le problème est surtout de comprendre, décider et limiter le risque d'erreur
-  - prends `gpt-5.3-codex` si le problème est surtout d'exécuter proprement dans le code
-- Si tu hésites entre `gpt-5.5` et `gpt-5.4` :
-  - prends `gpt-5.5` si l'erreur coûterait cher ou que le scope est très ambigu
-  - prends `gpt-5.4` si la tâche reste premium mais bornée, ou si le budget est contraint
-- Si tu hésites entre `gpt-5.4-mini` et un plus gros modèle :
-  - démarre avec `gpt-5.4-mini` si la tâche est réversible et bien bornée
-  - monte d'un cran seulement si tu observes de la dérive, des oublis ou des boucles inutiles
-- Si tu passes déjà par `sf-spec` puis `sf-ready` :
-  - la clarté du contrat réduit le besoin d'un gros modèle
-  - beaucoup de tâches deviennent de bons candidats pour `gpt-5.4-mini` ou `gpt-5.3-codex`
-
-## Cost notes (Codex)
-
-- D'après la rate card OpenAI (mise à jour 2026-04-23), `gpt-5.5` est environ 2x plus cher par token que `gpt-5.4`.
-- `gpt-5.5` peut néanmoins rester rentable sur des tâches difficiles si le nombre total de tentatives baisse.
-- En cas de doute coût/qualité, commencer par `gpt-5.4`, puis upgrader vers `gpt-5.5` seulement si la qualité n'est pas au niveau attendu.
+- If the task is simple, local, and reversible, use the runtime's fast model: `gpt-5.4-mini`/`gpt-5.3-codex-spark` in Codex, `haiku` or `sonnet` in Claude Code.
+- If the task is implementation-heavy, prefer `gpt-5.3-codex` in Codex and `sonnet` in Claude Code.
+- If the task is ambiguous or high-error-cost, prefer `gpt-5.5` in Codex and `opusplan` or `opus` in Claude Code.
+- If the user already ran `sf-spec` and `sf-ready`, the clearer contract usually reduces the need for the largest model.
+- If two choices are close, choose by latency, cost, agentic execution fit, and how costly a wrong decision would be.

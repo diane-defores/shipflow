@@ -73,7 +73,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
 
 ### Step 3 — Load context, derive execution contract, and track task (silent)
 
-- Read `../references/documentation-freshness-gate.md` when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Preserve the gate verdict in the execution contract.
+- Read `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Preserve the gate verdict in the execution contract.
 - Si la tâche est `spec-first`, préférer une exécution sur contexte frais :
   - lancer un subagent sans historique si c'est possible
   - sinon demander explicitement à l'utilisateur d'ouvrir un nouveau thread avant de continuer
@@ -133,18 +133,26 @@ If `spec-first` and no matching `Status: ready` spec exists:
 
 Choose the execution model before coding.
 
-Use `/home/claude/shipflow/skills/sf-model/references/model-routing.md` as the shared source of truth.
+Use `/home/claude/shipflow/skills/sf-model/references/model-routing.md` as the shared provider-aware source of truth.
 
 Pick:
+- `Runtime/provider` (`Codex/OpenAI` or `Claude Code`)
 - `Primary execution model`
-- `Reasoning effort`
+- `Reasoning effort` for Codex/OpenAI, or Claude Code alias behavior
 - optional `Per-group model overrides`
 
-Prefer simple defaults:
+Prefer simple Codex/OpenAI defaults:
 - `gpt-5.4-mini` for small, clear, local work
 - `gpt-5.3-codex` for long agentic implementation and multi-file coding work
 - `gpt-5.4` for ambiguity, architecture, or high error cost
 - `gpt-5.3-codex-spark` for highly local fast-iteration work, especially UI-focused deltas
+
+Prefer simple Claude Code defaults:
+- `haiku` for tiny triage, classification, and cheap side work
+- `sonnet` for daily coding, debugging, and balanced implementation
+- `opusplan` for plan-heavy tasks that should execute efficiently after planning
+- `opus` for high-risk reasoning, architecture, security, or adversarial review
+- `sonnet[1m]` only when extended context is the main constraint
 
 Only use per-group overrides when:
 - the task is materially non-trivial

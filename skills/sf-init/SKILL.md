@@ -374,7 +374,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Step 7: Configure MCP servers
 
-Always configure the Shipflow codebase MCP server and Context7 MCP for this project by writing (or updating) `.claude/settings.json`.
+Always configure the Shipflow codebase MCP server, Context7 MCP, and OpenAI Docs MCP for this project by writing (or updating) `.claude/settings.json`.
 
 If Clerk is detected in the project, propose adding the Clerk MCP and configure it when the user accepts.
 Detection signals:
@@ -406,6 +406,9 @@ Base config:
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "openaiDeveloperDocs": {
+      "url": "https://developers.openai.com/mcp"
     }
   },
   "disabledMcpServers": ["codebase"]
@@ -442,11 +445,13 @@ If Vercel is accepted, add:
 - Always add `codebase` to `disabledMcpServers` so the MCP is installed but inactive by default.
 - Do not add `clerk` to `disabledMcpServers` by default when it is enabled for the project.
 - Do not add `context7` to `disabledMcpServers` by default. Context7 should be available for current official docs, but only consumes model context when a tool call retrieves documentation.
+- Do not add `openaiDeveloperDocs` to `disabledMcpServers` by default. OpenAI Docs MCP should be available for current OpenAI product/API/model docs, but only consumes model context when a tool call retrieves documentation.
 - Do not add `convex` or `vercel` to `disabledMcpServers` by default when they are enabled for the project.
 - Create `.claude/` directory if needed.
 - Skip silently if `/home/claude/shipflow/tools/codebase-mcp/server.py` doesn't exist.
 
 Operational guidance:
+- OpenAI Docs MCP is the first source for current OpenAI API, Codex, model-selection, migration, and prompting guidance.
 - Clerk MCP is for current SDK snippets and implementation patterns, not live auth-state inspection.
 - Clerk CLI is for diagnostics and config operations such as `clerk doctor`, `clerk env pull`, `clerk config pull`, `clerk config patch`, and `clerk api`.
 - For real auth-flow proof, use browser automation such as Playwright.
