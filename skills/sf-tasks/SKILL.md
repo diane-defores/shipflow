@@ -35,6 +35,23 @@ argument-hint: [optional focus area or task type]
 - If it is still ambiguous after the second read, stop and ask the user instead of forcing the write.
 - If the file is still missing after that authoritative re-read, create it from the canonical format.
 
+## Tracker synchronization rules
+
+- Distinguish clearly between:
+  - the master tracker (`/home/claude/shipflow_data/TASKS.md`)
+  - a project section inside the master tracker
+  - the local `TASKS.md` file inside the current repo
+- The master tracker is the cross-project coordination source, not a direct substitute for a local `TASKS.md`.
+- The local `TASKS.md` should represent the active project backlog and may include a small `Historical completed work` section when older project work exists only in the master tracker.
+- Completed historical entries from the master tracker must not be copied into the local active backlog.
+- If a local `TASKS.md` is created after project work already exists in the master tracker, first audit the existing project entries in the master tracker, then split them into:
+  - active backlog
+  - historical completed context
+- Do not claim that a tracker "did not exist" without specifying whether you mean:
+  - the master tracker
+  - the project section in the master tracker
+  - the local `TASKS.md` file
+
 ## Your task
 
 Intelligently manage the TASKS.md file by:
@@ -73,6 +90,7 @@ If the current directory has no project markers (not inside a specific project) 
 
 4. **Update TASKS.md**:
    - **Always check if TASKS.md exists first.** If it does not exist, create it using the canonical ShipFlow format below — do NOT create a bare-minimum file.
+   - If project work already exists in the master tracker for this repo, import only the still-active items into the local active backlog. Historical `done` items may be copied into a short context section, but never into the active backlog.
    - If TASKS.md doesn't exist, create it with this exact structure (adapt section titles to the detected project):
      ```markdown
      # Tasks — [Project Name]
@@ -89,6 +107,16 @@ If the current directory has no project markers (not inside a specific project) 
      | 🔴 | [First blocking task identified from project state] | 📋 todo |
      | 🟠 | [High priority task] | 📋 todo |
      | 🟡 | [Normal priority task] | 📋 todo |
+
+     ---
+
+     ## Historical completed work
+
+     > Optional. Use only when older project work already exists in the master tracker and would otherwise be lost locally.
+
+     | Pri | Task | Status |
+     |-----|------|--------|
+     | ✅ | [Previously completed project task imported from master tracker] | ✅ done |
 
      ---
 

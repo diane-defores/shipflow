@@ -82,3 +82,11 @@ This file defines stable engineering and documentation rules for working inside 
 - `CONTEXT.md` maps the repo operationally.
 - Specialized context docs stay narrow.
 - Business, product, GTM, brand, architecture, and guidelines docs should each keep an exclusive role.
+
+## Tracker Boundaries
+
+- `/home/claude/shipflow_data/TASKS.md` is the master cross-project tracker.
+- `./TASKS.md` is the local repo tracker.
+- A project section inside the master tracker is not the same thing as a local `TASKS.md`.
+- Local trackers should stay cleaner than the master tracker: active backlog first, optional historical completed context second.
+- When creating a local tracker after project history already exists in the master tracker, import active work into the local backlog and move older completed items into a short historical section only if they are useful context.

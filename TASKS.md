@@ -28,6 +28,18 @@
 
 ---
 
+## Historical completed work
+
+> Imported from the master tracker to keep local ShipFlow context coherent. These items are historical context, not active backlog.
+
+| Pri | Task | Status |
+|-----|------|--------|
+| ✅ | Extraction action handlers dans `lib.sh` + `shipflow.sh` réduit à 48 lignes | ✅ done |
+| ✅ | Retirer ou restreindre `shipflow-inspector` et `shipflow-eruda` du layout de production | ✅ done |
+| ✅ | Auditer et sécuriser `shipflow-inspector.js` (intégration upload + clé IMGBB exposée) | ✅ done |
+
+---
+
 ## Backlog
 
 | Pri | Task | Status |

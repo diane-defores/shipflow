@@ -130,6 +130,15 @@ Do not migrate those files just to satisfy the artifact schema. If they contain 
 Location rule:
 
 - `shipflow_data` is the control plane for cross-project tracking (`TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`).
+- The master tracker is not a direct substitute for a local project `TASKS.md`.
+- Always distinguish between:
+  - the master tracker
+  - a project section inside the master tracker
+  - the local `TASKS.md` file in a repo
+- If a local `TASKS.md` is created after work already exists in the master tracker, split old entries into:
+  - active backlog
+  - historical completed context
+- Do not copy completed historical entries from the master tracker into the local active backlog.
 - Per-project decision artifacts belong in the project repository that they govern.
 - `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, specs, research, and decision records should be edited and versioned in the repo they affect, not duplicated into `shipflow_data`.
 - If `shipflow_data` needs visibility, add a reference or inventory entry, not a second canonical copy.

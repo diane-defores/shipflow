@@ -88,6 +88,42 @@ const decisionDocs = [
     </section>
 
     <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Pragmatic Tooling</p>
+        <h2>ShipFlow chooses the runtime that creates the least friction in the real environments it touches.</h2>
+        <p>
+          For small tooling such as the metadata linter, the question is not
+          which language looks the cleanest in isolation. The question is which
+          runtime is most likely to already exist on dev machines, Linux
+          servers, CI workers, and VPS targets.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>Why Python is the pragmatic choice here</h3>
+          <p>
+            The linter uses the Python standard library only. That keeps it
+            dependency-free, coherent with the repo, and more likely to run
+            without extra setup than a Ruby-based equivalent on the targets
+            ShipFlow cares about.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>What “lighter” really means</h3>
+          <p>
+            Installing Ruby just for a linter is rarely lighter in practice.
+            If ShipFlow ever needed an even smaller runtime surface, the real
+            alternatives would be Bash for very simple rules, Node in a JS-heavy
+            repo, or a Go binary for zero external runtime at a much higher
+            implementation cost.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="cta-panel">
         <p class="eyebrow">Execution Logic</p>
         <h2>Use the docs as product contracts, not as passive notes.</h2>
