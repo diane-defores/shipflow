@@ -5,6 +5,10 @@ disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---
 
+## Canonical Paths
+
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+
 ## Doctrine
 
 - The master audit evaluates whether the product still delivers its intended user story coherently across domains, not just whether isolated checks pass.

@@ -5,6 +5,10 @@ disable-model-invocation: true
 argument-hint: '[skill-name] (omit to pick multiple)'
 ---
 
+## Canonical Paths
+
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+
 ## Context
 
 - Skills directory: !`ls /home/claude/shipflow/skills/ | head -60`

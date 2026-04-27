@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-04-25"
-updated: "2026-04-25"
+updated: "2026-04-27"
 status: draft
 source_skill: sf-docs
 scope: metadata-migration
@@ -17,10 +17,12 @@ linked_systems:
   - tools/shipflow_metadata_lint.py
   - templates/artifacts/
   - shipflow-spec-driven-workflow.md
+  - skills/references/canonical-paths.md
 depends_on: []
 supersedes: []
 evidence:
   - "Guide aligned with current ShipFlow artifact doctrine, templates, and linter behavior"
+  - "Updated on 2026-04-27 to resolve the metadata linter from the canonical ShipFlow root"
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-metadata-migration-guide.md"
 ---
@@ -246,16 +248,20 @@ Templates are for future docs and deliberate refactors, not for bulk rewriting l
 Run:
 
 ```bash
-tools/shipflow_metadata_lint.py
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+"$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py"
 ```
 
 Or validate only a narrow scope:
 
 ```bash
-tools/shipflow_metadata_lint.py BUSINESS.md BRANDING.md specs/
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+"$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py" BUSINESS.md BRANDING.md specs/
 ```
 
 For multi-project migrations, validate repo by repo or by an explicit list of touched paths. This keeps failures local and easier to fix.
+
+The linter path is ShipFlow-owned. Resolve it from `${SHIPFLOW_ROOT:-/home/claude/shipflow}` even when the migration is being applied to another project repository.
 
 If a file already has frontmatter but fails the linter:
 
@@ -405,7 +411,7 @@ A project migration is complete when:
 - trackers remain excluded
 - runtime content schemas are not broken
 - canonical artifact location is clear
-- `tools/shipflow_metadata_lint.py` passes on the intended scope
+- `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py` passes on the intended scope
 - version and status values are honest
 
 ## Anti-patterns

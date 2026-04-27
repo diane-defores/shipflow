@@ -1,9 +1,13 @@
 ---
 name: sf-audit-translate
-description: "Args: file-path or \"global\"; omit for full project. Translation audit — single page (with argument) or full project i18n consistency check (no argument). Verifies completeness, quality, and consistency of all translations."
+description: "Args: file-path, \"global\", or \"sync\"/\"apply\". Translation audit + i18n sync operations. Audits quality/consistency and can fill missing translations across locales."
 disable-model-invocation: true
-argument-hint: '[file-path | "global"] (omit for full project)'
+argument-hint: '[file-path | "global" | "sync" | "apply"] (omit for full project audit)'
 ---
+
+## Canonical Paths
+
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Context
 
@@ -21,6 +25,82 @@ argument-hint: '[file-path | "global"] (omit for full project)'
 - **`$ARGUMENTS` is "global"** → GLOBAL MODE: audit ALL multilingual projects in the workspace.
 - **`$ARGUMENTS` is a file path** → PAGE MODE: check translations for that specific page.
 - **`$ARGUMENTS` is empty** → PROJECT MODE: full i18n audit of the entire project.
+- **`$ARGUMENTS` is "sync" or "apply"** → SYNC MODE: fill missing translations from default/source locale to target locales.
+- **`$ARGUMENTS` starts with `sync ` or `apply `** → SYNC MODE (scoped): same operation, limited to the provided path/scope.
+
+---
+
+## SYNC MODE (translation ops)
+
+Use this mode when the goal is operational throughput, not only audit visibility.
+
+Examples:
+- `/sf-audit-translate sync`
+- `/sf-audit-translate apply`
+- `/sf-audit-translate sync src/i18n`
+- `/sf-audit-translate apply src/content/blog`
+
+### Step 1: Scope and source locale
+
+1. Detect the scope:
+   - no extra argument → whole project
+   - path provided after `sync` / `apply` → only that folder/file/surface
+2. Detect locales and choose source locale:
+   - use configured default locale when available
+   - otherwise use the locale with the highest key/content coverage
+3. Build a locale matrix for the scoped area:
+   - message keys, content files, and translatable frontmatter fields
+
+### Step 2: Fill missing translations safely
+
+For each target locale, only apply low-risk changes by default:
+- add missing keys/entries
+- add missing localized content counterparts when mapping is clear
+- preserve placeholders/tokens exactly (`{name}`, `%s`, ICU fragments, markdown links)
+- preserve HTML tags and component placeholders
+
+Do not do these unless explicitly requested:
+- rewriting existing non-empty translations for style
+- changing established terminology without project glossary alignment
+- changing URL slug strategy across locales
+
+### Step 3: Guardrails
+
+- Keep brand/product names unchanged.
+- Keep technical nouns in English when this is project convention.
+- Maintain tone consistency defined in `CLAUDE.md` / project docs.
+- For French, enforce accents and typographic spacing rules.
+- If a translation is ambiguous or business-sensitive, propose 2 options and ask before changing.
+
+### Step 4: Verify after sync
+
+Run a quick post-sync check in scope:
+- missing keys count before/after by locale
+- placeholder/token integrity checks
+- obvious truncation risk notes (long labels/buttons)
+- technical i18n invariants (`lang`, locale routes, `hreflang` when relevant to the scope)
+
+### Step 5: Report
+
+```
+TRANSLATION SYNC: [project/scope]
+═══════════════════════════════════════
+Source locale:         [xx]
+Target locales:        [yy, zz]
+Scope:                 [full project | path]
+
+Missing keys before:   [per locale]
+Missing keys after:    [per locale]
+Entries added:         X
+Files touched:         Y
+Ambiguous items:       Z (needs review)
+
+Safety checks
+  Placeholder integrity: [ok/issues]
+  Terminology drift:     [none/suspected]
+  Technical i18n risk:   [none/list]
+═══════════════════════════════════════
+```
 
 ---
 

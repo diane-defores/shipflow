@@ -6,6 +6,8 @@
 
 `sf-audit-translate` audits translation quality and i18n implementation for a page or a full project. It checks completeness, terminology consistency, locale-specific SEO, hardcoded strings, formatting, and routing behavior.
 
+It also supports an operational `sync/apply` mode to fill missing translations across locales with safety guardrails.
+
 The outcome is practical: it shows where localization is missing, misleading, or technically broken.
 
 ## Who It's For
@@ -19,10 +21,11 @@ The outcome is practical: it shows where localization is missing, misleading, or
 - when a new locale has been added
 - when translation work was done quickly and needs a real audit
 - when you suspect inconsistencies between locale files, routes, and rendered UI
+- when you need to sync missing keys/content from a source locale into other locales
 
 ## What You Give It
 
-- a page path, a multilingual project, or `global`
+- a page path, a multilingual project, `global`, or `sync` / `apply` (optionally scoped to a path)
 - existing locale files, content collections, or i18n setup in the repo
 
 ## What You Get Back
@@ -30,6 +33,7 @@ The outcome is practical: it shows where localization is missing, misleading, or
 - a review of missing translations and terminology drift
 - visibility into technical i18n issues such as `lang`, `hreflang`, canonical, or routing mistakes
 - concrete guidance on what to fix before users see broken or mixed-language interfaces
+- optional sync execution report: missing keys before/after, entries added, ambiguous items to review
 
 ## Typical Examples
 
@@ -37,6 +41,8 @@ The outcome is practical: it shows where localization is missing, misleading, or
 /sf-audit-translate
 /sf-audit-translate src/pages/fr/pricing.astro
 /sf-audit-translate global
+/sf-audit-translate sync
+/sf-audit-translate apply src/i18n
 ```
 
 ## Limits

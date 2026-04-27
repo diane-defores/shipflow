@@ -42,6 +42,26 @@ Important limit:
 
 - `clerk.signIn({ emailAddress })` requires `CLERK_SECRET_KEY`
 
+## Agent Responsibility
+
+When a repo already has Playwright or an E2E test harness, the agent should implement the Clerk testing setup itself instead of only telling the user what to do:
+
+- add `@clerk/testing` to the project test dependencies when it is missing
+- wire `clerkSetup()` into the Playwright global setup or suite setup that matches the repo pattern
+- call `setupClerkTestingToken({ page })` before visiting Clerk-hosted or Clerk-rendered sign-in/sign-up pages that need visible UI testing
+- use `clerk.signIn({ page, emailAddress })` for app-level protected-route tests when the auth UI is not the behavior under test
+- update `.env.example`, test docs, or README test instructions with required variable names only, never real secret values
+- run the narrowest relevant Playwright test locally when the environment has the needed keys
+
+The agent should ask the user for help only when it cannot produce the required input itself:
+
+- `CLERK_SECRET_KEY`, missing non-production Clerk keys, or dedicated test account credentials are not available in the existing local environment
+- a dashboard-only Clerk setting must be enabled or checked
+- the flow reaches a real human gate such as MFA, external provider consent, passkey, captcha, or device approval
+- production testing would require risky settings such as enabling test mode on a production Clerk instance
+
+When asking, be specific: name the missing variable, explain where it is expected to be set, and state whether the user can provide it via the project's existing secret pattern or should perform a one-off browser step.
+
 ## When To Use Test Emails And Phones
 
 Use Clerk test identifiers when you specifically need to validate the code-verification step.
@@ -69,7 +89,33 @@ Clerk Testing Tokens are used to bypass bot detection in tests.
 - `setupClerkTestingToken({ page })` injects it for a specific test
 - `clerk.signIn()` already uses the token setup internally
 
+The testing token is not a static secret to copy from the Clerk Dashboard during normal Playwright work. Treat it as test runtime plumbing generated through `@clerk/testing`, using `CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY`.
+
+Use `setupClerkTestingToken({ page })` before visiting the Clerk sign-in or sign-up page when the test needs to drive the visible auth UI:
+
+```ts
+import { clerkSetup, setupClerkTestingToken } from '@clerk/testing/playwright'
+import { test } from '@playwright/test'
+
+await clerkSetup()
+
+test('sign up page can be exercised by Playwright', async ({ page }) => {
+  await setupClerkTestingToken({ page })
+  await page.goto('https://app.example.com/sign-up')
+})
+```
+
 If tests fail with bot-detection behavior, verify that the suite is actually initializing Clerk testing support instead of just driving the browser raw.
+
+Practical failure sign:
+
+- a bot-protection widget such as Turnstile stays blank or blocks progress before account creation
+- Playwright reaches Clerk UI but cannot submit the form even with valid test input
+
+Operational rule:
+
+- for app tests with an existing test account, prefer logging in with test credentials or `clerk.signIn()` instead of creating a new account on every run
+- for repeatable automated sign-up creation, add `@clerk/testing` and provide `CLERK_SECRET_KEY`; otherwise assume raw Playwright may hit Clerk bot protection
 
 ## What The Agent Should Assume
 

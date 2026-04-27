@@ -46,6 +46,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [CLAUDE.md](./CLAUDE.md) — repository constraints and coding guidance
 - [shipflow-spec-driven-workflow.md](./shipflow-spec-driven-workflow.md) — ShipFlow V3 workflow for `sf-explore`, `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, and `sf-end`
 - [shipflow-metadata-migration-guide.md](./shipflow-metadata-migration-guide.md) — how to adopt ShipFlow metadata and versioning in an existing project
+- [skills/references/canonical-paths.md](./skills/references/canonical-paths.md) — path resolution rules for ShipFlow-owned tools, references, templates, and project-local artifacts
 - [ECOSYSTEM-AND-PORTS.md](./ECOSYSTEM-AND-PORTS.md) — persistent PM2 ecosystem files and port management
 - [local/README.md](./local/README.md) — local tunnel setup
 - [tools/codebase-mcp/README.md](./tools/codebase-mcp/README.md) — local MCP server for codebase context management
@@ -268,10 +269,13 @@ ShipFlow provides skill-aligned artifact templates in `templates/artifacts/` and
 - `technical_guidelines.md`
 
 ```bash
-tools/shipflow_metadata_lint.py
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+"$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py"
 ```
 
 This layer is wired into the documentation workflow, agent routing, project context, migration guidance, and lint validation. It is not passive reference material; it is part of how ShipFlow frames, executes, verifies, and documents work.
+
+ShipFlow-owned files are resolved from `${SHIPFLOW_ROOT:-/home/claude/shipflow}` even when a skill is running inside another repository. Project artifacts and source files are the only paths resolved from the current project root.
 
 For legacy projects, use the migration playbook in [`shipflow-metadata-migration-guide.md`](./shipflow-metadata-migration-guide.md) before normalizing old docs.
 

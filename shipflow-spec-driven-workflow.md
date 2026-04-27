@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.3.0"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-04-26"
+updated: "2026-04-27"
 status: draft
 source_skill: sf-docs
 scope: spec-driven-workflow
@@ -17,12 +17,14 @@ linked_systems:
   - skills/
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
+  - skills/references/canonical-paths.md
 depends_on: []
 supersedes: []
 evidence:
   - "Document title and body define ShipFlow V3 workflow doctrine and artifact metadata rules"
   - "Updated on 2026-04-26 to clarify the documentation frame, context layer, metadata doctrine, and artifact boundaries"
   - "Updated on 2026-04-26 to add CONTENT_MAP.md as the content architecture and repurposing artifact"
+  - "Updated on 2026-04-27 to define canonical ShipFlow path resolution for tools and references"
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -165,10 +167,13 @@ Skill-aligned artifact templates live in `templates/artifacts/`. They should enc
 Validate metadata with:
 
 ```bash
-tools/shipflow_metadata_lint.py
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+"$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py"
 ```
 
 The linter is intentionally dependency-free. It checks the default ShipFlow artifact locations (`specs/`, `docs/`, `AGENT.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `CONTENT_MAP.md`, `BUSINESS.md`, `BRANDING.md`, `PRODUCT.md`, `ARCHITECTURE.md`, `GTM.md`, `GUIDELINES.md`) and can also receive explicit files or folders.
+
+When a skill runs from a project repository, ShipFlow-owned docs, tools, references, templates, and skill-local `references/*` still resolve from `${SHIPFLOW_ROOT:-/home/claude/shipflow}`. Only project artifacts and source files resolve from the current project root.
 
 This decision-contract layer is wired into the active ShipFlow workflow: agent routing (`AGENT.md`), project orientation (`CONTEXT.md`), documentation doctrine (`README.md`, this file, `shipflow-metadata-migration-guide.md`), the `sf-docs` skill, and `tools/shipflow_metadata_lint.py`.
 

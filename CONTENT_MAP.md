@@ -1,10 +1,10 @@
 ---
 artifact: content_map
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-04-26"
-updated: "2026-04-26"
+updated: "2026-04-27"
 status: draft
 source_skill: manual
 scope: content-map
@@ -16,6 +16,7 @@ content_surfaces:
   - site_skill_pages
   - repo_docs
   - decision_contracts
+  - canonical_path_policy
   - semantic_clusters
 security_impact: none
 docs_impact: yes
@@ -24,18 +25,20 @@ evidence:
   - "site/src/pages/docs.astro exposes the public docs overview"
   - "site/src/content/skills contains public skill content"
   - "skills/sf-repurpose/SKILL.md needs a reusable content surface map"
+  - "skills/references/canonical-paths.md defines ShipFlow-owned path resolution"
 linked_artifacts:
   - "README.md"
   - "PRODUCT.md"
   - "GTM.md"
   - "BRANDING.md"
   - "site/src/pages/docs.astro"
+  - "skills/references/canonical-paths.md"
 depends_on:
   - artifact: "PRODUCT.md"
     artifact_version: "1.1.0"
     required_status: "reviewed"
   - artifact: "GTM.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: "reviewed"
 supersedes: []
 next_review: "2026-05-26"
@@ -59,6 +62,7 @@ It is a structural context artifact, not a content calendar or backlog.
 | Site landing page | `site/src/pages/index.astro` | Present ShipFlow's main offer and framework story | Astro page | `BUSINESS.md`, `PRODUCT.md`, `GTM.md`, `BRANDING.md` | Product positioning or core workflow changes |
 | Repo documentation | `README.md` | Canonical repo overview, onboarding, and artifact map | Markdown | Active project artifacts and code structure | Official docs, workflows, or tooling change |
 | Workflow doctrine | `shipflow-spec-driven-workflow.md` | Explain ShipFlow V3 work doctrine and artifact rules | Markdown artifact | Active skills, templates, linter behavior | Workflow or artifact doctrine changes |
+| Canonical path policy | `skills/references/canonical-paths.md` | Define how skills resolve ShipFlow-owned tools, references, templates, and project-local artifacts | Markdown reference artifact | ShipFlow install root and skill execution behavior | A skill, tool, template, or reference path rule changes |
 | Product contract | `PRODUCT.md` | Define user problem, scope, workflows, non-goals, and risks | Markdown artifact | Product decisions and repo evidence | Product scope or core workflows change |
 | GTM contract | `GTM.md` | Define public promise, channels, objections, and proof | Markdown artifact | Business/product/brand docs | Public positioning or distribution assumptions change |
 | Brand contract | `BRANDING.md` | Define tone, trust posture, vocabulary, and claim boundaries | Markdown artifact | Brand decisions | Voice, vocabulary, or claim posture changes |
@@ -69,7 +73,7 @@ It is a structural context artifact, not a content calendar or backlog.
 | Cluster | Pillar page | Supporting pages | Target intent | Internal link rule | Status |
 |---|---|---|---|---|---|
 | AI-assisted execution discipline | `site/src/pages/index.astro` | `site/src/pages/docs.astro`, `site/src/content/skills/*.md` | Understand ShipFlow as a work framework | Landing page links to docs and skills; skills link back to framework story | live |
-| Documentation and decision contracts | `site/src/pages/docs.astro` | `README.md`, `shipflow-spec-driven-workflow.md`, `templates/artifacts/*.md` | Learn how context and contracts stay coherent | Docs overview points to canonical repo docs and artifact roles | live |
+| Documentation and decision contracts | `site/src/pages/docs.astro` | `README.md`, `shipflow-spec-driven-workflow.md`, `skills/references/canonical-paths.md`, `templates/artifacts/*.md` | Learn how context and contracts stay coherent | Docs overview points to canonical repo docs and artifact roles | live |
 | Skill workflow | `site/src/pages/skills.astro` | `site/src/content/skills/*.md`, `skills/*/SKILL.md` | Choose the right skill for a task | Public skill pages should match internal skill names and promises | live |
 | Content repurposing | `CONTENT_MAP.md` | `skills/sf-repurpose/SKILL.md`, `templates/artifacts/content_map.md`, future public docs section | Reuse product work and source ideas as faithful content | `sf-repurpose` reads the map first and routes output to known surfaces | draft |
 
@@ -99,7 +103,7 @@ It is a structural context artifact, not a content calendar or backlog.
 
 | Trigger | Check these surfaces |
 |---|---|
-| New official artifact | `README.md`, `shipflow-spec-driven-workflow.md`, `tools/shipflow_metadata_lint.py`, `skills/sf-docs/SKILL.md`, `site/src/pages/docs.astro`, `site/src/components/RoleMap.astro` |
+| New official artifact | `README.md`, `shipflow-spec-driven-workflow.md`, `tools/shipflow_metadata_lint.py`, `skills/references/canonical-paths.md`, `skills/sf-docs/SKILL.md`, `site/src/pages/docs.astro`, `site/src/components/RoleMap.astro` |
 | New or renamed skill | `skills/`, `site/src/content/skills/`, public skills hub, README workflow references |
 | Product positioning change | `PRODUCT.md`, `GTM.md`, `BRANDING.md`, site landing page, docs overview |
 | Content repurposing output | `CONTENT_MAP.md`, target content surface, evidence ledger from `sf-repurpose` |
