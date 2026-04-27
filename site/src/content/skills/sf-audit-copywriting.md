@@ -3,7 +3,7 @@ title: "sf-audit-copywriting"
 slug: "sf-audit-copywriting"
 tagline: "Audit the persuasion system behind the copy, not only the sentence-level writing."
 summary: "A specialist review for positioning, objection handling, conversion structure, and founder-facing persuasion logic."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders refining offer pages and GTM surfaces"
   - "Teams that need a stronger conversion argument before scaling traffic"

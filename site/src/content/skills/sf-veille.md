@@ -3,7 +3,7 @@ title: "sf-veille"
 slug: "sf-veille"
 tagline: "Triage external links and incoming information before they dissolve into random browser tabs."
 summary: "A link-analysis skill for reviewing URLs or pasted content, summarizing relevance, and routing follow-up actions."
-category: "Research & Growth"
+category: "Research & Grow"
 audience:
   - "Founders collecting market, product, or technical signals from the web"
   - "Operators who need to turn reading into action"

@@ -3,7 +3,7 @@ title: "sf-check"
 slug: "sf-check"
 tagline: "Run the standard technical checks and fix the obvious issues before you pretend the work is done."
 summary: "A practical quality gate for typecheck, lint, build, and related technical validation in the current project."
-category: "Operations"
+category: "Operate & Ship"
 audience:
   - "Founders who want a disciplined technical finish"
   - "Teams that need a fast validation pass before review or ship"

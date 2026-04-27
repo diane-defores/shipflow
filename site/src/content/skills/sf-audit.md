@@ -3,7 +3,7 @@ title: "sf-audit"
 slug: "sf-audit"
 tagline: "Run a broad project audit when you need a high-level map of what is weak before you decide what to fix."
 summary: "The top-level audit skill scans across multiple quality domains so you can see where the real risk or drift sits."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Solo founders preparing a cleanup or quality pass"
   - "Teams that need a quick cross-functional review before shipping"

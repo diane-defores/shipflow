@@ -3,7 +3,7 @@ title: "sf-spec"
 slug: "sf-spec"
 tagline: "Turn a fuzzy request into an implementation-ready contract before code starts mutating the repo."
 summary: "The spec-writing skill for shaping non-trivial work into a clear user story, behavior contract, executable task list, and chantier history."
-category: "Core Workflow"
+category: "Plan & Decide"
 audience:
   - "Founders doing non-trivial build work with agents"
   - "Teams that want a stronger bridge from intent to implementation"

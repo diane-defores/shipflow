@@ -3,7 +3,7 @@ title: "sf-perf"
 slug: "sf-perf"
 tagline: "Audit performance where it actually hurts the product, not where it is merely fashionable to optimize."
 summary: "A performance audit skill for rendering, bundle weight, data flow, Core Web Vitals, and system bottlenecks."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders who suspect the product is slower than it should be"
   - "Teams preparing a performance-focused quality pass"

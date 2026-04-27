@@ -3,7 +3,7 @@ title: "sf-prod"
 slug: "sf-prod"
 tagline: "Check whether production is actually healthy after a push instead of assuming the deploy tells the truth."
 summary: "A production verification skill for deployment status, logs, and live health checks after release."
-category: "Operations"
+category: "Operate & Ship"
 audience:
   - "Founders shipping directly to production"
   - "Operators who want a post-deploy reality check"

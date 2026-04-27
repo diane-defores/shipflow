@@ -3,7 +3,7 @@ title: "sf-model"
 slug: "sf-model"
 tagline: "Choose the right model for the task instead of overpaying or underpowering the work."
 summary: "A model-selection skill for matching task type, cost, latency, and reliability needs before execution starts."
-category: "Meta & Utility"
+category: "Plan & Decide"
 audience:
   - "Founders balancing quality, speed, and cost in agent work"
   - "Operators who want a more deliberate model choice"

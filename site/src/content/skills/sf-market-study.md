@@ -3,7 +3,7 @@ title: "sf-market-study"
 slug: "sf-market-study"
 tagline: "Study a market before you build deeper into a weak demand story."
 summary: "A structured market-research skill for demand, competition, keyword opportunity, and monetization judgment."
-category: "Research & Growth"
+category: "Research & Grow"
 audience:
   - "Founders evaluating a niche or product idea"
   - "Operators deciding whether a market is worth pursuing harder"

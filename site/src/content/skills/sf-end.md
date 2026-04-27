@@ -3,7 +3,7 @@ title: "sf-end"
 slug: "sf-end"
 tagline: "Close a task cleanly so the work is summarized, tracked, and ready for the next thread."
 summary: "A task-closing skill for wrapping up implementation, documenting completion, and recording closure in the chantier flow when applicable."
-category: "Core Workflow"
+category: "Operate & Ship"
 audience:
   - "Founders who want disciplined task closure"
   - "Teams that care about clean handoffs between sessions"

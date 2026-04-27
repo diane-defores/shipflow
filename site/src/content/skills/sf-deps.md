@@ -3,7 +3,7 @@ title: "sf-deps"
 slug: "sf-deps"
 tagline: "Audit the dependency layer before stale or risky packages quietly become product debt."
 summary: "A dependency audit skill for vulnerabilities, outdated packages, unused dependencies, and configuration health."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders maintaining long-lived projects"
   - "Teams that want a sharper dependency hygiene pass"

@@ -3,7 +3,7 @@ title: "sf-redact"
 slug: "sf-redact"
 tagline: "Write original long-form content that sounds intentional, not generic."
 summary: "A writing skill for producing long-form content aligned to the project voice, audience, and business goal."
-category: "Research & Growth"
+category: "Research & Grow"
 audience:
   - "Founders creating articles, guides, or editorial pages"
   - "Teams that need stronger first-draft content with a real point of view"

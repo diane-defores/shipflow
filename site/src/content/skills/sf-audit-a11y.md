@@ -3,7 +3,7 @@ title: "sf-audit-a11y"
 slug: "sf-audit-a11y"
 tagline: "Inspect accessibility as an engineering system, not as a shallow checklist."
 summary: "A specialist accessibility audit for keyboard support, focus management, ARIA patterns, and WCAG-level correctness."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders shipping custom UI components"
   - "Teams that need stronger accessibility rigor before release"

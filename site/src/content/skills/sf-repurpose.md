@@ -3,7 +3,7 @@ title: "sf-repurpose"
 slug: "sf-repurpose"
 tagline: "Turn product work or source ideas into faithful content without losing the truth of the source."
 summary: "A content repurposing skill for transforming build conversations, paragraphs, excerpts, or source notes into documentation notes, marketing claims, release notes, FAQs, and content angles."
-category: "Context & Docs"
+category: "Research & Grow"
 audience:
   - "Founders who want product work to become useful content while the context is still fresh"
   - "Builders who collect good ideas and need a disciplined way to turn them into publishable angles"

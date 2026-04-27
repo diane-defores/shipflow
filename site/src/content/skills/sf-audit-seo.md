@@ -3,7 +3,7 @@ title: "sf-audit-seo"
 slug: "sf-audit-seo"
 tagline: "Check whether the site is set up to earn search visibility in the current AI and SEO environment."
 summary: "A technical and on-page SEO audit for discoverability, crawlability, content structure, and AI-era visibility signals."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders depending on documentation or content-led discovery"
   - "Teams that want a stronger technical SEO baseline"

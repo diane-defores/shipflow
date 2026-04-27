@@ -3,7 +3,7 @@ title: "sf-docs"
 slug: "sf-docs"
 tagline: "Create or repair documentation so the repo stays navigable for both humans and agents."
 summary: "A documentation skill for generating, updating, auditing, and harmonizing project docs and supporting contracts."
-category: "Context & Docs"
+category: "Operate & Ship"
 audience:
   - "Founders who want cleaner documentation without bloated prose"
   - "Teams that need docs to stay operational, not decorative"

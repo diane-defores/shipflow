@@ -3,7 +3,7 @@ title: "sf-enrich"
 slug: "sf-enrich"
 tagline: "Upgrade content with fresher research, stronger structure, and more useful answers."
 summary: "A content-improvement skill for taking an existing page or article and making it more current, more actionable, and more discoverable."
-category: "Research & Growth"
+category: "Research & Grow"
 audience:
   - "Founders using content as a traffic or trust channel"
   - "Teams improving stale blog or docs content"

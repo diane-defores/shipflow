@@ -3,7 +3,7 @@ title: "sf-tasks"
 slug: "sf-tasks"
 tagline: "Keep the task list coherent after work moves, instead of letting tracking fall behind reality."
 summary: "A task-management skill for updating `TASKS.md`, reflecting progress, and capturing the next sensible steps."
-category: "Context & Docs"
+category: "Operate & Ship"
 audience:
   - "Founders using task files as an operational surface"
   - "Teams that want tighter alignment between delivery and tracking"

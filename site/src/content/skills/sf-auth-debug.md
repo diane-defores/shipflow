@@ -3,7 +3,7 @@ title: "sf-auth-debug"
 slug: "sf-auth-debug"
 tagline: "Debug a broken auth flow in a real browser before you start guessing from static code alone."
 summary: "A browser-level auth diagnosis skill for reproducing login failures, reading local Clerk/Google/Convex/Flutter references, and isolating the exact break point in the flow."
-category: "Operations"
+category: "Build & Fix"
 audience:
   - "Founders debugging sign-in and session failures"
   - "Teams working on Clerk, OAuth, or protected-flow issues"

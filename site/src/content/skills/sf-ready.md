@@ -3,7 +3,7 @@ title: "sf-ready"
 slug: "sf-ready"
 tagline: "Pressure-test a spec before implementation so the thread is not coding against loose intent."
 summary: "A readiness gate for checking whether a spec is complete, safe, and executable by a fresh agent."
-category: "Core Workflow"
+category: "Plan & Decide"
 audience:
   - "Founders using spec-first execution for non-trivial work"
   - "Teams that want stronger pre-implementation discipline"

@@ -7,12 +7,12 @@ const skills = defineCollection({
     tagline: z.string(),
     summary: z.string(),
     category: z.enum([
-      "Core Workflow",
-      "Audits",
-      "Context & Docs",
-      "Research & Growth",
-      "Operations",
-      "Meta & Utility"
+      "Plan & Decide",
+      "Build & Fix",
+      "Audit & Improve",
+      "Research & Grow",
+      "Operate & Ship",
+      "Meta & Setup"
     ]),
     audience: z.array(z.string()),
     problem: z.string(),

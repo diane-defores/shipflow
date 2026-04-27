@@ -3,7 +3,7 @@ title: "sf-design-playground"
 slug: "sf-design-playground"
 tagline: "Generate a live design-system playground so token decisions become visible instead of abstract."
 summary: "A scaffolding skill that creates a versioned page for previewing and editing design tokens in real time."
-category: "Operations"
+category: "Meta & Setup"
 audience:
   - "Founders iterating on a product design system"
   - "Teams that need a visual token workspace without full Storybook overhead"

@@ -3,7 +3,7 @@ title: "sf-backlog"
 slug: "sf-backlog"
 tagline: "Capture ideas without letting them hijack the current execution thread."
 summary: "A backlog management skill for parking non-urgent work while keeping active delivery focused."
-category: "Context & Docs"
+category: "Plan & Decide"
 audience:
   - "Solo founders with too many ideas landing mid-task"
   - "Operators who want cleaner execution focus"

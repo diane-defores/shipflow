@@ -3,7 +3,7 @@ title: "sf-migrate"
 slug: "sf-migrate"
 tagline: "Plan and execute framework upgrades with less blind risk."
 summary: "A migration skill for researching upgrade guides, scanning breaking changes, and applying a safer migration path."
-category: "Operations"
+category: "Operate & Ship"
 audience:
   - "Founders upgrading frameworks or major dependencies"
   - "Teams trying to reduce upgrade risk and context loss"

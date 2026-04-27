@@ -3,7 +3,7 @@ title: "sf-audit-copy"
 slug: "sf-audit-copy"
 tagline: "Review whether the writing is clear, concrete, and trustworthy enough to support the product."
 summary: "A copy audit skill focused on clarity, readability, trust signals, CTA strength, and AI-era writing drift."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders who write their own product copy"
   - "Teams that want a stronger quality bar for public text"

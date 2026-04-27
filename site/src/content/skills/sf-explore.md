@@ -3,7 +3,7 @@ title: "sf-explore"
 slug: "sf-explore"
 tagline: "Explore a problem space before coding so you do not harden the wrong idea into implementation."
 summary: "A non-coding exploration skill for clarifying ambiguity, options, and risks before the build phase starts."
-category: "Core Workflow"
+category: "Plan & Decide"
 audience:
   - "Founders who want better early-stage thinking before implementation"
   - "Teams dealing with ambiguous or multi-path work"

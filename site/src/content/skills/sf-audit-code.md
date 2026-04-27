@@ -3,7 +3,7 @@ title: "sf-audit-code"
 slug: "sf-audit-code"
 tagline: "Review code with a product and risk lens, not just style rules."
 summary: "A code audit skill focused on behavior, architecture, safety, duplication, and system fit."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders who want to know whether the codebase is getting harder to trust"
   - "Operators preparing a cleanup or handoff"

@@ -3,7 +3,7 @@ title: "sf-changelog"
 slug: "sf-changelog"
 tagline: "Turn recent git history into a human-readable changelog instead of leaving progress trapped in commits."
 summary: "A changelog generation skill for summarizing meaningful project changes in a cleaner public format."
-category: "Context & Docs"
+category: "Operate & Ship"
 audience:
   - "Founders who want better release visibility"
   - "Teams that need a readable change history"

@@ -3,7 +3,7 @@ title: "sf-priorities"
 slug: "sf-priorities"
 tagline: "Reorder the backlog by impact and effort before momentum turns into scattered activity."
 summary: "A prioritization skill for sorting active and pending work with a more explicit impact-versus-effort lens."
-category: "Research & Growth"
+category: "Plan & Decide"
 audience:
   - "Founders with too many plausible next tasks"
   - "Operators who need a clearer sequencing discipline"

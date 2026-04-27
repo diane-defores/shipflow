@@ -3,7 +3,7 @@ title: "sf-research"
 slug: "sf-research"
 tagline: "Research a topic deeply enough that you can make a better product or GTM decision afterward."
 summary: "A structured web-research skill for gathering, organizing, and summarizing evidence around a topic."
-category: "Research & Growth"
+category: "Research & Grow"
 audience:
   - "Founders exploring a market, feature area, or strategic question"
   - "Teams that need evidence before making a direction call"

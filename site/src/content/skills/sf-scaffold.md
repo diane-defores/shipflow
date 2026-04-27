@@ -3,7 +3,7 @@ title: "sf-scaffold"
 slug: "sf-scaffold"
 tagline: "Generate new files that match the repo patterns instead of starting from a blank page every time."
 summary: "A scaffolding skill for creating pages, components, layouts, routes, hooks, and utilities that fit the project shape."
-category: "Operations"
+category: "Build & Fix"
 audience:
   - "Founders adding new product surfaces quickly"
   - "Teams that want pattern-aware file generation"

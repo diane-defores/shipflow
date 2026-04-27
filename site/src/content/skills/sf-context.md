@@ -3,7 +3,7 @@ title: "sf-context"
 slug: "sf-context"
 tagline: "Prime the relevant files and decisions before the thread starts guessing about the codebase."
 summary: "A context-loading skill that retrieves the most relevant repo surface before implementation begins."
-category: "Context & Docs"
+category: "Plan & Decide"
 audience:
   - "Founders starting work in a large or stale codebase"
   - "Operators who want better thread startup discipline"

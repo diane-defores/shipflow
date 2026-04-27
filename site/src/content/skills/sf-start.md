@@ -3,7 +3,7 @@ title: "sf-start"
 slug: "sf-start"
 tagline: "Start implementation when the task is ready, and force a stronger path when it is not."
 summary: "The main execution entrypoint for beginning real work after the problem and contract are clear enough, while keeping the chantier flow visible."
-category: "Core Workflow"
+category: "Build & Fix"
 audience:
   - "Founders moving from task definition into coding"
   - "Teams that want one disciplined entrypoint for implementation"

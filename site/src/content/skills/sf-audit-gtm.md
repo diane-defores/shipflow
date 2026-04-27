@@ -3,7 +3,7 @@ title: "sf-audit-gtm"
 slug: "sf-audit-gtm"
 tagline: "Review whether the product story and funnel logic make business sense before you drive more traffic."
 summary: "A GTM audit for positioning, audience fit, offer clarity, funnel friction, and proof structure."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders refining positioning and acquisition pages"
   - "Teams checking whether the current funnel story is coherent"

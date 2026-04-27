@@ -3,7 +3,7 @@ title: "sf-audit-design-tokens"
 slug: "sf-audit-design-tokens"
 tagline: "Audit whether your design tokens behave like a system or just a loose pile of values."
 summary: "A specialist audit for theme, typography, spacing, and motion tokens across a frontend design system."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders building a reusable design language"
   - "Teams whose UI feels inconsistent at the token layer"

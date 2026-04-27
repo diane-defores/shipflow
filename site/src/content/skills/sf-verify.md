@@ -3,7 +3,7 @@ title: "sf-verify"
 slug: "sf-verify"
 tagline: "Check whether the work really satisfies the user story, not just whether the code compiles."
 summary: "A verification skill for judging readiness against behavior, completeness, risk, and the promises made by the task, then recording the chantier verdict when applicable."
-category: "Core Workflow"
+category: "Audit & Improve"
 audience:
   - "Founders who want a stronger ship gate than lint and build"
   - "Teams that care about user-story correctness and residual risk"

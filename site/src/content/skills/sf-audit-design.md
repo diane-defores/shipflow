@@ -3,7 +3,7 @@ title: "sf-audit-design"
 slug: "sf-audit-design"
 tagline: "Review whether the interface works as a system, not just whether it looks modern."
 summary: "A design audit for hierarchy, responsiveness, accessibility, component consistency, and modern CSS-era implementation quality."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders with a product that feels visually uneven"
   - "Teams preparing a broader UX quality pass"

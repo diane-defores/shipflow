@@ -3,7 +3,7 @@ title: "sf-status"
 slug: "sf-status"
 tagline: "Get a fast git-based project dashboard instead of manually checking every repo by hand."
 summary: "A status skill for seeing branches, changes, sync state, and recent activity across the current project or workspace."
-category: "Operations"
+category: "Operate & Ship"
 audience:
   - "Founders managing several repositories or worktrees"
   - "Operators who want a quick state check before acting"

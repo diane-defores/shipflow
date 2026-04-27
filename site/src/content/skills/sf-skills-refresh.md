@@ -3,7 +3,7 @@ title: "sf-skills-refresh"
 slug: "sf-skills-refresh"
 tagline: "Refresh the skill library itself so the framework stays aligned with newer practice."
 summary: "A maintenance skill for updating ShipFlow skills with more current standards, patterns, and references."
-category: "Meta & Utility"
+category: "Meta & Setup"
 audience:
   - "Maintainers of the ShipFlow skill system"
   - "Founders treating the framework itself as a living product"

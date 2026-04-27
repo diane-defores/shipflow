@@ -3,7 +3,7 @@ title: "name"
 slug: "name"
 tagline: "Name or rename the current session so the thread stays legible as work branches."
 summary: "A tiny utility skill that keeps long-running agent work easier to scan, search, and resume."
-category: "Meta & Utility"
+category: "Meta & Setup"
 audience:
   - "Solo founders juggling multiple active threads"
   - "Operators who want cleaner session history"

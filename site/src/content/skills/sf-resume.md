@@ -3,7 +3,7 @@ title: "sf-resume"
 slug: "sf-resume"
 tagline: "Summarize the current thread before context decay forces you to reread everything."
 summary: "A fast recap skill for compressing the current conversation into the key points, task states, visible commits, and next-step reality."
-category: "Meta & Utility"
+category: "Meta & Setup"
 audience:
   - "Founders working in long or fragmented threads"
   - "Operators deciding whether a conversation is safe to close"

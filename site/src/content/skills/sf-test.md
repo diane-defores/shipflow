@@ -3,7 +3,7 @@ title: "sf-test"
 slug: "sf-test"
 tagline: "Guide the human through the real user flow, then turn the result into test evidence and actionable bugs."
 summary: "A manual QA skill for creating guided test campaigns, capturing structured outcomes, and preserving bug history after implementation."
-category: "Core Workflow"
+category: "Build & Fix"
 audience:
   - "Founders who need guided manual testing before shipping"
   - "Developers validating flows that need real browser or user observation"

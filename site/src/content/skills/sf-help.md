@@ -3,7 +3,7 @@ title: "sf-help"
 slug: "sf-help"
 tagline: "See the workflow map when you need to remember which skill to use next."
 summary: "A reference skill that explains the ShipFlow system, available skills, and the intended execution paths between them."
-category: "Meta & Utility"
+category: "Meta & Setup"
 audience:
   - "New ShipFlow users"
   - "Returning operators who need a quick workflow refresher"

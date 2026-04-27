@@ -6,13 +6,28 @@ import NavBar from "../../components/NavBar.astro";
 import SkillCard from "../../components/SkillCard.astro";
 
 const categoryOrder = [
-  "Core Workflow",
-  "Audits",
-  "Context & Docs",
-  "Research & Growth",
-  "Operations",
-  "Meta & Utility"
+  "Plan & Decide",
+  "Build & Fix",
+  "Audit & Improve",
+  "Research & Grow",
+  "Operate & Ship",
+  "Meta & Setup"
 ] as const;
+
+const categoryCopy: Record<(typeof categoryOrder)[number], string> = {
+  "Plan & Decide":
+    "Frame the work before you touch files: clarify scope, prioritize, and decide the execution path.",
+  "Build & Fix":
+    "Execute concrete changes: implement features, debug failures, and repair broken flows.",
+  "Audit & Improve":
+    "Inspect quality and risk across code, UX, copy, SEO, accessibility, and delivery posture.",
+  "Research & Grow":
+    "Produce content and market intelligence that helps you choose, publish, and compound growth.",
+  "Operate & Ship":
+    "Keep delivery reliable with checks, docs, migrations, release routines, and production validation.",
+  "Meta & Setup":
+    "Maintain the ShipFlow system itself: setup, orientation, meta tooling, and operator guidance."
+};
 
 const skills = (await getCollection("skills")).sort((a, b) => a.data.order - b.data.order);
 const featuredSkills = skills.filter((skill) => skill.data.featured);
@@ -111,10 +126,7 @@ const groupedSkills = categoryOrder.map((category) => ({
               <div class="section-heading">
                 <p class="eyebrow">{category}</p>
                 <h2>{categorySkills.length} public pages in this category.</h2>
-                <p>
-                  Each page explains the operator problem, the practical output,
-                  and where that skill fits in a real founder workflow.
-                </p>
+                <p>{categoryCopy[category]}</p>
               </div>
               <div class="skill-grid">
                 {

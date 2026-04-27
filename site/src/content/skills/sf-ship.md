@@ -3,7 +3,7 @@ title: "sf-ship"
 slug: "sf-ship"
 tagline: "Commit and push quickly when the work is actually ready, instead of stretching closure into another vague step."
 summary: "A shipping skill for moving finished work through the final commit-and-push path and recording the shipping result when a chantier spec is in scope."
-category: "Core Workflow"
+category: "Operate & Ship"
 audience:
   - "Founders who prefer fast closure once work is ready"
   - "Operators who want a cleaner final step after validation"

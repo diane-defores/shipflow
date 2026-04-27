@@ -3,7 +3,7 @@ title: "sf-review"
 slug: "sf-review"
 tagline: "Review recent work and the session state before you lose the thread of what changed."
 summary: "A review skill for summarizing recent changes, identifying remaining gaps, and preparing the next session cleanly."
-category: "Core Workflow"
+category: "Plan & Decide"
 audience:
   - "Founders wrapping a meaningful work block"
   - "Operators who want a more deliberate checkpoint after implementation"

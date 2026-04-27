@@ -3,7 +3,7 @@ title: "sf-audit-components"
 slug: "sf-audit-components"
 tagline: "Audit whether the component layer is actually reusable or just looks organized from a distance."
 summary: "A specialist review for component architecture, duplication, API hygiene, and design-system coherence."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders with growing frontend systems"
   - "Teams that suspect their component library is drifting"

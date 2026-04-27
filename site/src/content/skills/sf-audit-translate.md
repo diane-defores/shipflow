@@ -3,7 +3,7 @@ title: "sf-audit-translate"
 slug: "sf-audit-translate"
 tagline: "Review whether translations are complete, consistent, and trustworthy, then sync missing localized content when the mapping is clear."
 summary: "A translation audit and controlled i18n sync skill for completeness, tone consistency, cross-language coherence, and missing localized entries."
-category: "Audits"
+category: "Audit & Improve"
 audience:
   - "Founders operating a multilingual product or site"
   - "Teams that suspect i18n drift or incomplete localization"

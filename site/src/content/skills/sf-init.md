@@ -3,7 +3,7 @@ title: "sf-init"
 slug: "sf-init"
 tagline: "Bootstrap a project into the ShipFlow operating model instead of improvising the structure from scratch."
 summary: "An initialization skill for detecting project shape, generating baseline docs, and registering the repo in the ShipFlow workflow."
-category: "Context & Docs"
+category: "Meta & Setup"
 audience:
   - "Founders adopting ShipFlow in a new or existing repo"
   - "Operators who want the standard context and tracking layer created quickly"
