@@ -50,6 +50,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` now report chantier status and trace lifecycle results when a unique spec-first chantier is identified
 - Workflow documentation now links metadata doctrine to executable templates and linting
 - `sf-fix`, `sf-start`, `sf-verify`, and `sf-prod` now route auth/browser-flow uncertainty through `sf-auth-debug` when browser evidence is needed
+- `sf-fix` now requires durable bug memory for direct fixes by creating or reusing a `BUG-ID` and per-bug dossier unless a narrow minor exception is explicitly justified
 - Internal and public skill documentation now explain when to use `sf-auth-debug` and which auth references it carries
 - Internal linking across the public site now routes homepage, docs, about, and "Why not just prompts?" traffic toward the new skill-modes tutorial and FAQ surfaces
 - ShipFlow installer now targets selected eligible user accounts for AI configuration instead of mutating every `/home/*` account by default

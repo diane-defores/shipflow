@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: ShipFlow
 created: "2026-04-27"
 created_at: "2026-04-27 12:44:52 UTC"
-updated: "2026-04-27"
-updated_at: "2026-04-27 17:37:26 UTC"
+updated: "2026-04-29"
+updated_at: "2026-04-29 10:00:31 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -204,7 +204,7 @@ Bug ID generation invariant:
 - Cross-cutting checks: security for evidence redaction and path safety, documentation coherence for workflow docs and public skill pages, metadata linting for bug dossier frontmatter, and operational sanity for file growth.
 - Regression impact: existing projects with simple `BUGS.md` should continue working; the new structure is additive and applies when new bugs are opened or retested.
 - Public documentation impact: the website skill pages and README must not describe old `BUGS.md` behavior after the new dossier model lands.
-- Operational consequence: no global registry in `/home/claude/shipflow_data`; bug records belong to the project repo where the behavior exists.
+- Operational consequence: no global registry in `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}`; bug records belong to the project repo where the behavior exists.
 
 ## Documentation Coherence
 
@@ -252,7 +252,7 @@ Bug ID generation invariant:
   - Action: Accept `artifact: bug_record`, require the bug-specific frontmatter fields needed by the template, and include `bugs/` in default targets only when that directory exists or when the path is explicitly passed.
   - User story link: Keeps detailed bug dossiers structured and reviewable by fresh agents.
   - Depends on: Task 1
-  - Validate with: `SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}" "$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py" templates/artifacts/bug_record.md`
+  - Validate with: `SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}" "$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py" templates/artifacts/bug_record.md`
   - Notes: Do not lint `BUGS.md` or `TEST_LOG.md` as artifacts.
 
 - [ ] Task 3: Define compact test and bug tracking doctrine in `sf-test`
@@ -422,7 +422,7 @@ Bug ID generation invariant:
 - Read first: `skills/sf-test/SKILL.md`, `skills/sf-fix/SKILL.md`, `skills/sf-verify/SKILL.md`, `skills/sf-ship/SKILL.md`, `skills/sf-docs/SKILL.md`, `templates/artifacts/spec.md`, `tools/shipflow_metadata_lint.py`.
 - Implementation approach: create the template and metadata support first; then update the workflow skills in the order `sf-test`, `sf-fix`, `sf-verify`, `sf-ship`, `sf-docs`; then update help, README, workflow docs, public skill pages and changelog.
 - Packages: do not add runtime packages. `tools/shipflow_metadata_lint.py` must remain Python standard library only.
-- Patterns to follow: additive markdown edits, re-read before editing trackers, explicit status transitions, explicit evidence limits, no frontmatter for `TEST_LOG.md` or `BUGS.md`, ShipFlow-owned paths from `${SHIPFLOW_ROOT:-/home/claude/shipflow}`.
+- Patterns to follow: additive markdown edits, re-read before editing trackers, explicit status transitions, explicit evidence limits, no frontmatter for `TEST_LOG.md` or `BUGS.md`, ShipFlow-owned paths from `${SHIPFLOW_ROOT:-$HOME/shipflow}`.
 - Data flow: observation or failed test -> compact `TEST_LOG.md` entry -> compact `BUGS.md` index pointer -> detailed `bugs/BUG-ID.md` dossier -> optional redacted evidence under `test-evidence/BUG-ID/` -> fix attempt -> retest -> verify -> ship risk report.
 - Abstractions to avoid: no global bug registry, no external issue tracker adapter, no UI, no central evidence database, no generated migration of all old bugs.
 - Validate with: metadata lint for the new template, `rg` checks listed in tasks, manual dry-run against a fixture or temporary project, and final `tools/shipflow_metadata_lint.py specs/professional-bug-management.md templates/artifacts/bug_record.md` after implementation.
@@ -443,14 +443,17 @@ None. The chosen defaults are: compact project indexes plus per-bug dossiers plu
 | 2026-04-27 16:48:22 UTC | sf-end | GPT-5 Codex | Closed professional bug management by adding changelog entry and marking trackers complete | closed | /sf-ship Professional Bug Management |
 | 2026-04-27 17:04:30 UTC | sf-verify | GPT-5 Codex | Re-verified after sf-end; changelog complete, strict lifecycle smoke passed, metadata lint, Python compile, diff check and site build passed | verified | /sf-ship Professional Bug Management |
 | 2026-04-27 17:37:26 UTC | sf-ship | GPT-5 Codex | Quick ship Professional Bug Management changes after verified chantier state | shipped | None |
+| 2026-04-29 09:45:31 UTC | sf-verify | GPT-5 Codex | Verified follow-up hardening: sf-fix now requires durable bug trace for direct fixes, explicit minor exceptions, ID collision handling, template-based dossiers and aligned public docs | verified | /sf-end Durcir sf-fix pour exiger une trace bug durable |
+| 2026-04-29 09:52:55 UTC | sf-end | GPT-5 Codex | Closed follow-up durable trace hardening for sf-fix; updated trackers and changelog | closed | /sf-ship Durcir sf-fix pour exiger une trace bug durable |
+| 2026-04-29 10:00:31 UTC | sf-ship | GPT-5 Codex | Shipped durable bug trace hardening after aligning README, workflow docs, public docs overview, FAQ, about page and sf-fix public content | shipped | None |
 
 ## Current Chantier Flow
 
 - `sf-spec`: done, draft spec updated with lifecycle, security, documentation and chantier tracking.
 - `sf-ready`: ready on 2026-04-27 after structure, metadata, user story alignment, adversarial review, security review and documentation coherence checks.
 - `sf-start`: implemented on 2026-04-27 for execution scope; task 18 (`CHANGELOG.md`) was intentionally handled by sf-end because sf-start must not update CHANGELOG.md.
-- `sf-verify`: verified on 2026-04-27 after changelog completion, strict lifecycle smoke, metadata lint, Python compile, diff check and site build.
-- `sf-end`: closed on 2026-04-27 after changelog and tracker closure.
-- `sf-ship`: shipped on 2026-04-27.
+- `sf-verify`: verified on 2026-04-29 for the follow-up `sf-fix` durable trace hardening; targeted rg checks, metadata lint, diff check and chantier metadata checks passed.
+- `sf-end`: closed on 2026-04-29 after tracker and changelog closure for the follow-up durable trace hardening.
+- `sf-ship`: shipped on 2026-04-29 after documentation and public site alignment for durable direct-fix bug traceability.
 
 Next step: None

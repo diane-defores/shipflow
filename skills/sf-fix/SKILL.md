@@ -6,7 +6,7 @@ argument-hint: <bug description, error message, or failing behavior>
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -27,7 +27,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Project name: !`basename $(pwd)`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
-- Master TASKS.md: !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 
 ## Your task
@@ -87,6 +87,13 @@ Prefer decision-forcing questions such as:
 
 ### Step 1.5 — BUG-ID and bug dossier intake (required)
 
+Direct bug fixes still require durable bug memory. `sf-fix` must finish with a bug reference and a bug dossier unless the issue is an explicit minor-exception case.
+
+Minor-exception cases are narrow and must be justified explicitly in the final report:
+- typo/copy-only fix with no workflow impact
+- purely cosmetic visual defect with no state, permission, data, or interaction consequence
+- duplicate of an already-tracked `BUG-ID` with no new diagnosis or fix history to add
+
 When `$ARGUMENTS` includes a `BUG-ID` (`BUG-YYYY-MM-DD-NNN`) or a bug title that matches `BUGS.md`:
 - re-read `BUGS.md` right before bug intake
 - locate the index row for `BUG-ID` (or the best matching open title)
@@ -107,6 +114,20 @@ If `bugs/BUG-ID.md` is missing but `BUGS.md` has an entry:
 - report `needs-info`
 - do not invent details; ask for recovery context or reroute to `/sf-test --retest BUG-ID`
 
+If no matching `BUG-ID` or dossier exists and the issue is not a justified minor exception:
+- create or reserve a new durable bug record before or during the direct fix flow
+- before assigning the ID, re-read `BUGS.md`, list `bugs/BUG-YYYY-MM-DD-*.md`, and choose the next UTC-date suffix greater than every suffix found in either place
+- immediately before writing `bugs/BUG-ID.md`, check for a collision; if it exists, re-read both sources once, increment and retry; if the collision repeats, stop and report it instead of overwriting
+- write a compact `BUGS.md` index pointer
+- create `bugs/BUG-ID.md` from `templates/artifacts/bug_record.md`
+- reconstruct the initial bug story from the current report and code context instead of leaving the fix attached only to chat history
+- use the same canonical statuses and evidence/redaction rules as `sf-test`
+
+If the issue qualifies for a minor exception:
+- do not create a dossier only if the final report says `Bug trace exception: yes`
+- include the reason and residual memory tradeoff explicitly
+- never use the exception for auth, data, workflow, permission, API, redirect, cache, payment, external effect, or stateful UI bugs
+
 Status handling for active fix work:
 - when investigation starts, move status to `in-diagnosis` and append a Diagnosis Notes row
 - every concrete code attempt appends a Fix Attempts row in the bug dossier
@@ -116,9 +137,9 @@ Status handling for active fix work:
 
 Read only the 3-5 most relevant files and classify the bug as `direct` or `spec-first`.
 
-Apply the shared Documentation Freshness Gate from `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` during triage when the bug may depend on current framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Local repo versions and patterns come first; Context7 official docs come next; official web docs are the fallback.
+Apply the shared Documentation Freshness Gate from `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/documentation-freshness-gate.md` during triage when the bug may depend on current framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Local repo versions and patterns come first; Context7 official docs come next; official web docs are the fallback.
 
-If Supabase is detected and the bug touches auth, storage, upload, DB, or RLS behavior, load only the relevant references among `/home/claude/shipflow/skills/references/supabase-auth.md`, `/home/claude/shipflow/skills/references/supabase-storage.md`, `/home/claude/shipflow/skills/references/supabase-db.md` before classifying or patching.
+If Supabase is detected and the bug touches auth, storage, upload, DB, or RLS behavior, load only the relevant references among `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-storage.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-db.md` before classifying or patching.
 
 During triage, verify four things before choosing `direct`:
 - **User story fit**: the expected fix is clearly tied to the promised user outcome
@@ -151,6 +172,9 @@ If classification confidence is low (mixed signals), use **AskUserQuestion**:
 
 If `direct`:
 - implement the fix directly
+- ensure the bug is attached to durable project memory before ending the run:
+  - reuse an existing `BUG-ID` when the bug already exists
+  - otherwise create `BUGS.md` + `bugs/BUG-ID.md` unless a justified minor exception applies
 - keep scope local to the classified delta
 - preserve the user story outcome, not only the failing technical symptom
 - preserve product coherence with nearby flows and conventions
@@ -167,6 +191,11 @@ If `direct`:
 - if the expected row or section moved, re-read once and recompute; if it is still ambiguous, stop and ask the user
 - run relevant checks for the changed area
 - run at least one user-story sanity check
+- if `sf-fix` is the first skill to persist this bug, create an initial dossier that includes:
+  - summary/title/status/severity/next step
+  - reproduction / expected / observed
+  - diagnosis notes for the current investigation
+  - redaction status and evidence pointers if any exist
 - append a new `Fix Attempts` row in the bug dossier with:
   - timestamp UTC
   - files changed
@@ -206,8 +235,9 @@ Output:
 Classification: [direct / spec-first]
 Reason: [short rationale]
 User story: [actor + expected outcome]
-Bug reference: [BUG-ID | none]
-Bug dossier: [bugs/BUG-ID.md | none]
+Bug reference: [BUG-ID | minor exception]
+Bug dossier: [bugs/BUG-ID.md | minor exception]
+Bug trace exception: [no | yes + reason]
 Clarifications asked: [none / short list]
 Product coherence: [ok / risk]
 Documentation coherence: [ok / risk / not impacted]
@@ -231,6 +261,7 @@ Scope estimate: [small / medium / large]
 - Keep triage short and actionable
 - Ask the user instead of guessing when ambiguity changes product meaning or security posture
 - A direct fix must still defend product coherence, not only pass the local repro
+- A direct fix must still leave durable bug memory unless a narrow minor exception is explicitly justified
 - A direct fix that changes feature behavior must align docs or explicitly report the doc gap
 - A direct fix must keep or improve security posture; never weaken controls for speed
 - If direct-fix verification fails or reveals broader ambiguity, reroute to spec-first

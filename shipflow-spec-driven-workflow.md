@@ -495,6 +495,8 @@ Each stage has a narrow job:
 - `sf-verify` checks whether the remaining bug state still blocks release.
 - `sf-ship` consumes the final bug state when deciding whether the ship is clean, partial-risk, or blocked.
 
+The direct-fix path does not bypass this memory layer. If `sf-fix` is the first skill to touch an actionable bug, it should create or reuse a `BUG-ID`, add the compact `BUGS.md` pointer, and create `bugs/BUG-ID.md` before ending the run. The only normal exceptions are narrow copy-only, cosmetic-only, or duplicate cases, and the final report should name the exception explicitly.
+
 Canonical bug states stay explicit:
 
 - `open`
@@ -538,6 +540,8 @@ Typical routed outcomes:
 - spec-first: `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end`
 
 When `sf-test` finds a failure first, the bug should already exist as a compact index entry plus dossier. `sf-fix` should read that dossier instead of rebuilding context from chat history.
+
+When `sf-fix` is the first skill to touch a bug, it should usually create that compact index entry plus dossier itself instead of leaving the correction documented only in chat history or git diff. Only narrow minor exceptions such as copy-only or purely cosmetic fixes may skip dossier creation, and that exception should be stated explicitly in the final report.
 
 When the bug is auth or browser-flow related, run `sf-auth-debug` before coding from theory. It consumes the bug report or spec, reproduces with Playwright where possible, and isolates failures across Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, cookies, callbacks, protected routes, and Flutter web auth bridges. Its output should route back into `sf-fix`, `sf-start`, or `sf-verify` with evidence rather than guesses.
 

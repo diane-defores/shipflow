@@ -230,6 +230,7 @@ sf-model -> choose model / reasoning / fallbacks before execution
 ```
 
 If the bug is local and clear, `sf-fix` fixes it directly, then verifies.
+That fast path should still attach the bug to durable project memory with a compact `BUGS.md` entry and a `bugs/BUG-ID.md` dossier, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix.
 If the bug is ambiguous or non-trivial, `sf-fix` routes to `sf-spec -> sf-ready -> sf-start`.
 
 ShipFlow keeps bug records split on purpose:
