@@ -3,6 +3,7 @@
 # Test script for validation functions
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
+source "$SCRIPT_DIR/local/mcp-login.sh"
 
 echo -e "${CYAN}╔══════════════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}║${NC}        ${YELLOW}ShipFlow Validation Tests${NC}          ${CYAN}║${NC}"
@@ -74,6 +75,20 @@ run_test "Env name with uppercase" "fail" validate_env_name "MyApp"
 run_test "Env name with special chars" "fail" validate_env_name "my@app"
 
 echo ""
+echo -e "${BLUE}Testing DuckDNS/public publish validation${NC}"
+echo ""
+
+run_test "Valid DuckDNS subdomain" "pass" validate_duckdns_subdomain "my-app123"
+run_test "DuckDNS subdomain uppercase" "fail" validate_duckdns_subdomain "MyApp"
+run_test "DuckDNS subdomain injection newline" "fail" validate_duckdns_subdomain $'myapp\nexample.com'
+run_test "DuckDNS subdomain trailing dash" "fail" validate_duckdns_subdomain "myapp-"
+run_test "Valid DuckDNS token" "pass" validate_duckdns_token "12345678-1234-1234-1234-123456789abc"
+run_test "DuckDNS token with ampersand" "fail" validate_duckdns_token "1234567890123456&bad"
+run_test "Valid public IPv4" "pass" validate_public_ipv4 "203.0.113.10"
+run_test "Invalid public IPv4 octet" "fail" validate_public_ipv4 "203.0.113.999"
+run_test "Invalid public IPv4 payload" "fail" validate_public_ipv4 "203.0.113.10 example.com"
+
+echo ""
 echo -e "${BLUE}Testing validate_repo_name()${NC}"
 echo ""
 
@@ -87,6 +102,39 @@ run_test "Valid repo 'my.repo'" "pass" validate_repo_name "my.repo"
 run_test "Empty repo name" "fail" validate_repo_name ""
 run_test "Repo with spaces" "fail" validate_repo_name "my repo"
 run_test "Repo with special chars" "fail" validate_repo_name "my@repo"
+
+echo ""
+echo -e "${BLUE}Testing _ui_normalize_choice()${NC}"
+echo ""
+
+run_test "Choice lowercase" "pass" test "$( _ui_normalize_choice "a" )" = "a"
+run_test "Choice uppercase" "pass" test "$( _ui_normalize_choice "A" )" = "a"
+run_test "Choice with suffix" "pass" test "$( _ui_normalize_choice "a)" )" = "a"
+run_test "Choice with spaces" "pass" test "$( _ui_normalize_choice "  B  " )" = "b"
+run_test "Choice with CRLF" "pass" test "$( _ui_normalize_choice $'c\r' )" = "c"
+
+echo ""
+echo -e "${BLUE}Testing validate_mcp_provider_name()${NC}"
+echo ""
+
+run_test "Valid MCP provider vercel" "pass" validate_mcp_provider_name "vercel"
+run_test "Valid MCP provider custom-name_1" "pass" validate_mcp_provider_name "custom-name_1"
+run_test "Invalid MCP provider empty" "fail" validate_mcp_provider_name ""
+run_test "Invalid MCP provider starts with dash" "fail" validate_mcp_provider_name "--config"
+run_test "Invalid MCP provider space" "fail" validate_mcp_provider_name "bad name"
+run_test "Invalid MCP provider slash" "fail" validate_mcp_provider_name "bad/name"
+run_test "Invalid MCP provider semicolon" "fail" validate_mcp_provider_name "bad;name"
+run_test "Invalid MCP provider dollar" "fail" validate_mcp_provider_name "bad\$name"
+run_test "Invalid MCP provider backtick" "fail" validate_mcp_provider_name "bad\`name"
+run_test "Invalid MCP provider newline" "fail" validate_mcp_provider_name $'bad\nname'
+
+echo ""
+echo -e "${BLUE}Testing parse_mcp_oauth_port_from_text()${NC}"
+echo ""
+
+run_test "Parse encoded redirect_uri callback port" "pass" test "$(parse_mcp_oauth_port_from_text 'https://example.com/oauth?redirect_uri=http%3A%2F%2F127.0.0.1%3A46319%2Fcallback')" = "46319"
+run_test "Parse decoded callback port" "pass" test "$(parse_mcp_oauth_port_from_text 'Open this URL: http://127.0.0.1:38765/callback')" = "38765"
+run_test "Reject missing callback port" "fail" parse_mcp_oauth_port_from_text "https://example.com/no-callback"
 
 echo ""
 echo -e "${CYAN}══════════════════════════════════════════════════${NC}"

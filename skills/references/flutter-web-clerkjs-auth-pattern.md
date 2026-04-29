@@ -6,7 +6,7 @@ This document defines the preferred ShipFlow pattern for implementing authentica
 
 Use it as the technical reference when fixing or implementing auth in other Flutter repositories.
 
-Reference implementation: `/home/claude/contentflow/contentflow_app`
+Reference implementation: `$HOME/contentflow/contentflow_app`
 
 Last reviewed: 2026-04-26
 
@@ -58,13 +58,13 @@ Each Flutter web app using this pattern should have equivalents of:
 - API client that injects a fresh Clerk bearer token
 
 ContentFlow implementation:
-- `/home/claude/contentflow/contentflow_app/web_auth/clerk-runtime.js.template`
-- `/home/claude/contentflow/contentflow_app/web_auth/sign-in.html`
-- `/home/claude/contentflow/contentflow_app/web_auth/sso-callback.html`
-- `/home/claude/contentflow/contentflow_app/scripts/install-web-auth.sh`
-- `/home/claude/contentflow/contentflow_app/lib/data/services/clerk_auth_service_web.dart`
-- `/home/claude/contentflow/contentflow_app/lib/providers/providers.dart`
-- `/home/claude/contentflow/contentflow_app/lib/data/services/api_service.dart`
+- `$HOME/contentflow/contentflow_app/web_auth/clerk-runtime.js.template`
+- `$HOME/contentflow/contentflow_app/web_auth/sign-in.html`
+- `$HOME/contentflow/contentflow_app/web_auth/sso-callback.html`
+- `$HOME/contentflow/contentflow_app/scripts/install-web-auth.sh`
+- `$HOME/contentflow/contentflow_app/lib/data/services/clerk_auth_service_web.dart`
+- `$HOME/contentflow/contentflow_app/lib/providers/providers.dart`
+- `$HOME/contentflow/contentflow_app/lib/data/services/api_service.dart`
 
 ## Build Requirements
 

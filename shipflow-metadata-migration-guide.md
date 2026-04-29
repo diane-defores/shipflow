@@ -248,20 +248,20 @@ Templates are for future docs and deliberate refactors, not for bulk rewriting l
 Run:
 
 ```bash
-SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
 "$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py"
 ```
 
 Or validate only a narrow scope:
 
 ```bash
-SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
 "$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py" BUSINESS.md BRANDING.md specs/
 ```
 
 For multi-project migrations, validate repo by repo or by an explicit list of touched paths. This keeps failures local and easier to fix.
 
-The linter path is ShipFlow-owned. Resolve it from `${SHIPFLOW_ROOT:-/home/claude/shipflow}` even when the migration is being applied to another project repository.
+The linter path is ShipFlow-owned. Resolve it from `${SHIPFLOW_ROOT:-$HOME/shipflow}` even when the migration is being applied to another project repository.
 
 If a file already has frontmatter but fails the linter:
 

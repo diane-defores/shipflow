@@ -7,7 +7,7 @@ argument-hint: [optional: add "idea", move "defer", review, clean]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -20,16 +20,16 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 ## Context
 
 - Current directory: !`pwd`
-- **Master TASKS.md** (has a "Backlog" section): !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- **Master TASKS.md** (has a "Backlog" section): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Local BACKLOG.md (if exists): !`cat BACKLOG.md 2>/dev/null || echo "No BACKLOG.md"`
 - Project CLAUDE.md: !`head -30 CLAUDE.md 2>/dev/null || echo "No CLAUDE.md"`
-- Workspace CLAUDE.md: !`head -20 /home/claude/CLAUDE.md 2>/dev/null || echo "N/A"`
+- Workspace CLAUDE.md: !`head -20 $HOME/CLAUDE.md 2>/dev/null || echo "N/A"`
 - Code TODOs: !`grep -r "TODO\|FIXME" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" --include="*.py" --include="*.sh" . 2>/dev/null | head -20 || echo "No TODOs found"`
 
 ## Multi-project tracking system
 
-**CRITICAL**: This workspace tracks 12 projects from a single master file at `/home/claude/shipflow_data/TASKS.md`.
+**CRITICAL**: This workspace tracks 12 projects from a single master file at `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`.
 
 - The master TASKS.md has a **"Backlog (Ideas Parking Lot)"** section at the bottom — use it as the primary backlog
 - When adding backlog items, **always prefix with the project name** (e.g., `- my-robots: CrewAI marketplace publishing`)
@@ -128,7 +128,7 @@ If the current directory has no project markers (not inside a specific project) 
 
 ### Important
 
-- **Always update the master `/home/claude/shipflow_data/TASKS.md` Backlog section** — even when working in a sub-project directory
+- **Always update the master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` Backlog section** — even when working in a sub-project directory
 - Prefix all backlog items with the project name (e.g., `- tubeflow: Native app feature parity`)
 - Keep each project's active section in the master file focused (5-10 items max)
 - Backlog section can be larger (20-50 items across all projects)

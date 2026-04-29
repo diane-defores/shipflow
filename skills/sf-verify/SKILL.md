@@ -6,7 +6,7 @@ argument-hint: [optional: tâche ou scope à vérifier]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -25,7 +25,7 @@ When the verified work changes ShipFlow skill instructions, include a coherence 
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git diff stat: !`git diff HEAD --stat 2>/dev/null || echo "no changes"`
 - Recent commits (session): !`git log --oneline -10 2>/dev/null || echo "no commits"`
-- Master TASKS.md: !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - CLAUDE.md (constraints): !`head -60 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 
@@ -147,7 +147,7 @@ Vérifier que les artefacts ShipFlow utilisés pour implémenter le travail sont
 
 ### Step 3.5 — Vérifier la documentation officielle actuelle
 
-Appliquer `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` au travail vérifié.
+Appliquer `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/documentation-freshness-gate.md` au travail vérifié.
 
 Si le diff, la spec ou la description dépend d'un framework, SDK, service, API, auth/session, build, migration, cache, routing ou intégration externe :
 - vérifier que la dépendance et sa version locale ont été identifiées quand c'est possible

@@ -7,7 +7,7 @@ argument-hint: '[project-path] (omit to init current directory)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -149,9 +149,9 @@ Populate the initial tasks intelligently from what was detected in Step 1 (stack
 
 ### Step 4: Register in PROJECTS.md
 
-Read `/home/claude/shipflow_data/PROJECTS.md` and add a row to both tables:
+Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` and add a row to both tables:
 
-Before editing `/home/claude/shipflow_data/PROJECTS.md` here, or `/home/claude/shipflow_data/TASKS.md` later in Step 6:
+Before editing `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` here, or `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` later in Step 6:
 - Treat the snapshots loaded earlier in the skill as informational only.
 - Right before editing the shared file, re-read it from disk and use that version as authoritative.
 - Apply a minimal targeted row or section insert/update; never rewrite the whole file from stale context.
@@ -162,6 +162,10 @@ Before editing `/home/claude/shipflow_data/PROJECTS.md` here, or `/home/claude/s
 ```
 | [name] | [path] | [stack summary] |
 ```
+
+Path rule:
+- If the project lives under the current user's home directory, store the path as `~/...` in `PROJECTS.md`, not `/home/<user>/...`.
+- Keep absolute paths only for locations outside the current home directory.
 
 **Domain Applicability table** — auto-detect defaults:
 - Code: ✓ (always)
@@ -377,7 +381,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Initial project setup
 ```
 
-**Master TASKS.md** — add a section to `/home/claude/shipflow_data/TASKS.md`:
+**Master TASKS.md** — add a section to `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`:
 
 ```markdown
 ## [project name]
@@ -421,7 +425,7 @@ Base config:
   "mcpServers": {
     "codebase": {
       "command": "python3",
-      "args": ["/home/claude/shipflow/tools/codebase-mcp/server.py", "[ABSOLUTE_PROJECT_PATH]"]
+      "args": ["[ABSOLUTE_SHIPFLOW_ROOT]/tools/codebase-mcp/server.py", "[ABSOLUTE_PROJECT_PATH]"]
     },
     "context7": {
       "command": "npx",
@@ -434,6 +438,8 @@ Base config:
   "disabledMcpServers": ["codebase"]
 }
 ```
+
+Resolve `[ABSOLUTE_SHIPFLOW_ROOT]` from `$SHIPFLOW_ROOT` first, or from `$HOME/shipflow` only when that fallback exists. Do not write shell variables in JSON MCP `args`; they are not shell-expanded.
 
 If Clerk is accepted, add:
 
@@ -476,7 +482,7 @@ If Supabase is accepted, add:
 - Do not add `openaiDeveloperDocs` to `disabledMcpServers` by default. OpenAI Docs MCP should be available for current OpenAI product/API/model docs, but only consumes model context when a tool call retrieves documentation.
 - Do not add `convex`, `vercel`, or `supabase` to `disabledMcpServers` by default when they are enabled for the project.
 - Create `.claude/` directory if needed.
-- Skip silently if `/home/claude/shipflow/tools/codebase-mcp/server.py` doesn't exist.
+- Skip silently if `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/codebase-mcp/server.py` doesn't exist.
 
 Operational guidance:
 - OpenAI Docs MCP is the first source for current OpenAI API, Codex, model-selection, migration, and prompting guidance.
@@ -499,7 +505,7 @@ This project uses a local codebase MCP server for efficient context management.
 3. **Use `context_read`** instead of Read for code exploration (tracks token budget).
 4. **After editing**, call `context_register_edit` with a one-sentence summary.
 
-See `/home/claude/shipflow/tools/codebase-mcp/README.md` for full tool reference.
+See `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/codebase-mcp/README.md` for full tool reference.
 ```
 
 #### 5d. CONTENT_MAP.md

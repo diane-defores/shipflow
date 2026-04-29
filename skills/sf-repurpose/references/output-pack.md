@@ -16,6 +16,8 @@ Use this template as the default shape of the response. Expand or compress secti
 - Source type:
 - Core idea:
 - Strongest insight:
+- Best reusable wording:
+- Diagrams or lists worth preserving:
 - Audience fit:
 - What is worth repurposing:
 - What to avoid echoing too closely:
@@ -49,6 +51,21 @@ Use this template as the default shape of the response. Expand or compress secti
 - Newsletter angle:
 - Social/thread angle:
 
+## Diffusion Map
+
+- Canonical surface:
+- Supporting surfaces:
+- Repeated concept:
+- Per-surface job:
+- Surfaces intentionally skipped:
+
+## Application Checklist
+
+- Must write:
+- Should write:
+- Optional:
+- Deferred / blocked:
+
 ## Evidence Ledger
 
 - Claim: ...
@@ -60,9 +77,13 @@ Guidance:
 
 - `Build Summary` should read like the truth source for all other sections.
 - For external text sources, `Source Analysis` becomes the anchor section and `Build Summary` can be shortened or adapted.
+- `Best reusable wording` should capture clear conversational phrases that can be reused verbatim or near-verbatim in docs, articles, or FAQ entries.
+- `Diagrams or lists worth preserving` should identify simple explanation structures that should be moved into the target surface instead of left in chat.
 - `Product Documentation Notes` should help someone update docs without re-reading the whole thread.
 - `Marketing Claims` should stay tight and conservative. If only one safe claim exists, give one.
 - `Content Angles` should be reusable prompts or headlines, not full articles.
+- `Diffusion Map` is mandatory when the source idea is site-facing or SEO-relevant.
+- `Application Checklist` is mandatory when the user asks to apply, create, update, or fill site/docs surfaces.
 - `Evidence Ledger` is mandatory whenever the output contains public-facing claims.
 
 Compression rules:
@@ -71,3 +92,4 @@ Compression rules:
 - If the work is tiny, collapse `Internal Change Narrative` into 2-3 bullets.
 - If the user asked for one surface only, keep the other sections brief but do not remove the evidence ledger.
 - If the source is a third-party paragraph or article, favor `Source Analysis`, `Marketing Claims`, and `Content Angles` over build-specific sections.
+- If the skill is in apply mode, keep this pack internal and summarize only the files changed, concepts placed, validations, and deferred surfaces in the final answer.

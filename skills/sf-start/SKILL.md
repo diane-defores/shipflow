@@ -6,7 +6,7 @@ argument-hint: <task description or TASKS.md item>
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -22,7 +22,7 @@ Before executing from a ready spec, load `$SHIPFLOW_ROOT/skills/references/chant
 - Project name: !`basename $(pwd)`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
-- Master TASKS.md: !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Available specs: !`find docs specs -maxdepth 2 -type f -name "*.md" 2>/dev/null | sort | head -40`
 
@@ -84,8 +84,8 @@ If `spec-first` and no matching `Status: ready` spec exists:
 
 ### Step 3 — Load context, derive execution contract, and track task (silent)
 
-- Read `/home/claude/shipflow/skills/references/documentation-freshness-gate.md` when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Preserve the gate verdict in the execution contract.
-- If Supabase is in the stack and the task touches auth, storage, uploads, DB, or RLS, load only the relevant references among `/home/claude/shipflow/skills/references/supabase-auth.md`, `/home/claude/shipflow/skills/references/supabase-storage.md`, `/home/claude/shipflow/skills/references/supabase-db.md` before editing.
+- Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/documentation-freshness-gate.md` when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Preserve the gate verdict in the execution contract.
+- If Supabase is in the stack and the task touches auth, storage, uploads, DB, or RLS, load only the relevant references among `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-storage.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-db.md` before editing.
 - Si la tâche est `spec-first`, préférer une exécution sur contexte frais :
   - lancer un subagent sans historique si c'est possible
   - sinon demander explicitement à l'utilisateur d'ouvrir un nouveau thread avant de continuer
@@ -125,7 +125,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - files owned by each group
   - shared files that must stay with the main agent
   - groups that can run in parallel vs groups that must wait
-- Read `/home/claude/shipflow/skills/sf-model/references/model-routing.md` before choosing execution model(s)
+- Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/sf-model/references/model-routing.md` before choosing execution model(s)
 - If the spec is missing any of the above, stop and route back to `/sf-ready` or `/sf-spec`
 - If a non-trivial spec lacks `Minimal Behavior Contract`, `Success Behavior`, `Error Behavior`, implementation approach, adversarial gaps, or explicit constraints, stop and route back to `/sf-ready` or `/sf-spec`
 - If the spec is missing required metadata/version context, treat it as a contract gap. Continue only for trivial/local work where the missing metadata cannot change product or security semantics; otherwise route back to `/sf-ready`.
@@ -146,7 +146,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
 
 Choose the execution model before coding.
 
-Use `/home/claude/shipflow/skills/sf-model/references/model-routing.md` as the shared provider-aware source of truth.
+Use `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/sf-model/references/model-routing.md` as the shared provider-aware source of truth.
 
 Pick:
 - `Runtime/provider` (`Codex/OpenAI` or `Claude Code`)

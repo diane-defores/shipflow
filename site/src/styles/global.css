@@ -109,7 +109,19 @@ pre {
 .role-list,
 .section-heading,
 .site-footer {
-  backdrop-filter: blur(10px);
+  background-clip: padding-box;
+}
+
+@supports (backdrop-filter: blur(6px)) {
+  .hero-copy,
+  .hero-panel,
+  .card,
+  .panel,
+  .role-list,
+  .section-heading,
+  .site-footer {
+    backdrop-filter: blur(6px);
+  }
 }
 
 .hero-copy {
@@ -268,8 +280,52 @@ h3 {
   white-space: pre-wrap;
 }
 
+.hero-map {
+  display: grid;
+  gap: 14px;
+  height: 100%;
+}
+
+.hero-map-block,
+.hero-map-note {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.hero-map-block span {
+  display: block;
+  margin-bottom: 8px;
+  color: #9ee8d8;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-map-block strong {
+  display: block;
+  color: #f8f6ef;
+  font-size: 1.2rem;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.hero-map-note {
+  display: grid;
+  place-items: center;
+  min-height: 92px;
+  color: #d6f7ec;
+  font-weight: 700;
+  text-align: center;
+}
+
 .section {
   padding: 22px 0;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 960px;
 }
 
 .section-heading {

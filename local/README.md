@@ -94,6 +94,29 @@ Le menu offre :
 - 🔄 **Redémarrer** - Redémarre tous les tunnels
 - 🔐 **Login OAuth MCP (distant)** - Lance `codex mcp login` sur le serveur et crée un tunnel OAuth éphémère local
 
+### Pourquoi le tunnel OAuth existe
+
+Quand Codex tourne sur un serveur distant, le process `codex mcp login <provider>` écoute son callback OAuth sur le serveur. Le navigateur, lui, s'ouvre sur votre machine locale et essaie de joindre `127.0.0.1:<port>/callback`. Sans tunnel, `127.0.0.1` désigne votre machine locale, pas le serveur distant.
+
+Le problème n'est pas OAuth lui-même. Le problème est le routage: le navigateur local doit pouvoir rejoindre le listener de callback qui tourne sur le serveur distant.
+
+```text
+Navigateur local
+  -> http://127.0.0.1:PORT/callback
+  -> tunnel SSH ephemere -L PORT:127.0.0.1:PORT
+  -> serveur distant
+  -> codex mcp login <provider>
+  -> provider OAuth officiel
+```
+
+Le port change a chaque tentative OAuth. `shipflow-mcp-login` extrait donc le port frais depuis la sortie de Codex, crée le tunnel après extraction, ouvre ou affiche l'URL OAuth, puis ferme le tunnel quand le flow se termine. Les tokens OAuth restent gérés par Codex et le provider sur le serveur distant; ShipFlow ne lit pas et ne stocke pas ces tokens.
+
+Résumé mental:
+- Codex distant lance le login.
+- Le navigateur local reçoit l'autorisation.
+- Le tunnel SSH relie les deux uniquement pendant le callback.
+- ShipFlow nettoie le tunnel ensuite.
+
 ### Configurer ou changer de serveur
 
 Le script utilise `~/.shipflow/current_connection`. Après une migration serveur, configurez la nouvelle cible depuis la machine locale avec le menu:
@@ -105,6 +128,8 @@ urls
 Choisissez `c) Configurer nouveau serveur`, entrez l'adresse IP ou le host, puis l'utilisateur SSH. Si votre clé SSH a un nom spécial, entrez aussi son chemin (`~/.ssh/ma-cle`, par exemple). Laissez le champ vide pour utiliser la configuration SSH normale. Le menu teste la connexion et enregistre la cible pour `urls`, `tunnel` et `shipflow-mcp-login`.
 
 Si vous êtes connecté au serveur distant et ne connaissez plus l'IP publique à utiliser, ouvrez le menu ShipFlow distant et choisissez `c) Local Setup`.
+
+La clé SSH n'a pas besoin d'avoir un nom standard si le menu connaît son chemin ou si `~/.ssh/config` sait déjà quelle clé utiliser. Si vous changez de serveur, repassez par `c) Configurer nouveau serveur` plutôt que de modifier les fichiers à la main: le même enregistrement est utilisé par les tunnels d'applications et par le login OAuth MCP.
 
 ### Workflow
 
@@ -141,6 +166,8 @@ Ouvrez votre navigateur :
 
 Ce message arrive quand le callback OAuth `127.0.0.1:<port>` n'est pas routé vers le serveur distant.
 Utilisez la commande locale `shipflow-mcp-login <provider>`: elle extrait automatiquement le port OAuth courant, crée le tunnel local temporaire, puis le ferme en fin de flow.
+
+Ne réutilisez pas un port d'une tentative précédente: l'URL OAuth est périssable et le port peut changer à chaque relance. Si le script indique que SSH est inaccessible, retournez dans `urls`, choisissez `c) Configurer nouveau serveur`, vérifiez l'IP, l'utilisateur SSH et, si nécessaire, le chemin de la clé.
 
 ### Le script ne trouve pas de ports
 

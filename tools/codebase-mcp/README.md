@@ -15,11 +15,13 @@ Configure per project in `.claude/settings.json`:
   "mcpServers": {
     "codebase": {
       "command": "python3",
-      "args": ["/home/claude/tools/codebase-mcp/server.py", "/home/claude/YOUR_PROJECT"]
+      "args": ["/absolute/path/to/shipflow/tools/codebase-mcp/server.py", "/absolute/path/to/project"]
     }
   }
 }
 ```
+
+Use the resolved absolute ShipFlow install path; JSON MCP args are not expanded by a shell.
 
 Then restart Claude Code. The server starts automatically.
 

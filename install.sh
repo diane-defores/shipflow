@@ -795,7 +795,7 @@ configure_codex_tui() {
                     if (inserted == 0) {
                         print "# >>> shipflow codex tui >>>"
                         if (add_status == 0) {
-                            print "status_line = [\"model-with-reasoning\", \"current-dir\", \"context-used\"]"
+                            print "status_line = [\"model-with-reasoning\", \"current-dir\", \"context-remaining\", \"five-hour-limit\", \"weekly-limit\"]"
                         }
                         if (add_title == 0) {
                             print "terminal_title = [\"spinner\", \"thread\", \"project\"]"
@@ -814,7 +814,7 @@ configure_codex_tui() {
                     if (in_tui == 1 && inserted == 0) {
                         print "# >>> shipflow codex tui >>>"
                         if (add_status == 0) {
-                            print "status_line = [\"model-with-reasoning\", \"current-dir\", \"context-used\"]"
+                            print "status_line = [\"model-with-reasoning\", \"current-dir\", \"context-remaining\", \"five-hour-limit\", \"weekly-limit\"]"
                         }
                         if (add_title == 0) {
                             print "terminal_title = [\"spinner\", \"thread\", \"project\"]"
@@ -827,7 +827,7 @@ configure_codex_tui() {
             {
                 printf '# >>> shipflow codex tui >>>\n'
                 if [ "$has_status_line" -eq 0 ]; then
-                    printf 'tui.status_line = ["model-with-reasoning", "current-dir", "context-used"]\n'
+                    printf 'tui.status_line = ["model-with-reasoning", "current-dir", "context-remaining", "five-hour-limit", "weekly-limit"]\n'
                 fi
                 if [ "$has_terminal_title" -eq 0 ]; then
                     printf 'tui.terminal_title = ["spinner", "thread", "project"]\n'

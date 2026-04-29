@@ -6,7 +6,7 @@ argument-hint: <optional focus>
 
 ## Canonical Paths
 
-Before resolving ShipFlow-owned files, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`) if present. Project files resolve from the current project root unless explicitly stated otherwise.
+Before resolving ShipFlow-owned files, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`) if present. Project files resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -36,7 +36,7 @@ The goal is not to spawn an agent every time. The goal is to choose the next use
 Gather only enough context to route correctly:
 
 - Current directory, project name, branch, and git status.
-- Local `TASKS.md` and master `/home/claude/shipflow_data/TASKS.md` when present.
+- Local `TASKS.md` and master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` when present.
 - Relevant specs in `docs/` or `specs/` when the next step appears spec-driven.
 - Obvious failing command output or latest validation result if available in the conversation.
 - Existing skill instructions only when directly useful, especially `sf-start`, `sf-fix`, `sf-check`, `sf-verify`, `sf-model`, or `sf-end`.

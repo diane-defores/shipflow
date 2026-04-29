@@ -7,7 +7,7 @@ argument-hint: '[file-path | "global"] (omit for full project)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -53,7 +53,7 @@ Full audit of ALL projects across ALL applicable domains — the most comprehens
 
 ### Step 1: Build the audit plan
 
-Read `/home/claude/shipflow_data/PROJECTS.md`. Use the **Domain Applicability** table to determine which domains apply to each project.
+Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`. Use the **Domain Applicability** table to determine which domains apply to each project.
 
 ### Step 2: Let the user choose
 
@@ -74,14 +74,14 @@ Only launch (project × domain) pairs where: user selected the project AND user 
 ### Step 3: Read domain checklists
 
 Read each selected domain skill to get their PROJECT MODE checklists:
-- `/home/claude/.codex/skills/sf-audit-code/SKILL.md`
-- `/home/claude/.codex/skills/sf-audit-design/SKILL.md`
-- `/home/claude/.codex/skills/sf-audit-copy/SKILL.md`
-- `/home/claude/.codex/skills/sf-audit-seo/SKILL.md`
-- `/home/claude/.codex/skills/sf-audit-gtm/SKILL.md`
-- `/home/claude/.codex/skills/sf-audit-translate/SKILL.md`
-- `/home/claude/.codex/skills/sf-deps/SKILL.md`
-- `/home/claude/.codex/skills/sf-perf/SKILL.md`
+- `$HOME/.codex/skills/sf-audit-code/SKILL.md`
+- `$HOME/.codex/skills/sf-audit-design/SKILL.md`
+- `$HOME/.codex/skills/sf-audit-copy/SKILL.md`
+- `$HOME/.codex/skills/sf-audit-seo/SKILL.md`
+- `$HOME/.codex/skills/sf-audit-gtm/SKILL.md`
+- `$HOME/.codex/skills/sf-audit-translate/SKILL.md`
+- `$HOME/.codex/skills/sf-deps/SKILL.md`
+- `$HOME/.codex/skills/sf-perf/SKILL.md`
 
 ### Step 4: Launch ALL agents
 
@@ -142,8 +142,8 @@ Total: X critical, Y high, Z medium
 
 ### Step 6: Update global tracking
 
-1. **Global `/home/claude/shipflow_data/AUDIT_LOG.md`** — one row per project with all domain scores.
-2. **Master `/home/claude/shipflow_data/TASKS.md`** — update each project's audit subsections.
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** — one row per project with all domain scores.
+2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — update each project's audit subsections.
 
 ### Step 7: Ask about fixes
 
@@ -166,7 +166,7 @@ Use **AskUserQuestion**:
 - `multiSelect: true`
 - Options:
   - **All projects** — "Run global audit across every project" (Recommended)
-  - One option per project from `/home/claude/shipflow_data/PROJECTS.md`: label = project name, description = stack
+  - One option per project from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`: label = project name, description = stack
 
 Then proceed to **GLOBAL MODE** with the selected projects (or all if "All projects" was chosen).
 
@@ -320,7 +320,7 @@ Rules for consolidation:
 
 ### Shared file write protocol
 
-Before editing `/home/claude/shipflow_data/AUDIT_LOG.md`, project-local `AUDIT_LOG.md`, or either `TASKS.md` file:
+Before editing `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`, project-local `AUDIT_LOG.md`, or either `TASKS.md` file:
 - Treat the snapshots loaded earlier in the skill as informational only.
 - Right before each write, re-read the target file from disk and use that version as authoritative.
 - Append or replace only the intended row or subsection; never rewrite the whole file from stale context.
@@ -331,7 +331,7 @@ Before editing `/home/claude/shipflow_data/AUDIT_LOG.md`, project-local `AUDIT_L
 
 Update **two** audit logs. Never delete previous rows — this is the history.
 
-**1. Global `/home/claude/shipflow_data/AUDIT_LOG.md`** — cross-project dashboard:
+**1. Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** — cross-project dashboard:
 
 ```markdown
 # Audit Log
@@ -385,7 +385,7 @@ Add audit findings as tasks. Two files to update:
 - Use 🔴 for critical, 🟠 for high, 🟡 for medium.
 - If a previous `## Audit Findings` section exists, replace it entirely with fresh findings (don't accumulate stale issues).
 
-**2. Master `/home/claude/shipflow_data/TASKS.md`**:
+**2. Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**:
 - Find the section for the current project.
 - Add or update an `### Audit` subsection with a summary line and all issues as tasks.
 - Update the Dashboard table's "Top Priority" column if audit found critical issues (they take precedence).

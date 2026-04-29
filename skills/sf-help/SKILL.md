@@ -7,7 +7,7 @@ argument-hint: [optional: tasks, audit, workflows, prompts]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -74,7 +74,7 @@ Flow:
 1. `/sf-test [scope]` detects a fail and logs a compact test pointer.
 2. `BUGS.md` keeps a compact index row (`BUG-ID`, status, severity, last-tested, bug dossier path).
 3. `bugs/BUG-ID.md` is the full bug dossier (repro, expected/observed, diagnosis, Fix Attempts, Retest History, redaction state, next step).
-4. `/sf-fix BUG-ID` appends diagnosis + fix attempts; it does not close without retest evidence.
+4. `/sf-fix BUG-ID` appends diagnosis + fix attempts; when no `BUG-ID` exists yet, `sf-fix` should usually create one rather than leaving the bug memory only in chat or git history.
 5. `/sf-test --retest BUG-ID` appends Retest History in the bug dossier and updates status (`open` or `fixed-pending-verify`).
 6. `/sf-verify` and `/sf-ship` gate optimistic closure when open high/critical bugs remain.
 
@@ -450,7 +450,7 @@ Provide explicit arguments and prompts don't appear:
 | `AUDIT_LOG.md` | `~/` (master) + project dirs | Audit score history |
 | `CHANGELOG.md` | Project dirs | Release notes |
 | `REVIEW-*.md` | Project dirs | Review reports |
-| `PROJECTS.md` | `~/ShipFlow/` | Project registry + domain matrix |
+| `PROJECTS.md` | `~/shipflow/` | Project registry + domain matrix |
 
 ---
 

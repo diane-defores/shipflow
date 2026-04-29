@@ -6,7 +6,7 @@ argument-hint: [optional: project name or URL]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -44,7 +44,7 @@ Si `$ARGUMENTS` est fourni, l'utiliser comme nom de projet ou URL.
 
 Sinon, utiliser le répertoire courant. Si pas de git remote, utiliser **AskUserQuestion** :
 - Question : "Quel projet vérifier ?"
-- Options depuis `/home/claude/shipflow_data/PROJECTS.md`
+- Options depuis `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
 
 **Extraire le owner/repo** depuis le git remote :
 ```bash

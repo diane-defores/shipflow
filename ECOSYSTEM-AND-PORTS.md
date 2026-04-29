@@ -143,7 +143,7 @@ test-project: PORT=3001 (stopped)
 ### Trouver le prochain port disponible
 
 ```bash
-source /root/ShipFlow/lib.sh
+source /root/shipflow/lib.sh
 find_available_port 3000
 # Résultat: 3003 (ou le premier port libre)
 ```

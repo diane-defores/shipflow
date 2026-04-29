@@ -201,13 +201,13 @@ Skill-aligned artifact templates live in `templates/artifacts/`. They should enc
 Validate metadata with:
 
 ```bash
-SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
 "$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py"
 ```
 
 The linter is intentionally dependency-free. It checks the default ShipFlow artifact locations (`specs/`, `docs/`, `AGENT.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `CONTENT_MAP.md`, `BUSINESS.md`, `BRANDING.md`, `PRODUCT.md`, `ARCHITECTURE.md`, `GTM.md`, `GUIDELINES.md`) and can also receive explicit files or folders.
 
-When a skill runs from a project repository, ShipFlow-owned docs, tools, references, templates, and skill-local `references/*` still resolve from `${SHIPFLOW_ROOT:-/home/claude/shipflow}`. Only project artifacts and source files resolve from the current project root.
+When a skill runs from a project repository, ShipFlow-owned docs, tools, references, templates, and skill-local `references/*` still resolve from `${SHIPFLOW_ROOT:-$HOME/shipflow}`. Only project artifacts and source files resolve from the current project root.
 
 This decision-contract layer is wired into the active ShipFlow workflow: agent routing (`AGENT.md`), project orientation (`CONTEXT.md`), documentation doctrine (`README.md`, this file, `shipflow-metadata-migration-guide.md`), the `sf-docs` skill, and `tools/shipflow_metadata_lint.py`.
 

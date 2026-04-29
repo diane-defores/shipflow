@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document describes the working TubeFlow YouTube OAuth flow in the Next.js implementation at `/home/claude/tubeflow`.
+This document describes the working TubeFlow YouTube OAuth flow in the Next.js implementation at `$HOME/tubeflow`.
 
 Use it as a reference when implementing or debugging YouTube connection in Flutter or other clients. The point is not to copy the Next.js code line-for-line, but to preserve the same security boundaries and token lifecycle.
 
@@ -40,16 +40,16 @@ Signed-in Clerk user
 
 ## Key Files In TubeFlow
 
-- `/home/claude/tubeflow/apps/web/src/app/api/auth/youtube/route.ts`
-- `/home/claude/tubeflow/apps/web/src/app/api/auth/youtube/callback/route.ts`
-- `/home/claude/tubeflow/apps/web/src/hooks/use-youtube.ts`
-- `/home/claude/tubeflow/apps/web/src/components/youtube/YouTubeConnectPrompt.tsx`
-- `/home/claude/tubeflow/packages/backend/convex/youtube.ts`
-- `/home/claude/tubeflow/packages/backend/convex/schema.ts`
-- `/home/claude/tubeflow/packages/backend/convex/auth.config.ts`
-- `/home/claude/tubeflow/apps/web/src/lib/site.ts`
-- `/home/claude/tubeflow/apps/web/.env.example`
-- `/home/claude/tubeflow/turbo.json`
+- `$HOME/tubeflow/apps/web/src/app/api/auth/youtube/route.ts`
+- `$HOME/tubeflow/apps/web/src/app/api/auth/youtube/callback/route.ts`
+- `$HOME/tubeflow/apps/web/src/hooks/use-youtube.ts`
+- `$HOME/tubeflow/apps/web/src/components/youtube/YouTubeConnectPrompt.tsx`
+- `$HOME/tubeflow/packages/backend/convex/youtube.ts`
+- `$HOME/tubeflow/packages/backend/convex/schema.ts`
+- `$HOME/tubeflow/packages/backend/convex/auth.config.ts`
+- `$HOME/tubeflow/apps/web/src/lib/site.ts`
+- `$HOME/tubeflow/apps/web/.env.example`
+- `$HOME/tubeflow/turbo.json`
 
 ## Required Environment
 
@@ -77,13 +77,13 @@ Google Cloud Console:
 - Authorized redirect URI for production:
   - `https://<APP_DOMAIN>/api/auth/youtube/callback`
 
-TubeFlow has a production checklist item for this in `/home/claude/tubeflow/SPEC-production-checklist.md`.
+TubeFlow has a production checklist item for this in `$HOME/tubeflow/SPEC-production-checklist.md`.
 
 ## Initiation Route
 
 Route: `GET /api/auth/youtube`
 
-Implementation: `/home/claude/tubeflow/apps/web/src/app/api/auth/youtube/route.ts`
+Implementation: `$HOME/tubeflow/apps/web/src/app/api/auth/youtube/route.ts`
 
 Responsibilities:
 
@@ -118,8 +118,8 @@ window.location.href = "/api/auth/youtube";
 
 This appears in:
 
-- `useYoutubeConnection()` in `/home/claude/tubeflow/apps/web/src/hooks/use-youtube.ts`
-- `YouTubeConnectPrompt` in `/home/claude/tubeflow/apps/web/src/components/youtube/YouTubeConnectPrompt.tsx`
+- `useYoutubeConnection()` in `$HOME/tubeflow/apps/web/src/hooks/use-youtube.ts`
+- `YouTubeConnectPrompt` in `$HOME/tubeflow/apps/web/src/components/youtube/YouTubeConnectPrompt.tsx`
 
 Purpose:
 
@@ -133,7 +133,7 @@ The cookie is short-lived and same-site. It is not the Google token and should b
 
 Route: `GET /api/auth/youtube/callback`
 
-Implementation: `/home/claude/tubeflow/apps/web/src/app/api/auth/youtube/callback/route.ts`
+Implementation: `$HOME/tubeflow/apps/web/src/app/api/auth/youtube/callback/route.ts`
 
 Responsibilities:
 
@@ -176,7 +176,7 @@ Fields:
 
 Mutation: `saveYoutubeTokens`
 
-Location: `/home/claude/tubeflow/packages/backend/convex/youtube.ts`
+Location: `$HOME/tubeflow/packages/backend/convex/youtube.ts`
 
 Behavior:
 
@@ -188,7 +188,7 @@ Behavior:
 
 Action: `refreshYoutubeToken`
 
-Location: `/home/claude/tubeflow/packages/backend/convex/youtube.ts`
+Location: `$HOME/tubeflow/packages/backend/convex/youtube.ts`
 
 Behavior:
 

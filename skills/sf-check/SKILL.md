@@ -7,7 +7,7 @@ argument-hint: [fix|nofix]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -39,7 +39,7 @@ If the current directory has no project markers (no `package.json`, no `requirem
 - Question: "Which project(s) should I check?"
 - `multiSelect: true`
 - One option per project: label = project name, description = stack
-- Read project list from `/home/claude/shipflow_data/PROJECTS.md`
+- Read project list from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
 
 Then run checks for each selected project sequentially.
 

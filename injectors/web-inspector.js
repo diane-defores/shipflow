@@ -3,7 +3,7 @@
     let styleElement = null;
     const buttons = [];
 
-    var IMGBB_API_KEY = 'e6b9a93df250481a8cd214fbfbb8e7ba';
+    var IMGBB_API_KEY = window.SHIPFLOW_IMGBB_API_KEY || '';
 
     // Load Eruda console for mobile debugging
     (function loadEruda() {
@@ -66,6 +66,11 @@
     }
 
     function screenshotUpload(el) {
+        if (!IMGBB_API_KEY) {
+            console.error('Upload disabled: missing ShipFlow ImgBB API key');
+            return;
+        }
+
         captureElement(el).then(function(canvas) {
             var base64 = canvas.toDataURL('image/png').split(',')[1];
             var formData = new FormData();

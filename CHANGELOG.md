@@ -45,6 +45,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Local MCP OAuth helper with guided server IP and optional SSH key configuration for local tunnels and remote Codex MCP login
 
 ### Changed
+- Codex TUI defaults now show remaining context with `context-remaining` and rate-limit status with `five-hour-limit` plus `weekly-limit`.
 - `sf-test`, `sf-fix`, `sf-verify`, `sf-ship`, `sf-docs`, and `sf-help` now share the same bug lifecycle, retest, evidence-redaction, and bug-gate rules
 - README, workflow docs, `sf-test` README, and public skill pages now describe the compact index plus detailed bug dossier model instead of treating `BUGS.md` as the full bug record
 - Existing Codex TUI spec migrated to the ShipFlow metadata frontmatter schema
@@ -57,6 +58,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - ShipFlow installer now targets selected eligible user accounts for AI configuration instead of mutating every `/home/*` account by default
 - ShipFlow installer now owns Claude/Codex autonomous defaults, AI aliases (`c`, `co`, `cask`, `coask`), and per-user npm bootstrap for selected users
 - Dotfiles installer now delegates Claude/Codex install and client MCP mutation to ShipFlow, and keeps only shared MCP registry linking
+- CLI fallback choice parsing now normalizes uppercase input, trailing `)`, whitespace, and carriage returns so letter-based deploy and submenu prompts accept the expected keys more reliably
 
 ### Security
 - Added root autonomous-mode guard in ShipFlow installer: autonomous Claude/Codex permissions on root now require explicit opt-in (`SHIPFLOW_AI_ALLOW_ROOT_AUTONOMOUS=1`)
@@ -97,7 +99,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Added idempotent TOML upsert behavior for `tui.status_line` and `tui.terminal_title` while preserving user configuration outside the managed block
 
 ### Documentation
-- `README.md` now documents the Codex defaults (`context-used` in status line and `thread` in terminal title), interactive fallback commands (`/statusline`, `/title`), and the current Codex customization boundary
+- `README.md` now documents the Codex TUI defaults, interactive fallback commands (`/statusline`, `/title`), and the current Codex customization boundary
 
 ## [2026-04-24] - Model routing and multi-agent execution topology
 

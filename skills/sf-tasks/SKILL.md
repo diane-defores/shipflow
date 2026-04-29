@@ -7,7 +7,7 @@ argument-hint: [optional focus area or task type]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -20,21 +20,21 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 ## Context
 
 - Current directory: !`pwd`
-- **Master TASKS.md** (multi-project dashboard): !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- **Master TASKS.md** (multi-project dashboard): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Recent git status: !`git status --short 2>/dev/null || echo "Not a git repository"`
 - Current branch: !`git branch --show-current 2>/dev/null || echo "N/A"`
 - Project CLAUDE.md (if exists): !`head -30 CLAUDE.md 2>/dev/null || echo "No CLAUDE.md found"`
-- Workspace CLAUDE.md: !`head -20 /home/claude/CLAUDE.md 2>/dev/null || echo "N/A"`
+- Workspace CLAUDE.md: !`head -20 $HOME/CLAUDE.md 2>/dev/null || echo "N/A"`
 
 ## Multi-project tracking system
 
-**CRITICAL**: This workspace tracks 12 projects from a single master file at `/home/claude/shipflow_data/TASKS.md`.
+**CRITICAL**: This workspace tracks 12 projects from a single master file at `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`.
 
 - `TASKS.md` is an operational tracker, not a ShipFlow decision artifact. Do not add YAML frontmatter or metadata schema fields to `TASKS.md`.
 - If a task contains a durable decision, spec, business rule, research conclusion, or product contract, keep the task entry concise and extract the durable content into a separate metadata-bearing artifact via `/sf-docs`, `/sf-spec`, `/sf-research`, or the relevant skill.
-- **Always update `/home/claude/shipflow_data/TASKS.md`** (the master tracker) — this is the single source of truth
-- If working inside a sub-project (e.g., `/home/claude/winflowz/`), update BOTH the local TASKS.md AND the master TASKS.md
+- **Always update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** (the master tracker) — this is the single source of truth
+- If working inside a sub-project (e.g., `$HOME/winflowz/`), update BOTH the local TASKS.md AND the master TASKS.md
 - The master file has a Dashboard table, per-project task sections, cross-project concerns, and a backlog
 - When checking off tasks in the master file, also update the Dashboard status column if the project phase changed
 
@@ -50,7 +50,7 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 ## Tracker synchronization rules
 
 - Distinguish clearly between:
-  - the master tracker (`/home/claude/shipflow_data/TASKS.md`)
+  - the master tracker (`${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`)
   - a project section inside the master tracker
   - the local `TASKS.md` file inside the current repo
 - The master tracker is the cross-project coordination source, not a direct substitute for a local `TASKS.md`.
@@ -70,7 +70,7 @@ Intelligently manage the TASKS.md file by:
 1. Checking off completed tasks
 2. Adding remaining tasks to be done
 3. Suggesting the next priority action
-4. **Keeping the master `/home/claude/shipflow_data/TASKS.md` in sync**
+4. **Keeping the master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` in sync**
 
 ### Workspace root detection
 
@@ -188,7 +188,7 @@ If the current directory has no project markers (not inside a specific project) 
 
 ### Important
 
-- **Always update the master `/home/claude/shipflow_data/TASKS.md`** — even when working in a sub-project directory
+- **Always update the master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — even when working in a sub-project directory
 - If a local project TASKS.md also exists (e.g., `winflowz/TASKS.md`), update both: local for detail, master for dashboard
 - Use the Edit tool to update existing TASKS.md or Write tool to create a new one
 - Be intelligent about what's "done" - check actual evidence, don't just guess

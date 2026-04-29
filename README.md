@@ -124,10 +124,10 @@ tracking entries into the empty folder and make the later merge harder.
 
 ## Codex TUI Defaults
 
-`install.sh configures Codex for selected eligible users (plus root baseline setup) by writing `~/.codex/config.toml` with:
+`install.sh` configures Codex for selected eligible users (plus root baseline setup) by writing `~/.codex/config.toml` with:
 
 ```toml
-tui.status_line = ["model-with-reasoning", "current-dir", "context-used"]
+tui.status_line = ["model-with-reasoning", "current-dir", "context-remaining", "five-hour-limit", "weekly-limit"]
 tui.terminal_title = ["spinner", "thread", "project"]
 ```
 
@@ -145,6 +145,18 @@ It also provisions the default MCP set used by ShipFlow:
 - `supabase` in `~/.claude/settings.json` and `~/.codex/config.toml`
 - `playwright` in `~/.claude/settings.json` and `~/.codex/config.toml`
 - `dataforseo` in `~/.claude/settings.json` and `~/.codex/config.toml`
+
+For remote Codex usage, ShipFlow local tooling also supports OAuth login flows for hosted MCP providers through an ephemeral local SSH callback tunnel:
+
+```bash
+shipflow-mcp-login vercel
+shipflow-mcp-login supabase
+shipflow-mcp-login all
+```
+
+The reason is specific to remote agent work: Codex runs on the server, but the OAuth provider redirects the browser to `127.0.0.1:<port>/callback` on the local machine. ShipFlow opens a temporary SSH `-L` tunnel for the fresh callback port so the local browser can reach the remote Codex login process.
+
+The local menu stores the remote host, SSH user, and optional SSH key path used by `urls`, `tunnel`, and `shipflow-mcp-login`. Leaving the key path blank means ShipFlow uses the normal SSH config or agent. ShipFlow does not store OAuth tokens; Codex and the provider own the token exchange. See [local/README.md](./local/README.md) for the guided setup and troubleshooting flow.
 
 Notes:
 - `dataforseo` is configured but disabled by default in Codex unless

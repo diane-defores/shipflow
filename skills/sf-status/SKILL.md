@@ -7,7 +7,7 @@ argument-hint: [optional: all | issues | dirty]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -20,7 +20,7 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 ## Context
 
 - Current directory: !`pwd`
-- PROJECTS.md: !`cat /home/claude/shipflow_data/PROJECTS.md 2>/dev/null | head -20`
+- PROJECTS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md 2>/dev/null | head -20`
 
 ## Flow
 
@@ -41,9 +41,15 @@ If `$ARGUMENTS` is provided, map:
 
 ### Step 1: Read project registry
 
-Read `/home/claude/shipflow_data/PROJECTS.md` to get the list of all projects with their paths. Also include ShipFlow itself (`/home/claude/shipflow`).
+Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` to get the list of all projects with their paths. Also include ShipFlow itself (`${SHIPFLOW_ROOT:-$HOME/shipflow}`).
 
 ### Step 2: Gather git status for each project
+
+Before running git commands, normalize registry paths:
+- If the registry path starts with `~/`, expand it against the current `$HOME`.
+- If the registry path starts with `$HOME/`, expand it against the current `$HOME`.
+- If the registry path starts with `/home/<other-user>/` and that path does not exist, retry with the same suffix under the current `$HOME`.
+- If neither the original path nor the normalized fallback exists, skip the project.
 
 For each project path, run these git commands (skip if path doesn't exist or isn't a git repo):
 
@@ -91,7 +97,7 @@ NEEDS ATTENTION
 
 QUICK ACTIONS
   → tubeflow: /sf-ship to commit and push
-  → GoCharbon: git -C /home/claude/GoCharbon pull
+  → GoCharbon: git -C $HOME/GoCharbon pull
 ```
 
 Only show NEEDS ATTENTION if there are issues. Issues to flag:
@@ -108,6 +114,7 @@ Only show NEEDS ATTENTION if there are issues. Issues to flag:
 
 - **READ-ONLY** — never modify any files or run git commands that change state.
 - `PROJECTS.md` is read-only here; never edit shared tracking files from `sf-status`.
+- Prefer storing home-scoped project paths in `PROJECTS.md` as `~/...` so the registry stays portable across usernames and servers.
 - Include ShipFlow repo itself in the dashboard.
 - Skip projects whose paths don't exist on disk.
 - Skip SocialFlowz if it has no git repo.

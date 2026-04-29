@@ -7,7 +7,7 @@ argument-hint: [optional: daily, weekly, sprint, release]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -20,20 +20,20 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 ## Context
 
 - Current directory: !`pwd`
-- **Master TASKS.md** (multi-project dashboard): !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- **Master TASKS.md** (multi-project dashboard): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Recent commits (last 10): !`git log --oneline --date=short --pretty=format:"%h %ad %s" -10 2>/dev/null || echo "Not a git repo"`
 - Files changed recently: !`git diff --name-status HEAD~5..HEAD 2>/dev/null || echo "N/A"`
 - Current branch: !`git branch --show-current 2>/dev/null`
 - Git status: !`git status --short 2>/dev/null`
 - CHANGELOG.md (last 30 lines): !`tail -30 CHANGELOG.md 2>/dev/null || echo "No CHANGELOG.md"`
-- Workspace CLAUDE.md: !`head -20 /home/claude/CLAUDE.md 2>/dev/null || echo "N/A"`
+- Workspace CLAUDE.md: !`head -20 $HOME/CLAUDE.md 2>/dev/null || echo "N/A"`
 
 ## Multi-project tracking system
 
-**CRITICAL**: This workspace tracks 12 projects from a single master file at `/home/claude/shipflow_data/TASKS.md`.
+**CRITICAL**: This workspace tracks 12 projects from a single master file at `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`.
 
-- **Always update `/home/claude/shipflow_data/TASKS.md`** as part of the review — check off completed tasks, update the Dashboard table, and refresh the "Last updated" date
+- **Always update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** as part of the review — check off completed tasks, update the Dashboard table, and refresh the "Last updated" date
 - When reviewing from a sub-project directory, also consider the master-level cross-project concerns
 - The review summary should reference which project(s) were worked on and how the master Dashboard changed
 - When planning next session, suggest tasks from the master file's highest-priority items across all projects
@@ -182,7 +182,7 @@ Examples:
 
 ### Important
 
-- **Always update the master `/home/claude/shipflow_data/TASKS.md`** — check off completed tasks, update Dashboard statuses, refresh "Last updated" date
+- **Always update the master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — check off completed tasks, update Dashboard statuses, refresh "Last updated" date
 - Be honest about progress - if less was done than planned, say why
 - Focus on outcomes, not just activity
 - Keep outcome claims tied to evidence; distinguish shipped, reviewed, verified, and assumed

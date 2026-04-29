@@ -6,7 +6,7 @@ argument-hint: '[file-path | "global"] (omit for full project)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -235,7 +235,7 @@ Si le répertoire courant n'a pas de marqueurs projet mais contient des sous-ré
 Utiliser **AskUserQuestion** :
 - Question : "Quel(s) projet(s) auditer en copywriting ?"
 - `multiSelect: true`
-- Options depuis `/home/claude/shipflow_data/PROJECTS.md`
+- Options depuis `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
 
 Puis passer en **GLOBAL MODE**.
 
@@ -553,7 +553,7 @@ next_review: "[date]"
 
 ## GLOBAL MODE
 
-1. Lire `/home/claude/shipflow_data/PROJECTS.md`. Identifier les projets avec site web.
+1. Lire `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`. Identifier les projets avec site web.
 
 2. **AskUserQuestion** : "Quels projets auditer en copywriting ?" — `multiSelect: true`.
 
@@ -598,13 +598,13 @@ Protocole d'ecriture des fichiers partages (`AUDIT_LOG.md`, `TASKS.md`) :
 ### Log the audit
 
 Append à :
-1. **Global `/home/claude/shipflow_data/AUDIT_LOG.md`** : remplir la colonne Copywriting.
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** : remplir la colonne Copywriting.
 2. **Local `./AUDIT_LOG.md`** : idem sans la colonne Project.
 
 ### Update TASKS.md
 
 1. **Local TASKS.md** : ajouter `### Audit: Copywriting` avec les recommandations comme tâches.
-2. **Master `/home/claude/shipflow_data/TASKS.md`** : même chose dans la section du projet.
+2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** : même chose dans la section du projet.
 
 ---
 

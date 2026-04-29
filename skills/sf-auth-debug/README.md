@@ -52,8 +52,8 @@ It is designed for cases where static code reading is not enough because the fai
 - `references/flutter-web-clerkjs-bridge.md` for the Flutter web ClerkJS bridge implementation pattern in other repos
 - `references/python-convex.md` for Python scripts and jobs that call Convex
 - `references/sdk-policy.md` for stable, beta, and unofficial SDK choices in the ShipFlow stack
-- `/home/claude/shipflow/skills/references/flutter-web-clerkjs-auth-pattern.md` as the cross-repo technical guide for implementing this pattern in Flutter web apps
-- `/home/claude/shipflow/skills/references/tubeflow-youtube-oauth-nextjs-convex-pattern.md` as the cross-repo guide for YouTube OAuth through Next.js, Clerk, and Convex
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/flutter-web-clerkjs-auth-pattern.md` as the cross-repo technical guide for implementing this pattern in Flutter web apps
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/tubeflow-youtube-oauth-nextjs-convex-pattern.md` as the cross-repo guide for YouTube OAuth through Next.js, Clerk, and Convex
 
 ## Typical Examples
 

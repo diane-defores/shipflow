@@ -7,7 +7,7 @@ argument-hint: [optional priority criteria: impact, effort, blockers, quick-wins
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -20,18 +20,18 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 ## Context
 
 - Current directory: !`pwd`
-- **Master TASKS.md** (multi-project dashboard): !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- **Master TASKS.md** (multi-project dashboard): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Git branch and status: !`git status --short --branch 2>/dev/null || echo "Not a git repo"`
 - Recent commits: !`git log --oneline -5 2>/dev/null || echo "N/A"`
 - Project CLAUDE.md: !`head -40 CLAUDE.md 2>/dev/null || echo "No CLAUDE.md"`
-- Workspace CLAUDE.md: !`head -20 /home/claude/CLAUDE.md 2>/dev/null || echo "N/A"`
+- Workspace CLAUDE.md: !`head -20 $HOME/CLAUDE.md 2>/dev/null || echo "N/A"`
 
 ## Multi-project tracking system
 
-**CRITICAL**: This workspace tracks 12 projects from a single master file at `/home/claude/shipflow_data/TASKS.md`.
+**CRITICAL**: This workspace tracks 12 projects from a single master file at `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`.
 
-- **Always prioritize within `/home/claude/shipflow_data/TASKS.md`** — this is the single source of truth
+- **Always prioritize within `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — this is the single source of truth
 - The master file has a Dashboard table and per-project sections — prioritize across ALL projects, not just the current directory
 - When re-ranking, update the Dashboard table's "Top Priority" column to reflect the new P0 for each project
 - If the user specifies a project name as argument, focus prioritization on that project's section only
@@ -56,7 +56,7 @@ If the current directory has no project markers (no `package.json`, no `src/` di
 - Options:
   - **All projects** — "Re-prioritize across the entire workspace" (Recommended)
   - One option per project with active tasks: label = project name, description = number of open tasks
-- Read project list from `/home/claude/shipflow_data/PROJECTS.md`
+- Read project list from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
 
 ### Steps
 
@@ -117,7 +117,7 @@ If the current directory has no project markers (no `package.json`, no `src/` di
 
 ### Important
 
-- **Always update the master `/home/claude/shipflow_data/TASKS.md`** — even when working in a sub-project directory
+- **Always update the master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — even when working in a sub-project directory
 - Use Edit tool to update TASKS.md with priority markers
 - Be realistic about impact/effort assessments
 - Consider technical debt alongside features

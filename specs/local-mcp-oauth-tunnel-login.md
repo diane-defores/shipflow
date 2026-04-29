@@ -348,6 +348,9 @@ Le script doit vivre dans `local/` parce que c'est la couche qui connait la conn
 | 2026-04-29 10:23:42 UTC | sf-start | GPT-5 Codex | Implemented remote MCP OAuth tunnel login flow | implemented | /sf-verify Local MCP OAuth tunnel login |
 | 2026-04-29 11:06:00 UTC | sf-verify | GPT-5 Codex | Verification gate for local MCP OAuth tunnel login | Partial: static checks pass, browser OAuth flow proof not demonstrated in this run | /sf-auth-debug Local MCP OAuth tunnel login |
 | 2026-04-29 12:48:00 UTC | sf-ship | GPT-5 Codex | Full close and ship for local MCP OAuth tunnel login helper | shipped with partial browser-OAuth evidence note | manual OAuth retest on local machine |
+| 2026-04-29 13:05:00 UTC | sf-repurpose | GPT-5 Codex | Repurposed MCP OAuth tunnel workstream into docs and content surfaces | content pack produced | decide target docs update |
+| 2026-04-29 13:15:00 UTC | sf-start | GPT-5 Codex | Applied documentation surfaces for remote MCP OAuth tunnel concept | implemented | /sf-verify Local MCP OAuth tunnel docs |
+| 2026-04-29 16:05:00 UTC | sf-start | GPT-5 Codex | Added dedicated public guide for remote MCP OAuth callback tunnels | implemented | /sf-verify Local MCP OAuth tunnel article |
 
 ## Current Chantier Flow
 
@@ -358,4 +361,4 @@ Le script doit vivre dans `local/` parce que c'est la couche qui connait la conn
 - sf-end: not launched
 - sf-ship: shipped
 
-Next command: manual OAuth retest on local machine
+Next command: /sf-verify Local MCP OAuth tunnel article

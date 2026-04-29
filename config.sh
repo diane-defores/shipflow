@@ -68,8 +68,9 @@ export SHIPFLOW_GITHUB_REPO_LIMIT="${SHIPFLOW_GITHUB_REPO_LIMIT:-500}"
 # Screenshot upload expiration (seconds)
 export SHIPFLOW_SCREENSHOT_EXPIRATION="${SHIPFLOW_SCREENSHOT_EXPIRATION:-600}"
 
-# ImgBB API key (free service)
-export SHIPFLOW_IMGBB_API_KEY="${SHIPFLOW_IMGBB_API_KEY:-e6b9a93df250481a8cd214fbfbb8e7ba}"
+# ImgBB API key (optional). Leave empty unless the operator explicitly opts in
+# to client-side screenshot uploads.
+export SHIPFLOW_IMGBB_API_KEY="${SHIPFLOW_IMGBB_API_KEY:-}"
 
 # ============================================================================
 # PERFORMANCE CONFIGURATION

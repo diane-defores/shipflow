@@ -348,6 +348,20 @@ get_server_session_info() {
     echo "$CACHED_SESSION_INFO"
 }
 
+center_session_banner_text() {
+    local text="$1"
+    local width="${2:-50}"
+    local text_len=${#text}
+
+    if [ "$text_len" -ge "$width" ]; then
+        printf "%s" "$text"
+        return
+    fi
+
+    local pad=$(( (width - text_len) / 2 ))
+    printf "%*s%s" "$pad" "" "$text"
+}
+
 # Function to display server session banner
 display_server_session_banner() {
     local session_info=$(get_server_session_info)
@@ -367,7 +381,8 @@ display_server_session_banner() {
             echo -e "              ${BLUE}$line${NC}"
         done <<< "$hash_art"
 
-        echo -e "        ${GREEN}$session_user@$session_host${NC}    ${YELLOW}$session_code${NC}"
+        echo -e "${GREEN}$(center_session_banner_text "$session_user@$session_host")${NC}"
+        echo -e "${YELLOW}$(center_session_banner_text "$session_code")${NC}"
         echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
     elif echo "$session_info" | grep -q "SESSION_NOT_FOUND"; then
         echo -e "${YELLOW}⚠ Session identity unavailable (ShipFlow not found on server)${NC}"
@@ -451,20 +466,20 @@ run_mcp_login_menu() {
 
 # Fonction pour obtenir les ports actifs
 get_active_ports() {
-    run_remote_ssh "pm2 jlist 2>/dev/null | python3 -c \"
-import sys, json
-try:
-    apps = json.load(sys.stdin)
-    for app in apps:
-        if app['pm2_env']['status'] == 'online':
-            env = app['pm2_env'].get('env', {})
-            port = env.get('PORT') or env.get('port')
-            if port:
-                name = app['name']
-                print(f'{port}:{name}')
-except:
-    pass
-\"" 2>/dev/null
+    run_remote_ssh "pm2 jlist 2>/dev/null | node -e '
+const fs = require(\"fs\");
+try {
+  const apps = JSON.parse(fs.readFileSync(0, \"utf8\"));
+  for (const app of apps) {
+    const pm2Env = app.pm2_env || {};
+    if (pm2Env.status !== \"online\") continue;
+    const env = pm2Env.env || {};
+    const port = env.PORT || env.port;
+    if (!port) continue;
+    process.stdout.write(`${port}:${app.name}\\n`);
+  }
+} catch {}
+' " 2>/dev/null
 }
 
 # Fonction pour récupérer uniquement les vrais processus de tunnel

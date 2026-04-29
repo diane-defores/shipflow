@@ -3,18 +3,18 @@
 Use this reference for ShipFlow Flutter web apps that avoid Clerk Flutter/Dart beta SDKs and authenticate with official ClerkJS on the app domain.
 
 Reference implementation inspected:
-- `/home/claude/contentflow/contentflow_app/pubspec.yaml`
-- `/home/claude/contentflow/contentflow_app/lib/data/services/clerk_auth_service.dart`
-- `/home/claude/contentflow/contentflow_app/lib/data/services/clerk_auth_service_web.dart`
-- `/home/claude/contentflow/contentflow_app/lib/data/services/clerk_auth_service_stub.dart`
-- `/home/claude/contentflow/contentflow_app/web_auth/clerk-runtime.js.template`
-- `/home/claude/contentflow/contentflow_app/web_auth/sign-in.html`
-- `/home/claude/contentflow/contentflow_app/web_auth/sso-callback.html`
-- `/home/claude/contentflow/contentflow_app/scripts/install-web-auth.sh`
-- `/home/claude/contentflow/contentflow_app/scripts/validate-clerk-runtime.sh`
-- `/home/claude/contentflow/contentflow_app/scripts/vercel-build.sh`
-- `/home/claude/contentflow/contentflow_app/lib/providers/providers.dart`
-- `/home/claude/contentflow/contentflow_app/lib/data/services/api_service.dart`
+- `$HOME/contentflow/contentflow_app/pubspec.yaml`
+- `$HOME/contentflow/contentflow_app/lib/data/services/clerk_auth_service.dart`
+- `$HOME/contentflow/contentflow_app/lib/data/services/clerk_auth_service_web.dart`
+- `$HOME/contentflow/contentflow_app/lib/data/services/clerk_auth_service_stub.dart`
+- `$HOME/contentflow/contentflow_app/web_auth/clerk-runtime.js.template`
+- `$HOME/contentflow/contentflow_app/web_auth/sign-in.html`
+- `$HOME/contentflow/contentflow_app/web_auth/sso-callback.html`
+- `$HOME/contentflow/contentflow_app/scripts/install-web-auth.sh`
+- `$HOME/contentflow/contentflow_app/scripts/validate-clerk-runtime.sh`
+- `$HOME/contentflow/contentflow_app/scripts/vercel-build.sh`
+- `$HOME/contentflow/contentflow_app/lib/providers/providers.dart`
+- `$HOME/contentflow/contentflow_app/lib/data/services/api_service.dart`
 
 Last reviewed: 2026-04-26
 

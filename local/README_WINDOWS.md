@@ -31,8 +31,8 @@ Windows offre **3 options** pour utiliser ShipFlow localement:
 3. **Cloner le repo et installer:**
    ```bash
    cd /mnt/c/Users/VotreNom/Documents  # Ou votre dossier préféré
-   git clone https://github.com/votre-org/ShipFlow.git
-   cd ShipFlow/local
+   git clone https://github.com/votre-org/shipflow.git
+   cd shipflow/local
    ./install.sh
    ```
 

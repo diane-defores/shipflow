@@ -6,7 +6,7 @@ argument-hint: [optional: feature, flow, bug id, --retest BUG-ID, --prod, --prev
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -29,7 +29,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
 - Git diff stat: !`git diff --stat 2>/dev/null || echo "no diff"`
 - Recent commits: !`git log --oneline -8 2>/dev/null || echo "no commits"`
-- Master TASKS.md: !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null | head -80 || echo "No master TASKS.md"`
+- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null | head -80 || echo "No master TASKS.md"`
 - Local TASKS.md: !`cat TASKS.md 2>/dev/null | head -80 || echo "No local TASKS.md"`
 - Existing test log: !`tail -80 TEST_LOG.md 2>/dev/null || echo "No TEST_LOG.md"`
 - Existing bugs: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`

@@ -371,10 +371,10 @@ export SHIPFLOW_ERROR_TRAPS=true
 
 ```bash
 # Read documentation inline
-less /root/ShipFlow/lib.sh
+less /root/shipflow/lib.sh
 
 # Search for specific function docs
-grep -A 20 "^# function_name" /root/ShipFlow/lib.sh
+grep -A 20 "^# function_name" /root/shipflow/lib.sh
 ```
 
 ### Example 4: Temp File Management

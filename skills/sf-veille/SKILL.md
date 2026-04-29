@@ -7,7 +7,7 @@ argument-hint: <URLs or paste content>
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -156,7 +156,7 @@ Pour les 3 options restantes, piocher dans cette palette et adapter au contexte 
 
 Pour chaque lien selon la décision de l'utilisateur :
 
-Avant d'écrire dans `/home/claude/shipflow_data/TASKS.md` ou `~/shipflow/research/tools.md` :
+Avant d'écrire dans `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` ou `~/shipflow/research/tools.md` :
 - traiter les snapshots lus au début comme informatifs seulement
 - relire le fichier cible depuis le disque juste avant l'écriture et utiliser cette version comme source de vérité
 - appliquer un ajout ou une mise à jour minimale sur l'entrée visée, jamais une réécriture complète depuis un contexte périmé
@@ -167,14 +167,14 @@ Avant d'écrire dans `/home/claude/shipflow_data/TASKS.md` ou `~/shipflow/resear
 - Ne rien faire. Le lien apparaîtra dans le rapport final comme IGNORÉ.
 
 #### Si "Backlog contenu"
-- Ajouter une tâche dans `/home/claude/shipflow_data/TASKS.md` sous le projet concerné, format :
+- Ajouter une tâche dans `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` sous le projet concerné, format :
   ```
   - [ ] 📝 [Description de la tâche contenu] — source: [URL] (veille [date])
   ```
 - Ajouter une fiche dans `tools.md` (voir format Step 6).
 
 #### Si "Backlog archi"
-- Ajouter une tâche dans `/home/claude/shipflow_data/TASKS.md` sous le projet concerné, format :
+- Ajouter une tâche dans `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` sous le projet concerné, format :
   ```
   - [ ] 🏗️ [Description de la tâche archi/tech] — source: [URL] (veille [date])
   ```

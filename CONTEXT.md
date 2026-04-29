@@ -160,19 +160,19 @@ Fast paths existent aussi :
 
 ## Linked Docs
 
-- [AGENT.md](/home/claude/shipflow/AGENT.md)
-- [CLAUDE.md](/home/claude/shipflow/CLAUDE.md)
-- [README.md](/home/claude/shipflow/README.md)
-- [CONTEXT-FUNCTION-TREE.md](/home/claude/shipflow/CONTEXT-FUNCTION-TREE.md)
-- [CONTENT_MAP.md](/home/claude/shipflow/CONTENT_MAP.md)
-- [shipflow-spec-driven-workflow.md](/home/claude/shipflow/shipflow-spec-driven-workflow.md)
-- [shipflow-metadata-migration-guide.md](/home/claude/shipflow/shipflow-metadata-migration-guide.md)
-- [BUSINESS.md](/home/claude/shipflow/BUSINESS.md)
-- [PRODUCT.md](/home/claude/shipflow/PRODUCT.md)
-- [BRANDING.md](/home/claude/shipflow/BRANDING.md)
-- [GTM.md](/home/claude/shipflow/GTM.md)
-- [ARCHITECTURE.md](/home/claude/shipflow/ARCHITECTURE.md)
-- [GUIDELINES.md](/home/claude/shipflow/GUIDELINES.md)
+- [AGENT.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/AGENT.md)
+- [CLAUDE.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/CLAUDE.md)
+- [README.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/README.md)
+- [CONTEXT-FUNCTION-TREE.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/CONTEXT-FUNCTION-TREE.md)
+- [CONTENT_MAP.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/CONTENT_MAP.md)
+- [shipflow-spec-driven-workflow.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow-spec-driven-workflow.md)
+- [shipflow-metadata-migration-guide.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow-metadata-migration-guide.md)
+- [BUSINESS.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/BUSINESS.md)
+- [PRODUCT.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/PRODUCT.md)
+- [BRANDING.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/BRANDING.md)
+- [GTM.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/GTM.md)
+- [ARCHITECTURE.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/ARCHITECTURE.md)
+- [GUIDELINES.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/GUIDELINES.md)
 
 ## Maintenance Rule
 

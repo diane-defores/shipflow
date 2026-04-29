@@ -7,7 +7,7 @@ argument-hint: [file-path | "readme" | "api" | "components" | "audit" | "update"
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -133,7 +133,7 @@ Location rule:
 
 When adopting ShipFlow in an existing project, migrate old ShipFlow docs without metadata by adding the standard frontmatter. Preserve the body and only infer fields that are evident; use `unknown` or `medium|low` confidence instead of inventing proof.
 
-For frontmatter migration, read `shipflow-metadata-migration-guide.md` before editing when it exists. Validate the intended scope with the canonical ShipFlow linter at `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). If the migration guide or canonical linter is missing from `$SHIPFLOW_ROOT`, continue with this skill's schema rules but report the missing ShipFlow installation support as a confidence gap.
+For frontmatter migration, read `shipflow-metadata-migration-guide.md` before editing when it exists. Validate the intended scope with the canonical ShipFlow linter at `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). If the migration guide or canonical linter is missing from `$SHIPFLOW_ROOT`, continue with this skill's schema rules but report the missing ShipFlow installation support as a confidence gap.
 
 ---
 
@@ -494,7 +494,7 @@ Use this mode for:
 1. **Lire la doctrine de migration**
    - Lire `shipflow-metadata-migration-guide.md` si présent.
    - Lire `shipflow-spec-driven-workflow.md` si présent et si le scope touche specs, readiness, verification, audits or decision contracts.
-   - Lire le linter canonique ShipFlow: `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py` (`$SHIPFLOW_ROOT` par défaut `/home/claude/shipflow`).
+   - Lire le linter canonique ShipFlow: `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py` (`$SHIPFLOW_ROOT` par défaut `${SHIPFLOW_ROOT:-$HOME/shipflow}`).
    - Si un de ces fichiers est absent, continuer avec la doctrine de cette skill et signaler le gap.
 
 2. **Définir le scope avant édition**
@@ -548,14 +548,14 @@ Use this mode for:
    - Après migration, lancer le linter sur le scope prévu :
 
 ```bash
-SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
 "$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py"
 ```
 
    - Si le scope est explicite, préférer :
 
 ```bash
-SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
 "$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py" AGENT.md CONTEXT.md CONTEXT-FUNCTION-TREE.md CONTENT_MAP.md BUSINESS.md BRANDING.md PRODUCT.md ARCHITECTURE.md GTM.md GUIDELINES.md specs docs
 ```
 

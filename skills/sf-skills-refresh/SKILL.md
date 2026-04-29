@@ -7,7 +7,7 @@ argument-hint: '[skill-name] (omit to pick multiple)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -19,8 +19,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Context
 
-- Skills directory: !`ls /home/claude/shipflow/skills/ | head -60`
-- Refresh log: !`head -30 /home/claude/shipflow/skills/REFRESH_LOG.md 2>/dev/null || echo "no log yet — will be created"`
+- Skills directory: !`ls ${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/ | head -60`
+- Refresh log: !`head -30 ${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/REFRESH_LOG.md 2>/dev/null || echo "no log yet — will be created"`
 - Today: !`date -I`
 
 ## Your task
@@ -58,7 +58,7 @@ Spawn one `Agent` per skill using `subagent_type: "general-purpose"`, `run_in_ba
 
 Each agent prompt MUST include:
 
-1. `"Read /home/claude/shipflow/skills/<skill-name>/SKILL.md first. Don't duplicate what's covered."`
+1. `"Read ${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/<skill-name>/SKILL.md first. Don't duplicate what's covered."`
 2. Today's absolute date so the agent knows what "recent" means.
 3. A domain-specific research brief — 8-12 concrete topics to investigate via WebSearch, specific to the skill's purpose.
 4. Required output format:
@@ -108,7 +108,7 @@ For each returned report:
 
 ## PHASE 4: LOG THE REFRESH
 
-Append an entry to `/home/claude/shipflow/skills/REFRESH_LOG.md` (create if missing). Most recent first. Format:
+Append an entry to `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/REFRESH_LOG.md` (create if missing). Most recent first. Format:
 
 ```markdown
 ## YYYY-MM-DD — <skill-name>

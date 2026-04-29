@@ -36,7 +36,7 @@ Ce fichier est le point d'entree rapide pour un agent qui arrive dans le repo. I
 
 ## Route By Task
 
-- Pour tout fichier interne ShipFlow, resoudre depuis `${SHIPFLOW_ROOT:-/home/claude/shipflow}`. Cela inclut `skills/`, `skills/references/`, `templates/`, `tools/`, `shipflow-spec-driven-workflow.md` et `shipflow-metadata-migration-guide.md`. Le repo courant ne sert de racine que pour les artefacts et le code du projet audite ou modifie.
+- Pour tout fichier interne ShipFlow, resoudre depuis `${SHIPFLOW_ROOT:-$HOME/shipflow}`. Cela inclut `skills/`, `skills/references/`, `templates/`, `tools/`, `shipflow-spec-driven-workflow.md` et `shipflow-metadata-migration-guide.md`. Le repo courant ne sert de racine que pour les artefacts et le code du projet audite ou modifie.
 - Si la tache touche le CLI principal, commencer par `shipflow.sh`, `lib.sh`, puis `CONTEXT.md`.
 - Si la tache touche le setup serveur ou Codex, lire `install.sh`, `config.sh`, puis `CONTEXT.md`.
 - Si la tache touche les tunnels SSH locaux, lire `local/local.sh`, `local/dev-tunnel.sh`, puis `CONTEXT-FUNCTION-TREE.md`.

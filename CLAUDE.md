@@ -93,7 +93,7 @@ get_port_from_pm2 "myapp"
 ## File Structure
 
 ```
-ShipFlow/
+shipflow/
 ├── shipflow.sh                 # Main menu
 ├── lib.sh                      # Core library
 ├── config.sh                   # Configuration

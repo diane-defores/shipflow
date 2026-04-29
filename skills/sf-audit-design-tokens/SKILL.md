@@ -7,7 +7,7 @@ argument-hint: '[file-path | "global"] (omit for full project)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -280,7 +280,7 @@ Skip Phase 2 (coverage matrix requires all modes), Phase 4 (dep graph requires c
 ## GLOBAL MODE
 
 Same pattern as `sf-audit-design` GLOBAL MODE:
-1. Read `/home/claude/shipflow_data/PROJECTS.md` Domain Applicability table — identify projects with Design ✓
+1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` Domain Applicability table — identify projects with Design ✓
 2. Use **AskUserQuestion** to let the user select projects
 3. Launch one agent per selected project via the Task tool, all in a single message (parallel)
 4. Each agent: `subagent_type: "general-purpose"`, runs this skill's PROJECT MODE, returns the structured report
@@ -301,7 +301,7 @@ After generating the report:
 
 1. **Project-local `AUDIT_LOG.md`** : append a row for "Design Tokens" audit with date + overall score + critical count
 2. **Local `TASKS.md`** : add/replace a `### Audit: Design Tokens` subsection with 🔴🟠🟡 issues as task rows
-3. **Master `/home/claude/shipflow_data/TASKS.md`** : find the project's section, add same subsection, update Dashboard Top Priority if 🔴 issues found
+3. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** : find the project's section, add same subsection, update Dashboard Top Priority if 🔴 issues found
 
 ---
 

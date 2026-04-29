@@ -7,7 +7,7 @@ argument-hint: '[file-path | "global"] (omit for full project)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -78,7 +78,7 @@ Use ShipFlow versioning semantics: patch = clarification with no behavior/decisi
 
 Audit ALL projects in the workspace for code quality, architecture, security, and reliability.
 
-1. Read `/home/claude/shipflow_data/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the Code column.
+1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the Code column.
 
 2. Use **AskUserQuestion** to let the user choose:
    - Question: "Which projects should I audit for code quality?"
@@ -118,7 +118,7 @@ Audit ALL projects in the workspace for code quality, architecture, security, an
    ═══════════════════════════════════════
    ```
 
-5. Update `/home/claude/shipflow_data/AUDIT_LOG.md` (one row per project, Code column) and `/home/claude/shipflow_data/TASKS.md` (each project's `### Audit: Code` subsection).
+5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one row per project, Code column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: Code` subsection).
 
 6. Ask: **"Which projects should I fix?"** — list projects with scores. Fix only approved projects, one at a time.
 
@@ -287,7 +287,7 @@ Use **AskUserQuestion**:
 - `multiSelect: true`
 - Options:
   - **All projects** — "Run code audit across every project" (Recommended)
-  - One option per project from `/home/claude/shipflow_data/PROJECTS.md`: label = project name, description = stack
+  - One option per project from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`: label = project name, description = stack
 
 Then proceed to **GLOBAL MODE** with the selected projects.
 
@@ -608,7 +608,7 @@ After generating the report and applying fixes:
 
 Append a row to two files:
 
-1. **Global `/home/claude/shipflow_data/AUDIT_LOG.md`**: append `| date | project | scope | — | — | — | — | — | — | [score] | crit/high/med |` (fill only the Code column, `—` for others).
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: append `| date | project | scope | — | — | — | — | — | — | [score] | crit/high/med |` (fill only the Code column, `—` for others).
 2. **Project-local `./AUDIT_LOG.md`**: same but without the Project column.
 
 Create either file if missing, using the table header from the master `/audit` skill format.
@@ -616,7 +616,7 @@ Create either file if missing, using the table header from the master `/audit` s
 ### Update TASKS.md
 
 1. **Local TASKS.md** (project root): add/replace an `### Audit: Code` subsection with critical (🔴), high (🟠), and medium (🟡) issues as task rows.
-2. **Master `/home/claude/shipflow_data/TASKS.md`**: find the project's section, add/replace an `### Audit: Code` subsection with the same tasks. Update the Dashboard "Top Priority" if critical issues found.
+2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project's section, add/replace an `### Audit: Code` subsection with the same tasks. Update the Dashboard "Top Priority" if critical issues found.
 
 ---
 

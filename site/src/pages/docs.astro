@@ -20,6 +20,8 @@ const decisionDocs = [
   ["ARCHITECTURE.md", "How the system is organized, where boundaries sit, and which invariants hold."],
   ["GUIDELINES.md", "How contributors should work inside the repo and which technical rules stay stable."]
 ];
+
+const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blob/main/${name}`;
 ---
 
 <BaseLayout
@@ -116,7 +118,7 @@ const decisionDocs = [
             <article class="doc-card">
               <h3>{name}</h3>
               <p>{body}</p>
-              <a class="doc-action" href={`https://github.com/dianedef/ShipFlow/blob/main/${name}`}>
+              <a class="doc-action" href={githubDocUrl(name)}>
                 Open on GitHub
               </a>
             </article>
@@ -142,12 +144,55 @@ const decisionDocs = [
             <article class="doc-card">
               <h3>{name}</h3>
               <p>{body}</p>
-              <a class="doc-action" href={`https://github.com/dianedef/ShipFlow/blob/main/${name}`}>
+              <a class="doc-action" href={githubDocUrl(name)}>
                 Open on GitHub
               </a>
             </article>
           ))
         }
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Remote Agent Access</p>
+        <h2>OAuth callbacks still need a local path when the agent runs on a server.</h2>
+        <p>
+          Hosted MCP providers can ask Codex to complete an OAuth flow. When
+          Codex runs remotely, the browser callback still lands on local
+          `127.0.0.1`. ShipFlow documents that boundary so operators understand
+          why a temporary SSH callback tunnel is part of the login workflow.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>The callback is local to the browser</h3>
+          <p>
+            The provider redirects the browser to a localhost callback URL. If
+            Codex is running on a server, that localhost address is otherwise
+            the wrong machine.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>ShipFlow opens a temporary SSH path</h3>
+          <p>
+            The local tooling captures the fresh callback port, opens an SSH
+            `-L` tunnel for that port, and closes it after the login flow. The
+            app tunnels used for development remain separate.
+          </p>
+          <a class="doc-action" href="/remote-mcp-oauth-tunnel">Read the dedicated guide</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Tokens stay with Codex and the provider</h3>
+          <p>
+            The tunnel does not replace OAuth and does not make ShipFlow a token
+            store. It only gives the local browser a route back to the remote
+            Codex process during authorization.
+          </p>
+        </article>
       </div>
     </section>
 
@@ -203,7 +248,7 @@ const decisionDocs = [
         <article class="doc-card">
           <h3>Three levels, three meanings</h3>
           <p>
-            `/home/claude/shipflow_data/TASKS.md` is the master tracker for
+            {"${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md"} is the master tracker for
             multiple projects. A project section inside that file is still part
             of the master view. `./TASKS.md` is the local operational tracker
             for one repository.

@@ -19,6 +19,8 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 NC='\033[0m' # No Color
 
 expand_identity_path() {
@@ -28,6 +30,27 @@ expand_identity_path() {
         "~/"*) echo "$HOME/${identity_file#~/}" ;;
         *) echo "$identity_file" ;;
     esac
+}
+
+validate_connection_target() {
+    local target="$1"
+    [[ -n "$target" ]] || return 1
+    [[ "$target" != -* ]] || return 1
+    [[ "$target" =~ ^[a-zA-Z0-9._@-]+$ ]] || return 1
+}
+
+validate_identity_file() {
+    local identity_file="$1"
+    [ -z "$identity_file" ] && return 0
+    [[ "$identity_file" != -* ]] || return 1
+    [[ "$identity_file" != *$'\n'* ]] || return 1
+    [ -f "$(expand_identity_path "$identity_file")" ] || return 1
+}
+
+validate_tcp_port() {
+    local port="$1"
+    [[ "$port" =~ ^[0-9]+$ ]] || return 1
+    [ "$((10#$port))" -ge 1 ] && [ "$((10#$port))" -le 65535 ]
 }
 
 ssh_args() {
@@ -45,11 +68,60 @@ run_remote_ssh() {
     ssh "${args[@]}" "$REMOTE_HOST" "$@"
 }
 
+get_managed_tunnel_pids() {
+    ps -eo pid=,args= | while read -r pid cmd; do
+        [ -n "$pid" ] || continue
+        if [[ "$cmd" == *autossh* ]] &&
+            [[ "$cmd" == *" -L "*":localhost:"* ]] &&
+            [[ " $cmd " == *" $REMOTE_HOST "* ]]; then
+            printf "%s\n" "$pid"
+        fi
+    done
+}
+
+stop_existing_tunnels() {
+    local pids pid
+    pids="$(get_managed_tunnel_pids || true)"
+    [ -n "$pids" ] || return 0
+
+    while IFS= read -r pid; do
+        [ -n "$pid" ] || continue
+        kill "$pid" 2>/dev/null || true
+    done <<< "$pids"
+}
+
+is_local_port_free() {
+    local port="$1"
+    if command -v lsof >/dev/null 2>&1; then
+        ! lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1
+        return
+    fi
+    if command -v ss >/dev/null 2>&1; then
+        ! ss -ltn "( sport = :$port )" 2>/dev/null | grep -q ":$port"
+        return
+    fi
+    return 0
+}
+
+center_session_banner_text() {
+    local text="$1"
+    local width="${2:-50}"
+    local text_len=${#text}
+
+    if [ "$text_len" -ge "$width" ]; then
+        printf "%s" "$text"
+        return
+    fi
+
+    local pad=$(( (width - text_len) / 2 ))
+    printf "%*s%s" "$pad" "" "$text"
+}
+
 # Load saved connection or use default
 if [ -f "$CURRENT_CONNECTION_FILE" ]; then
     REMOTE_HOST=$(cat "$CURRENT_CONNECTION_FILE")
 else
-    REMOTE_HOST="${REMOTE_HOST:-$SHIPFLOW_SSH_REMOTE_HOST}"
+    REMOTE_HOST="${REMOTE_HOST:-${SHIPFLOW_SSH_REMOTE_HOST:-}}"
     if [ -z "$REMOTE_HOST" ] && grep -qE '^[[:space:]]*Host[[:space:]]+hetzner([[:space:]]|$)' "$HOME/.ssh/config" 2>/dev/null; then
         REMOTE_HOST="hetzner"
     fi
@@ -63,23 +135,47 @@ if [ -z "$REMOTE_HOST" ]; then
     exit 1
 fi
 
+if ! validate_connection_target "$REMOTE_HOST"; then
+    echo -e "${RED}✗ Connexion distante invalide: $REMOTE_HOST${NC}"
+    echo -e "${YELLOW}  Format: user@host ou alias SSH, sans option SSH ni espace.${NC}"
+    exit 1
+fi
+
 SSH_IDENTITY_FILE=""
 if [ -f "$CURRENT_IDENTITY_FILE" ]; then
     SSH_IDENTITY_FILE=$(cat "$CURRENT_IDENTITY_FILE")
 fi
 
-if [ -n "$SSH_IDENTITY_FILE" ] && [ ! -f "$(expand_identity_path "$SSH_IDENTITY_FILE")" ]; then
-    echo -e "${RED}✗ Clé SSH configurée introuvable: $SSH_IDENTITY_FILE${NC}"
+if ! validate_identity_file "$SSH_IDENTITY_FILE"; then
+    echo -e "${RED}✗ Clé SSH configurée invalide ou introuvable: $SSH_IDENTITY_FILE${NC}"
     echo -e "${YELLOW}  Ouvrez le menu local puis choisissez c) Configurer nouveau serveur.${NC}"
     exit 1
 fi
 
 SSH_CONFIG="$HOME/.ssh/config"
 
-# Validate remote host (can include user@host format)
-if [[ ! "$REMOTE_HOST" =~ ^[a-zA-Z0-9._@-]+$ ]]; then
-    echo -e "${RED}✗ Invalid REMOTE_HOST: $REMOTE_HOST${NC}"
-    echo -e "${YELLOW}  Format: user@host or ssh-alias${NC}"
+if [[ "${1:-}" == "--stop" || "${1:-}" == "stop" ]]; then
+    echo -e "${BLUE}🛑 Arrêt des tunnels SSH pour ${GREEN}$REMOTE_HOST${NC}"
+    pids="$(get_managed_tunnel_pids || true)"
+    if [ -z "$pids" ]; then
+        echo -e "${YELLOW}⚠ Aucun tunnel géré trouvé pour $REMOTE_HOST${NC}"
+        exit 0
+    fi
+
+    while IFS= read -r pid; do
+        [ -n "$pid" ] || continue
+        if kill "$pid" 2>/dev/null; then
+            echo -e "  ${GREEN}✓${NC} PID $pid arrêté"
+        else
+            echo -e "  ${RED}✗${NC} Impossible d'arrêter PID $pid"
+        fi
+    done <<< "$pids"
+    exit 0
+fi
+
+if [ -n "${1:-}" ]; then
+    echo -e "${RED}✗ Option inconnue: $1${NC}"
+    echo "Usage: $0 [--stop]"
     exit 1
 fi
 
@@ -105,7 +201,7 @@ fetch_server_session_info() {
 
 # Retrieve and display server session identity
 echo -e "${BLUE}🔐 Retrieving server session identity...${NC}"
-SESSION_INFO=$(fetch_server_session_info)
+SESSION_INFO=$(fetch_server_session_info || true)
 
 if echo "$SESSION_INFO" | grep -q "SESSION_START"; then
     # Parse session info
@@ -122,7 +218,8 @@ if echo "$SESSION_INFO" | grep -q "SESSION_START"; then
         echo -e "              ${BLUE}$line${NC}"
     done <<< "$HASH_ART"
 
-    echo -e "        ${GREEN}$SESSION_USER@$SESSION_HOST${NC}    ${YELLOW}$SESSION_CODE${NC}"
+    echo -e "${GREEN}$(center_session_banner_text "$SESSION_USER@$SESSION_HOST")${NC}"
+    echo -e "${YELLOW}$(center_session_banner_text "$SESSION_CODE")${NC}"
     echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
     echo ""
     echo -e "${GREEN}✓ Verify this pattern matches the server menu${NC}"
@@ -147,7 +244,6 @@ fi
 
 # Vérifier la connexion SSH (test rapide)
 # On accepte user@host ou alias SSH
-SSH_HOST_ONLY="${REMOTE_HOST#*@}"  # Remove user@ if present
 if [[ "$REMOTE_HOST" != *"@"* ]]; then
     # C'est un alias, vérifier dans la config SSH
     if ! grep -q "Host $REMOTE_HOST" "$SSH_CONFIG" 2>/dev/null; then
@@ -161,22 +257,25 @@ echo ""
 # Récupérer les ports actifs depuis PM2 sur le serveur distant
 echo -e "${BLUE}📡 Récupération des ports actifs depuis PM2...${NC}"
 
-PORTS=$(run_remote_ssh "pm2 jlist 2>/dev/null | python3 -c \"
-import sys, json
-try:
-    apps = json.load(sys.stdin)
-    ports = []
-    for app in apps:
-        if app['pm2_env']['status'] == 'online':
-            env = app['pm2_env'].get('env', {})
-            port = env.get('PORT') or env.get('port')
-            if port:
-                name = app['name']
-                ports.append(f'{port}:{name}')
-    print(','.join(ports))
-except:
-    pass
-\"" 2>/dev/null)
+PORTS=$(run_remote_ssh "pm2 jlist 2>/dev/null | node -e '
+const fs = require(\"fs\");
+try {
+  const apps = JSON.parse(fs.readFileSync(0, \"utf8\"));
+  const ports = [];
+  for (const app of apps) {
+    const pm2Env = app.pm2_env || {};
+    if (pm2Env.status !== \"online\") continue;
+    const env = pm2Env.env || {};
+    const portValue = String(env.PORT || env.port || \"\");
+    if (!/^[0-9]+$/.test(portValue)) continue;
+    const port = Number(portValue);
+    if (port < 1 || port > 65535) continue;
+    const name = String(app.name || \"unknown\").replace(/[,:\\n\\r]/g, \" \").trim();
+    ports.push(`${port}:${name}`);
+  }
+  process.stdout.write(ports.join(\",\"));
+} catch {}
+' " 2>/dev/null || true)
 
 if [ -z "$PORTS" ]; then
     echo -e "${RED}✗ Aucun port trouvé ou PM2 n'est pas accessible${NC}"
@@ -190,6 +289,11 @@ COLLISION=false
 IFS=',' read -ra CHECK_ARRAY <<< "$PORTS"
 for port_info in "${CHECK_ARRAY[@]}"; do
     IFS=':' read -r port name <<< "$port_info"
+    if ! validate_tcp_port "$port"; then
+        echo -e "${RED}✗ Port PM2 invalide ignoré par sécurité: $port${NC}"
+        COLLISION=true
+        continue
+    fi
     if [ -n "${PORT_MAP[$port]+x}" ]; then
         echo -e "${RED}⚠ COLLISION: port $port utilisé par ${PORT_MAP[$port]} ET $name${NC}"
         COLLISION=true
@@ -199,11 +303,13 @@ done
 if [ "$COLLISION" = true ]; then
     echo -e "${YELLOW}⚠ Des collisions de ports ont été détectées!${NC}"
     echo -e "${YELLOW}  Relancez les apps en conflit sur le serveur avec: env_start \"app_name\"${NC}"
+    echo -e "${YELLOW}  Aucun tunnel existant n'a été modifié.${NC}"
+    exit 1
 fi
 
 # Arrêter les tunnels existants
 echo -e "${BLUE}🛑 Arrêt des tunnels existants...${NC}"
-pkill -f "autossh.*$REMOTE_HOST" 2>/dev/null || true
+stop_existing_tunnels
 sleep 1
 
 # Créer les tunnels
@@ -211,8 +317,15 @@ echo -e "${GREEN}✓ Création des tunnels SSH${NC}"
 echo ""
 
 IFS=',' read -ra PORT_ARRAY <<< "$PORTS"
+FAILED_TUNNELS=()
 for port_info in "${PORT_ARRAY[@]}"; do
     IFS=':' read -r port name <<< "$port_info"
+
+    if ! is_local_port_free "$port"; then
+        echo -e "${RED}  ✗ localhost:${port} est déjà occupé (${name})${NC}"
+        FAILED_TUNNELS+=("${port}:${name}")
+        continue
+    fi
     
     echo -e "${GREEN}  ✓ localhost:${port} → ${name}${NC}"
     
@@ -227,8 +340,18 @@ for port_info in "${PORT_ARRAY[@]}"; do
     if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
         autossh_args+=("-i" "$(expand_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes")
     fi
-    autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null
+    if ! autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null; then
+        echo -e "${RED}  ✗ Impossible de créer le tunnel localhost:${port} (${name})${NC}"
+        FAILED_TUNNELS+=("${port}:${name}")
+    fi
 done
+
+if [ "${#FAILED_TUNNELS[@]}" -gt 0 ]; then
+    echo ""
+    echo -e "${RED}✗ Certains tunnels n'ont pas pu être créés.${NC}"
+    echo -e "${YELLOW}  Vérifiez les ports locaux occupés et la configuration SSH, puis relancez.${NC}"
+    exit 1
+fi
 
 echo ""
 echo -e "${GREEN}✓ Tunnels actifs !${NC}"
@@ -242,4 +365,4 @@ done
 
 echo ""
 echo -e "${YELLOW}💡 Les tunnels restent actifs en arrière-plan${NC}"
-echo -e "${YELLOW}   Pour les arrêter : pkill -f 'autossh.*$REMOTE_HOST'${NC}"
+echo -e "${YELLOW}   Pour les arrêter : $0 --stop${NC}"

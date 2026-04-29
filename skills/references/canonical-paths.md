@@ -32,8 +32,8 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
 
 ## Roots
 
-- ShipFlow root: `${SHIPFLOW_ROOT:-/home/claude/shipflow}`
-- ShipFlow tracking data: `/home/claude/shipflow_data`
+- ShipFlow root: `${SHIPFLOW_ROOT:-$HOME/shipflow}`
+- ShipFlow tracking data: `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}`
 - Project root: current working directory, unless the user explicitly gives another project path
 
 ## Resolution Rules
@@ -41,13 +41,13 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
 - ShipFlow-owned tools, shared references, skill references, templates, workflow docs, and internal scripts must be loaded from `$SHIPFLOW_ROOT`.
 - Skill-local references such as `references/foo.md` mean `$SHIPFLOW_ROOT/skills/<skill-name>/references/foo.md`, not `./references/foo.md` in the project repo.
 - Project-owned artifacts such as `BUSINESS.md`, `PRODUCT.md`, `specs/*.md`, `docs/**/*.md`, source code, package files, and tests are resolved from the project root.
-- Global trackers and registries such as `TASKS.md`, `PROJECTS.md`, and `AUDIT_LOG.md` are resolved from `/home/claude/shipflow_data` when the skill names the master tracker.
+- Global trackers and registries such as `TASKS.md`, `PROJECTS.md`, and `AUDIT_LOG.md` are resolved from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` when the skill names the master tracker.
 - If a ShipFlow-owned file is missing from `$SHIPFLOW_ROOT`, report a ShipFlow installation gap. Do not report it missing just because it is absent from the project repository.
 
 ## Command Pattern
 
 ```bash
-SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-/home/claude/shipflow}"
+SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
 "$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py"
 ```
 

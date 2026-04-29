@@ -6,7 +6,7 @@ argument-hint: [optional summary or notes]
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -24,7 +24,7 @@ Before closing a spec-first chantier, load `$SHIPFLOW_ROOT/skills/references/cha
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
 - Git diff stat: !`git diff HEAD --stat 2>/dev/null || echo "no changes"`
 - Recent commits (this session): !`git log --oneline -10 2>/dev/null || echo "no commits"`
-- Master TASKS.md: !`cat /home/claude/shipflow_data/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Existing CHANGELOG: !`head -30 CHANGELOG.md 2>/dev/null || echo "no CHANGELOG.md"`
 
@@ -71,7 +71,7 @@ Using the master TASKS.md from context:
 - Mark completed items: `🔄 in progress` → `✅ done` and `📋 todo` → `✅ done`
 - Mark partially done items: `📋 todo` → `🔄 in progress` with a note
 - Add new tasks discovered during the work
-- Update master `/home/claude/shipflow_data/TASKS.md` — always
+- Update master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` — always
 - If a local `TASKS.md` also exists, update both
 - Treat the TASKS content loaded in Context as informational only.
 - Immediately before editing either TASKS file, re-read it from disk and use that version as authoritative.

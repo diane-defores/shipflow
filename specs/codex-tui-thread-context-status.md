@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: ShipFlow
 created: "2026-04-25"
-updated: "2026-04-25"
+updated: "2026-04-29"
 status: reviewed
 source_skill: sf-spec
 scope: install
@@ -39,7 +39,7 @@ ShipFlow configure aujourd'hui la status line pour Claude Code via `~/.claude/se
 
 Solution
 Étendre l'installation ShipFlow pour appliquer une configuration Codex TUI idempotente et non destructive, avec:
-- `tui.status_line = ["model-with-reasoning", "current-dir", "context-used"]`.
+- `tui.status_line = ["model-with-reasoning", "current-dir", "context-remaining", "five-hour-limit", "weekly-limit"]`.
 - `tui.terminal_title = ["spinner", "thread", "project"]`.
 - une documentation claire des réglages et du fallback via `/statusline` et `/title`.
 
@@ -106,7 +106,7 @@ Implementation Tasks
 
 - [ ] Tâche 3 : Choisir et fixer les items par défaut
   - Fichier : `install.sh`
-  - Action : Définir les listes par défaut dans le bloc géré: `tui.status_line = ["model-with-reasoning", "current-dir", "context-used"]` et `tui.terminal_title = ["spinner", "thread", "project"]`.
+  - Action : Définir les listes par défaut dans le bloc géré: `tui.status_line = ["model-with-reasoning", "current-dir", "context-remaining", "five-hour-limit", "weekly-limit"]` et `tui.terminal_title = ["spinner", "thread", "project"]`.
   - User story link : Rend immédiatement visibles les signaux demandés par l'utilisateur.
   - Depends on : Tâche 2
   - Validate with : inspection du `~/.codex/config.toml` généré et vérification en session Codex
@@ -137,7 +137,7 @@ Implementation Tasks
   - Notes : Format Keep a Changelog déjà utilisé dans le repo.
 
 Acceptance Criteria
-- [ ] CA 1 : Given une installation ShipFlow neuve, when l'installateur termine, then `~/.codex/config.toml` contient `tui.status_line = ["model-with-reasoning", "current-dir", "context-used"]` et `tui.terminal_title = ["spinner", "thread", "project"]`.
+- [ ] CA 1 : Given une installation ShipFlow neuve, when l'installateur termine, then `~/.codex/config.toml` contient `tui.status_line = ["model-with-reasoning", "current-dir", "context-remaining", "five-hour-limit", "weekly-limit"]` et `tui.terminal_title = ["spinner", "thread", "project"]`.
 - [ ] CA 2 : Given une config Codex existante, when l'installateur est relancé, then la config utilisateur hors bloc ShipFlow est préservée et aucun doublon n'est créé.
 - [ ] CA 3 : Given un utilisateur multi-compte (root + users `/home`), when `install.sh` s'exécute, then chaque home reçoit la config Codex TUI.
 - [ ] CA 4 : Given la doc README, when un utilisateur lit la section Codex, then il comprend les defaults et la procédure d'ajustement via `/statusline` et `/title`.

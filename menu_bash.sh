@@ -2,6 +2,12 @@
 # ShipFlow — Pure bash menu (no gum dependency)
 # Sourced by shipflow.sh when gum is NOT available
 
+_bash_flush_stdin() {
+    if [ -r /dev/tty ]; then
+        while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
+    fi
+}
+
 # Display menu items from array with sections and read choice
 _bash_run_menu() {
     local items=("$@")
@@ -30,8 +36,13 @@ _bash_run_menu() {
     echo -e "${YELLOW}Your choice:${NC} \c"
 
     local choice
-    read -r choice
-    choice=$(echo "$choice" | tr '[:upper:]' '[:lower:]')
+    if [ -r /dev/tty ]; then
+        read -rsn1 choice < /dev/tty
+        _bash_flush_stdin
+    else
+        read -r choice
+    fi
+    choice=$(_ui_normalize_choice "$choice")
 
     for ((j=0; j<${#keys[@]}; j++)); do
         local k

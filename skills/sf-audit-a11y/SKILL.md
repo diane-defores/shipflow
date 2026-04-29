@@ -7,7 +7,7 @@ argument-hint: '[file-path | "global"] (omit for full project)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -342,7 +342,7 @@ Shared file write protocol for `AUDIT_LOG.md` and `TASKS.md`:
 
 - Local `AUDIT_LOG.md` : row for "A11y" audit with date + score + critical count
 - Local `TASKS.md` : `### Audit: A11y` subsection (🔴 items bubble up to top of TASKS.md since they block real users)
-- Master `/home/claude/shipflow_data/TASKS.md` : same subsection under project
+- Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` : same subsection under project
 
 ---
 

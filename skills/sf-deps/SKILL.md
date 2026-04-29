@@ -7,7 +7,7 @@ argument-hint: '["global"] (omit for current project)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -51,7 +51,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 
 Audit dependencies across ALL projects in the workspace.
 
-1. Read `/home/claude/shipflow_data/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the Deps column. BuildFlowz (Bash) has no package manager → skip.
+1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the Deps column. BuildFlowz (Bash) has no package manager → skip.
 
 2. Use **AskUserQuestion** to let the user choose:
    - Question: "Which projects should I audit for dependency health?"
@@ -89,7 +89,7 @@ Audit dependencies across ALL projects in the workspace.
    ═══════════════════════════════════════
    ```
 
-5. Update `/home/claude/shipflow_data/AUDIT_LOG.md` (one row per project, Deps column) and `/home/claude/shipflow_data/TASKS.md` (each project's `### Audit: Deps` subsection).
+5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one row per project, Deps column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: Deps` subsection).
 
 6. Ask: **"Which projects should I fix?"** — list projects with scores. Fix only approved projects, one at a time.
 
@@ -106,7 +106,7 @@ Use **AskUserQuestion**:
 - `multiSelect: true`
 - Options:
   - **All projects** — "Run dependency audit across every project with a package manager" (Recommended)
-  - One option per project from `/home/claude/shipflow_data/PROJECTS.md`: label = project name, description = stack
+  - One option per project from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`: label = project name, description = stack
 
 Then proceed to **GLOBAL MODE** with the selected projects.
 
@@ -293,7 +293,7 @@ After generating the report and applying fixes:
 
 Append a row to two files:
 
-1. **Global `/home/claude/shipflow_data/AUDIT_LOG.md`**: append a row filling the Deps column, `—` for other domains.
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: append a row filling the Deps column, `—` for other domains.
 2. **Project-local `./AUDIT_LOG.md`**: same but without the Project column.
 
 Create either file if missing, using the table header from the master `/sf-audit` skill format.
@@ -301,7 +301,7 @@ Create either file if missing, using the table header from the master `/sf-audit
 ### Update TASKS.md
 
 1. **Local TASKS.md** (project root): add/replace a `### Audit: Deps` subsection with critical (🔴), high (🟠), and medium (🟡) issues.
-2. **Master `/home/claude/shipflow_data/TASKS.md`**: find the project's section, add/replace a `### Audit: Deps` subsection with the same tasks.
+2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project's section, add/replace a `### Audit: Deps` subsection with the same tasks.
 
 ---
 

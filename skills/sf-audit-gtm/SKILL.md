@@ -7,7 +7,7 @@ argument-hint: '[file-path | "global"] (omit for full project)'
 
 ## Canonical Paths
 
-Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `/home/claude/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Chantier Tracking
 
@@ -89,7 +89,7 @@ Si une page vend une capacité que le produit, la documentation ou le flow ne co
 
 Audit ALL commercial projects in the workspace for go-to-market readiness.
 
-1. Read `/home/claude/shipflow_data/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the GTM column.
+1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the GTM column.
 
 2. Use **AskUserQuestion** to let the user choose:
    - Question: "Which projects should I audit for go-to-market?"
@@ -129,7 +129,7 @@ Audit ALL commercial projects in the workspace for go-to-market readiness.
    ═══════════════════════════════════════
    ```
 
-5. Update `/home/claude/shipflow_data/AUDIT_LOG.md` (one row per project, GTM column) and `/home/claude/shipflow_data/TASKS.md` (each project's `### Audit: GTM` subsection).
+5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one row per project, GTM column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: GTM` subsection).
 
 6. Ask: **"Which projects should I fix?"** — list projects with scores. Fix only approved projects, one at a time.
 
@@ -245,7 +245,7 @@ Use **AskUserQuestion**:
 - `multiSelect: true`
 - Options:
   - **All projects** — "Run GTM audit across every commercial project" (Recommended)
-  - One option per commercial project from `/home/claude/shipflow_data/PROJECTS.md`: label = project name, description = stack
+  - One option per commercial project from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`: label = project name, description = stack
 
 Then proceed to **GLOBAL MODE** with the selected projects.
 
@@ -388,7 +388,7 @@ After generating the report and applying fixes:
 
 Append a row to two files:
 
-1. **Global `/home/claude/shipflow_data/AUDIT_LOG.md`**: append a row filling only the GTM column, `—` for others.
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: append a row filling only the GTM column, `—` for others.
 2. **Project-local `./AUDIT_LOG.md`**: same without the Project column.
 
 Create either file if missing.
@@ -396,7 +396,7 @@ Create either file if missing.
 ### Update TASKS.md
 
 1. **Local TASKS.md** (project root): add/replace an `### Audit: GTM` subsection with critical (🔴), high (🟠), and medium (🟡) issues as task rows.
-2. **Master `/home/claude/shipflow_data/TASKS.md`**: find the project's section, add/replace an `### Audit: GTM` subsection with the same tasks.
+2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project's section, add/replace an `### Audit: GTM` subsection with the same tasks.
 
 ---
 

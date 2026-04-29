@@ -1,7 +1,7 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "1.0.0"
 project: ShipFlow
 created: "2026-04-27"
 created_at: "2026-04-27 20:01:16 UTC"

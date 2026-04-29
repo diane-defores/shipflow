@@ -85,7 +85,7 @@ This file defines stable engineering and documentation rules for working inside 
 
 ## Tracker Boundaries
 
-- `/home/claude/shipflow_data/TASKS.md` is the master cross-project tracker.
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` is the master cross-project tracker.
 - `./TASKS.md` is the local repo tracker.
 - A project section inside the master tracker is not the same thing as a local `TASKS.md`.
 - Local trackers should stay cleaner than the master tracker: active backlog first, optional historical completed context second.

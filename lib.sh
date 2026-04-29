@@ -1269,6 +1269,11 @@ save_secret() {
     local key="$1"
     local value="$2"
 
+    if [[ ! "$key" =~ ^[A-Z0-9_]+$ ]]; then
+        log ERROR "Invalid secret key name: $key"
+        return 1
+    fi
+
     # Create directory with restricted permissions
     if [ ! -d "$SHIPFLOW_SECRETS_DIR" ]; then
         mkdir -p "$SHIPFLOW_SECRETS_DIR"
@@ -1284,12 +1289,30 @@ save_secret() {
         chmod 600 "$SHIPFLOW_SECRETS_FILE"
     fi
 
-    # Update existing key or append new one
-    if grep -q "^${key}=" "$SHIPFLOW_SECRETS_FILE" 2>/dev/null; then
-        sed -i "s|^${key}=.*|${key}=${value}|" "$SHIPFLOW_SECRETS_FILE"
-    else
-        echo "${key}=${value}" >> "$SHIPFLOW_SECRETS_FILE"
+    local tmp_file
+    tmp_file=$(mktemp "${SHIPFLOW_SECRETS_FILE}.tmp.XXXXXX") || return 1
+    chmod 600 "$tmp_file"
+
+    if ! awk -v key="$key" -v value="$value" '
+        BEGIN { found = 0 }
+        index($0, key "=") == 1 {
+            print key "=" value
+            found = 1
+            next
+        }
+        { print }
+        END {
+            if (!found) {
+                print key "=" value
+            }
+        }
+    ' "$SHIPFLOW_SECRETS_FILE" > "$tmp_file"; then
+        rm -f "$tmp_file"
+        return 1
     fi
+
+    mv "$tmp_file" "$SHIPFLOW_SECRETS_FILE"
+    chmod 600 "$SHIPFLOW_SECRETS_FILE"
 
     log INFO "Secret saved: $key (value hidden)"
 }
@@ -1767,6 +1790,89 @@ validate_env_name() {
     return 0
 }
 
+# -----------------------------------------------------------------------------
+# validate_duckdns_subdomain - Validate a DuckDNS subdomain before DNS/Caddy use
+#
+# Arguments:
+#   $1 - Subdomain without .duckdns.org
+#
+# Returns:
+#   0 - Subdomain is valid
+#   1 - Subdomain is invalid
+# -----------------------------------------------------------------------------
+validate_duckdns_subdomain() {
+    local subdomain=$1
+
+    if [ -z "$subdomain" ]; then
+        error "DuckDNS subdomain cannot be empty"
+        return 1
+    fi
+
+    if [[ ! "$subdomain" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$ ]]; then
+        error "DuckDNS subdomain must be lowercase letters, numbers, or internal dashes only"
+        return 1
+    fi
+
+    return 0
+}
+
+# -----------------------------------------------------------------------------
+# validate_duckdns_token - Validate a DuckDNS token before persistence/use
+#
+# Arguments:
+#   $1 - DuckDNS token
+#
+# Returns:
+#   0 - Token shape is acceptable
+#   1 - Token shape is invalid
+# -----------------------------------------------------------------------------
+validate_duckdns_token() {
+    local token=$1
+
+    if [ -z "$token" ]; then
+        error "DuckDNS token cannot be empty"
+        return 1
+    fi
+
+    if [[ ! "$token" =~ ^[A-Za-z0-9._-]{16,128}$ ]]; then
+        error "DuckDNS token contains invalid characters or length"
+        return 1
+    fi
+
+    return 0
+}
+
+# -----------------------------------------------------------------------------
+# validate_public_ipv4 - Validate an IPv4 address used for DuckDNS updates
+#
+# Arguments:
+#   $1 - IPv4 address
+#
+# Returns:
+#   0 - Address is valid
+#   1 - Address is invalid
+# -----------------------------------------------------------------------------
+validate_public_ipv4() {
+    local ip=$1
+
+    if [[ ! "$ip" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+        error "Public IP must be an IPv4 address"
+        return 1
+    fi
+
+    local IFS=.
+    local octets=($ip)
+    local octet
+    for octet in "${octets[@]}"; do
+        if [ "$octet" -gt 255 ]; then
+            error "Public IP contains an invalid octet"
+            return 1
+        fi
+    done
+
+    return 0
+}
+
 # Helper functions (with logging)
 success() {
     echo -e "${GREEN}✅${NC} $1"
@@ -2124,7 +2230,11 @@ resolve_project_path() {
 
     # Case 2: Identifier is an environment name, search within PROJECTS_DIR
     local found_path
-    found_path=$(find "$PROJECTS_DIR" -maxdepth 4 -type d -name "$identifier" 2>/dev/null | while read -r project_dir; do
+    found_path=$(find "$PROJECTS_DIR" -maxdepth 4 \
+        \( -name "node_modules" -o -name ".git" -o -name "venv" -o -name ".venv" \
+           -o -name "__pycache__" -o -name "target" -o -name ".next" -o -name ".nuxt" \
+           -o -name "dist" -o -name ".cache" -o -name ".pnpm" -o -name ".yarn" \) -prune \
+        -o -type d -name "$identifier" -print 2>/dev/null | while read -r project_dir; do
         if [ -d "$project_dir/.flox" ]; then
             echo "$project_dir"
             exit 0
@@ -2156,10 +2266,12 @@ list_all_environments() {
 # List all environment identifiers (for menu selection)
 list_all_environment_identifiers() {
     list_all_environments
-    # Add any other known project paths that might not be detected by list_all_environments but exist
-    # For example, if you want to explicitly add /root/my-robots/chatbot as an option
-    if [ -d "/root/my-robots/chatbot/.flox" ]; then
-        echo "/root/my-robots/chatbot"
+    # Add one level of direct project folders that contain a Flox environment but
+    # might not be returned by the broader environment scan above.
+    if [ -d "$PROJECTS_DIR" ]; then
+        find "$PROJECTS_DIR" -maxdepth 3 -type d -name ".flox" -print 2>/dev/null | while read -r flox_dir; do
+            dirname "$flox_dir"
+        done | sort -u
     fi
 }
 
@@ -2403,6 +2515,20 @@ get_session_code() {
     echo "${word1}-${word2}-${hex_suffix^^}"
 }
 
+center_session_banner_text() {
+    local text="$1"
+    local width="${2:-50}"
+    local text_len=${#text}
+
+    if [ "$text_len" -ge "$width" ]; then
+        printf "%s" "$text"
+        return
+    fi
+
+    local pad=$(( (width - text_len) / 2 ))
+    printf "%*s%s" "$pad" "" "$text"
+}
+
 # -----------------------------------------------------------------------------
 # display_session_banner - Display formatted session identity banner
 #
@@ -2446,7 +2572,8 @@ display_session_banner() {
         echo -e "              ${BLUE}$line${NC}"
     done <<< "$hash_art"
 
-    echo -e "        ${GREEN}$user@$host${NC}    ${YELLOW}$session_code${NC}"
+    echo -e "${GREEN}$(center_session_banner_text "$user@$host")${NC}"
+    echo -e "${YELLOW}$(center_session_banner_text "$session_code")${NC}"
     echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
 }
 
@@ -4829,10 +4956,19 @@ CHANGELOG_EOF
         elif ls "$project_dir"/*.sh >/dev/null 2>&1; then
             stack="Bash"
         fi
+        # Store home-scoped project paths in a portable form so the registry
+        # survives username changes across machines.
+        local registry_project_dir="$project_dir"
+        if [ "$registry_project_dir" = "$HOME" ]; then
+            registry_project_dir="~"
+        elif [[ "$registry_project_dir" == "$HOME/"* ]]; then
+            registry_project_dir="~/${registry_project_dir#$HOME/}"
+        fi
+
         # Append row to Project Registry table
-        sed -i "/^| Name | Path | Stack |/,/^$/{/^$/i | $project_name | $project_dir | $stack |
+        sed -i "/^| Name | Path | Stack |/,/^$/{/^$/i | $project_name | $registry_project_dir | $stack |
 }" "$projects_file" 2>/dev/null || \
-            echo "| $project_name | $project_dir | $stack |" >> "$projects_file"
+            echo "| $project_name | $registry_project_dir | $stack |" >> "$projects_file"
     fi
 
     # Detect project-scoped MCP integrations from explicit project signals.
@@ -5185,11 +5321,25 @@ print_header() {
 
     local status_left="Free: ..."
     local status_right="Up: ..."
-    if [ -n "$MENU_STATUS_FREE_HUMAN" ]; then
-        status_left="Free: $MENU_STATUS_FREE_HUMAN"
-        if [ -n "$MENU_STATUS_MEM_HUMAN" ]; then
-            status_left="${status_left} | Mem: $MENU_STATUS_MEM_HUMAN"
+    local free_human="${MENU_STATUS_FREE_HUMAN:-}"
+    local mem_human="${MENU_STATUS_MEM_HUMAN:-}"
+
+    # Disk and RAM probes are cheap, so fall back to live values on first paint
+    # instead of showing placeholders while the async cache warms up.
+    if [ -z "$free_human" ]; then
+        free_human=$(disk_free_human 2>/dev/null || true)
+    fi
+    if [ -z "$mem_human" ]; then
+        mem_human=$(mem_available_human 2>/dev/null || true)
+    fi
+
+    if [ -n "$free_human" ]; then
+        status_left="Free: $free_human"
+        if [ -n "$mem_human" ] && [ "$mem_human" != "?" ]; then
+            status_left="${status_left} | Mem: $mem_human"
         fi
+    elif [ -n "$mem_human" ] && [ "$mem_human" != "?" ]; then
+        status_left="Mem: $mem_human"
     fi
     if [ -n "$MENU_STATUS_UPDATES_TOTAL" ]; then
         status_right="Up: $MENU_STATUS_UPDATES_TOTAL"
@@ -5230,7 +5380,7 @@ action_deploy() {
 
     local deploy_choice
     deploy_choice=$(printf '%s\n' \
-        "🔍 Auto-detect project in /root" \
+        "🔍 Auto-detect project in $PROJECTS_DIR" \
         "📁 Custom local path" \
         "🚀 Deploy from GitHub" \
         "Cancel" | ui_choose "Choose source:")
@@ -5280,7 +5430,7 @@ action_deploy() {
             fi
             ;;
         *Custom*)
-            CUSTOM_PATH=$(ui_input "Path (absolute):" "/root/my-project")
+            CUSTOM_PATH=$(ui_input "Path (absolute):" "$PROJECTS_DIR/my-project")
             if [ -z "$CUSTOM_PATH" ]; then
                 echo -e "${RED}❌ Path required${NC}"
             elif ! validate_project_path "$CUSTOM_PATH"; then
@@ -5525,36 +5675,49 @@ action_publish() {
     fi
     echo -e "${BLUE}📡 Detecting public IP...${NC}"
     PUBLIC_IP=$(curl -4 -s https://ip.me 2>/dev/null)
-    if [ -n "$PUBLIC_IP" ]; then
+    if [ -n "$PUBLIC_IP" ] && validate_public_ipv4 "$PUBLIC_IP"; then
         echo -e "${BLUE}📡 Detected Public IP: ${GREEN}$PUBLIC_IP${NC}"
     else
         echo -e "${YELLOW}⚠️  Could not detect public IP${NC}"
         PUBLIC_IP=$(ui_input "Enter public IP:")
+        validate_public_ipv4 "$PUBLIC_IP" || return
     fi
     echo ""
     CACHED_SUBDOMAIN=$(load_secret "DUCKDNS_SUBDOMAIN" 2>/dev/null) || true
     CACHED_TOKEN=$(load_secret "DUCKDNS_TOKEN" 2>/dev/null) || true
     if [ -n "$CACHED_SUBDOMAIN" ] && [ -n "$CACHED_TOKEN" ]; then
-        echo -e "${GREEN}📋 Cached subdomain: ${CYAN}$CACHED_SUBDOMAIN${NC}"
-        if ui_confirm "Use cached DuckDNS credentials?"; then
-            DUCKDNS_SUBDOMAIN="$CACHED_SUBDOMAIN"
-            DUCKDNS_TOKEN="$CACHED_TOKEN"
+        if validate_duckdns_subdomain "$CACHED_SUBDOMAIN" && validate_duckdns_token "$CACHED_TOKEN"; then
+            echo -e "${GREEN}📋 Cached subdomain: ${CYAN}$CACHED_SUBDOMAIN${NC}"
+            if ui_confirm "Use cached DuckDNS credentials?"; then
+                DUCKDNS_SUBDOMAIN="$CACHED_SUBDOMAIN"
+                DUCKDNS_TOKEN="$CACHED_TOKEN"
+            else
+                CACHED_SUBDOMAIN=""
+                CACHED_TOKEN=""
+            fi
         else
+            warning "Cached DuckDNS credentials are invalid and will be ignored"
             CACHED_SUBDOMAIN=""
             CACHED_TOKEN=""
         fi
     fi
     if [ -z "$CACHED_SUBDOMAIN" ] || [ -z "$CACHED_TOKEN" ]; then
         DUCKDNS_SUBDOMAIN=$(ui_input "DuckDNS Subdomain (without .duckdns.org):" "my-subdomain")
-        if [ -z "$DUCKDNS_SUBDOMAIN" ]; then echo -e "${RED}❌ Subdomain required${NC}"; return; fi
+        validate_duckdns_subdomain "$DUCKDNS_SUBDOMAIN" || return
         DUCKDNS_TOKEN=$(ui_input "DuckDNS Token:" "your-token-here" "--password")
-        if [ -z "$DUCKDNS_TOKEN" ]; then echo -e "${RED}❌ Token required${NC}"; return; fi
+        validate_duckdns_token "$DUCKDNS_TOKEN" || return
         save_secret "DUCKDNS_SUBDOMAIN" "$DUCKDNS_SUBDOMAIN"
         save_secret "DUCKDNS_TOKEN" "$DUCKDNS_TOKEN"
     fi
     echo ""
     echo -e "${BLUE}🌐 Updating DuckDNS...${NC}"
-    DUCKDNS_RESPONSE=$(curl -s "https://www.duckdns.org/update?domains=$DUCKDNS_SUBDOMAIN&token=$DUCKDNS_TOKEN&ip=$PUBLIC_IP")
+    DUCKDNS_RESPONSE=$(
+        curl -fsS --get "https://www.duckdns.org/update" \
+            --data-urlencode "domains=$DUCKDNS_SUBDOMAIN" \
+            --data-urlencode "token=$DUCKDNS_TOKEN" \
+            --data-urlencode "ip=$PUBLIC_IP" \
+            2>/dev/null
+    )
     if [ "$DUCKDNS_RESPONSE" = "OK" ]; then
         log INFO "DuckDNS updated: $DUCKDNS_SUBDOMAIN → $PUBLIC_IP"
         echo -e "${GREEN}✅ DuckDNS updated successfully${NC}"
@@ -5673,7 +5836,7 @@ ADVANCED_MENU_ITEMS=(
 # action_advanced needs to be defined after ADVANCED_MENU_ITEMS
 # Each menu file (menu_gum.sh / menu_bash.sh) provides its own implementation
 show_shipflow_menu() {
-    local SHIPFLOW_DATA="${SHIPFLOW_DATA_DIR:-/home/claude/shipflow_data}"
+    local SHIPFLOW_DATA="${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}"
     local TASKS_FILE="$SHIPFLOW_DATA/TASKS.md"
     local AUDIT_FILE="$SHIPFLOW_DATA/AUDIT_LOG.md"
 
@@ -5838,7 +6001,7 @@ show_help() {
                 echo -e "${YELLOW}First time? Follow these steps:${NC}"
                 echo ""
                 echo -e "  ${CYAN}Step 1:${NC} ${GREEN}Have a project ready${NC}"
-                echo -e "         Place your project in ${YELLOW}/root/${NC} directory"
+                echo -e "         Place your project in ${YELLOW}$PROJECTS_DIR${NC}"
                 echo -e "         (or clone from GitHub using Deploy → option 3)"
                 echo ""
                 echo -e "  ${CYAN}Step 2:${NC} ${GREEN}Start your project${NC}"
@@ -6067,7 +6230,7 @@ show_mobile_guide() {
 
     # Lister les projets Expo disponibles
     local expo_projects=""
-    for d in /root/*/; do
+    for d in "$PROJECTS_DIR"/*/; do
         [ -f "${d}package.json" ] || continue
         if grep -q '"expo"' "${d}package.json" 2>/dev/null || grep -q '"expo-router"' "${d}package.json" 2>/dev/null; then
             expo_projects="$expo_projects$(basename "$d")\n"
@@ -6076,7 +6239,7 @@ show_mobile_guide() {
     expo_projects=$(printf "%b" "$expo_projects" | grep -v "^$")
 
     if [ -z "$expo_projects" ]; then
-        echo -e "  ${YELLOW}⚠️  Aucun projet Expo trouvé dans /root/${NC}"
+        echo -e "  ${YELLOW}⚠️  Aucun projet Expo trouvé dans $PROJECTS_DIR${NC}"
         echo -e "  ${BLUE}   Déploie d'abord ton projet depuis le menu principal (e = Deploy).${NC}"
         echo ""
         ui_pause "Appuie sur Entrée pour quitter..."
@@ -6091,7 +6254,7 @@ show_mobile_guide() {
         return 0
     fi
 
-    local project_dir="/root/$selected_project"
+    local project_dir="$PROJECTS_DIR/$selected_project"
     echo ""
     echo -e "  ${GREEN}Projet: $selected_project${NC}"
     echo ""
