@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Menu Local - Gestion des tunnels SSH vers Hetzner
+# Menu Local - Gestion des tunnels SSH vers un serveur ShipFlow
 # Accès rapide aux projets distants via tunnels SSH
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -18,6 +18,7 @@ NC='\033[0m' # No Color
 CONFIG_DIR="$HOME/.shipflow"
 CONNECTIONS_FILE="$CONFIG_DIR/connections.conf"
 CURRENT_CONNECTION_FILE="$CONFIG_DIR/current_connection"
+CURRENT_IDENTITY_FILE="$CONFIG_DIR/current_identity_file"
 
 # Initialize config directory
 mkdir -p "$CONFIG_DIR" 2>/dev/null
@@ -26,14 +27,34 @@ mkdir -p "$CONFIG_DIR" 2>/dev/null
 load_current_connection() {
     if [ -f "$CURRENT_CONNECTION_FILE" ]; then
         REMOTE_HOST=$(cat "$CURRENT_CONNECTION_FILE")
-    else
+    elif [ -n "${SHIPFLOW_SSH_REMOTE_HOST:-}" ]; then
+        REMOTE_HOST="$SHIPFLOW_SSH_REMOTE_HOST"
+    elif grep -qE '^[[:space:]]*Host[[:space:]]+hetzner([[:space:]]|$)' "$HOME/.ssh/config" 2>/dev/null; then
         REMOTE_HOST="hetzner"
+    else
+        REMOTE_HOST=""
+    fi
+
+    if [ -f "$CURRENT_IDENTITY_FILE" ]; then
+        SSH_IDENTITY_FILE=$(cat "$CURRENT_IDENTITY_FILE")
+    else
+        SSH_IDENTITY_FILE=""
     fi
 }
 
 # Save current connection
 save_current_connection() {
     echo "$REMOTE_HOST" > "$CURRENT_CONNECTION_FILE"
+}
+
+save_identity_file() {
+    local identity_file="$1"
+    if [ -n "$identity_file" ]; then
+        echo "$identity_file" > "$CURRENT_IDENTITY_FILE"
+        chmod 600 "$CURRENT_IDENTITY_FILE" 2>/dev/null || true
+    else
+        rm -f "$CURRENT_IDENTITY_FILE"
+    fi
 }
 
 # Add connection to saved list
@@ -54,12 +75,115 @@ get_saved_connections() {
     fi
 }
 
+validate_connection_target() {
+    local target="$1"
+    [[ -n "$target" ]] || return 1
+    [[ "$target" != -* ]] || return 1
+    [[ "$target" =~ ^[a-zA-Z0-9._@-]+$ ]] || return 1
+}
+
+expand_identity_path() {
+    local identity_file="$1"
+    case "$identity_file" in
+        "~") echo "$HOME" ;;
+        "~/"*) echo "$HOME/${identity_file#~/}" ;;
+        *) echo "$identity_file" ;;
+    esac
+}
+
+validate_identity_file() {
+    local identity_file="$1"
+    [ -z "$identity_file" ] && return 0
+    [[ "$identity_file" != -* ]] || return 1
+    [[ "$identity_file" != *$'\n'* ]] || return 1
+    [ -f "$(expand_identity_path "$identity_file")" ] || return 1
+}
+
+ssh_identity_args() {
+    if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+        printf '%s\n' "-i" "$(expand_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes"
+    fi
+}
+
+run_remote_ssh() {
+    local args=("-o" "ConnectTimeout=7")
+    if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+        args+=("-i" "$(expand_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes")
+    fi
+    ssh "${args[@]}" "$REMOTE_HOST" "$@"
+}
+
+save_and_activate_connection() {
+    local target="$1"
+    local identity_file="${2:-${SSH_IDENTITY_FILE:-}}"
+
+    if ! validate_connection_target "$target"; then
+        echo -e "${RED}✗ Cible invalide: $target${NC}"
+        echo -e "${YELLOW}  Format attendu: user@ip, user@host, ou alias-ssh${NC}"
+        return 1
+    fi
+
+    if ! validate_identity_file "$identity_file"; then
+        echo -e "${RED}✗ Clé SSH invalide ou introuvable: $identity_file${NC}"
+        echo -e "${YELLOW}  Laissez vide pour utiliser la configuration SSH normale.${NC}"
+        return 1
+    fi
+
+    echo ""
+    echo -e "${BLUE}Test SSH vers $target...${NC}"
+    local ssh_args=("-o" "ConnectTimeout=7" "-o" "BatchMode=yes")
+    if [ -n "$identity_file" ]; then
+        ssh_args+=("-i" "$(expand_identity_path "$identity_file")" "-o" "IdentitiesOnly=yes")
+    fi
+
+    if ssh "${ssh_args[@]}" "$target" "echo ok" &>/dev/null; then
+        echo -e "${GREEN}✓ Connexion réussie${NC}"
+        REMOTE_HOST="$target"
+        SSH_IDENTITY_FILE="$identity_file"
+        save_current_connection
+        save_identity_file "$identity_file"
+        chmod 600 "$CURRENT_CONNECTION_FILE" 2>/dev/null || true
+        add_saved_connection "$target"
+        CACHED_SESSION_INFO=""
+        CACHED_SESSION_TIME=0
+        echo -e "${GREEN}✓ Serveur actif enregistré pour urls, tunnel et shipflow-mcp-login${NC}"
+        return 0
+    fi
+
+    echo -e "${RED}✗ Connexion impossible vers $target${NC}"
+    echo -e "${YELLOW}  Vérifiez l'IP, l'utilisateur SSH et la clé autorisée sur le serveur.${NC}"
+    return 1
+}
+
+configure_new_server() {
+    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    echo -e "           ${YELLOW}Configurer le serveur distant${NC}"
+    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}${REMOTE_HOST:-non configurée}${NC}"
+    echo ""
+    echo -e "${YELLOW}Adresse IP ou host du serveur:${NC} \c"
+    read -r server_host
+    if [ -z "$server_host" ]; then
+        echo -e "${RED}✗ Adresse vide${NC}"
+        return 1
+    fi
+
+    echo -e "${YELLOW}Utilisateur SSH [ubuntu]:${NC} \c"
+    read -r server_user
+    server_user="${server_user:-ubuntu}"
+
+    echo -e "${YELLOW}Chemin de clé SSH (optionnel, Entrée = SSH normal):${NC} \c"
+    read -r identity_file
+
+    save_and_activate_connection "${server_user}@${server_host}" "$identity_file"
+}
+
 # Menu to select/add connection
 select_connection() {
     echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
     echo -e "              ${YELLOW}Gestion des connexions${NC}"
     echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}${REMOTE_HOST:-non configurée}${NC}"
     echo ""
 
     # Get saved connections
@@ -98,47 +222,20 @@ select_connection() {
         n|N)
             echo ""
             echo -e "${BLUE}Format: user@host ou alias SSH${NC}"
-            echo -e "${YELLOW}Exemple: claude@hetzner, root@192.168.1.10, myserver${NC}"
+            echo -e "${YELLOW}Exemple: ubuntu@203.0.113.10, root@192.168.1.10, myserver${NC}"
             echo ""
             echo -e "${YELLOW}Nouvelle connexion:${NC} \c"
             read -r new_conn
 
             if [ -n "$new_conn" ]; then
-                # Test connection
-                echo ""
-                echo -e "${BLUE}🔍 Test de connexion...${NC}"
-                if ssh -o ConnectTimeout=5 -o BatchMode=yes "$new_conn" "echo ok" &>/dev/null; then
-                    echo -e "${GREEN}✓ Connexion réussie!${NC}"
-                    REMOTE_HOST="$new_conn"
-                    save_current_connection
-                    add_saved_connection "$new_conn"
-                    # Invalidate session cache
-                    CACHED_SESSION_INFO=""
-                    CACHED_SESSION_TIME=0
-                else
-                    echo -e "${RED}✗ Échec de connexion à $new_conn${NC}"
-                    echo -e "${YELLOW}Vérifiez l'adresse et votre configuration SSH${NC}"
-                    pause
-                fi
+                save_and_activate_connection "$new_conn" || pause
             fi
             ;;
         [1-9]|[1-9][0-9])
             local idx=$((choice - 1))
             if [ $idx -lt ${#options[@]} ]; then
                 local selected="${options[$idx]}"
-                echo ""
-                echo -e "${BLUE}🔍 Test de connexion à $selected...${NC}"
-                if ssh -o ConnectTimeout=5 -o BatchMode=yes "$selected" "echo ok" &>/dev/null; then
-                    echo -e "${GREEN}✓ Connexion réussie!${NC}"
-                    REMOTE_HOST="$selected"
-                    save_current_connection
-                    # Invalidate session cache
-                    CACHED_SESSION_INFO=""
-                    CACHED_SESSION_TIME=0
-                else
-                    echo -e "${RED}✗ Échec de connexion${NC}"
-                    pause
-                fi
+                save_and_activate_connection "$selected" || pause
             else
                 echo -e "${RED}❌ Choix invalide${NC}"
                 pause
@@ -160,11 +257,14 @@ CACHED_SESSION_TIME=0
 
 # Function to retrieve server session info from canonical shipflow install paths
 fetch_server_session_info() {
-    ssh -o ConnectTimeout=5 "$REMOTE_HOST" "bash -lc '
+    if [ -z "$REMOTE_HOST" ]; then
+        echo SESSION_NOT_CONFIGURED
+        return 0
+    fi
+
+    run_remote_ssh "bash -lc '
         for lib_path in \
-            \"\$HOME/shipflow/lib.sh\" \
-            \"/home/claude/shipflow/lib.sh\" \
-            \"/root/shipflow/lib.sh\"
+            \"\${SHIPFLOW_ROOT:-\$HOME/shipflow}/lib.sh\"
         do
             if [ -f \"\$lib_path\" ]; then
                 source \"\$lib_path\" 2>/dev/null
@@ -218,6 +318,8 @@ display_server_session_banner() {
         echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
     elif echo "$session_info" | grep -q "SESSION_NOT_FOUND"; then
         echo -e "${YELLOW}⚠ Session identity unavailable (ShipFlow not found on server)${NC}"
+    elif echo "$session_info" | grep -q "SESSION_NOT_CONFIGURED"; then
+        echo -e "${YELLOW}⚠ Connexion distante non configurée${NC}"
     elif [ -z "$session_info" ]; then
         echo -e "${YELLOW}⚠ Could not connect to server${NC}"
     fi
@@ -237,21 +339,66 @@ print_header() {
 # Fonction d'affichage du menu
 show_menu() {
     echo -e "${GREEN}Choisissez une option :${NC}"
+    if [ -z "$REMOTE_HOST" ]; then
+        echo -e "${YELLOW}Connexion distante non configurée. Choisissez c pour ajouter le nouveau serveur.${NC}"
+    fi
     echo ""
     echo -e "  ${CYAN}1)${NC} 🚇 Démarrer les tunnels SSH"
     echo -e "  ${CYAN}2)${NC} 📋 Afficher les URLs disponibles"
     echo -e "  ${CYAN}3)${NC} 🛑 Arrêter les tunnels"
     echo -e "  ${CYAN}4)${NC} 📊 Statut des tunnels"
     echo -e "  ${CYAN}5)${NC} 🔄 Redémarrer les tunnels"
+    echo -e "  ${CYAN}c)${NC} 🌐 Configurer nouveau serveur"
+    echo -e "  ${CYAN}m)${NC} 🔐 Login OAuth MCP (distant)"
     echo ""
-    echo -e "  ${CYAN}7)${NC} 🔌 Changer de connexion"
+    echo -e "  ${CYAN}7)${NC} 🔌 Choisir une connexion enregistrée"
     echo -e "  ${CYAN}0)${NC} ❌ Quitter"
     echo ""
 }
 
+run_mcp_login_menu() {
+    local provider=""
+
+    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    echo -e "           ${YELLOW}Login OAuth MCP distant${NC}"
+    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
+    echo ""
+    echo -e "  ${CYAN}1)${NC} vercel"
+    echo -e "  ${CYAN}2)${NC} supabase"
+    echo -e "  ${CYAN}3)${NC} all"
+    echo -e "  ${CYAN}4)${NC} custom"
+    echo -e "  ${CYAN}0)${NC} retour"
+    echo ""
+    echo -e "${YELLOW}Votre choix :${NC} \c"
+    read -r login_choice
+
+    case "$login_choice" in
+        1) provider="vercel" ;;
+        2) provider="supabase" ;;
+        3) provider="all" ;;
+        4)
+            echo -e "${YELLOW}Nom du provider MCP:${NC} \c"
+            read -r provider
+            ;;
+        0) return 0 ;;
+        *)
+            echo -e "${RED}❌ Choix invalide${NC}"
+            return 1
+            ;;
+    esac
+
+    if [ -z "$provider" ]; then
+        echo -e "${RED}❌ Provider vide${NC}"
+        return 1
+    fi
+
+    "$SCRIPT_DIR/mcp-login.sh" "$provider"
+}
+
 # Fonction pour obtenir les ports actifs
 get_active_ports() {
-    ssh "$REMOTE_HOST" "pm2 jlist 2>/dev/null | python3 -c \"
+    run_remote_ssh "pm2 jlist 2>/dev/null | python3 -c \"
 import sys, json
 try:
     apps = json.load(sys.stdin)
@@ -334,6 +481,12 @@ verify_tunnels_ready() {
 start_tunnels() {
     echo -e "${BLUE}🚇 Démarrage des tunnels SSH${NC}"
     echo ""
+
+    if [ -z "$REMOTE_HOST" ]; then
+        echo -e "${RED}✗ Aucune connexion distante configurée${NC}"
+        echo -e "${YELLOW}  Choisissez l'option 7 pour ajouter votre nouveau serveur.${NC}"
+        return 1
+    fi
     
     # Vérifier autossh
     if ! command -v autossh &> /dev/null; then
@@ -367,12 +520,17 @@ start_tunnels() {
         
         echo -e "${GREEN}  ✓ localhost:${port} → ${name}${NC}"
         
-        autossh -M 0 -f -N \
-            -o "ServerAliveInterval=30" \
-            -o "ServerAliveCountMax=3" \
-            -o "ExitOnForwardFailure=yes" \
-            -L "${port}:localhost:${port}" \
-            "$REMOTE_HOST" 2>/dev/null
+        local autossh_args=(
+            -M 0 -f -N
+            -o "ServerAliveInterval=30"
+            -o "ServerAliveCountMax=3"
+            -o "ExitOnForwardFailure=yes"
+            -L "${port}:localhost:${port}"
+        )
+        if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+            autossh_args+=("-i" "$(expand_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes")
+        fi
+        autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null
     done <<< "$PORTS"
     
     echo ""
@@ -559,6 +717,14 @@ main() {
                     echo ""
                     echo -e "${YELLOW}⚠ Redémarrage incomplet : vérifiez le statut des tunnels${NC}"
                 fi
+                pause
+                ;;
+            c|C)
+                configure_new_server
+                pause
+                ;;
+            m|M)
+                run_mcp_login_menu
                 pause
                 ;;
             7)

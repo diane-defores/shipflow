@@ -35,7 +35,7 @@ export SHIPFLOW_SSH_KEEPALIVE_MAX="${SHIPFLOW_SSH_KEEPALIVE_MAX:-3}"
 
 # Default SSH configuration
 export SHIPFLOW_SSH_REMOTE_USER="${SHIPFLOW_SSH_REMOTE_USER:-root}"
-export SHIPFLOW_SSH_REMOTE_HOST="${SHIPFLOW_SSH_REMOTE_HOST:-hetzner}"
+export SHIPFLOW_SSH_REMOTE_HOST="${SHIPFLOW_SSH_REMOTE_HOST:-}"
 
 # ============================================================================
 # LOGGING CONFIGURATION

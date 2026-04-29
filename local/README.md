@@ -1,6 +1,6 @@
 # 🏠 Configuration Machine Locale
 
-Scripts pour accéder aux applications du serveur Hetzner depuis votre machine locale via des tunnels SSH.
+Scripts pour accéder aux applications d'un serveur ShipFlow depuis votre machine locale via des tunnels SSH.
 
 ## 📋 Prérequis
 
@@ -29,11 +29,14 @@ Voir [README_WINDOWS.md](./README_WINDOWS.md) pour les 3 options disponibles:
 **Linux / macOS / WSL:**
 ```bash
 # Cloner le repo
-git clone <votre-repo> ~/ShipFlow
-cd ~/ShipFlow/local
+git clone <votre-repo> ~/shipflow
+cd ~/shipflow/local
 
 # Lancer l'installation
 ./install.sh
+
+# Optionnel: enregistrer directement le nouveau serveur
+SHIPFLOW_SSH_REMOTE_HOST=ubuntu@SERVER_IP ./install.sh
 
 # Recharger le shell
 source ~/.bashrc  # ou source ~/.zshrc
@@ -42,8 +45,8 @@ source ~/.bashrc  # ou source ~/.zshrc
 **Windows (PowerShell):**
 ```powershell
 # Cloner le repo
-git clone <votre-repo> $env:USERPROFILE\ShipFlow
-cd $env:USERPROFILE\ShipFlow\local
+git clone <votre-repo> $env:USERPROFILE\shipflow
+cd $env:USERPROFILE\shipflow\local
 
 # Lancer l'installation
 .\install_local.ps1
@@ -53,7 +56,7 @@ cd $env:USERPROFILE\ShipFlow\local
 ```
 
 Le script installe automatiquement :
-- ✅ Configuration SSH (IP: 5.75.134.202)
+- ✅ Connexion distante ShipFlow si `SHIPFLOW_SSH_REMOTE_HOST` est fourni
 - ✅ Alias shell : `urls`, `tunnel`
 - ✅ Menu interactif pour gérer les tunnels (Linux/macOS/WSL)
 - ✅ Script de tunnel pour Windows PowerShell
@@ -66,7 +69,7 @@ Si vous préférez configurer manuellement :
 1. **Configuration SSH** - Copier `ssh-config` dans `~/.ssh/config`
 2. **Alias** - Ajouter dans `~/.bashrc` ou `~/.zshrc` :
    ```bash
-   alias urls='~/ShipFlow/local/local.sh'
+   alias urls='~/shipflow/local/local.sh'
    ```
 
 ## 🚀 Utilisation
@@ -76,6 +79,9 @@ Si vous préférez configurer manuellement :
 ```bash
 urls              # Ouvrir le menu de gestion des tunnels
 tunnel            # Alias identique à urls
+shipflow-mcp-login vercel   # Login OAuth MCP distant (Vercel)
+shipflow-mcp-login supabase # Login OAuth MCP distant (Supabase)
+shipflow-mcp-login all      # Enchaîne vercel puis supabase
 ```
 
 ### Menu interactif
@@ -86,6 +92,19 @@ Le menu offre :
 - 🛑 **Arrêter les tunnels** - Arrête tous les tunnels en cours
 - 📊 **Statut** - Vérifie l'état des tunnels actifs
 - 🔄 **Redémarrer** - Redémarre tous les tunnels
+- 🔐 **Login OAuth MCP (distant)** - Lance `codex mcp login` sur le serveur et crée un tunnel OAuth éphémère local
+
+### Configurer ou changer de serveur
+
+Le script utilise `~/.shipflow/current_connection`. Après une migration serveur, configurez la nouvelle cible depuis la machine locale avec le menu:
+
+```bash
+urls
+```
+
+Choisissez `c) Configurer nouveau serveur`, entrez l'adresse IP ou le host, puis l'utilisateur SSH. Si votre clé SSH a un nom spécial, entrez aussi son chemin (`~/.ssh/ma-cle`, par exemple). Laissez le champ vide pour utiliser la configuration SSH normale. Le menu teste la connexion et enregistre la cible pour `urls`, `tunnel` et `shipflow-mcp-login`.
+
+Si vous êtes connecté au serveur distant et ne connaissez plus l'IP publique à utiliser, ouvrez le menu ShipFlow distant et choisissez `c) Local Setup`.
 
 ### Workflow
 
@@ -96,7 +115,7 @@ urls              # Ouvre le menu interactif
 ```
 
 Le système :
-- ✅ Détecte automatiquement tous les projets PM2 actifs sur Hetzner
+- ✅ Détecte automatiquement tous les projets PM2 actifs sur le serveur configuré
 - ✅ Récupère leurs ports
 - ✅ Crée des tunnels SSH pour chaque port
 - ✅ Affiche les URLs accessibles (localhost:3000, etc.)
@@ -112,24 +131,38 @@ Ouvrez votre navigateur :
 ## 🔄 Workflow typique
 
 1. **Sur votre machine locale :** `./dev-tunnel.sh`
-2. **SSH sur Hetzner (avec mosh) :** `mosh hetzner`
+2. **SSH sur le serveur (avec mosh) :** `mosh "$(cat ~/.shipflow/current_connection)"`
 3. **Démarrer les projets :** `dev-start`
 4. **Dans votre navigateur :** Ouvrir `localhost:PORT`
 
 ## 🐛 Dépannage
 
+### OAuth MCP: `connection refused` ou `connection reset`
+
+Ce message arrive quand le callback OAuth `127.0.0.1:<port>` n'est pas routé vers le serveur distant.
+Utilisez la commande locale `shipflow-mcp-login <provider>`: elle extrait automatiquement le port OAuth courant, crée le tunnel local temporaire, puis le ferme en fin de flow.
+
 ### Le script ne trouve pas de ports
 
 Vérifiez que PM2 tourne sur le serveur :
 ```bash
-ssh hetzner "pm2 list"
+ssh "$(cat ~/.shipflow/current_connection)" "pm2 list"
 ```
 
 ### Les tunnels ne se créent pas
 
 Vérifiez la configuration SSH :
 ```bash
-ssh hetzner "echo Connection OK"
+ssh "$(cat ~/.shipflow/current_connection)" "echo Connection OK"
+```
+
+### MCP provider absent
+
+Si `shipflow-mcp-login vercel` ou `shipflow-mcp-login supabase` indique que le provider n'existe pas côté distant, ajoutez-le d'abord sur le serveur:
+
+```bash
+codex mcp add vercel --url https://mcp.vercel.com
+codex mcp add supabase --url https://mcp.supabase.com/mcp
 ```
 
 ### Port déjà utilisé localement

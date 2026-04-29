@@ -42,6 +42,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Cross-project auth reference docs for the ContentFlow Flutter web ClerkJS bridge and the TubeFlow Next.js + Convex YouTube OAuth flow
 - Public site tutorial page explaining how ShipFlow skill arguments can act as mode switches, structured inputs, or free-form tasks
 - Dedicated public FAQ page for common ShipFlow questions around skills, docs scope, and workflow behavior
+- Local MCP OAuth helper with guided server IP and optional SSH key configuration for local tunnels and remote Codex MCP login
 
 ### Changed
 - `sf-test`, `sf-fix`, `sf-verify`, `sf-ship`, `sf-docs`, and `sf-help` now share the same bug lifecycle, retest, evidence-redaction, and bug-gate rules

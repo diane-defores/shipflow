@@ -12,13 +12,66 @@ fi
 # Configuration directory
 CONFIG_DIR="$HOME/.shipflow"
 CURRENT_CONNECTION_FILE="$CONFIG_DIR/current_connection"
+CURRENT_IDENTITY_FILE="$CONFIG_DIR/current_identity_file"
+
+# Couleurs
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+expand_identity_path() {
+    local identity_file="$1"
+    case "$identity_file" in
+        "~") echo "$HOME" ;;
+        "~/"*) echo "$HOME/${identity_file#~/}" ;;
+        *) echo "$identity_file" ;;
+    esac
+}
+
+ssh_args() {
+    printf '%s\n' "-o" "ConnectTimeout=7"
+    if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+        printf '%s\n' "-i" "$(expand_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes"
+    fi
+}
+
+run_remote_ssh() {
+    local args=()
+    while IFS= read -r arg; do
+        args+=("$arg")
+    done < <(ssh_args)
+    ssh "${args[@]}" "$REMOTE_HOST" "$@"
+}
 
 # Load saved connection or use default
 if [ -f "$CURRENT_CONNECTION_FILE" ]; then
     REMOTE_HOST=$(cat "$CURRENT_CONNECTION_FILE")
 else
     REMOTE_HOST="${REMOTE_HOST:-$SHIPFLOW_SSH_REMOTE_HOST}"
-    REMOTE_HOST="${REMOTE_HOST:-hetzner}"
+    if [ -z "$REMOTE_HOST" ] && grep -qE '^[[:space:]]*Host[[:space:]]+hetzner([[:space:]]|$)' "$HOME/.ssh/config" 2>/dev/null; then
+        REMOTE_HOST="hetzner"
+    fi
+fi
+
+if [ -z "$REMOTE_HOST" ]; then
+    echo -e "${RED}✗ Aucune connexion distante ShipFlow configurée.${NC}"
+    echo -e "${YELLOW}  Configurez votre nouveau serveur depuis le menu local:${NC}"
+    echo "  ~/shipflow/local/local.sh"
+    echo -e "${YELLOW}  Puis choisissez c) Configurer nouveau serveur.${NC}"
+    exit 1
+fi
+
+SSH_IDENTITY_FILE=""
+if [ -f "$CURRENT_IDENTITY_FILE" ]; then
+    SSH_IDENTITY_FILE=$(cat "$CURRENT_IDENTITY_FILE")
+fi
+
+if [ -n "$SSH_IDENTITY_FILE" ] && [ ! -f "$(expand_identity_path "$SSH_IDENTITY_FILE")" ]; then
+    echo -e "${RED}✗ Clé SSH configurée introuvable: $SSH_IDENTITY_FILE${NC}"
+    echo -e "${YELLOW}  Ouvrez le menu local puis choisissez c) Configurer nouveau serveur.${NC}"
+    exit 1
 fi
 
 SSH_CONFIG="$HOME/.ssh/config"
@@ -30,23 +83,14 @@ if [[ ! "$REMOTE_HOST" =~ ^[a-zA-Z0-9._@-]+$ ]]; then
     exit 1
 fi
 
-# Couleurs
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
 echo -e "${BLUE}🚇 Dev Tunnel Manager${NC}"
 echo ""
 
 # Resolve the server-side library from canonical shipflow install paths.
 fetch_server_session_info() {
-    ssh -o ConnectTimeout=5 "$REMOTE_HOST" "bash -lc '
+    run_remote_ssh "bash -lc '
         for lib_path in \
-            \"\$HOME/shipflow/lib.sh\" \
-            \"/home/claude/shipflow/lib.sh\" \
-            \"/root/shipflow/lib.sh\"
+            \"\${SHIPFLOW_ROOT:-\$HOME/shipflow}/lib.sh\"
         do
             if [ -f \"\$lib_path\" ]; then
                 source \"\$lib_path\" 2>/dev/null
@@ -117,7 +161,7 @@ echo ""
 # Récupérer les ports actifs depuis PM2 sur le serveur distant
 echo -e "${BLUE}📡 Récupération des ports actifs depuis PM2...${NC}"
 
-PORTS=$(ssh "$REMOTE_HOST" "pm2 jlist 2>/dev/null | python3 -c \"
+PORTS=$(run_remote_ssh "pm2 jlist 2>/dev/null | python3 -c \"
 import sys, json
 try:
     apps = json.load(sys.stdin)
@@ -173,12 +217,17 @@ for port_info in "${PORT_ARRAY[@]}"; do
     echo -e "${GREEN}  ✓ localhost:${port} → ${name}${NC}"
     
     # Créer le tunnel avec autossh (maintient la connexion)
-    autossh -M 0 -f -N \
-        -o "ServerAliveInterval=${SHIPFLOW_SSH_KEEPALIVE_INTERVAL:-30}" \
-        -o "ServerAliveCountMax=${SHIPFLOW_SSH_KEEPALIVE_MAX:-3}" \
-        -o "ExitOnForwardFailure=yes" \
-        -L "${port}:localhost:${port}" \
-        "$REMOTE_HOST" 2>/dev/null
+    autossh_args=(
+        -M 0 -f -N
+        -o "ServerAliveInterval=${SHIPFLOW_SSH_KEEPALIVE_INTERVAL:-30}"
+        -o "ServerAliveCountMax=${SHIPFLOW_SSH_KEEPALIVE_MAX:-3}"
+        -o "ExitOnForwardFailure=yes"
+        -L "${port}:localhost:${port}"
+    )
+    if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+        autossh_args+=("-i" "$(expand_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes")
+    fi
+    autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null
 done
 
 echo ""

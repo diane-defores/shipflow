@@ -85,29 +85,18 @@ echo -e "${BLUE}2. Configuration SSH...${NC}"
 mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
 
-# Vérifier si la config existe déjà
-if grep -q "Host hetzner" "$SSH_CONFIG" 2>/dev/null; then
-    echo -e "${YELLOW}   ⚠ Configuration 'hetzner' existe déjà dans $SSH_CONFIG${NC}"
-    echo -e "${YELLOW}   Vérifiez manuellement si l'IP est correcte (5.75.134.202)${NC}"
+# Prefer the explicit saved ShipFlow connection. Hardcoded historical server
+# aliases become stale as soon as the operator migrates to a new machine.
+mkdir -p "$HOME/.shipflow"
+if [ -n "${SHIPFLOW_SSH_REMOTE_HOST:-}" ]; then
+    printf '%s\n' "$SHIPFLOW_SSH_REMOTE_HOST" > "$HOME/.shipflow/current_connection"
+    chmod 600 "$HOME/.shipflow/current_connection"
+    echo -e "${GREEN}   ✓ Connexion ShipFlow enregistrée: $SHIPFLOW_SSH_REMOTE_HOST${NC}"
+elif [ -f "$HOME/.shipflow/current_connection" ]; then
+    echo -e "${GREEN}   ✓ Connexion ShipFlow existante: $(cat "$HOME/.shipflow/current_connection")${NC}"
 else
-    # Ajouter la configuration SSH
-    cat >> "$SSH_CONFIG" << 'EOF'
-
-# ShipFlow - Serveur Hetzner
-Host hetzner
-    HostName 5.75.134.202
-    User root
-    IdentityFile ~/.ssh/id_ed25519
-    ServerAliveInterval 60
-    ServerAliveCountMax 3
-    TCPKeepAlive yes
-    Compression yes
-    ControlMaster auto
-    ControlPath ~/.ssh/control-%r@%h:%p
-    ControlPersist 10m
-EOF
-    chmod 600 "$SSH_CONFIG"
-    echo -e "${GREEN}   ✓ Configuration SSH ajoutée${NC}"
+    echo -e "${YELLOW}   ⚠ Aucune connexion distante enregistrée${NC}"
+    echo -e "${YELLOW}   Après installation, lancez 'urls' puis choisissez c) Configurer nouveau serveur.${NC}"
 fi
 
 # 3. Ajouter les alias
@@ -118,6 +107,7 @@ ALIAS_BLOCK="
 # ShipFlow - Alias pour tunnels SSH
 alias urls='$SCRIPT_DIR/local.sh'
 alias tunnel='$SCRIPT_DIR/local.sh'
+alias shipflow-mcp-login='$SCRIPT_DIR/mcp-login.sh'
 "
 
 if grep -q "# ShipFlow - Alias pour tunnels SSH" "$SHELL_RC" 2>/dev/null; then
@@ -132,6 +122,7 @@ echo ""
 echo -e "${BLUE}4. Configuration des permissions...${NC}"
 chmod +x "$SCRIPT_DIR/dev-tunnel.sh"
 chmod +x "$SCRIPT_DIR/local.sh"
+chmod +x "$SCRIPT_DIR/mcp-login.sh"
 echo -e "${GREEN}   ✓ Scripts exécutables${NC}"
 
 # 5. Résumé
@@ -140,18 +131,35 @@ echo -e "${GREEN}✅ Installation terminée !${NC}"
 echo ""
 echo -e "${BLUE}📋 Commandes disponibles:${NC}"
 echo -e "   ${GREEN}urls${NC} ou ${GREEN}tunnel${NC}         - Ouvrir le menu de gestion des tunnels"
+echo -e "   ${GREEN}shipflow-mcp-login${NC}   - Login OAuth MCP distant via tunnel éphémère"
 echo ""
 echo -e "${YELLOW}⚠  Pour activer les alias, rechargez votre shell:${NC}"
 echo -e "   ${BLUE}source $SHELL_RC${NC}"
 echo -e "   ${YELLOW}ou${NC} fermez et rouvrez votre terminal"
 echo ""
 echo -e "${BLUE}🚀 Test de connexion SSH:${NC}"
-if ssh -o ConnectTimeout=5 -o BatchMode=yes hetzner "echo OK" &>/dev/null; then
+TEST_REMOTE=""
+TEST_IDENTITY_FILE=""
+if [ -f "$HOME/.shipflow/current_connection" ]; then
+    TEST_REMOTE="$(cat "$HOME/.shipflow/current_connection")"
+fi
+if [ -f "$HOME/.shipflow/current_identity_file" ]; then
+    TEST_IDENTITY_FILE="$(cat "$HOME/.shipflow/current_identity_file")"
+fi
+
+SSH_TEST_ARGS=(-o ConnectTimeout=5 -o BatchMode=yes)
+if [ -n "$TEST_IDENTITY_FILE" ]; then
+    case "$TEST_IDENTITY_FILE" in
+        "~/"*) TEST_IDENTITY_FILE="$HOME/${TEST_IDENTITY_FILE#~/}" ;;
+    esac
+    SSH_TEST_ARGS+=(-i "$TEST_IDENTITY_FILE" -o IdentitiesOnly=yes)
+fi
+
+if [ -n "$TEST_REMOTE" ] && ssh "${SSH_TEST_ARGS[@]}" "$TEST_REMOTE" "echo OK" &>/dev/null; then
     echo -e "${GREEN}   ✓ Connexion SSH au serveur OK${NC}"
     echo ""
     echo -e "${GREEN}   Vous pouvez maintenant lancer: ${BLUE}urls${NC}"
 else
     echo -e "${YELLOW}   ⚠ Impossible de se connecter au serveur${NC}"
-    echo -e "${YELLOW}   Vérifiez que votre clé SSH est configurée:${NC}"
-    echo -e "   ${BLUE}ssh-copy-id hetzner${NC}"
+    echo -e "${YELLOW}   Lancez 'urls' puis choisissez c) Configurer nouveau serveur.${NC}"
 fi

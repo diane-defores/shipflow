@@ -5493,6 +5493,28 @@ action_session() {
     fi
 }
 
+action_local_connection_info() {
+    echo -e "${GREEN}🌐 Local Connection Setup${NC}"
+    echo ""
+    echo -e "${BLUE}This screen gives the address to enter in the local ShipFlow menu.${NC}"
+    echo -e "${YELLOW}On your local machine: open 'urls', press 'c', then enter this server address.${NC}"
+    echo ""
+
+    local public_ip
+    public_ip=$(curl -4 -s --max-time 5 https://ip.me 2>/dev/null || true)
+    if [[ "$public_ip" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+        echo -e "  ${BLUE}Server IP:${NC}   ${GREEN}$public_ip${NC}"
+    else
+        echo -e "  ${BLUE}Server IP:${NC}   ${YELLOW}not detected automatically${NC}"
+    fi
+
+    echo -e "  ${BLUE}SSH user:${NC}    ${GREEN}$(whoami)${NC}"
+    echo -e "  ${BLUE}SSH target:${NC}  ${GREEN}$(whoami)@${public_ip:-SERVER_IP}${NC}"
+    echo ""
+    echo -e "${YELLOW}The server does not need your local IP for tunnels.${NC}"
+    echo -e "${YELLOW}Your local machine initiates SSH to this server, then ShipFlow opens tunnels from there.${NC}"
+}
+
 action_publish() {
     echo -e "${GREEN}🌐 Publish to Web (HTTPS via Caddy + DuckDNS)${NC}"
     echo ""
@@ -5638,6 +5660,7 @@ MAIN_MENU_ITEMS=(
     "f|Install SDK - Flutter, Dart...|action_install_sdk"
     "v|Tools Status - Voir les outils installés|action_tools"
     "j|Session Identity - View or reset session|action_session"
+    "c|Local Setup - Show server address for tunnels|action_local_connection_info"
     "?|Help - How ShipFlow works|action_adv_help"
     "x|Exit|action_exit"
 )
