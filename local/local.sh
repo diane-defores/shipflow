@@ -113,6 +113,39 @@ run_remote_ssh() {
     ssh "${args[@]}" "$REMOTE_HOST" "$@"
 }
 
+normalize_menu_choice() {
+    local choice="${1:-}"
+
+    choice="${choice//$'\r'/}"
+    choice="${choice#"${choice%%[![:space:]]*}"}"
+    choice="${choice%"${choice##*[![:space:]]}"}"
+    choice=$(printf '%s' "$choice" | tr '[:upper:]' '[:lower:]')
+
+    printf '%s' "$choice"
+}
+
+read_menu_choice() {
+    local target_var="$1"
+    local allow_two_digits="${2:-false}"
+    local value=""
+    local next=""
+
+    if [ -r /dev/tty ] && { : < /dev/tty; } 2>/dev/null; then
+        read -rsn1 value < /dev/tty
+        if [ "$allow_two_digits" = true ] && [[ "$value" =~ ^[1-9]$ ]]; then
+            if read -rsn1 -t 0.25 next < /dev/tty 2>/dev/null && [[ "$next" =~ ^[0-9]$ ]]; then
+                value="${value}${next}"
+            fi
+        fi
+        while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
+    else
+        read -r value
+    fi
+
+    value=$(normalize_menu_choice "$value")
+    printf -v "$target_var" '%s' "$value"
+}
+
 save_and_activate_connection() {
     local target="$1"
     local identity_file="${2:-${SSH_IDENTITY_FILE:-}}"
@@ -157,25 +190,45 @@ save_and_activate_connection() {
 
 configure_new_server() {
     echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "           ${YELLOW}Configurer le serveur distant${NC}"
+    echo -e "           ${YELLOW}Configurer un nouveau serveur${NC}"
     echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
     echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}${REMOTE_HOST:-non configurée}${NC}"
     echo ""
-    echo -e "${YELLOW}Adresse IP ou host du serveur:${NC} \c"
+    echo -e "${BLUE}ShipFlow va enregistrer l'adresse SSH du nouveau serveur.${NC}"
+    echo -e "${BLUE}Tu peux entrer une IP, un domaine, un alias SSH, ou directement user@host.${NC}"
+    echo -e "${YELLOW}Exemples:${NC} 203.0.113.10, mon-serveur.com, hetzner, ubuntu@203.0.113.10"
+    echo ""
+    echo -e "${YELLOW}Adresse IP ou host du nouveau serveur:${NC} \c"
     read -r server_host
     if [ -z "$server_host" ]; then
         echo -e "${RED}✗ Adresse vide${NC}"
         return 1
     fi
 
-    echo -e "${YELLOW}Utilisateur SSH [ubuntu]:${NC} \c"
-    read -r server_user
-    server_user="${server_user:-ubuntu}"
+    local target=""
+    if [[ "$server_host" == *"@"* ]]; then
+        target="$server_host"
+        echo -e "${BLUE}Utilisateur SSH détecté dans l'adresse: ${GREEN}${target%%@*}${NC}"
+    else
+        echo ""
+        echo -e "${BLUE}L'utilisateur SSH est le compte Linux utilisé pour te connecter au serveur.${NC}"
+        echo -e "${BLUE}Sur beaucoup de serveurs Ubuntu cloud, c'est ${GREEN}ubuntu${BLUE}. Selon l'hébergeur, ça peut aussi être ${GREEN}root${BLUE}, ${GREEN}debian${BLUE}, ${GREEN}ec2-user${BLUE}, etc.${NC}"
+        echo -e "${YELLOW}Si tu ne sais pas, laisse ${GREEN}ubuntu${YELLOW}; si le test échoue, réessaie avec l'utilisateur indiqué par ton hébergeur.${NC}"
+        echo -e "${YELLOW}Utilisateur SSH [ubuntu]:${NC} \c"
+        read -r server_user
+        server_user="${server_user:-ubuntu}"
+        target="${server_user}@${server_host}"
+    fi
 
+    echo ""
+    echo -e "${BLUE}Clé SSH: laisse vide si ta connexion SSH marche déjà sans option spéciale.${NC}"
+    echo -e "${BLUE}Sinon, indique le chemin de la clé privée, par exemple ~/.ssh/id_ed25519.${NC}"
     echo -e "${YELLOW}Chemin de clé SSH (optionnel, Entrée = SSH normal):${NC} \c"
     read -r identity_file
 
-    save_and_activate_connection "${server_user}@${server_host}" "$identity_file"
+    echo ""
+    echo -e "${BLUE}Connexion qui va être testée:${NC} ${GREEN}$target${NC}"
+    save_and_activate_connection "$target" "$identity_file"
 }
 
 # Menu to select/add connection
@@ -213,13 +266,13 @@ select_connection() {
     echo -e "  ${CYAN}0)${NC} ← Retour"
     echo ""
     echo -e "${YELLOW}Votre choix:${NC} \c"
-    read -r choice
+    read_menu_choice choice true
 
     case "$choice" in
         0)
             return 0
             ;;
-        n|N)
+        n)
             echo ""
             echo -e "${BLUE}Format: user@host ou alias SSH${NC}"
             echo -e "${YELLOW}Exemple: ubuntu@203.0.113.10, root@192.168.1.10, myserver${NC}"
@@ -371,7 +424,7 @@ run_mcp_login_menu() {
     echo -e "  ${CYAN}0)${NC} retour"
     echo ""
     echo -e "${YELLOW}Votre choix :${NC} \c"
-    read -r login_choice
+    read_menu_choice login_choice
 
     case "$login_choice" in
         1) provider="vercel" ;;
@@ -689,7 +742,7 @@ main() {
         show_menu
 
         echo -e "${YELLOW}Votre choix :${NC} \c"
-        read -r CHOICE
+        read_menu_choice CHOICE
 
         case $CHOICE in
             1)
@@ -719,11 +772,11 @@ main() {
                 fi
                 pause
                 ;;
-            c|C)
+            c)
                 configure_new_server
                 pause
                 ;;
-            m|M)
+            m)
                 run_mcp_login_menu
                 pause
                 ;;
