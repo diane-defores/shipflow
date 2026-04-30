@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: ShipFlow
 created: "2026-04-29"
 created_at: "2026-04-29 11:03:18 UTC"
-updated: "2026-04-29"
-updated_at: "2026-04-29 16:11:40 UTC"
+updated: "2026-04-30"
+updated_at: "2026-04-30 22:26:02 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -47,7 +47,7 @@ evidence:
   - "shipflow-spec-driven-workflow.md says reusable ShipFlow artifacts should be traceable through metadata, evidence, status, risk, and next step."
   - "templates/artifacts/research_report.md exists for source-backed research, but the requested artifact is a pre-decision exploration report, not a general research report."
   - "sf-ready on 2026-04-29 blocked the draft because the substantial-exploration threshold was undefined and redaction/security requirements were not task-level or acceptance-testable."
-next_step: "/sf-start Durable Exploration Reports for sf-explore"
+next_step: "None"
 ---
 
 # Spec: Durable Exploration Reports for sf-explore
@@ -286,14 +286,17 @@ None
 | 2026-04-29 12:00:44 UTC | sf-ready | GPT-5 Codex | Re-ran readiness on unchanged spec after user request | not ready | /sf-spec Durable Exploration Reports for sf-explore |
 | 2026-04-29 16:09:30 UTC | sf-spec | GPT-5 Codex | Updated spec to define substantial-exploration threshold and make redaction/security acceptance-testable | draft | /sf-ready Durable Exploration Reports for sf-explore |
 | 2026-04-29 16:11:40 UTC | sf-ready | GPT-5 Codex | Evaluated updated spec against readiness gate | ready | /sf-start Durable Exploration Reports for sf-explore |
+| 2026-04-29 17:12:28 UTC | sf-start | GPT-5 Codex | Implemented durable exploration report template, sf-explore threshold/redaction behavior, and doctrine/help/public docs alignment | implemented | /sf-verify Durable Exploration Reports for sf-explore |
+| 2026-04-30 21:12:59 UTC | sf-verify | GPT-5 Codex | Verified durable exploration reports, fixed metadata/template enforcement and docs coherence gaps | partial | Resolve unrelated dirty-worktree and optional site-check gaps, then /sf-end Durable Exploration Reports for sf-explore |
+| 2026-04-30 22:26:02 UTC | sf-ship | GPT-5 Codex | Full close and ship for durable `sf-explore` exploration reports | shipped | None |
 
 ## Current Chantier Flow
 
 - `sf-spec`: done, draft spec updated after readiness findings.
 - `sf-ready`: ready.
-- `sf-start`: not launched.
-- `sf-verify`: not launched.
-- `sf-end`: not launched.
-- `sf-ship`: not launched.
+- `sf-start`: implemented.
+- `sf-verify`: partial; verification completed and fixed direct gaps, with residual dirty-worktree/check warnings.
+- `sf-end`: closed by `sf-ship end` full close.
+- `sf-ship`: shipped.
 
-Next step: `/sf-start Durable Exploration Reports for sf-explore`
+Next step: None

@@ -255,7 +255,7 @@ ShipFlow keeps bug records split on purpose:
 For non-trivial coding work, the default workflow is:
 
 ```text
-sf-explore -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
+sf-explore -> exploration_report -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
 ```
 
 For spec-first work, the spec is also the chantier registry. It keeps a

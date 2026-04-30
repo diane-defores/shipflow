@@ -115,7 +115,7 @@ Internal role matrix:
 | `skills/sf-docs/SKILL.md` | conditionnel | support-de-chantier | Supports docs coherence; not a source unless the user asks to frame a spec. |
 | `skills/sf-end/SKILL.md` | obligatoire | lifecycle | Closes an existing chantier; not a source. |
 | `skills/sf-enrich/SKILL.md` | conditionnel | support-de-chantier | Supports content upgrades; route only when follow-up needs a spec. |
-| `skills/sf-explore/SKILL.md` | non-applicable | helper | Exploration can recommend `/sf-spec`, but does not write chantier history. |
+| `skills/sf-explore/SKILL.md` | non-applicable | helper | Exploration can recommend `/sf-spec` and may write durable `exploration_report` artifacts, but does not write chantier history. |
 | `skills/sf-fix/SKILL.md` | conditionnel | source-de-chantier | Bug triage becomes a chantier when the fix is non-local, risky, or spec-first. |
 | `skills/sf-help/SKILL.md` | non-applicable | helper | Help is doctrine/read-only; never writes to specs. |
 | `skills/sf-init/SKILL.md` | conditionnel | support-de-chantier | Supports project bootstrap; route to spec only when setup policy must be formalized. |

@@ -44,9 +44,11 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Public site tutorial page explaining how ShipFlow skill arguments can act as mode switches, structured inputs, or free-form tasks
 - Dedicated public FAQ page for common ShipFlow questions around skills, docs scope, and workflow behavior
 - Local MCP OAuth helper with guided server IP and optional SSH key configuration for local tunnels and remote Codex MCP login
+- Durable `exploration_report` artifacts for `sf-explore`, including the reusable template and default `docs/explorations/` report location
 
 ### Changed
 - Local tunnel tools now share SSH validation and remote PM2 port parsing through `local/remote-helpers.sh` to reduce drift between `local/local.sh`, `local/dev-tunnel.sh`, and `local/mcp-login.sh`
+- `sf-explore`, workflow docs, help docs, and public skill docs now explain when substantial explorations create or update durable reports without writing chantier spec history
 - Codex TUI defaults now show remaining context with `context-remaining` and rate-limit status with `five-hour-limit` plus `weekly-limit`.
 - `sf-test`, `sf-fix`, `sf-verify`, `sf-ship`, `sf-docs`, and `sf-help` now share the same bug lifecycle, retest, evidence-redaction, and bug-gate rules
 - README, workflow docs, `sf-test` README, and public skill pages now describe the compact index plus detailed bug dossier model instead of treating `BUGS.md` as the full bug record

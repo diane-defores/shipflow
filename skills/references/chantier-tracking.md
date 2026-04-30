@@ -39,7 +39,7 @@ Trace category answers: may this skill write a run trace into an existing chanti
 
 - `obligatoire`: lifecycle spec-first skills. When a unique chantier spec is identified, read the spec, append or update `Skill Run History`, update `Current Chantier Flow`, and end the user report with a `Chantier` block and `Verdict <skill>: ...`.
 - `conditionnel`: cross-cutting skills. Trace only when the run is attached to one unique chantier spec. If no unique spec is available, do not write to any spec and report `Chantier: non applicable` or `Chantier: non trace` with the reason.
-- `non-applicable`: helper/session/discovery skills. Do not write to specs. If invoked inside a chantier flow, mention that chantier tracking is non-applicable or not traced and point to the lifecycle next step when useful.
+- `non-applicable`: helper/session/discovery skills. Do not write to specs. If invoked inside a chantier flow, mention that chantier tracking is non-applicable or not traced and point to the lifecycle next step when useful. Non-applicable for spec trace does not forbid non-spec durable artifacts when a skill contract allows them (for example `sf-explore` and `exploration_report`).
 
 Process role answers: can this skill originate, support, steer, or merely inspect a chantier?
 
@@ -99,7 +99,7 @@ This block coexists with the standard `Chantier` block. If the source skill is a
 | `sf-market-study`, `sf-veille`, `sf-research` | `conditionnel` | `source-de-chantier` | Strategic or research output that requires a product, content, architecture, or implementation decision. |
 | `sf-docs`, `sf-enrich`, `sf-redact`, `sf-repurpose`, `sf-scaffold`, `sf-changelog`, `sf-design-playground`, `sf-skills-refresh`, `sf-init` | `conditionnel` | `support-de-chantier` | Route to a source or `/sf-spec` only when the user explicitly asks to formalize follow-up work. |
 | `sf-tasks`, `sf-backlog`, `sf-priorities`, `sf-review`, `continue` | `conditionnel` | `pilotage` | Do not create a chantier from every note; route only when the user or evidence requires a durable spec. |
-| `sf-context`, `sf-model`, `sf-help`, `sf-status`, `sf-resume`, `sf-explore`, `name` | `non-applicable` | `helper` | Not a source; can recommend the lifecycle next step when useful. |
+| `sf-context`, `sf-model`, `sf-help`, `sf-status`, `sf-resume`, `sf-explore`, `name` | `non-applicable` | `helper` | Not a source; can recommend the lifecycle next step when useful. `sf-explore` may write `exploration_report` artifacts but still must not write chantier spec history. |
 
 ## Spec Write Rules
 

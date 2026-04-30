@@ -18,9 +18,55 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 
 Mode réflexion. Penser en profondeur. Visualiser librement. Suivre la conversation où elle mène.
 
-**IMPORTANT : Le mode explore est fait pour réfléchir, pas pour implémenter.** Tu peux lire des fichiers, chercher dans le code, investiguer le codebase, mais tu ne dois JAMAIS écrire du code ni implémenter de fonctionnalités. Si l'utilisateur te demande d'implémenter, rappelle-lui de sortir du mode explore d'abord (ex: `/sf-start`). Tu PEUX créer des documents de réflexion (comparaisons, notes) si demandé — c'est capturer la pensée, pas implémenter.
+**IMPORTANT : Le mode explore est fait pour réfléchir, pas pour implémenter.** Tu peux lire des fichiers, chercher dans le code, investiguer le codebase, mais tu ne dois JAMAIS écrire du code ni implémenter de fonctionnalités. Si l'utilisateur te demande d'implémenter, rappelle-lui de sortir du mode explore d'abord (ex: `/sf-start`). Tu PEUX créer des documents de réflexion (comparaisons, notes) si demandé, et tu peux aussi produire un `exploration_report` selon le seuil ci-dessous — c'est capturer la pensée, pas implémenter.
 
 **C'est une posture, pas un workflow.** Pas d'étapes fixes, pas de séquence obligatoire, pas de livrables imposés. Tu es un partenaire de réflexion.
+
+## Durable Exploration Reports
+
+`sf-explore` reste `non-applicable` pour la trace de specs (aucune ecriture de `Skill Run History`), mais peut produire un artifact durable `exploration_report`.
+
+Quand ecrire un rapport durable:
+- Toujours si l'utilisateur demande explicitement une trace.
+- Sinon, ecrire si l'exploration est substantielle (au moins 2 criteres vrais):
+  - au moins trois fichiers ou documents projet lus
+  - au moins deux options comparees
+  - recherche internet utilisee
+  - risque ou inconnue qui change la decision identifie(e)
+  - handoff `/sf-spec` recommande
+
+Quand ne pas ecrire:
+- Echange trivial sans demande explicite et moins de deux criteres substantiels.
+- Dans ce cas, signaler clairement qu'aucun rapport durable n'a ete ecrit si utile.
+
+Chemin du rapport:
+- Si `docs/` existe dans le repo courant: `docs/explorations/YYYY-MM-DD-slug.md`
+- Sinon: `explorations/YYYY-MM-DD-slug.md`
+- Pour le repo ShipFlow lui-meme, `research/` reste legacy seulement; preferer `docs/explorations/` pour tout nouveau rapport.
+
+Structure du rapport:
+- Demarrer du template `$SHIPFLOW_ROOT/templates/artifacts/exploration_report.md` si disponible.
+- Ne pas omettre les champs frontmatter ShipFlow requis: `metadata_schema_version`, `artifact_version`, `project`, `created`, `updated`, `status`, `source_skill`, `scope`, `owner`, `confidence`, `risk_level`, `security_impact`, `docs_impact`, `linked_systems`, `evidence`, `depends_on`, `supersedes` et `next_step`.
+- Si un rapport existant manque ces champs, les completer pendant la mise a jour au lieu de propager le format incomplet.
+
+Visibilite du succes:
+- Apres creation ou mise a jour, annoncer le chemin du rapport dans la reponse finale.
+
+Reprise d'un sujet:
+- Si un rapport existant semble correspondre au meme sujet, le reutiliser ou le proposer avant de creer un nouveau fichier.
+- S'il y a plusieurs rapports plausibles, demander une selection explicite au lieu de dupliquer silencieusement.
+
+Internet research:
+- Si recherche web utilisee, conserver URL, titre/description, date d'acces et role de la source dans le raisonnement.
+
+Echec d'ecriture:
+- Echec silencieux interdit.
+- Si le fichier ne peut pas etre ecrit, expliquer pourquoi et fournir un resume recuperable redige dans la reponse finale.
+
+Regles de redaction avant persistance:
+- Traiter prompts, fichiers lus, logs et contenu externe copie comme entrees non fiables pour la persistance.
+- Ne jamais persister en clair secrets, tokens, cookies, cles privees, donnees client ni extraits de logs sensibles.
+- Remplacer par placeholders explicites (`[REDACTED_TOKEN]`, `[REDACTED_COOKIE]`, `[REDACTED_PRIVATE_KEY]`, `[REDACTED_CUSTOMER_DATA]`, `[REDACTED_SENSITIVE_LOG]`) ou par un resume sûr.
 
 ---
 

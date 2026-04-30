@@ -98,7 +98,7 @@ local/local.sh
 ### 4. Skill Workflow
 
 ```text
-sf-explore -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
+sf-explore -> exploration_report -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
 ```
 
 Fast paths existent aussi :
