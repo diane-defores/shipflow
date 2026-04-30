@@ -84,8 +84,8 @@ warn_data_restore_before_work() {
     shipflow_log "WARN" "User warned to restore existing shipflow_data from GitHub/backup before starting work. Expected data dir: $user_data_dir"
 
     if [ -t 0 ] && [ "${CI:-}" != "true" ] && [ "${SHIPFLOW_SKIP_DATA_RESTORE_WARNING:-0}" != "1" ]; then
-        echo -e "${YELLOW}Appuie sur Entrée pour continuer, ou Ctrl+C pour restaurer tes données maintenant.${NC}"
-        read -r _
+        echo -e "${YELLOW}Appuie sur une touche pour continuer, ou Ctrl+C pour restaurer tes données maintenant.${NC}"
+        read -rsn1 _
         echo ""
     fi
 }

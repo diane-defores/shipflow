@@ -124,16 +124,33 @@ normalize_menu_choice() {
     printf '%s' "$choice"
 }
 
+menu_letter_key() {
+    local index="$1"
+    local alphabet="abcdefghijklmopqrstuvwyz"
+    local base=${#alphabet}
+    local key=""
+    local n="$index"
+
+    while true; do
+        local rem=$((n % base))
+        key="${alphabet:rem:1}${key}"
+        n=$((n / base - 1))
+        [ "$n" -lt 0 ] && break
+    done
+
+    printf '%s' "$key"
+}
+
 read_menu_choice() {
     local target_var="$1"
-    local allow_two_digits="${2:-false}"
+    local allow_two_chars="${2:-false}"
     local value=""
     local next=""
 
     if [ -r /dev/tty ] && { : < /dev/tty; } 2>/dev/null; then
         read -rsn1 value < /dev/tty
-        if [ "$allow_two_digits" = true ] && [[ "$value" =~ ^[1-9]$ ]]; then
-            if read -rsn1 -t 0.25 next < /dev/tty 2>/dev/null && [[ "$next" =~ ^[0-9]$ ]]; then
+        if [ "$allow_two_chars" = true ] && [[ "$value" =~ ^[[:alnum:]]$ ]]; then
+            if read -rsn1 -t 0.25 next < /dev/tty 2>/dev/null && [[ "$next" =~ ^[[:alnum:]]$ ]]; then
                 value="${value}${next}"
             fi
         fi
@@ -242,6 +259,7 @@ select_connection() {
     # Get saved connections
     local saved=$(get_saved_connections)
     local options=()
+    local keys=()
     local i=1
 
     echo -e "${BLUE}Connexions enregistrées:${NC}"
@@ -249,12 +267,15 @@ select_connection() {
 
     if [ -n "$saved" ]; then
         while IFS= read -r conn; do
+            local key
+            key=$(menu_letter_key $((i - 1)))
             if [ "$conn" = "$REMOTE_HOST" ]; then
-                echo -e "  ${CYAN}$i)${NC} $conn ${GREEN}(actuel)${NC}"
+                echo -e "  ${CYAN}$key)${NC} $conn ${GREEN}(actuel)${NC}"
             else
-                echo -e "  ${CYAN}$i)${NC} $conn"
+                echo -e "  ${CYAN}$key)${NC} $conn"
             fi
             options+=("$conn")
+            keys+=("$key")
             ((i++))
         done <<< "$saved"
     else
@@ -263,13 +284,13 @@ select_connection() {
 
     echo ""
     echo -e "  ${CYAN}n)${NC} ➕ Nouvelle connexion"
-    echo -e "  ${CYAN}0)${NC} ← Retour"
+    echo -e "  ${CYAN}x)${NC} ← Retour"
     echo ""
     echo -e "${YELLOW}Votre choix:${NC} \c"
     read_menu_choice choice true
 
     case "$choice" in
-        0)
+        x|q)
             return 0
             ;;
         n)
@@ -284,19 +305,22 @@ select_connection() {
                 save_and_activate_connection "$new_conn" || pause
             fi
             ;;
-        [1-9]|[1-9][0-9])
-            local idx=$((choice - 1))
-            if [ $idx -lt ${#options[@]} ]; then
+        *)
+            local idx=-1
+            for ((i=0; i<${#keys[@]}; i++)); do
+                if [ "$choice" = "${keys[$i]}" ]; then
+                    idx=$i
+                    break
+                fi
+            done
+
+            if [ "$idx" -ge 0 ]; then
                 local selected="${options[$idx]}"
                 save_and_activate_connection "$selected" || pause
             else
                 echo -e "${RED}❌ Choix invalide${NC}"
                 pause
             fi
-            ;;
-        *)
-            echo -e "${RED}❌ Choix invalide${NC}"
-            pause
             ;;
     esac
 }
@@ -411,16 +435,16 @@ show_menu() {
         echo -e "${YELLOW}Connexion distante non configurée. Choisissez c pour ajouter le nouveau serveur.${NC}"
     fi
     echo ""
-    echo -e "  ${CYAN}1)${NC} 🚇 Démarrer les tunnels SSH"
-    echo -e "  ${CYAN}2)${NC} 📋 Afficher les URLs disponibles"
-    echo -e "  ${CYAN}3)${NC} 🛑 Arrêter les tunnels"
-    echo -e "  ${CYAN}4)${NC} 📊 Statut des tunnels"
-    echo -e "  ${CYAN}5)${NC} 🔄 Redémarrer les tunnels"
+    echo -e "  ${CYAN}t)${NC} 🚇 Démarrer les tunnels SSH"
+    echo -e "  ${CYAN}u)${NC} 📋 Afficher les URLs disponibles"
+    echo -e "  ${CYAN}a)${NC} 🛑 Arrêter les tunnels"
+    echo -e "  ${CYAN}s)${NC} 📊 Statut des tunnels"
+    echo -e "  ${CYAN}r)${NC} 🔄 Redémarrer les tunnels"
     echo -e "  ${CYAN}c)${NC} 🌐 Configurer nouveau serveur"
     echo -e "  ${CYAN}m)${NC} 🔐 Login OAuth MCP (distant)"
     echo ""
-    echo -e "  ${CYAN}7)${NC} 🔌 Choisir une connexion enregistrée"
-    echo -e "  ${CYAN}0)${NC} ❌ Quitter"
+    echo -e "  ${CYAN}l)${NC} 🔌 Choisir une connexion enregistrée"
+    echo -e "  ${CYAN}x)${NC} ❌ Quitter"
     echo ""
 }
 
@@ -432,24 +456,24 @@ run_mcp_login_menu() {
     echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
     echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
     echo ""
-    echo -e "  ${CYAN}1)${NC} vercel"
-    echo -e "  ${CYAN}2)${NC} supabase"
-    echo -e "  ${CYAN}3)${NC} all"
-    echo -e "  ${CYAN}4)${NC} custom"
-    echo -e "  ${CYAN}0)${NC} retour"
+    echo -e "  ${CYAN}v)${NC} vercel"
+    echo -e "  ${CYAN}s)${NC} supabase"
+    echo -e "  ${CYAN}a)${NC} all"
+    echo -e "  ${CYAN}c)${NC} custom"
+    echo -e "  ${CYAN}x)${NC} retour"
     echo ""
     echo -e "${YELLOW}Votre choix :${NC} \c"
     read_menu_choice login_choice
 
     case "$login_choice" in
-        1) provider="vercel" ;;
-        2) provider="supabase" ;;
-        3) provider="all" ;;
-        4)
+        v) provider="vercel" ;;
+        s) provider="supabase" ;;
+        a) provider="all" ;;
+        c)
             echo -e "${YELLOW}Nom du provider MCP:${NC} \c"
             read -r provider
             ;;
-        0) return 0 ;;
+        x|q) return 0 ;;
         *)
             echo -e "${RED}❌ Choix invalide${NC}"
             return 1
@@ -552,7 +576,7 @@ start_tunnels() {
 
     if [ -z "$REMOTE_HOST" ]; then
         echo -e "${RED}✗ Aucune connexion distante configurée${NC}"
-        echo -e "${YELLOW}  Choisissez l'option 7 pour ajouter votre nouveau serveur.${NC}"
+        echo -e "${YELLOW}  Choisissez l'option l pour ajouter votre nouveau serveur.${NC}"
         return 1
     fi
     
@@ -744,9 +768,11 @@ show_status() {
 
 # Fonction de pause
 pause() {
+    local pause_key=""
+
     echo ""
-    echo -e "${YELLOW}Appuyez sur Entrée pour continuer...${NC}"
-    read -r
+    echo -e "${YELLOW}Appuyez sur une touche pour continuer...${NC}"
+    read_menu_choice pause_key
 }
 
 # Fonction principale
@@ -760,23 +786,23 @@ main() {
         read_menu_choice CHOICE
 
         case $CHOICE in
-            1)
+            t)
                 start_tunnels
                 pause
                 ;;
-            2)
+            u)
                 show_urls
                 pause
                 ;;
-            3)
+            a)
                 stop_tunnels
                 pause
                 ;;
-            4)
+            s)
                 show_status
                 pause
                 ;;
-            5)
+            r)
                 echo -e "${BLUE}🔄 Redémarrage des tunnels${NC}"
                 echo ""
                 stop_tunnels || true
@@ -795,10 +821,10 @@ main() {
                 run_mcp_login_menu
                 pause
                 ;;
-            7)
+            l)
                 select_connection
                 ;;
-            0|6)
+            x|q)
                 echo -e "${GREEN}👋 Au revoir !${NC}"
                 exit 0
                 ;;

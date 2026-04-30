@@ -222,9 +222,13 @@ ui_filter_choose() {
             continue
         fi
 
-        local i=1
+        local keys=()
+        local i=0
         for item in "${matches[@]}"; do
-            echo -e "  ${CYAN}$i)${NC} $item" >&2
+            local key
+            key=$(_ui_letter_key "$i")
+            keys+=("$key")
+            echo -e "  ${CYAN}$key)${NC} $item" >&2
             ((i++))
         done
         echo -e "  ${CYAN}x)${NC} Cancel" >&2
@@ -237,10 +241,12 @@ ui_filter_choose() {
         if [ "$choice" = "x" ] || [ -z "$choice" ]; then
             return 1
         fi
-        if [[ "$choice" =~ ^[1-9]$ ]] && [ "$choice" -le "${#matches[@]}" ]; then
-            echo "${matches[$((choice - 1))]}"
-            return 0
-        fi
+        for ((i=0; i<${#keys[@]}; i++)); do
+            if [ "$choice" = "${keys[$i]}" ]; then
+                echo "${matches[$i]}"
+                return 0
+            fi
+        done
         echo -e "${RED}Invalid choice${NC}" >&2
     done
 }
@@ -421,7 +427,7 @@ ui_input() {
 }
 
 # -----------------------------------------------------------------------------
-# ui_confirm - Yes/no confirmation (gum confirm || read)
+# ui_confirm - Yes/no confirmation with one-key input
 #
 # Arguments:
 #   $1 - Prompt text
@@ -431,17 +437,22 @@ ui_input() {
 # -----------------------------------------------------------------------------
 ui_confirm() {
     local prompt="$1"
+    local answer=""
 
     if [ "$HAS_GUM" = true ]; then
-        gum confirm "$prompt"
+        printf '%s' "$(gum style --foreground 11 "${prompt} (y/o/N): ")" >&2
     else
-        echo -e "${YELLOW}${prompt} (y/N):${NC} \c" >&2
-        read -r answer
-        case "$answer" in
-            [yY]|[yY][eE][sS]) return 0 ;;
-            *) return 1 ;;
-        esac
+        echo -e "${YELLOW}${prompt} (y/o/N):${NC} \c" >&2
     fi
+
+    ui_read_key answer
+    answer=$(_ui_normalize_choice "$answer")
+    echo "" >&2
+
+    case "$answer" in
+        y|yes|o|oui) return 0 ;;
+        *) return 1 ;;
+    esac
 }
 
 # -----------------------------------------------------------------------------
@@ -541,20 +552,27 @@ ui_spinner() {
 }
 
 # -----------------------------------------------------------------------------
-# ui_pause - "Press Enter to continue" with dual-mode support
+# ui_pause - wait for one keypress with dual-mode support
 #
 # Arguments:
-#   $1 - Optional message (default: "Appuie sur Entrée pour continuer...")
+#   $1 - Optional message (default: "Appuie sur une touche pour continuer...")
 # -----------------------------------------------------------------------------
 ui_pause() {
-    local msg="${1:-Appuie sur Entrée pour continuer...}"
+    local msg="${1:-Appuie sur une touche pour continuer...}"
+    local pause_key=""
+
+    msg="${msg//Entrée/une touche}"
+    msg="${msg//Enter/any key}"
+
     if [ "$HAS_GUM" = true ]; then
-        gum input --placeholder "$msg" --width 50 > /dev/null 2>&1
+        echo ""
+        gum style --foreground 240 "$msg" >&2
     else
         echo ""
         echo -e "${YELLOW}${msg}${NC}"
-        read -r
     fi
+
+    ui_read_key pause_key
 }
 
 # DISK CLEANUP UTILITIES
@@ -1156,14 +1174,15 @@ updates_menu() {
     echo ""
 
     echo -e "${BLUE}Options:${NC}"
-    echo -e "  ${CYAN}1)${NC} Update All"
-    echo -e "  ${CYAN}0)${NC} Back"
+    echo -e "  ${CYAN}u)${NC} Update All"
+    echo -e "  ${CYAN}x)${NC} Back"
     echo ""
     echo -e "${YELLOW}Your choice:${NC} \c"
     ui_read_key update_choice
+    update_choice=$(_ui_normalize_choice "$update_choice")
 
     case $update_choice in
-        1)
+        u)
             echo -e "${YELLOW}This will run system and global package updates.${NC}"
             if ! ui_confirm "Proceed with Update All?"; then
                 echo -e "${BLUE}Cancelled${NC}"
@@ -1198,6 +1217,9 @@ updates_menu() {
             echo -e "${GREEN}✅ Updates complete${NC}"
             UPDATE_CACHE_TIME=0
             updates_refresh_cache
+            ;;
+        x|q)
+            return 0
             ;;
         *)
             ;;
@@ -1599,14 +1621,15 @@ install_sdk_menu() {
         flutter_status="${YELLOW}not installed${NC}"
     fi
 
-    echo -e "  ${CYAN}1)${NC} Flutter + Dart  [$flutter_status]"
-    echo -e "  ${CYAN}0)${NC} Back"
+    echo -e "  ${CYAN}f)${NC} Flutter + Dart  [$flutter_status]"
+    echo -e "  ${CYAN}x)${NC} Back"
     echo ""
     echo -e "${YELLOW}Your choice:${NC} \c"
     ui_read_key sdk_choice
+    sdk_choice=$(_ui_normalize_choice "$sdk_choice")
 
     case $sdk_choice in
-        1)
+        f)
             if command -v flutter >/dev/null 2>&1; then
                 echo -e "${GREEN}Flutter is already installed.${NC}"
                 echo -e "  Version: $(flutter --version 2>&1 | head -n1)"
@@ -1665,6 +1688,9 @@ install_sdk_menu() {
                 echo -e "${RED}Flutter installation failed.${NC}"
                 echo -e "${YELLOW}Manual install: git clone -b stable https://github.com/flutter/flutter.git $flutter_install_dir${NC}"
             fi
+            ;;
+        x|q)
+            return 0
             ;;
         *)
             ;;
@@ -5202,10 +5228,7 @@ deploy_github_project() {
     local existing_project=$(resolve_project_path "$project_name")
     if [ -n "$existing_project" ]; then
         echo -e "${YELLOW}⚠️  Project $project_name already exists at $existing_project${NC}"
-        echo -e "${YELLOW}Replace it? (yes/N):${NC} \c"
-        read -r confirm
-
-        if [[ ! "$confirm" =~ ^(yes|YES)$ ]]; then
+        if ! ui_confirm "Replace it?"; then
             echo -e "${BLUE}❌ Cancelled${NC}"
             return 1
         fi
@@ -5501,7 +5524,7 @@ action_remove() {
         echo -e "${YELLOW}   Environment: $ENV_NAME${NC}"
         echo -e "${YELLOW}   Directory: $PROJECT_DIR${NC}"
         echo ""
-        if ui_confirm "Type 'yes' to confirm deletion"; then
+        if ui_confirm "Confirm deletion?"; then
             log INFO "Menu: removing environment $ENV_NAME (dir: $PROJECT_DIR)"
             env_remove "$ENV_NAME"
             echo -e "${GREEN}✅ Environment removed!${NC}"
@@ -5909,18 +5932,19 @@ PROJECTS_EOF
 
         echo -e "${GREEN}Choose:${NC}"
         echo ""
-        echo -e "  ${CYAN}1)${NC} 📋 Tasks       — Browse all projects & tasks"
-        echo -e "  ${CYAN}2)${NC} 🔴 Priorities  — Show P0 & P1 tasks only"
-        echo -e "  ${CYAN}3)${NC} 📝 Changelog   — View recent changes"
-        echo -e "  ${CYAN}4)${NC} 📊 Audit Log   — Review quality scores"
+        echo -e "  ${CYAN}t)${NC} 📋 Tasks       — Browse all projects & tasks"
+        echo -e "  ${CYAN}p)${NC} 🔴 Priorities  — Show P0 & P1 tasks only"
+        echo -e "  ${CYAN}c)${NC} 📝 Changelog   — View recent changes"
+        echo -e "  ${CYAN}a)${NC} 📊 Audit Log   — Review quality scores"
         echo ""
         echo -e "  ${CYAN}x)${NC} ← Back"
         echo ""
         echo -e "${YELLOW}Your choice:${NC} \c"
         ui_read_key sf_choice
+        sf_choice=$(_ui_normalize_choice "$sf_choice")
 
         case $sf_choice in
-            1)
+            t)
                 if [ -f "$TASKS_FILE" ]; then
                     less -R "$TASKS_FILE"
                 else
@@ -5928,7 +5952,7 @@ PROJECTS_EOF
                     sleep 2
                 fi
                 ;;
-            2)
+            p)
                 if [ -f "$TASKS_FILE" ]; then
                     clear
                     echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
@@ -5949,13 +5973,13 @@ PROJECTS_EOF
                         fi
                     done < "$TASKS_FILE"
                     echo ""
-                    ui_pause "Press Enter to continue..."
+                    ui_pause "Press any key to continue..."
                 else
                     echo -e "${RED}❌ TASKS.md not found${NC}"
                     sleep 2
                 fi
                 ;;
-            3)
+            c)
                 if [ -f "$CHANGELOG_FILE" ]; then
                     less -R "$CHANGELOG_FILE"
                 else
@@ -5963,7 +5987,7 @@ PROJECTS_EOF
                     sleep 2
                 fi
                 ;;
-            4)
+            a)
                 if [ -f "$AUDIT_FILE" ]; then
                     less -R "$AUDIT_FILE"
                 else
@@ -5971,7 +5995,7 @@ PROJECTS_EOF
                     sleep 2
                 fi
                 ;;
-            x|X|q|Q)
+            x|q)
                 return 0
                 ;;
             *)
@@ -6002,11 +6026,11 @@ show_help() {
                 echo ""
                 echo -e "  ${CYAN}Step 1:${NC} ${GREEN}Have a project ready${NC}"
                 echo -e "         Place your project in ${YELLOW}$PROJECTS_DIR${NC}"
-                echo -e "         (or clone from GitHub using Deploy → option 3)"
+                echo -e "         (or clone from GitHub using Deploy → ${YELLOW}c${NC} Deploy from GitHub)"
                 echo ""
                 echo -e "  ${CYAN}Step 2:${NC} ${GREEN}Start your project${NC}"
                 echo -e "         From main menu, press ${YELLOW}e${NC} (Deploy)"
-                echo -e "         Then press ${YELLOW}1${NC} (Auto-detect)"
+                echo -e "         Then press ${YELLOW}a${NC} (Auto-detect)"
                 echo -e "         Select your project from the list"
                 echo ""
                 echo -e "  ${CYAN}Step 3:${NC} ${GREEN}Access your app${NC}"
@@ -6127,29 +6151,31 @@ show_help() {
 
         echo ""
         echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
-        echo -e "  ${CYAN}p${NC} Previous   ${CYAN}Enter/n${NC} Next   ${CYAN}1-4${NC} Jump   ${CYAN}0${NC} Back"
+        echo -e "  ${CYAN}p${NC} Previous   ${CYAN}n${NC} Next   ${CYAN}a-d${NC} Jump   ${CYAN}x${NC} Back"
         echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
         echo ""
         echo -e "${YELLOW}[$page/$total_pages]:${NC} \c"
         ui_read_key help_choice
+        help_choice=$(_ui_normalize_choice "$help_choice")
 
         case $help_choice in
-            ""|n|N)
+            ""|n)
                 if [ $page -lt $total_pages ]; then
                     page=$((page + 1))
                 fi
                 ;;
-            p|P|b|B)
+            p|b)
                 if [ $page -gt 1 ]; then
                     page=$((page - 1))
                 fi
                 ;;
-            x|X|q|Q)
+            x|q)
                 return
                 ;;
-            [1-4])
-                page=$help_choice
-                ;;
+            a) page=1 ;;
+            b) page=2 ;;
+            c) page=3 ;;
+            d) page=4 ;;
         esac
     done
 }
@@ -6162,7 +6188,7 @@ show_mobile_guide() {
     echo -e "Ce guide configure ton téléphone Android pour le dev en live."
     echo -e "Suis les étapes dans l'ordre. Ce qui est déjà fait sera ignoré."
     echo ""
-    ui_pause "Appuie sur Entrée pour commencer..."
+    ui_pause "Appuie sur une touche pour commencer..."
 
     # ── ÉTAPE 1 : EAS CLI ──────────────────────────────────────────────────
     clear
@@ -6183,12 +6209,12 @@ show_mobile_guide() {
         else
             echo -e "  ${RED}❌ Échec de l'installation. Vérifie que npm est dispo.${NC}"
             echo ""
-            ui_pause "Appuie sur Entrée pour quitter le guide..."
+            ui_pause "Appuie sur une touche pour quitter le guide..."
             return 1
         fi
     fi
     echo ""
-    ui_pause "Appuie sur Entrée pour l'étape suivante..."
+    ui_pause "Appuie sur une touche pour l'étape suivante..."
 
     # ── ÉTAPE 2 : Connexion EAS ────────────────────────────────────────────
     clear
@@ -6210,12 +6236,12 @@ show_mobile_guide() {
         else
             echo -e "  ${RED}❌ Connexion échouée. Réessaie depuis le guide.${NC}"
             echo ""
-            ui_pause "Appuie sur Entrée pour quitter..."
+            ui_pause "Appuie sur une touche pour quitter..."
             return 1
         fi
     fi
     echo ""
-    ui_pause "Appuie sur Entrée pour l'étape suivante..."
+    ui_pause "Appuie sur une touche pour l'étape suivante..."
 
     # ── ÉTAPE 3 : Build APK ────────────────────────────────────────────────
     clear
@@ -6242,7 +6268,7 @@ show_mobile_guide() {
         echo -e "  ${YELLOW}⚠️  Aucun projet Expo trouvé dans $PROJECTS_DIR${NC}"
         echo -e "  ${BLUE}   Déploie d'abord ton projet depuis le menu principal (e = Deploy).${NC}"
         echo ""
-        ui_pause "Appuie sur Entrée pour quitter..."
+        ui_pause "Appuie sur une touche pour quitter..."
         return 0
     fi
 
@@ -6258,10 +6284,12 @@ show_mobile_guide() {
     echo ""
     echo -e "  ${GREEN}Projet: $selected_project${NC}"
     echo ""
-    echo -e "  ${YELLOW}Lancer le build Android? (o/N):${NC} \c"
-    read -r build_confirm
+    echo -e "  ${YELLOW}Lancer le build Android? (o/y/N):${NC} \c"
+    ui_read_key build_confirm
+    build_confirm=$(_ui_normalize_choice "$build_confirm")
+    echo ""
 
-    if [[ "$build_confirm" =~ ^[oOyY]$ ]]; then
+    if [[ "$build_confirm" =~ ^(o|oui|y|yes)$ ]]; then
         echo ""
         echo -e "  ${BLUE}🔨 Build en cours... (ne ferme pas ce terminal)${NC}"
         echo ""
@@ -6273,7 +6301,7 @@ show_mobile_guide() {
         echo -e "  ${BLUE}Build ignoré — si tu as déjà l'APK sur ton tel, c'est bon.${NC}"
     fi
     echo ""
-    ui_pause "Appuie sur Entrée pour l'étape suivante..."
+    ui_pause "Appuie sur une touche pour l'étape suivante..."
 
     # ── ÉTAPE 4 : Démarrer le serveur Metro ───────────────────────────────
     clear
@@ -6317,5 +6345,5 @@ show_mobile_guide() {
         echo -e "  ${BLUE}3. Modifie ton code → l'app se recharge automatiquement 🎉${NC}"
     fi
     echo ""
-    ui_pause "Appuie sur Entrée pour revenir au menu..."
+    ui_pause "Appuie sur une touche pour revenir au menu..."
 }

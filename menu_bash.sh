@@ -74,9 +74,7 @@ action_advanced() {
         local rc=$?
         [ $rc -eq 1 ] && break
         if [ $rc -eq 0 ]; then
-            echo ""
-            echo -e "${YELLOW}Appuie sur Entrée pour continuer...${NC}"
-            read -r
+            ui_pause "Appuie sur une touche pour continuer..."
         fi
     done
 }
@@ -90,9 +88,7 @@ run_menu() {
         _bash_run_menu "${MAIN_MENU_ITEMS[@]}"
         local rc=$?
         if [ $rc -eq 0 ]; then
-            echo ""
-            echo -e "${YELLOW}Appuie sur Entrée pour continuer...${NC}"
-            read -r
+            ui_pause "Appuie sur une touche pour continuer..."
         fi
     done
 }

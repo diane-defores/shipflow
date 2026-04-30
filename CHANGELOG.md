@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-04-28"
+updated: "2026-04-30"
 status: draft
 source_skill: sf-docs
 scope: documentation
@@ -59,6 +59,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - ShipFlow installer now owns Claude/Codex autonomous defaults, AI aliases (`c`, `co`, `cask`, `coask`), and per-user npm bootstrap for selected users
 - Dotfiles installer now delegates Claude/Codex install and client MCP mutation to ShipFlow, and keeps only shared MCP registry linking
 - CLI fallback choice parsing now normalizes uppercase input, trailing `)`, whitespace, and carriage returns so letter-based deploy and submenu prompts accept the expected keys more reliably
+- ShipFlow CLI menus and submenus now use instant letter shortcuts consistently, with one-key confirmations and pauses while preserving text-entry and FZF/gum-filter flows.
 
 ### Security
 - Added root autonomous-mode guard in ShipFlow installer: autonomous Claude/Codex permissions on root now require explicit opt-in (`SHIPFLOW_AI_ALLOW_ROOT_AUTONOMOUS=1`)

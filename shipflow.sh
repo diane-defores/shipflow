@@ -26,7 +26,7 @@ main() {
         clear
         print_header
         if ! check_prerequisites; then
-            ui_pause "Appuie sur Entrée pour quitter..."
+            ui_pause "Appuie sur une touche pour quitter..."
             exit 1
         fi
         touch "$marker"
@@ -36,7 +36,7 @@ main() {
             clear
             print_header
             check_prerequisites
-            ui_pause "Appuie sur Entrée pour quitter..."
+            ui_pause "Appuie sur une touche pour quitter..."
             exit 1
         fi
     fi
