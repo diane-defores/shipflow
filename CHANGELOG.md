@@ -29,6 +29,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [Unreleased]
 
 ### Added
+- Project development mode doctrine for ShipFlow skills, covering local development, Vercel preview-push validation, and hybrid validation workflows
 - Self-hosted public site font assets for Space Grotesk and IBM Plex Mono, removing the remaining Google Fonts runtime dependency
 - Professional bug management doctrine with compact `TEST_LOG.md`, compact `BUGS.md`, per-bug `bugs/BUG-ID.md` dossiers, and redacted `test-evidence/BUG-ID/` evidence directories
 - `templates/artifacts/bug_record.md` for structured bug dossiers with lifecycle status, reproduction, evidence, diagnosis notes, fix attempts, retest history, related artifacts, redaction status, and closure criteria
@@ -48,6 +49,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Skill discovery budget audit for ShipFlow skills, with strict checks for one-sentence descriptions, name/path metadata, listing budgets, and separate long-body risks
 
 ### Changed
+- `sf-start`, `sf-fix`, `sf-auth-debug`, `sf-test`, `sf-verify`, `sf-check`, `sf-end`, `sf-ship`, and `sf-prod` now distinguish local evidence from Vercel preview-push evidence and route through `sf-ship` -> `sf-prod` when remote validation is required
 - Local tunnel tools now share SSH validation and remote PM2 port parsing through `local/remote-helpers.sh` to reduce drift between `local/local.sh`, `local/dev-tunnel.sh`, and `local/mcp-login.sh`
 - `sf-explore`, workflow docs, help docs, and public skill docs now explain when substantial explorations create or update durable reports without writing chantier spec history
 - Codex TUI defaults now show remaining context with `context-remaining` and rate-limit status with `five-hour-limit` plus `weekly-limit`.

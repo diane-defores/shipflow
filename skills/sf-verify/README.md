@@ -8,6 +8,8 @@
 
 It complements technical checks with product, documentation, and security-minded validation.
 
+It also respects the project development mode: when Vercel preview-push validation is required, `sf-verify` must not call work ready to ship until the needed `sf-ship` -> `sf-prod` preview evidence exists.
+
 ## Who It's For
 
 - Solo founders who need an honest “ready or not?” pass
@@ -36,6 +38,7 @@ It complements technical checks with product, documentation, and security-minded
 - explicit warnings when behavior is only partially demonstrated
 - guidance on what to fix before shipping
 - a push toward `sf-auth-debug` when auth behavior was not proven in a real browser
+- a clear warning when local evidence is not enough for a Vercel-preview validation surface
 
 ## Typical Examples
 
@@ -55,3 +58,4 @@ It complements technical checks with product, documentation, and security-minded
 - `sf-auth-debug` when ship-readiness depends on a real Clerk, OAuth, or session-flow confirmation
 - `sf-spec` and `sf-ready` to strengthen the contract before implementation
 - `sf-ship` once verification is good enough to push
+- `sf-prod` after `sf-ship` when the project requires preview-push validation

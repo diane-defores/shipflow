@@ -24,6 +24,7 @@ Before closing a spec-first chantier, load `$SHIPFLOW_ROOT/skills/references/cha
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
 - Git diff stat: !`git diff HEAD --stat 2>/dev/null || echo "no changes"`
 - Recent commits (this session): !`git log --oneline -10 2>/dev/null || echo "no commits"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Existing CHANGELOG: !`head -30 CHANGELOG.md 2>/dev/null || echo "no CHANGELOG.md"`
@@ -43,6 +44,8 @@ From the conversation, identify:
 - The user story or user-facing outcome this work was intended to support, if inferable
 - Any gap between "work performed" and "outcome proven"
 - Documentation surfaces updated or possibly stale after the change
+- Project development mode from `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and `CLAUDE.md` / `SHIPFLOW.md`
+- Whether required preview deployment evidence exists (`sf-ship` pushed, `sf-prod` confirmed, and preview test/auth proof collected when needed)
 
 ### Step 1.5 — Closure mode decision
 
@@ -56,6 +59,8 @@ If completion status is ambiguous, use **AskUserQuestion**:
 
 Ask a targeted clarification instead of assuming `done` when:
 - the work is implemented but not meaningfully validated
+- the project is `vercel-preview-push` and the work needs browser/manual/integration proof that has not gone through `sf-ship` -> `sf-prod`
+- the project is `hybrid` and the changed surface depends on hosted auth/OAuth, webhooks, env vars, serverless/edge, Vercel routing, or preview/prod data without confirmed preview evidence
 - the user story or expected outcome is still unclear
 - the work touches auth, permissions, billing, secrets, tenant boundaries, destructive actions, migrations, public flows, or other security-sensitive surfaces
 - there are remaining risks, TODOs, or blockers that materially affect product coherence or safety
@@ -78,6 +83,7 @@ Using the master TASKS.md from context:
 - Apply a minimal targeted edit to the relevant rows only; never rewrite the whole file from stale context.
 - If the expected row or section moved, re-read once and recompute; if it is still ambiguous, stop and ask the user.
 - If the evidence supports only partial completion, keep or move the task to `🔄 in progress` with a short note rather than forcing `✅ done`.
+- If preview-push validation is required but missing, do not mark the task `✅ done`; keep it `🔄 in progress` with a note such as `awaiting sf-ship -> sf-prod preview validation`.
 - Reflect product coherence and safety gaps when they materially affect closure.
 - Reflect documentation coherence gaps when a user-facing feature behavior changed.
 - No output at this step.
@@ -91,6 +97,7 @@ If mode is **Résumé seulement**, skip this step.
 - Prepend a new `## [date]` entry to CHANGELOG.md (or update today's entry if it exists)
 - Skip trivial changes (formatting, comments)
 - Keep entries evidence-based and user-facing; do not claim a feature is "done", "safe", or "production ready" unless the work actually demonstrated that.
+- In `vercel-preview-push` or relevant `hybrid` mode, do not frame the changelog entry as functionally released/validated unless `sf-prod` and the required preview test evidence exist.
 - Include documentation alignment when it materially affects user-facing behavior.
 - No output at this step.
 
@@ -112,6 +119,9 @@ Output ONE concise report:
 
 **User story / outcome:**
 - [what user-facing outcome was advanced, completed, or still unproven]
+
+**Development mode:**
+- [local / vercel-preview-push / hybrid / unknown] — [validation evidence or missing sf-ship -> sf-prod proof]
 
 **Documentation coherence:**
 - [updated / not impacted / gap remains]
@@ -146,7 +156,7 @@ Reste a faire:
 - [item or None]
 
 Prochaine etape:
-- [/sf-ship | explicit action | None]
+- [/sf-ship puis /sf-prod si la validation preview-push est requise | /sf-ship | explicit action | None]
 
 Verdict sf-end:
 - [closed | deferred | blocked | not applicable]
@@ -162,3 +172,4 @@ Verdict sf-end:
 - Do not let TASKS/CHANGELOG imply stronger proof than the actual validation supports
 - Do not mark feature work fully closed if known docs remain stale and materially affect users/operators
 - Prefer partial closure when user-story completion or security posture remains uncertain
+- Prefer partial closure when required Vercel preview validation is missing.

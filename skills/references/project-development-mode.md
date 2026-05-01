@@ -18,6 +18,9 @@ linked_systems:
   - skills/sf-start
   - skills/sf-fix
   - skills/sf-auth-debug
+  - skills/sf-verify
+  - skills/sf-end
+  - skills/sf-check
   - skills/sf-ship
   - skills/sf-prod
   - skills/sf-test

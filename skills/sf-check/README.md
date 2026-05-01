@@ -8,6 +8,8 @@
 
 For a solo founder, this is the fastest way to catch broken builds, type errors, lint regressions, missing tests, or dependency red flags before you ship more work on top of them.
 
+When a project uses Vercel preview-push validation, `sf-check` is only the local pre-push confidence pass. Passing checks should route next to `sf-ship` -> `sf-prod` before preview/manual evidence is trusted.
+
 ## Who It's For
 
 - Solo founders maintaining one or more codebases
@@ -33,6 +35,7 @@ For a solo founder, this is the fastest way to catch broken builds, type errors,
 - fixes for local, obvious failures when safe to apply
 - a short gap analysis when important checks are missing
 - explicit warning when “green” does not prove runtime behavior
+- the correct next step when local checks need remote preview validation
 
 ## Typical Examples
 
@@ -51,3 +54,4 @@ For a solo founder, this is the fastest way to catch broken builds, type errors,
 - `sf-deps` for a full dependency audit
 - `sf-verify` when the change is high-stakes
 - `sf-prod` after deployment
+- `sf-ship` then `sf-prod` when the project validates through Vercel previews

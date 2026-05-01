@@ -25,6 +25,7 @@ When the verified work changes ShipFlow skill instructions, include a coherence 
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git diff stat: !`git diff HEAD --stat 2>/dev/null || echo "no changes"`
 - Recent commits (session): !`git log --oneline -10 2>/dev/null || echo "no commits"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - CLAUDE.md (constraints): !`head -60 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
@@ -71,6 +72,22 @@ Si la spec est un artefact ShipFlow, son frontmatter fait partie du contrat. Une
 Si rien n'est clair, utiliser **AskUserQuestion** :
 - Question: "Qu'est-ce que je vérifie ?"
 - Options: tâches en cours depuis TASKS.md + "Tout le travail récent"
+
+### Step 1.5 — Vérifier le mode de développement projet
+
+Lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md`, puis inspecter `CLAUDE.md` ou `SHIPFLOW.md`.
+
+Ajouter au contrat de vérification:
+- `development_mode`: `local`, `vercel-preview-push`, `hybrid`, `unknown-vercel`, ou `unknown`
+- `validation_surface`: local, preview Vercel, production, ou mixte
+- preuve disponible: local checks, test local, `sf-ship`, `sf-prod`, `sf-test --preview`, `sf-auth-debug`, ou aucune
+
+Règles de verdict:
+- En `local`, les checks et tests locaux peuvent soutenir un verdict prêt à ship si les autres dimensions passent.
+- En `vercel-preview-push`, ne jamais rendre `✓ Prêt à ship` pour un changement qui nécessite preuve navigateur/manuelle/intégration si la séquence `sf-ship` -> `sf-prod` -> test preview n'a pas été réalisée ou n'est pas applicable explicitement.
+- En `hybrid`, appliquer la même règle aux surfaces hébergées: auth/OAuth/callbacks, webhooks, env vars déployées, Vercel routing, edge/serverless runtime, cookies, preview/prod data, ou bug uniquement visible en remote.
+- Si le mode est absent et que Vercel est détecté, classer `unknown-vercel`, dégrader la confiance, et recommander de documenter le mode avant de conclure sur une preuve preview.
+- Si la vérification est pré-push et que la preuve preview est requise, le verdict doit être `partial` ou `blocked`, avec next step `/sf-ship [scope]`, puis `/sf-prod [project or URL]`, puis `/sf-test --preview [scope]` ou `/sf-auth-debug [scope]` selon le flow.
 
 ### Step 2 — Vérifier la user story
 
@@ -241,6 +258,11 @@ Quand le système lié principal est un flow d'auth réel:
 - vérifier si une reproduction navigateur a été faite
 - sinon recommander `/sf-auth-debug [scope]` avant de conclure que le travail est prêt à ship
 
+Quand le mode projet impose une preview Vercel:
+- vérifier si `sf-prod` a confirmé le déploiement correspondant au dernier push
+- vérifier si le test preview ou le diagnostic auth preview attendu existe
+- sinon, ne pas conclure prêt à ship; recommander `/sf-ship` puis `/sf-prod`
+
 **Résultat** : liste des conséquences vérifiées vs oubliées avec preuves
 
 ### Step 6.6 — Vérifier la cohérence documentaire
@@ -330,6 +352,7 @@ Générer UN rapport structuré :
 | Cohérence    | Conforme / N écarts         |
 | Metadata     | Versions OK / gaps          |
 | Docs         | Alignées / gaps             |
+| Dev mode     | local / vercel-preview-push / hybrid / unknown |
 | Bug gate     | clear / partial-risk / blocks ship / not assessed |
 | Dépendances  | N ajoutées, vulnérabilités  |
 | Risques      | N SEC / N PERF / N DATA     |
@@ -384,6 +407,15 @@ Ajouter ensuite un bloc workflow explicite :
 - Verdict: [fresh-docs checked / fresh-docs not needed / fresh-docs gap / fresh-docs conflict]
 - Evidence: [dependency/version/source or local-only justification]
 - Impact: [none / warning / blocks ship]
+```
+
+```text
+### Project Development Mode
+- Mode: [local / vercel-preview-push / hybrid / unknown-vercel]
+- Required validation surface: [local / Vercel preview after sf-ship -> sf-prod / mixed / unknown]
+- Deployment evidence: [sf-prod confirmed / not needed / missing]
+- Preview/manual evidence: [sf-test or sf-auth-debug present / not needed / missing]
+- Impact: [none / partial verdict / blocks ready-to-ship verdict]
 ```
 
 ```text
@@ -451,7 +483,7 @@ Puis agir selon le choix :
 - Si **Stop et reprendre plus tard** :
   - fournir la commande exacte pour reprendre (`/sf-verify [scope]`)
 
-Si le verdict est `✓`, ne pas poser cette question et proposer `/sf-end`.
+Si le verdict est `✓`, ne pas poser cette question et proposer `/sf-end`, sauf si le mode `vercel-preview-push` impose encore un `sf-ship` -> `sf-prod` avant preuve preview; dans ce cas proposer cette séquence.
 
 ### Dégradation gracieuse
 
@@ -462,6 +494,7 @@ Si le verdict est `✓`, ne pas poser cette question et proposer `/sf-end`.
 - Si pas de diff (rien à vérifier) : le signaler et arrêter
 - Le scan de risques s'applique toujours (il lit le diff)
 - Toujours indiquer quelles vérifications ont été sautées et pourquoi
+- Si le mode projet requis est inconnu et que Vercel est détecté, ne pas transformer une vérification locale en verdict final.
 
 ### Rules
 
@@ -476,3 +509,4 @@ Si le verdict est `✓`, ne pas poser cette question et proposer `/sf-end`.
 - Prioriser un guidage actionnable pour les utilisateurs non techniques
 - Ne pas être pointilleux sur le style — se concentrer sur les vrais écarts
 - Ne pas valider "prêt à ship" si un bug `high`/`critical` lié au scope reste ouvert.
+- Ne pas valider "prêt à ship" si la preuve preview Vercel requise par le mode projet manque.

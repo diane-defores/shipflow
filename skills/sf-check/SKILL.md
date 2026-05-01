@@ -26,12 +26,19 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Current directory: !`pwd`
 - Package manager lockfiles: !`ls -1 package-lock.json yarn.lock pnpm-lock.yaml requirements.txt Pipfile.lock 2>/dev/null || echo "none found"`
 - Package.json scripts (if any): !`cat package.json 2>/dev/null | grep -E '^\s+"(dev|build|lint|typecheck|check|test|format)"' || echo "no package.json"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Project CLAUDE.md (if any): !`head -80 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 
 ## Your task
 
 Run all available checks for the current project and fix errors if found.
 Treat this skill as a practical confidence pass, not as proof that the product is fully correct or secure.
+
+Before choosing or interpreting checks, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and inspect `CLAUDE.md` or `SHIPFLOW.md`.
+- In `local` mode, local checks are the expected technical confidence pass.
+- In `vercel-preview-push` mode, local checks are pre-push confidence only. A passing local check does not authorize manual/browser/preview validation; the next deployment-sensitive step is `/sf-ship [scope]` then `/sf-prod [project or URL]`.
+- In `hybrid` mode, local checks are valid for unit/static work, but hosted surfaces still need `/sf-ship` -> `/sf-prod` before remote validation.
+- If Vercel is detected but the mode is missing, report `unknown-vercel` as a risky assumption and recommend documenting `## ShipFlow Development Mode`.
 
 ### Workspace root detection
 
@@ -89,6 +96,7 @@ Before concluding that the project is "green", explicitly note any major gap in 
 - No lint script on a repo that normally uses linting
 - Build skipped because no build command exists
 - Checks only validate syntax/compile steps, not runtime behavior or user-facing flows
+- Project mode requires Vercel preview evidence and only local checks were run
 
 If project scripts in `CLAUDE.md` or `package.json` suggest an expected check exists but it cannot be run, report that as a risky assumption instead of silently skipping it.
 
@@ -137,6 +145,11 @@ Always include a short `Risky assumptions / gaps` section when any of the follow
 
 If nothing indicates functional validation of the main user flow, say so plainly. Example: "Checks pass, but no evidence was gathered that checkout/login/sync actually works end-to-end."
 
+If project mode is `vercel-preview-push`, include the next deployment step explicitly:
+- `Next step: /sf-ship [scope]`, then `/sf-prod [project or URL]`
+- If the checked change affects auth or protected flows, add `/sf-auth-debug [scope]` after `sf-prod`
+- If it affects a manual user flow, add `/sf-test --preview [scope]` after `sf-prod`
+
 ### Important
 
 - Use the correct package manager for the project (check lockfiles).
@@ -145,3 +158,4 @@ If nothing indicates functional validation of the main user flow, say so plainly
 - If the project CLAUDE.md specifies custom check commands, use those instead.
 - A passing `sf-check` run means "no obvious issues in the checks that were executed", not "product is production-ready".
 - When security-relevant checks fail or are missing (for example auth flows, permission boundaries, secret/config validation, dependency audit access), call that out explicitly and recommend the next skill when appropriate (`/sf-verify`, `/sf-prod`, `/sf-deps`).
+- In `vercel-preview-push` or relevant `hybrid` mode, recommend `/sf-ship` -> `/sf-prod` after passing checks when changed behavior needs preview validation.

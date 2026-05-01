@@ -8,6 +8,8 @@
 
 This is useful because “work happened” and “the product is truly done” are not the same thing. A solo founder needs a clean record of progress without accidentally overstating validation or shipping confidence.
 
+On projects that use Vercel preview-push validation, `sf-end` keeps closure partial when the required `sf-ship` -> `sf-prod` preview evidence is still missing.
+
 ## Who It's For
 
 - Solo founders working across many small sessions
@@ -32,6 +34,7 @@ This is useful because “work happened” and “the product is truly done” a
 - updated task tracking with done or in-progress status
 - a changelog entry focused on real user-facing change
 - explicit remaining risks or validation gaps
+- partial closure when preview deployment validation is still pending
 
 ## Typical Examples
 
@@ -47,5 +50,6 @@ This is useful because “work happened” and “the product is truly done” a
 ## Related Skills
 
 - `sf-ship` when you are ready to commit and push
+- `sf-prod` immediately after `sf-ship` when preview deployment is the validation surface
 - `sf-review` for broader session or period reviews
 - `sf-verify` when closure is blocked by proof gaps

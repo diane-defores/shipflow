@@ -16,11 +16,15 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 - `sf-test` — preview/manual tests are blocked until changed code is shipped and `sf-prod` confirms deployment
 - `sf-help` — global doctrine now explains project development modes and the preview-push sequence
 - `sf-auth-debug` — auth diagnostics now respect project development mode and require `sf-ship` -> `sf-prod` before authoritative Vercel preview auth proof
+- `sf-verify` — ready-to-ship verdicts now account for project development mode and required Vercel preview proof
+- `sf-end` — closeout now stays partial when required preview-push validation evidence is missing
+- `sf-check` — local checks now report when they are only pre-push confidence before `sf-ship` -> `sf-prod`
 
 **Updated:**
 - `sf-prod` pending rule now points to the full polling loop instead of a shorter fixed wait
 - READMEs for `sf-start`, `sf-fix`, `sf-ship`, and `sf-prod` mention development-mode-aware routing
 - `sf-auth-debug` README and Vercel tooling reference now distinguish local auth evidence from preview/prod-authoritative evidence
+- READMEs for `sf-verify`, `sf-end`, and `sf-check` now mention development-mode-aware evidence limits
 
 **New phases:**
 - None
