@@ -140,41 +140,45 @@ Si la release concerne l'auth, une zone protégée, un dashboard privé, ou un c
 
 Si la nature de la release rend le health check insuffisant, dire explicitement ce qui n'a pas été vérifié au lieu de conclure trop fort.
 
-### Step 4 — En cas d'erreur : accéder aux logs
+### Step 4 — Collecter les logs sans troncature
 
-**Quel que soit le résultat (success ou failure), récupérer les logs du build :**
+**Quel que soit le résultat (success ou failure), collecter les logs de build en mode complet, puis filtrer les erreurs :**
 
-1. **Récupérer l'URL du dashboard automatiquement** via GitHub API :
+1. **Récupérer le déploiement cible** :
+   - Depuis le `target_url` du status GitHub (Vercel/Netlify).
+   - Si Vercel, extraire `teamId`, `projectId` et `idOrUrl` du déploiement.
+
+2. **Source primaire Vercel: logs paginés (obligatoire avant toute conclusion)** :
+   - Utiliser `mcp__vercel__get_deployment_build_logs`.
+   - Ne pas se limiter à un seul appel avec petite `limit`.
+   - Paginer/relancer jusqu'à stabilisation (plus de nouvelles lignes) ou jusqu'au plafond de sécurité ci-dessous.
+   - Plafond recommandé: jusqu'à 5000 lignes ou 10 appels successifs, puis marquer explicitement "collecte partielle" si incomplet.
+
+3. **Filtrage erreurs/warnings (obligatoire)** :
+   - Après collecte brute, filtrer localement les lignes pertinentes.
+   - Priorité de filtres:
+     - erreurs: `Error:`, `failed`, `exited with 1`, `Target .* failed`
+     - fichiers/positions: `lib/.*:[0-9]+:[0-9]+`, `src/.*:[0-9]+:[0-9]+`
+     - warnings critiques: `warning`, `WARN`, `deprecated`, `missing env`
+   - Exemples:
    ```bash
-   # Le target_url pointe directement vers la page du build Vercel/Netlify
-   DASHBOARD_URL=$(gh api "repos/{owner}/{repo}/commits/$SHA/statuses" --jq '.[0].target_url')
+   rg -n "Error:|failed|exited with 1|Target .* failed" build-logs.txt
+   rg -n "lib/.*:[0-9]+:[0-9]+|src/.*:[0-9]+:[0-9]+" build-logs.txt
+   rg -n "warning|WARN|deprecated|missing env" build-logs.txt
    ```
-   Ex : `https://vercel.com/diane-ds-projects/winflowz/8eyp8qqwq1qcaZC9KkmzdEmQi5SM`
 
-2. **Scraper les logs du build** avec Firecrawl ou Playwright MCP (dans cet ordre de préférence) :
+4. **Fallback si logs incomplets ou tronqués** :
+   - Si la réponse indique troncature (`truncated`, volume incomplet, stack trace sans erreur source), relancer la collecte avec pagination supplémentaire.
+   - Si toujours incomplet via MCP, utiliser le dashboard Vercel (web) pour capturer le bloc complet d'erreur.
+   - Toujours fournir le `DASHBOARD_URL` dans le rapport final.
 
-   **Option A — Firecrawl** (plus rapide, pas besoin de browser) :
-   ```
-   mcp__firecrawl__firecrawl_scrape → URL du dashboard
-   ```
-   Extraire : messages d'erreur, warnings, durée du build, status final.
+5. **Analyser les logs filtrés** :
+   - Identifier la **première erreur causale** (pas seulement la stack finale).
+   - Extraire fichier/ligne/colonne si présent.
+   - Classifier: TypeScript, ESLint, import, env var, runtime, build toolchain, autre.
+   - Inclure 3 à 8 lignes de contexte utiles autour de l'erreur principale quand possible.
 
-   **Option B — Playwright** (si Firecrawl ne peut pas accéder à la page — auth requise) :
-   ```
-   mcp__playwright__browser_navigate → URL du dashboard
-   mcp__playwright__browser_snapshot → capturer le contenu de la page
-   ```
-   Chercher les éléments contenant les logs de build, erreurs, stack traces.
-
-   **Option C — Fallback** (si aucun MCP ne fonctionne) :
-   Afficher le lien et demander à l'utilisateur de copier-coller les logs.
-
-3. **Analyser les logs récupérés** :
-   - Identifier l'erreur principale (première erreur dans le build log)
-   - Extraire le fichier et la ligne si mentionnés
-   - Classifier : erreur de type (TypeScript, ESLint, import manquant, env var manquante, runtime error)
-
-4. **Si erreur détectée** — proposer des actions via **AskUserQuestion** :
+6. **Si erreur détectée** — proposer des actions via **AskUserQuestion** :
    - "Le build a échoué. Que veux-tu faire ?"
    - Options :
      - **Corriger automatiquement** — "Je corrige l'erreur identifiée et je re-push" (Recommandé)
@@ -182,10 +186,11 @@ Si la nature de la release rend le health check insuffisant, dire explicitement 
      - **Rollback** — "Reverter le dernier commit et re-push"
      - **Ignorer** — "Je gère manuellement"
 
-5. **Si success** — résumer les infos du build :
-   - Durée du build (si visible dans les logs)
-   - Warnings éventuels (même si le build passe, les warnings sont utiles)
-   - URL de preview du déploiement
+7. **Si success** — résumer aussi les signaux faibles :
+   - Durée du build (si visible)
+   - Warnings éventuels
+   - URL de preview/déploiement
+   - Mention explicite si les logs ont été partiels malgré statut `success`
 
 Même en cas de succès, remonter les warnings qui indiquent une fragilité produit ou sécurité, par exemple :
 - variable d'environnement manquante mais fallback silencieux
@@ -238,6 +243,8 @@ Dans tous les cas, ajouter une ligne `Hypothèses / risques restants` dès qu'un
 - Ne jamais rollback automatiquement — toujours demander confirmation
 - Si le build est encore pending, patienter (30s x 3) avant de déclarer un problème
 - Toujours fournir le lien vers les logs — l'utilisateur peut vouloir regarder lui-même
+- Ne jamais conclure sur un échec avec des logs tronqués: d'abord collecter/paginer, ensuite filtrer.
+- En cas de Vercel, privilégier `get_deployment_build_logs` + filtrage local; dashboard web en fallback, pas en source primaire.
 - Si pas de CI/CD détecté (pas de statuses sur le commit), proposer un simple curl + signaler que le projet n'a pas de deploy automatique
 - Compatible Vercel, Netlify, et tout service qui publie des GitHub commit statuses
 - Ne jamais déclarer "prod OK" si seuls des signaux partiels ont été vérifiés. Préférer une conclusion précise du type : "deploy vert et URL répond, mais validation fonctionnelle/sécurité partielle".

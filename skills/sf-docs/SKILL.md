@@ -285,6 +285,7 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
    - Commentaires d'en-tête de composants
    - `.env.example` vs variables réellement utilisées
    - Frontmatter ShipFlow sur les artefacts internes : specs, reports, reviews, research, audit docs, API/component docs générées, AGENT/CONTEXT docs
+   - Si `$SHIPFLOW_ROOT/skills/` existe, frontmatter des skills ShipFlow via `$SHIPFLOW_ROOT/tools/skill_budget_audit.py`
 
 2. **Vérifier la cohérence code ↔ doc :**
    - **Drift** : la doc mentionne-t-elle des fonctions/fichiers/routes qui n'existent plus ?
@@ -297,6 +298,7 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
    - **Professional bug loop** : la doc décrit-elle correctement les rôles `TEST_LOG.md` (tracker compact), `BUGS.md` (index compact), bug dossier `bugs/BUG-ID.md`, et `test-evidence/BUG-ID/` (preuves redigées) ?
    - **Bug tracker vs artifact** : une doc confond-elle `BUGS.md` avec le bug dossier ?
    - **ShipFlow metadata** : les artefacts internes ShipFlow ont-ils le frontmatter obligatoire (`artifact`, `project`, `created`, `updated`, `status`, `scope`, `source_skill`) ?
+   - **Skill budget compliance** : si le repo est ShipFlow ou si `$SHIPFLOW_ROOT/skills/` existe, lancer `$SHIPFLOW_ROOT/tools/skill_budget_audit.py --skills-root "$SHIPFLOW_ROOT/skills" --format markdown` et vérifier `name`, `path`, `description` en une phrase, absence de `Args:`, seuils `120/140/200`, total `name+description+path < 8000`, et corps `SKILL.md > 500` lignes.
    - **Version sync** : les specs, audits et reviews référencent-ils des versions business/techniques encore actuelles dans `depends_on` ?
 
 3. **Vérifier les conventions :**
@@ -345,6 +347,12 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
 - [ ] `REVIEW-2026-04-25.md` — `confidence` / `risk_level` non renseignés
 - [ ] `specs/onboarding.md` — dépend de `BUSINESS.md@1.0.0` alors que `BUSINESS.md` est passé en `1.1.0`
 
+### SKILL BUDGET COMPLIANCE
+- [ ] `skills/sf-docs/SKILL.md` — `description` > 200 caractères ou contient `Args:`
+- [ ] `skills/sf-example/SKILL.md` — `name` ne correspond pas au dossier
+- [ ] Budget global `name + description + path` > 8000 caractères
+- [ ] `skills/sf-large/SKILL.md` — corps > 500 lignes, extraire les détails vers `references/`
+
 ### PROFESSIONAL BUG MODEL
 - [ ] [README.md] décrit `BUGS.md` comme dossier complet au lieu d'un index compact vers bug dossier
 - [ ] [workflow doc] ne mentionne pas `sf-test --retest BUG-ID` ni `Retest History` du bug dossier
@@ -373,6 +381,11 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
 ### Flow
 
 1. **Lancer d'abord un audit silencieux** (même logique que AUDIT MODE mais sans rapport).
+
+1aa. **Vérifier le budget des skills si ShipFlow est disponible** :
+   - Si `$SHIPFLOW_ROOT/skills/` existe, lancer `$SHIPFLOW_ROOT/tools/skill_budget_audit.py --skills-root "$SHIPFLOW_ROOT/skills"`.
+   - Si le script manque, signaler que la conformité des descriptions de skills n'est pas prouvée.
+   - En mode `update`, ne pas réécrire toutes les descriptions automatiquement sauf demande explicite; classer les violations comme P0/P1/P2 selon impact.
 
 1a. **Vérifier la cohérence du modèle bug dans la doc** :
    - Les docs QA/ops expliquent `TEST_LOG.md` comme tracker compact.
