@@ -1,19 +1,19 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "ShipFlow"
 created: "2026-05-01"
 created_at: "2026-05-01 10:05:10 UTC"
 updated: "2026-05-01"
-updated_at: "2026-05-01 10:05:10 UTC"
-status: draft
+updated_at: "2026-05-01 14:50:34 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: feature
 owner: Diane
-user_story: "En tant qu'utilisatrice ShipFlow qui fait coder des sites et applications avec des agents, je veux un Reader editorial read-only et une couche de gouvernance editoriale relies au code, afin que les contenus publics, claims, pages Astro, FAQ, docs publiques et supports restent coherents avec ce que les agents construisent reellement."
 confidence: high
+user_story: "En tant qu'utilisatrice ShipFlow qui publie un site Astro et délègue l'exécution à des agents, je veux une couche de gouvernance éditoriale pour le blog, les pages du site, le README et les docs publiques affichées, afin que les contenus publics, claims, FAQ, pages de vente et docs restent cohérents avec le produit réellement livré."
 risk_level: high
 security_impact: yes
 docs_impact: yes
@@ -25,24 +25,25 @@ linked_systems:
   - GTM.md
   - README.md
   - shipflow-spec-driven-workflow.md
-  - skills/sf-build/SKILL.md
+  - GUIDELINES.md
+  - specs/sf-build-autonomous-master-skill.md
+  - docs/editorial/
+  - templates/artifacts/content_map.md
+  - templates/artifacts/editorial_content_context.md
+  - skills/references/subagent-roles/editorial-reader.md
   - skills/sf-docs/SKILL.md
   - skills/sf-repurpose/SKILL.md
   - skills/sf-audit-copy/SKILL.md
   - skills/sf-redact/SKILL.md
   - skills/sf-enrich/SKILL.md
-  - skills/references/subagent-roles/reader.md
-  - skills/references/subagent-roles/editorial-reader.md
-  - skills/references/subagent-roles/sequential-executor.md
-  - skills/references/subagent-roles/integrator.md
-  - docs/editorial/
-  - templates/artifacts/content_map.md
-  - templates/artifacts/editorial_content_context.md
+  - site/package.json
+  - site/src/content.config.ts
   - site/src/pages/
+  - site/src/components/
   - site/src/content/skills/
 depends_on:
   - artifact: "CONTENT_MAP.md"
-    artifact_version: "0.2.0"
+    artifact_version: "0.2.1"
     required_status: draft
   - artifact: "BUSINESS.md"
     artifact_version: "1.1.0"
@@ -56,21 +57,35 @@ depends_on:
   - artifact: "GTM.md"
     artifact_version: "1.1.0"
     required_status: reviewed
+  - artifact: "GUIDELINES.md"
+    artifact_version: "1.3.0"
+    required_status: reviewed
+  - artifact: "README.md"
+    artifact_version: "0.2.0"
+    required_status: draft
+  - artifact: "shipflow-spec-driven-workflow.md"
+    artifact_version: "0.5.0"
+    required_status: draft
   - artifact: "specs/sf-build-autonomous-master-skill.md"
-    artifact_version: "0.10.0"
+    artifact_version: "0.11.0"
     required_status: draft
   - artifact: "specs/shipflow-technical-documentation-layer-for-ai-agents.md"
-    artifact_version: "0.1.0"
-    required_status: draft
+    artifact_version: "1.0.1"
+    required_status: ready
+  - artifact: "skills/references/documentation-freshness-gate.md"
+    artifact_version: unknown
+    required_status: active
 supersedes: []
 evidence:
-  - "User decision 2026-05-01: ShipFlow should have a second read-only Reader specialized in editorial/content impact, not a second leader."
-  - "User decision 2026-05-01: the master remains sf-build; readers diagnose and executors/integrators apply changes."
-  - "CONTENT_MAP.md already maps public docs, public skill pages, landing page, repo docs, workflow doctrine, product/GTM/brand contracts, semantic clusters, and cross-surface update rules."
-  - "skills/sf-audit-copy/SKILL.md already treats copy as product interface and flags proof gaps, docs mismatch, risky claims, and public promise drift."
-  - "skills/sf-repurpose/SKILL.md already requires source-faithful repurposing, surface selection from CONTENT_MAP.md, and evidence-led marketing claims."
-  - "site/src/pages/ and site/src/content/skills/ contain the public Astro pages and skill content affected by editorial governance."
-next_step: "/sf-ready ShipFlow Editorial Content Governance Layer for AI Agents"
+  - "User request 2026-05-01: prepare a similar reflection for editorial documentation: blog, site pages, README, and public docs displayed on the Astro site."
+  - "Local Astro site uses Astro 5.18.1 from site/package-lock.json and a skills content collection declared in site/src/content.config.ts."
+  - "Astro official docs checked through Context7 /withastro/docs: src/pages uses file-based routing; content collections use defineCollection with schema validation; collection entries need dynamic routes with getCollection/getStaticPaths."
+  - "CONTENT_MAP.md already maps public docs overview, public skill pages, landing page, repo docs, workflow doctrine, product/GTM/brand contracts, semantic clusters, and cross-surface update rules."
+  - "CONTENT_MAP.md currently says no dedicated blog directory is declared yet."
+  - "README.md explicitly distinguishes ShipFlow artifact metadata from application runtime content schemas such as Astro content collections."
+  - "skills/sf-repurpose/SKILL.md, skills/sf-audit-copy/SKILL.md, skills/sf-redact/SKILL.md, and skills/sf-enrich/SKILL.md already contain partial doctrine for content routing, claim safety, and runtime schema preservation."
+  - "User decision 2026-05-01: create a separate read-only Editorial Reader role instead of overloading the Technical Reader; do not keep a reader.md alias."
+next_step: "/sf-start ShipFlow Editorial Content Governance Layer for AI Agents"
 ---
 
 # Spec: ShipFlow Editorial Content Governance Layer for AI Agents
@@ -81,348 +96,520 @@ ShipFlow Editorial Content Governance Layer for AI Agents
 
 ## Status
 
-draft
+Ready.
+
+This chantier is the editorial/public-content counterpart to `specs/shipflow-technical-documentation-layer-for-ai-agents.md`. It creates the durable layer that tells agents where public content lives, what each public surface is allowed to claim, which source contracts govern it, and how Astro runtime schemas constrain content edits.
 
 ## User Story
 
-En tant qu'utilisatrice ShipFlow qui fait coder des sites et applications avec des agents, je veux un Reader editorial read-only et une couche de gouvernance editoriale relies au code, afin que les contenus publics, claims, pages Astro, FAQ, docs publiques et supports restent coherents avec ce que les agents construisent reellement.
+En tant qu'utilisatrice ShipFlow qui publie un site Astro et délègue l'exécution à des agents, je veux une couche de gouvernance éditoriale pour le blog, les pages du site, le README et les docs publiques affichées, afin que les contenus publics, claims, FAQ, pages de vente et docs restent cohérents avec le produit réellement livré.
+
+The expected value is lower product/copy drift, less rediscovery of content surfaces, safer public claims, clearer routing between README/internal docs and public Astro pages, and fewer schema-breaking edits to `site/src/content/**`.
 
 ## Minimal Behavior Contract
 
-Quand un chantier ShipFlow prevoit ou produit un changement de code, de workflow, de produit, de documentation ou de comportement public, `sf-build` doit pouvoir lancer deux readers read-only distincts: un Technical Reader pour les impacts code/docs techniques et un Editorial Reader pour les impacts contenus publics. L'Editorial Reader lit `CONTENT_MAP.md`, les contrats business/produit/marque/GTM, les pages Astro, les collections de contenu et les skills de contenu, puis produit un `Editorial Update Plan` et un `Claim Impact Plan` sans jamais modifier de fichier. Les updates editoriales sont appliquees ensuite par un executor write-capable ou un integrator, en sequentiel par defaut; le parallelisme editorial n'est permis que si une spec ready donne des fichiers exclusifs par agent et aucun fichier partage. En cas de doute sur une promesse publique, un claim sensible, une surface manquante ou un contenu devenu faux, le chantier bloque la cloture ou marque l'item `pending final copy` avec une raison testable. L'edge case facile a rater est de faire passer les tests code mais de laisser le site, la FAQ, les docs publiques ou les pages de vente promettre autre chose que le produit livre.
+ShipFlow must provide a public-content governance layer: `docs/editorial/` contains an agent-readable index, a public surface map, a claim register, a page intent map, and an editorial update gate; `CONTENT_MAP.md` remains the canonical content routing artifact and links to the new layer; public Astro pages, README sections, public docs pages, skill content collection entries, and future blog surfaces each have declared source-of-truth contracts and update triggers. When a chantier changes product behavior, workflow, public docs, skill promises, pricing, support copy, or claims, the read-only Editorial Reader produces an `Editorial Update Plan` and, when claims are sensitive, a `Claim Impact Plan`; edits are applied by a write-capable executor or integrator, sequentially by default, with parallelism only for spec-defined exclusive files. The Editorial Reader is a separate role file at `skills/references/subagent-roles/editorial-reader.md`; it is not an alias of the Technical Reader and no `reader.md` compatibility file is created. If no blog path exists, agents must report the missing declared surface instead of inventing one. The easy-to-miss edge case is a code or workflow change that passes tests while the Astro site, README, FAQ, docs overview, skill pages, or future blog still promises the old behavior.
 
 ## Success Behavior
 
-- Preconditions: un chantier ShipFlow touche une feature, un bug, une skill, une page publique, un workflow, une doc utilisateur, ou une promesse produit; `CONTENT_MAP.md` et les contrats `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md` existent ou leurs absences sont detectees.
-- Trigger: `sf-build`, `sf-start`, `sf-docs`, `sf-repurpose`, `sf-audit-copy`, `sf-redact`, `sf-enrich`, ou une spec active signale un changement susceptible d'affecter du contenu public ou editorial.
-- User/operator result: la conversation master reste lisible; le master affiche seulement les decisions utiles et un statut court, tandis que l'Editorial Reader produit un diagnostic read-only exploitable par les executors.
-- System effect: un role file `skills/references/subagent-roles/editorial-reader.md` existe; `sf-build` sait lancer le Technical Reader et l'Editorial Reader comme deux readers read-only; `docs/editorial/` documente les surfaces, claims, page intents, gates et formats de plans; les skills de contenu savent lire cette couche.
-- Success proof: un agent frais peut ouvrir le role file Editorial Reader, `CONTENT_MAP.md`, et `docs/editorial/` pour savoir quelles pages et claims verifier apres un changement; une spec ready peut nommer les surfaces editoriales impactees, les fichiers partagees, les write sets exclusifs, et les gates de validation.
-- Silent success: not allowed; si un changement utilisateur-visible n'a aucun impact editorial, l'Editorial Reader ou l'integrator doit le dire avec une justification courte.
+- Given a fresh agent receives a task touching product behavior, a public skill promise, README, FAQ, docs overview, pricing, landing copy, support copy, or future article/blog content, when it opens `CONTENT_MAP.md` and `docs/editorial/`, then it can identify impacted surfaces, source contracts, update triggers, allowed claim boundaries, and validation checks.
+- Given a ShipFlow workstream changes user-visible behavior or public documentation truth, when the Editorial Reader runs the editorial gate, then it produces an `Editorial Update Plan` with impacted files, reason, required action, owner role, parallel-safety, and validation.
+- Given a public claim touches security, privacy, compliance, AI reliability, automation quality, speed, savings, availability, pricing, or business outcomes, when the claim is added or changed, then it is checked against `docs/editorial/claim-register.md` and either backed by evidence, downgraded, marked pending proof, or blocked.
+- Given a content file lives in `site/src/content/**`, when an agent edits it, then it preserves the Astro content collection schema and never adds incompatible ShipFlow frontmatter.
+- Given a blog/article output is requested, when no blog route or collection is declared, then the agent reports `surface missing: blog` and proposes a separate spec or explicit surface decision instead of creating an ad hoc path.
 
 ## Error Behavior
 
-- Expected failures: `CONTENT_MAP.md` absent ou stale, contrats business/brand/GTM absents ou low-confidence, page publique non cartographiee, claim sensible sans preuve, conflit entre code livre et copy publique, surface editorialement partagee assignee a plusieurs executors, schema Astro content incompatible avec les champs ShipFlow, ou demande de parallelisme sans ownership exclusif.
-- User/operator response: si la decision change le positionnement, la promesse publique, le pricing, la preuve, la FAQ, ou le droit de modifier une page existante, `sf-build` pose une question concise avant l'edit; sinon il route vers executor/integrator avec un plan borne.
-- System effect: aucun Reader n'ecrit; aucune update editoriale partagee ne tourne en parallele; aucun contenu applicatif `src/content/**` ne recoit de frontmatter ShipFlow incompatible avec son schema; aucune cloture complete ne passe si une promesse publique connue reste fausse sans `pending final copy` explicite.
-- Must never happen: laisser un Editorial Reader modifier des fichiers, laisser un Code Executor inventer des claims marketing, publier une promesse non prouvee, modifier `CONTENT_MAP.md` en parallele avec une page publique qui depend de lui, appliquer un schema ShipFlow dans une collection Astro qui ne l'accepte pas, ou shipper une feature dont les pages publiques decrivent l'ancien comportement.
-- Silent failure: not allowed; chaque gap editorial doit etre visible comme `no impact`, `update required`, `pending final copy`, `claim mismatch`, `surface missing`, ou `blocked`.
+- If `CONTENT_MAP.md` or `docs/editorial/page-intent-map.md` does not list a public surface that is affected by a change, the plan reports `surface missing` and routes shared-map updates before page/content edits are considered complete.
+- If an Astro content collection schema rejects additional fields, the implementation preserves the runtime schema and records ShipFlow context versions in the plan/report, not in incompatible frontmatter.
+- If a public claim lacks evidence or conflicts with product/brand/GTM contracts, the claim is marked `claim mismatch`, `needs proof`, or `blocked`; it is not published as fact.
+- If shared editorial files such as `CONTENT_MAP.md`, `docs/editorial/claim-register.md`, `site/src/pages/index.astro`, shared components, nav/footer, FAQ, pricing, or docs overview are assigned to parallel write agents, the work is blocked or rerouted to sequential integration.
+- If a feature ships with stale public docs, README guidance, FAQ, skill pages, or site copy that describe the old behavior, verification fails unless the stale item is explicitly marked `pending final copy` with owner, reason, and a block-before-ship condition.
+- If public content would expose internal-only technical details, private URLs, credentials, tokens, sensitive logs, or unsupported security/compliance language, verification fails and the content must be removed or rewritten.
 
 ## Problem
 
-ShipFlow possede deja une couche de contenu utile: `CONTENT_MAP.md` cartographie les surfaces editoriales, `sf-repurpose` transforme les conversations en contenus source-faithful, `sf-audit-copy` verifie les promesses publiques, et `sf-docs` signale la coherence documentaire. Mais ces pieces restent dispersees.
+ShipFlow already has strong pieces for editorial work:
 
-Le nouveau modele `sf-build` introduit des readers et executors specialises. Sans role editorial distinct, le Reader technique risque de devenir trop large: il devrait comprendre en meme temps le code, la documentation technique, la marque, le SEO, les claims, les pages Astro, la FAQ, le pricing et les contenus de support. Cela augmente le risque de contexte confus et de promesses publiques obsoletes.
+- `CONTENT_MAP.md` maps major public and internal content surfaces.
+- `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, and `GTM.md` define audience, promise, tone, and claim boundaries.
+- `README.md` is both a public overview and contributor/operator entrypoint.
+- `site/src/pages/*.astro` contains the public Astro pages.
+- `site/src/content/skills/*.md` contains public skill pages rendered through Astro's `skills` content collection.
+- `sf-repurpose`, `sf-audit-copy`, `sf-redact`, and `sf-enrich` already contain partial rules for content routing and claim safety.
 
-Le risque produit est important: un agent peut livrer un changement code valide mais laisser la landing page, la FAQ, les docs publiques, le changelog ou les pages skills raconter une version fausse, trop forte, ou non prouvee du produit.
+The gap is that these rules are spread across many documents and skills. A fresh agent can see that content matters, but it does not have one durable layer that answers: which public surface owns which message, which source contract governs it, which claims are sensitive, what to update after a behavior change, how README and public Astro docs relate, how future blog work should be declared, and how to avoid breaking Astro content schemas.
 
 ## Solution
 
-Ajouter une couche de gouvernance editoriale pour agents: un role `editorial-reader.md`, un dossier `docs/editorial/`, un registre de claims, une carte d'intention des pages, une gate d'update editoriale, un template d'artefact editorial, et les raccords necessaires dans `sf-build`, `sf-docs`, `sf-repurpose`, `sf-audit-copy`, `sf-redact` et `sf-enrich`.
+Create a canonical editorial governance layer:
 
-Le master reste `sf-build`. Les deux readers sont read-only et peuvent travailler en parallele quand le runtime le permet, car ils ne modifient aucun fichier. Les executors et integrators restent responsables des edits, en sequentiel par defaut, avec parallelisme seulement si la spec ready prouve des write sets editoriaux exclusifs.
+```text
+docs/editorial/
+  README.md
+  public-surface-map.md
+  page-intent-map.md
+  claim-register.md
+  editorial-update-gate.md
+  astro-content-schema-policy.md
+  blog-and-article-surface-policy.md
+```
+
+Add two supporting artifacts:
+
+```text
+templates/artifacts/editorial_content_context.md
+skills/references/editorial-content-corpus.md
+skills/references/subagent-roles/editorial-reader.md
+```
+
+Then connect the layer to the existing content and documentation workflows by updating `CONTENT_MAP.md`, `templates/artifacts/content_map.md`, `skills/sf-docs/SKILL.md`, `skills/sf-repurpose/SKILL.md`, `skills/sf-audit-copy/SKILL.md`, `skills/sf-redact/SKILL.md`, `skills/sf-enrich/SKILL.md`, `README.md`, `shipflow-spec-driven-workflow.md`, and `site/src/pages/docs.astro`.
+
+This chantier does not create a blog implementation. It defines how a future blog/article surface must be declared before agents write blog content, because the current repo has no dedicated blog directory or blog route.
 
 ## Scope In
 
-- Creer `skills/references/subagent-roles/editorial-reader.md`.
-- Clarifier que `skills/references/subagent-roles/reader.md` reste le Technical Reader tant que la compatibilite avec la spec `sf-build` exige ce nom.
-- Ajouter a `sf-build` l'orchestration de deux readers read-only: Technical Reader et Editorial Reader.
-- Creer `docs/editorial/README.md` comme index de la couche editoriale.
-- Creer `docs/editorial/page-intent-map.md` pour relier pages publiques, audiences, jobs, CTA, sources de verite et triggers de mise a jour.
-- Creer `docs/editorial/claim-register.md` pour lister les claims publics sensibles, leur preuve, leur statut, leurs surfaces et leurs stop conditions.
-- Creer `docs/editorial/editorial-update-gate.md` pour definir quand un changement code/produit/docs impose une mise a jour editoriale.
-- Creer `templates/artifacts/editorial_content_context.md` pour standardiser les artefacts editoriaux hors runtime.
-- Ajouter une reference partagee `skills/references/editorial-content-corpus.md` qui liste les documents a charger par l'Editorial Reader et les skills de contenu.
-- Mettre a jour `CONTENT_MAP.md` et `templates/artifacts/content_map.md` pour mentionner `docs/editorial/`, le claim register, les page intents et les update gates.
-- Mettre a jour `skills/sf-docs/SKILL.md` pour auditer et maintenir la couche editoriale.
-- Mettre a jour `skills/sf-repurpose/SKILL.md` pour produire ou consommer un `Editorial Update Plan` quand le workstream a un impact public.
-- Mettre a jour `skills/sf-audit-copy/SKILL.md` pour utiliser le claim register et la page intent map dans les proof gaps.
-- Mettre a jour `skills/sf-redact/SKILL.md` et `skills/sf-enrich/SKILL.md` pour respecter la couche editoriale avant de creer ou enrichir du contenu public.
-- Mettre a jour `shipflow-spec-driven-workflow.md`, `README.md` et les docs publiques pertinentes pour expliquer que les contenus publics font partie du gate de coherence quand le comportement utilisateur change.
-- Definir un format standard `Editorial Update Plan`.
-- Definir un format standard `Claim Impact Plan`.
-- Definir les regles de parallelisme editorial safe.
+- Create `docs/editorial/README.md` as the entrypoint for public-content governance.
+- Create `docs/editorial/public-surface-map.md` for public pages, README sections, public docs, skill pages, future blog/article surfaces, FAQ/support, and shared components.
+- Create `docs/editorial/page-intent-map.md` for each current Astro page: audience, job, CTA, source of truth, update trigger, and shared-file risk.
+- Create `docs/editorial/claim-register.md` for sensitive public claims and allowed wording boundaries.
+- Create `docs/editorial/editorial-update-gate.md` with `Editorial Update Plan`, `Claim Impact Plan`, statuses, pending-final-copy rules, and parallelism constraints.
+- Create `docs/editorial/astro-content-schema-policy.md` for Astro 5 content collections, frontmatter schema constraints, and build validation.
+- Create `docs/editorial/blog-and-article-surface-policy.md` to handle the currently missing blog surface and prevent agents from inventing paths.
+- Create `templates/artifacts/editorial_content_context.md` for durable editorial governance artifacts outside app-rendered runtime content.
+- Create `skills/references/editorial-content-corpus.md` for skills and agents that need to load the editorial layer.
+- Create `skills/references/subagent-roles/editorial-reader.md` as the read-only role contract for public-content and claim impact analysis.
+- Update `CONTENT_MAP.md` and `templates/artifacts/content_map.md` to point to `docs/editorial/`, declared surfaces, claim register, page intents, and update gates.
+- Update content/documentation skills so they use the editorial layer before changing public content or claims.
+- Update README, workflow docs, and the public docs Astro page with a concise mention of editorial coherence.
+- Define safe execution waves and explicit no-overlap rules for editorial content edits.
 
 ## Scope Out
 
-- Reecrire toutes les pages marketing de ShipFlow.
-- Creer un blog, une newsletter, un calendrier editorial ou une strategie SEO complete.
-- Remplacer `CONTENT_MAP.md`.
-- Transformer l'Editorial Reader en executor, leader ou owner autonome du scope produit.
-- Autoriser des edits paralleles sur `CONTENT_MAP.md`, `docs/editorial/claim-register.md`, `site/src/pages/index.astro`, nav/footer, pricing, FAQ, ou toute surface partagee sans assignation explicite.
-- Ajouter du frontmatter ShipFlow aux contenus applicatifs Astro si le schema `site/src/content.config.ts` ne l'accepte pas.
-- Publier des claims de securite, conformite, performance, economie, disponibilite, automatisation ou qualite IA sans preuve directe.
-- Faire de `sf-redact` ou `sf-enrich` une source de verite produit; ils doivent rester bornes par les contrats et le registre de claims.
+- Rewriting all public pages, README sections, or skill pages.
+- Creating or launching a blog, newsletter, CMS, RSS feed, or article collection.
+- Adding blog/article routes to Astro.
+- Running a full SEO/content strategy project.
+- Creating a content calendar or backlog.
+- Replacing `CONTENT_MAP.md` as the canonical surface map.
+- Making public pages the source of truth for product behavior.
+- Adding ShipFlow frontmatter to Astro runtime content when the content collection schema does not allow it.
+- Publishing unsupported claims about security, privacy, compliance, AI reliability, automation quality, speed, savings, availability, pricing, or business outcomes.
+- Exposing internal-only technical docs or private operational details on the public site.
 
 ## Constraints
 
-- Le master reste `sf-build`; l'Editorial Reader n'est pas un deuxieme leader.
-- Tous les readers sont read-only: aucun edit, staging, formatage, generation de fichier, ou validation destructive.
-- Les readers peuvent travailler en parallele uniquement parce qu'ils sont read-only; les edits restent sequentiels par defaut.
-- Les fichiers editoriaux partages sont traites comme shared surfaces et doivent etre integres sequentiellement.
-- Le code livre et les specs restent sources de verite pour le comportement; les pages publiques ne doivent pas inventer.
-- `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `CONTENT_MAP.md` et `docs/editorial/` sont des decision/context contracts pour les claims publics.
-- Les schemas runtime, notamment Astro content collections, priment sur le schema ShipFlow pour les fichiers rendus par l'application.
-- Une page publique peut rester non mise a jour seulement si son item est marque `pending final copy`, avec raison, owner, condition de resolution, et blocage avant ship si la promesse devient fausse.
-- Une update editoriale ne doit pas masquer une incertitude produit; elle doit poser une question ou marquer le claim comme non publie/non prouve.
-- Toute nouvelle surface editoriale doit etre ajoutee a `CONTENT_MAP.md` ou explicitement documentee comme non cartographiee.
+- `CONTENT_MAP.md` remains the canonical content surface map.
+- `docs/editorial/` is a governance layer, not a content calendar.
+- The Editorial Reader is read-only: it diagnoses public-content impact, public claim impact, route/schema risk, and surface ownership, but never edits, stages, formats, or validates destructively.
+- The Editorial Reader works alongside the Technical Reader. They may both run as read-only analysis roles without edit-conflict risk, but any write-capable executor remains sequential by default unless a ready spec defines exclusive file ownership.
+- Public content must stay inside `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, specs, verified behavior, and claim evidence.
+- ShipFlow language doctrine applies: internal governance docs, role contracts, workflow rules, stable headings, validation notes, acceptance criteria, and stop conditions use English; user-facing public copy uses the active user/project language and natural accented French when the active language is French.
+- Astro runtime content keeps the schema declared in `site/src/content.config.ts`; ShipFlow artifact metadata belongs outside runtime content unless the schema explicitly accepts it.
+- The current Astro site uses Astro 5.18.1 and a `skills` content collection with a strict Zod schema.
+- `src/pages` file-based routes and dynamic routes are governed by Astro routing behavior.
+- Markdown content collections do not automatically become pages; routes such as `site/src/pages/skills/[slug].astro` own rendering through `getCollection()` and `getStaticPaths()`.
+- Shared editorial files and shared Astro components are sequential integration surfaces.
+- Parallel editorial edits are allowed only when a ready spec assigns exclusive target files and no shared map, register, component, layout, collection schema, nav/footer, index, FAQ, docs, or pricing file is touched in the same wave.
+- A missing blog surface is a governance finding, not permission to invent `blog/`, `posts/`, or `site/src/content/blog/`.
+- Public success and error states must be observable through changed files, build output, plan items, or verification findings.
+- Preserve unrelated dirty worktree changes.
 
 ## Dependencies
 
-- Local project docs: `CONTENT_MAP.md`, `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `README.md`, `shipflow-spec-driven-workflow.md`.
-- Current public site: `site/src/pages/*.astro`, `site/src/content/skills/*.md`, `site/src/content.config.ts`, `site/src/components/NavBar.astro`, `site/src/components/Footer.astro`, `site/src/components/FaqSection.astro`, `site/src/components/PricingHypothesis.astro`.
-- Workflow specs: `specs/sf-build-autonomous-master-skill.md`, `specs/shipflow-technical-documentation-layer-for-ai-agents.md`.
-- Skills to update: `sf-build`, `sf-docs`, `sf-repurpose`, `sf-audit-copy`, `sf-redact`, `sf-enrich`.
-- Fresh external docs: fresh-docs not needed. This spec changes local ShipFlow markdown instructions, editorial governance artifacts, and Astro content mapping rules already visible in the repo; it does not depend on a new external framework, SDK, service, API, auth flow, build integration, or current pricing/legal rule.
-- Metadata gaps: `CONTENT_MAP.md` is draft and `specs/sf-build-autonomous-master-skill.md` is draft; `/sf-ready` must explicitly accept these dependencies or request a doc review first.
+Local docs and contracts to inspect before implementation:
+
+- `CONTENT_MAP.md`
+- `BUSINESS.md`
+- `PRODUCT.md`
+- `BRANDING.md`
+- `GTM.md`
+- `README.md`
+- `shipflow-spec-driven-workflow.md`
+- `GUIDELINES.md`
+- `specs/sf-build-autonomous-master-skill.md`
+- `specs/shipflow-technical-documentation-layer-for-ai-agents.md`
+- `skills/sf-docs/SKILL.md`
+- `skills/sf-repurpose/SKILL.md`
+- `skills/sf-audit-copy/SKILL.md`
+- `skills/sf-redact/SKILL.md`
+- `skills/sf-enrich/SKILL.md`
+- `templates/artifacts/content_map.md`
+
+Astro site files to inspect before writing public-surface docs:
+
+- `site/package.json`
+- `site/package-lock.json`
+- `site/src/content.config.ts`
+- `site/src/pages/*.astro`
+- `site/src/pages/skills/[slug].astro`
+- `site/src/pages/skills/index.astro`
+- `site/src/components/NavBar.astro`
+- `site/src/components/Footer.astro`
+- `site/src/components/FaqSection.astro`
+- `site/src/components/PricingHypothesis.astro`
+- `site/src/content/skills/*.md`
+
+Fresh external docs checked:
+
+- Context7 `/withastro/docs`, Astro docs for file-based routing: files in `src/pages/` become routes, and dynamic routes use `getStaticPaths()`.
+- Context7 `/withastro/docs`, Astro docs for content collections: `src/content.config.ts` defines content collection schemas with `defineCollection` and Zod; content collection entries are queried with `getCollection()` and rendered by route files.
+
+Verdict: fresh-docs checked.
 
 ## Invariants
 
-- Technical Reader diagnoses code and technical documentation impact.
-- Editorial Reader diagnoses public content, claims, page intent, CTA, FAQ, support, and public documentation impact.
-- Readers diagnose; executors and integrators apply.
-- `CONTENT_MAP.md` remains the canonical content surface map.
-- `docs/editorial/` becomes the code-adjacent editorial governance layer, not a content calendar.
-- `claim-register.md` governs sensitive public claims; it does not prove claims by itself.
-- `page-intent-map.md` maps page purpose and update triggers; it does not replace page content.
-- Public copy must stay inside the bounds of product behavior, specs, business contracts, brand contracts, and evidence.
-- Shared editorial surfaces are sequential integration surfaces.
-- The final chantier cannot be considered cleanly closed if public content known to be impacted remains stale without a tracked exception.
+- `CONTENT_MAP.md` maps surfaces; `docs/editorial/` explains governance, claims, page intent, gates, and schema constraints.
+- `skills/references/subagent-roles/editorial-reader.md` owns the read-only role contract for producing `Editorial Update Plan` and `Claim Impact Plan`.
+- `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, and `GTM.md` bound public claims.
+- `README.md` remains a repo/project overview, not a marketing-only landing page.
+- Public Astro pages remain the rendered public surfaces.
+- `site/src/content/skills/*.md` remains a runtime content collection governed by `site/src/content.config.ts`.
+- The future blog/article surface must be declared before agents write blog content.
+- Claim evidence is required before sensitive public claims are strengthened.
+- Unsupported sensitive claims are downgraded, marked pending proof, or blocked.
+- Shared editorial surfaces are sequential.
+- Public docs cannot expose internal-only technical detail unless explicitly approved and filtered.
+- A chantier is not cleanly closed if known impacted public content remains false.
 
 ## Links & Consequences
 
-- Upstream systems: specs, build conversations, code diffs, technical reader reports, business/product/brand/GTM contracts, `CONTENT_MAP.md`, and site source files.
-- Downstream systems: `sf-build` orchestration, `sf-docs update/audit`, `sf-repurpose`, `sf-audit-copy`, `sf-redact`, `sf-enrich`, public Astro pages, public skill pages, README, workflow docs, FAQ, pricing, support copy and changelog.
-- Technical documentation layer: the Editorial Reader complements the Technical Reader; it does not replace `docs/technical/` or the `Documentation Update Plan`.
-- Content governance layer: every user-visible behavior change should produce one of three outcomes: no editorial impact with reason, editorial update applied, or `pending final copy` with reason and resolution condition.
-- Public claims: risky claims about security, privacy, compliance, AI reliability, automation quality, speed, cost savings, business outcomes, availability, or pricing need explicit proof or must be downgraded/removed.
-- Execution safety: two readers can run concurrently because they are read-only; write-capable editorial executors cannot run concurrently unless a ready spec assigns exclusive target files.
-- Site impact: `site/src/pages/index.astro`, `site/src/pages/docs.astro`, `site/src/pages/faq.astro`, `site/src/pages/pricing.astro`, `site/src/pages/skills/*.astro`, and `site/src/content/skills/*.md` become first-class editorial impact surfaces.
+Upstream systems:
+
+- Product, business, brand, GTM, specs, README, content map, implementation changes, technical documentation layer, and Astro site structure.
+
+Downstream systems:
+
+- `sf-docs`, `sf-repurpose`, `sf-audit-copy`, `sf-redact`, `sf-enrich`, README, public Astro pages, public skill pages, FAQ, pricing, docs overview, remote MCP guide, and future blog/article surfaces.
+
+Consequences:
+
+- Agents gain a single layer for public-content impact instead of rediscovering pages and claim boundaries in each thread.
+- README, public docs, and Astro pages become explicitly linked surfaces instead of separate editing targets.
+- Public claims become auditable and bounded by evidence.
+- Future blog/article work is safer because missing surfaces are reported before content is written.
+- Astro build/schema failures become part of editorial validation, not late incidental breakage.
+- The editorial layer adds maintenance cost and must be audited by `sf-docs`.
 
 ## Documentation Coherence
 
-- `skills/references/subagent-roles/editorial-reader.md` must define an `Editorial Reader Agent Contract`: read-only strict, corpus to load, expected outputs, stop conditions, no edits, no staging, no public claim invention.
-- `skills/references/subagent-roles/reader.md` should be clarified as Technical Reader or referenced as the existing Technical Reader role for compatibility.
-- `skills/sf-build/SKILL.md` must load both reader contracts when editorial impact is possible and must merge `Documentation Update Plan` plus `Editorial Update Plan` before write execution.
-- `docs/editorial/README.md` must explain purpose, surfaces, relation to `CONTENT_MAP.md`, relation to `docs/technical/`, and who edits what.
-- `docs/editorial/page-intent-map.md` must list current public surfaces, canonical paths, page job, audience, CTA, source of truth, update triggers and shared-file risk.
-- `docs/editorial/claim-register.md` must list sensitive claims, evidence, status, surfaces, owner, last review, next review and stop condition.
-- `docs/editorial/editorial-update-gate.md` must define triggers, required checks, plan fields, pending final copy rules, and parallelism rules.
-- `templates/artifacts/editorial_content_context.md` must provide metadata-bearing structure for editorial governance artifacts outside runtime content.
-- `skills/references/editorial-content-corpus.md` must describe what the Editorial Reader and content skills should read first.
-- `CONTENT_MAP.md` and `templates/artifacts/content_map.md` must mention the editorial governance layer and cross-surface update relationship.
-- `skills/sf-docs/SKILL.md` must include an editorial-governance audit/update mode or subsection.
-- `skills/sf-repurpose/SKILL.md` must route content packs through the claim register and page intent map when the output touches public surfaces.
-- `skills/sf-audit-copy/SKILL.md` must use `claim-register.md` and `page-intent-map.md` as proof and mismatch references.
-- `skills/sf-redact/SKILL.md` and `skills/sf-enrich/SKILL.md` must treat the editorial governance layer as a source of claim boundaries.
-- `README.md`, `shipflow-spec-driven-workflow.md`, and public docs pages should mention editorial coherence only at a high level; they must not expose long internal role contracts as user-facing product copy.
-- `CHANGELOG.md` is not part of this spec phase and should be updated later by `sf-end` after implementation and verification.
+Durable split:
+
+- `CONTENT_MAP.md`: canonical map of content surfaces and cross-surface routing.
+- `docs/editorial/README.md`: entrypoint to editorial governance.
+- `docs/editorial/public-surface-map.md`: public content surface inventory, including README/public docs/site pages/future blog.
+- `docs/editorial/page-intent-map.md`: page-level audience, job, CTA, source of truth, and update triggers.
+- `docs/editorial/claim-register.md`: sensitive public claims, proof state, allowed wording, surfaces, and stop conditions.
+- `docs/editorial/editorial-update-gate.md`: lifecycle gate and plan formats.
+- `docs/editorial/astro-content-schema-policy.md`: Astro schema/routing constraints for public content.
+- `docs/editorial/blog-and-article-surface-policy.md`: rules for the currently missing blog/article surface.
+- `templates/artifacts/editorial_content_context.md`: template for governance artifacts, not runtime content.
+- `skills/references/editorial-content-corpus.md`: compact loading list for content skills and agents.
+- `skills/references/subagent-roles/editorial-reader.md`: read-only agent role contract for public-content surface and claim impact analysis.
+- `README.md`: repo and public overview; short pointer only.
+- `site/src/pages/docs.astro`: public docs overview; short public explanation only.
+
+Anti-duplication rules:
+
+- Do not copy full business/product/brand/GTM docs into editorial docs.
+- Do not copy full page content into page intent maps.
+- Do not make the claim register a marketing draft file.
+- Do not make runtime Astro content carry ShipFlow governance metadata unless the schema allows it.
+- Do not duplicate `CONTENT_MAP.md`; link and extend its governance context.
 
 ## Edge Cases
 
-- A code change is purely internal: the Editorial Reader returns `no editorial impact` with a reason and no executor is launched for content.
-- A bug fix changes visible behavior: the Editorial Reader checks FAQ, support copy, docs public pages, changelog candidates and any page that described the old behavior.
-- A feature adds a capability but evidence is partial: the claim register may record it as `implemented` or `needs verification`, but public copy cannot present it as proven until verification passes.
-- A page is not in `CONTENT_MAP.md`: the Editorial Reader reports `surface missing`; an executor updates `CONTENT_MAP.md` sequentially before dependent content changes are considered complete.
-- `CONTENT_MAP.md` and `claim-register.md` both need updates: they are shared files and must be edited sequentially by one assigned executor or integrator.
-- Two public skill pages can be updated in parallel only if a ready spec assigns one exclusive file per executor and no shared index/navigation/schema file is touched in the same wave.
-- A collection schema rejects extra metadata: preserve the runtime schema and report ShipFlow context versions in the final report instead of forcing fields.
-- A content executor wants to improve positioning beyond the spec: stop and ask, because positioning changes belong to business/GTM/brand contracts.
-- The Technical Reader and Editorial Reader disagree about impact: the master or integrator reconciles before any write task.
-- A claim is true in code but risky in marketing language: the claim register marks proof and allowed wording boundary; public copy uses the constrained wording.
-- The user wants speed on a large content update: parallelism is allowed only for exclusive page files after shared maps/registers are stable.
-- The public site has no blog/newsletter surface: the Editorial Reader reports the missing surface and does not invent paths.
+- A code change is purely internal: the editorial gate returns `no editorial impact` with reason.
+- A bug fix changes visible behavior: the plan checks README, docs overview, FAQ, public skill pages, support copy, and future changelog/article candidates.
+- A public page mentions a capability that is no longer true: the plan marks `update required` or `claim mismatch`.
+- A new public page is added under `site/src/pages/`: the page intent map and content map must be updated.
+- A new skill content file is added: it must satisfy `site/src/content.config.ts`, and the public skill hub/dynamic route must still build.
+- A blog article is requested but no blog path exists: the agent reports `surface missing: blog` and routes to a separate blog-surface spec or explicit user decision.
+- Two agents edit separate skill content files: allowed only if no shared collection schema, hub copy, nav, map, or claim register changes are in the same parallel wave.
+- The Technical Reader and Editorial Reader both analyze the same chantier: allowed because both roles are read-only; the master/integrator merges their plans before assigning any write-capable executor.
+- A claim is true internally but risky publicly: the claim register defines allowed wording before the public page is edited.
+- A source contract is draft but high-confidence enough to guide the work: the spec records that status and `/sf-ready` decides whether it is acceptable.
+- A public docs page would reveal internal operational detail: create filtered public language or leave the detail internal.
+- Astro docs behavior conflicts with local implementation assumptions: stop and reroute to `/sf-spec` or a focused Astro migration check.
 
 ## Implementation Tasks
 
-- [ ] Task 1: Create the Editorial Reader role contract.
-  - File: `skills/references/subagent-roles/editorial-reader.md`
-  - Action: Add a read-only contract covering corpus to load, `Editorial Update Plan`, `Claim Impact Plan`, no-edit rules, public claim boundaries, parallel-read permission, and report format.
-  - User story link: Gives ShipFlow a fresh-context role dedicated to public content impact without making it a second leader.
-  - Depends on: None
-  - Validate with: `test -f skills/references/subagent-roles/editorial-reader.md && rg -n "Editorial Reader Agent Contract|read-only|CONTENT_MAP|Editorial Update Plan|Claim Impact Plan|claim|page intent|no edits|no staging" skills/references/subagent-roles/editorial-reader.md`
-  - Notes: The role must explicitly say that it diagnoses and never edits.
+- [ ] Task 1: Create the editorial governance index.
+  - File : `docs/editorial/README.md`
+  - Action : Explain purpose, relationship to `CONTENT_MAP.md`, relation to public Astro pages, README, docs, future blog/article surfaces, claims, and schema constraints.
+  - User story link : Gives fresh agents a stable editorial entrypoint.
+  - Depends on : Read `CONTENT_MAP.md`, `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`.
+  - Validate with : `test -f docs/editorial/README.md && rg -n "CONTENT_MAP|Astro|README|public docs|claim|blog|schema|Editorial Update Plan" docs/editorial/README.md`
+  - Notes : Keep it an index, not a long strategy memo.
 
-- [ ] Task 2: Clarify the existing Reader as the technical reader.
-  - File: `skills/references/subagent-roles/reader.md`
-  - Action: Clarify that the existing Reader focuses on technical/code-docs impact and remains compatible with existing `sf-build` references; mention that editorial impact belongs to `editorial-reader.md`.
-  - User story link: Prevents one reader from accumulating both technical and editorial responsibilities.
-  - Depends on: Task 1
-  - Validate with: `rg -n "Technical Reader|code-docs|Documentation Update Plan|editorial-reader|Editorial Reader" skills/references/subagent-roles/reader.md`
-  - Notes: Do not rename the file in this task unless `/sf-ready` explicitly approves the broader migration.
+- [ ] Task 2: Create the public surface map.
+  - File : `docs/editorial/public-surface-map.md`
+  - Action : Map README, public Astro pages, public skill pages, docs overview, FAQ, pricing, remote MCP guide, shared components, and future blog/article surfaces.
+  - User story link : Helps agents know which public surfaces can drift after product changes.
+  - Depends on : Task 1 plus reading `site/src/pages/`, `site/src/components/`, `site/src/content/skills/`.
+  - Validate with : `rg -n "README.md|site/src/pages/index.astro|site/src/pages/docs.astro|site/src/pages/faq.astro|site/src/content/skills|blog|shared component|update trigger" docs/editorial/public-surface-map.md`
+  - Notes : Mark blog/article as undeclared, not live.
 
-- [ ] Task 3: Add editorial reader orchestration to sf-build.
-  - File: `skills/sf-build/SKILL.md`
-  - Action: Add logic for launching Technical Reader and Editorial Reader as read-only roles, merging their plans, and blocking writes until conflicts or public claim risks are resolved.
-  - User story link: Makes the master workflow aware of both code/docs and public content impact.
-  - Depends on: Task 2
-  - Validate with: `rg -n "Editorial Reader|Technical Reader|Editorial Update Plan|Claim Impact Plan|Documentation Update Plan|read-only readers|pending final copy" skills/sf-build/SKILL.md`
-  - Notes: Readers may run in parallel because they are read-only; write-capable agents remain sequential by default.
+- [ ] Task 3: Create the page intent map.
+  - File : `docs/editorial/page-intent-map.md`
+  - Action : For each public Astro route, document page job, audience, CTA, source of truth, related surfaces, update triggers, and shared-file risk.
+  - User story link : Prevents agents from editing a page without understanding its role.
+  - Depends on : Task 2.
+  - Validate with : `rg -n "page job|audience|CTA|source of truth|update trigger|index.astro|docs.astro|skills/index.astro|skills/\\[slug\\].astro" docs/editorial/page-intent-map.md`
+  - Notes : Do not duplicate page copy.
 
-- [ ] Task 4: Create the editorial governance index.
-  - File: `docs/editorial/README.md`
-  - Action: Explain purpose, relationship to `CONTENT_MAP.md`, relationship to `docs/technical/`, role boundaries, shared surfaces, and update workflow.
-  - User story link: Gives fresh agents a stable entrypoint for editorial governance.
-  - Depends on: Task 1
-  - Validate with: `test -f docs/editorial/README.md && rg -n "CONTENT_MAP|docs/technical|Editorial Reader|claim|page intent|update gate|read-only|executor|integrator" docs/editorial/README.md`
-  - Notes: Keep it short enough to be useful as first-read context.
+- [ ] Task 4: Create the claim register.
+  - File : `docs/editorial/claim-register.md`
+  - Action : Register sensitive public claim families, allowed wording boundaries, evidence source, status, surfaces, owner, review cadence, and stop conditions.
+  - User story link : Prevents unsupported public promises from reaching the site or README.
+  - Depends on : Task 1 plus reading `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`.
+  - Validate with : `rg -n "security|privacy|compliance|AI reliability|automation|speed|savings|availability|pricing|allowed wording|evidence|stop condition" docs/editorial/claim-register.md`
+  - Notes : Initial entries can be claim families rather than every sentence.
 
-- [ ] Task 5: Create the page intent map.
-  - File: `docs/editorial/page-intent-map.md`
-  - Action: Map current public pages and content collections to page job, audience, CTA, source of truth, update triggers, shared-file risk, and related surfaces.
-  - User story link: Helps the Editorial Reader know which content surface is affected by a code or product change.
-  - Depends on: Task 4
-  - Validate with: `test -f docs/editorial/page-intent-map.md && rg -n "site/src/pages/index.astro|site/src/pages/docs.astro|site/src/pages/faq.astro|site/src/content/skills|audience|CTA|source of truth|update trigger" docs/editorial/page-intent-map.md`
-  - Notes: Start with current ShipFlow pages; do not invent blog/newsletter paths.
+- [ ] Task 5: Create the editorial update gate.
+  - File : `docs/editorial/editorial-update-gate.md`
+  - Action : Define triggers, `Editorial Update Plan`, `Claim Impact Plan`, statuses, pending final copy, no-impact justification, shared-surface rules, and closure blockers.
+  - User story link : Makes public-content coherence a repeatable gate.
+  - Depends on : Tasks 2, 3, and 4.
+  - Validate with : `rg -n "Editorial Update Plan|Claim Impact Plan|pending final copy|no editorial impact|claim mismatch|surface missing|shared surface|closure|ship" docs/editorial/editorial-update-gate.md`
+  - Notes : Align with the technical documentation layer but keep public-content language separate.
 
-- [ ] Task 6: Create the claim register.
-  - File: `docs/editorial/claim-register.md`
-  - Action: Add a register for sensitive public claims with claim text or claim family, allowed wording boundary, evidence, status, surfaces, owner, review date, and stop condition.
-  - User story link: Prevents public copy from promising more than the code/specs/contracts support.
-  - Depends on: Task 4
-  - Validate with: `test -f docs/editorial/claim-register.md && rg -n "security|privacy|compliance|AI|automation|speed|cost|availability|evidence|allowed wording|stop condition|claim mismatch" docs/editorial/claim-register.md`
-  - Notes: Initial entries may be claim families rather than every sentence on the site.
+- [ ] Task 6: Create the Astro content schema policy.
+  - File : `docs/editorial/astro-content-schema-policy.md`
+  - Action : Document Astro 5.18.1 local setup, `site/src/content.config.ts`, `skills` collection schema, dynamic skill routes, and the rule against incompatible ShipFlow metadata in runtime content.
+  - User story link : Keeps public content updates from breaking the Astro site.
+  - Depends on : Task 2 and fresh Astro docs evidence.
+  - Validate with : `rg -n "Astro 5.18.1|content.config.ts|defineCollection|z.object|getCollection|getStaticPaths|runtime content|frontmatter|schema" docs/editorial/astro-content-schema-policy.md`
+  - Notes : Cite Context7 `/withastro/docs` in the doc evidence section.
 
-- [ ] Task 7: Create the editorial update gate.
-  - File: `docs/editorial/editorial-update-gate.md`
-  - Action: Define triggers, plan fields, statuses, pending final copy rules, parallelism safety, shared surfaces, and closure/ship stop conditions.
-  - User story link: Makes editorial coherence a repeatable lifecycle gate, not an ad hoc memory.
-  - Depends on: Tasks 5 and 6
-  - Validate with: `test -f docs/editorial/editorial-update-gate.md && rg -n "Editorial Update Plan|Claim Impact Plan|pending final copy|shared surface|parallel|sequential|ship|closure|no editorial impact" docs/editorial/editorial-update-gate.md`
-  - Notes: Align wording with `Documentation Update Gate` in the sf-build and technical-docs specs.
+- [ ] Task 7: Create the blog and article surface policy.
+  - File : `docs/editorial/blog-and-article-surface-policy.md`
+  - Action : State that no blog path is declared yet, define how future blog/article surfaces must be declared, and list stop conditions before agents write article content.
+  - User story link : Handles the user's blog interest without inventing paths or routes.
+  - Depends on : Task 2 and `CONTENT_MAP.md`.
+  - Validate with : `rg -n "No dedicated blog|surface missing|blog path|article surface|separate spec|CONTENT_MAP|Astro route|content collection" docs/editorial/blog-and-article-surface-policy.md`
+  - Notes : This chantier may prepare blog governance, not implement the blog.
 
-- [ ] Task 8: Add an editorial artifact template.
-  - File: `templates/artifacts/editorial_content_context.md`
-  - Action: Create a metadata-bearing template for editorial governance artifacts outside runtime content, including dependencies on business, product, brand, GTM, content map and claim register.
-  - User story link: Standardizes durable editorial docs without breaking Astro runtime content schemas.
-  - Depends on: Task 7
-  - Validate with: `test -f templates/artifacts/editorial_content_context.md && rg -n "artifact: editorial_content_context|metadata_schema_version|artifact_version|depends_on|claim_register|page_intent|content_surfaces" templates/artifacts/editorial_content_context.md`
-  - Notes: Do not require this template inside `site/src/content/**`.
+- [ ] Task 8: Create the editorial content context template.
+  - File : `templates/artifacts/editorial_content_context.md`
+  - Action : Add a ShipFlow metadata-bearing template for editorial governance artifacts outside runtime content.
+  - User story link : Standardizes future editorial docs without polluting Astro collection schemas.
+  - Depends on : Tasks 1 through 7.
+  - Validate with : `rg -n "artifact: editorial_content_context|metadata_schema_version|artifact_version|depends_on|content_surfaces|claim_register|page_intent|runtime content" templates/artifacts/editorial_content_context.md`
+  - Notes : Do not require this frontmatter inside `site/src/content/**`.
 
-- [ ] Task 9: Add the editorial content corpus reference.
-  - File: `skills/references/editorial-content-corpus.md`
-  - Action: List the documents, pages, content collections, skills and contracts that Editorial Reader and content skills must inspect first.
-  - User story link: Gives content agents a compact, reusable loading list.
-  - Depends on: Task 8
-  - Validate with: `test -f skills/references/editorial-content-corpus.md && rg -n "CONTENT_MAP|BUSINESS|PRODUCT|BRANDING|GTM|docs/editorial|site/src/pages|site/src/content|sf-repurpose|sf-audit-copy" skills/references/editorial-content-corpus.md`
-  - Notes: Keep it as a routing reference, not a duplicate of every doc.
+- [ ] Task 9: Create the editorial content corpus reference.
+  - File : `skills/references/editorial-content-corpus.md`
+  - Action : List the docs, contracts, Astro paths, public surfaces, and skills that editorial/content agents should read first.
+  - User story link : Reduces context loading cost for future content agents.
+  - Depends on : Task 8.
+  - Validate with : `rg -n "CONTENT_MAP|BUSINESS|PRODUCT|BRANDING|GTM|docs/editorial|site/src/pages|site/src/content|sf-repurpose|sf-audit-copy|Astro" skills/references/editorial-content-corpus.md`
+  - Notes : Keep it a routing reference, not a duplicate of the docs.
 
-- [ ] Task 10: Update CONTENT_MAP and its template.
-  - File: `CONTENT_MAP.md`, `templates/artifacts/content_map.md`
-  - Action: Add `docs/editorial/`, claim register, page intent map, and editorial update gate to content surfaces and cross-surface update rules.
-  - User story link: Connects the new governance layer to the existing canonical content map.
-  - Depends on: Tasks 4-7
-  - Validate with: `rg -n "docs/editorial|claim-register|page-intent|editorial update|Editorial Reader|pending final copy" CONTENT_MAP.md templates/artifacts/content_map.md`
-  - Notes: This task edits shared files and must be sequential.
+- [ ] Task 9b: Create the Editorial Reader role contract.
+  - File : `skills/references/subagent-roles/editorial-reader.md`
+  - Action : Define a strict read-only role contract for the Editorial Reader: load `editorial-content-corpus.md`, `CONTENT_MAP.md`, business/product/brand/GTM contracts, public Astro pages, public docs, claim register, page intent map, and Astro schema policy; produce `Editorial Update Plan` and `Claim Impact Plan`; never edit, stage, format, or run destructive validation.
+  - User story link : Gives `sf-build` a dedicated Editorial Reader without overloading the Technical Reader.
+  - Depends on : Task 9 and the `sf-build` role-file contract.
+  - Validate with : `test -f skills/references/subagent-roles/editorial-reader.md && rg -n "Editorial Reader Agent Contract|read-only|editorial corpus|CONTENT_MAP|public surfaces|Astro|Editorial Update Plan|Claim Impact Plan|no edits|no staging" skills/references/subagent-roles/editorial-reader.md`
+  - Notes : Do not create `skills/references/subagent-roles/reader.md` as an alias.
+
+- [ ] Task 10: Update CONTENT_MAP and content map template.
+  - File : `CONTENT_MAP.md`, `templates/artifacts/content_map.md`
+  - Action : Add `docs/editorial/`, public surface map, page intent map, claim register, editorial update gate, Astro schema policy, and blog/article surface policy.
+  - User story link : Connects the governance layer to the canonical content map.
+  - Depends on : Tasks 1 through 9b.
+  - Validate with : `rg -n "docs/editorial|public-surface-map|page-intent|claim-register|editorial-update-gate|Astro content schema|blog-and-article" CONTENT_MAP.md templates/artifacts/content_map.md`
+  - Notes : Shared files; sequential edit only.
 
 - [ ] Task 11: Update sf-docs for editorial governance.
-  - File: `skills/sf-docs/SKILL.md`
-  - Action: Add audit/update instructions for `docs/editorial/`, page intent map, claim register, editorial update gate, and public content drift.
-  - User story link: Lets documentation maintenance keep editorial governance current.
-  - Depends on: Task 10
-  - Validate with: `rg -n "editorial governance|docs/editorial|claim register|page intent|Editorial Update Plan|pending final copy|public content drift" skills/sf-docs/SKILL.md`
-  - Notes: Do not weaken existing metadata/runtime content schema distinction.
+  - File : `skills/sf-docs/SKILL.md`
+  - Action : Add audit/update instructions for `docs/editorial/`, public content drift, claim register, page intent map, and Astro runtime schema preservation.
+  - User story link : Makes editorial governance maintainable by the docs workflow.
+  - Depends on : Task 10.
+  - Validate with : `rg -n "editorial governance|docs/editorial|claim register|page intent|public content drift|Astro content schema|runtime content" skills/sf-docs/SKILL.md`
+  - Notes : Preserve existing metadata vs runtime-content distinction.
 
-- [ ] Task 12: Update sf-repurpose for editorial plans.
-  - File: `skills/sf-repurpose/SKILL.md`
-  - Action: Require `CONTENT_MAP.md`, page intent map and claim register checks when creating docs/marketing/site outputs from a workstream; emit editorial plan items when content should change.
-  - User story link: Makes content repurposing faithful to product truth and claim boundaries.
-  - Depends on: Task 11
-  - Validate with: `rg -n "Editorial Update Plan|Claim Impact Plan|claim register|page intent|docs/editorial|pending final copy" skills/sf-repurpose/SKILL.md`
-  - Notes: Preserve the existing source-faithful doctrine.
+- [ ] Task 12: Update sf-repurpose for public content routing.
+  - File : `skills/sf-repurpose/SKILL.md`
+  - Action : Require the editorial corpus, claim register, page intent map, and blog-surface policy before recommending or applying public content outputs.
+  - User story link : Keeps repurposed content faithful to product truth and declared surfaces.
+  - Depends on : Task 11.
+  - Validate with : `rg -n "Editorial Update Plan|Claim Impact Plan|claim register|page intent|blog surface|docs/editorial|surface missing" skills/sf-repurpose/SKILL.md`
+  - Notes : Preserve source-faithful doctrine.
 
-- [ ] Task 13: Update copy and content generation skills.
-  - File: `skills/sf-audit-copy/SKILL.md`, `skills/sf-redact/SKILL.md`, `skills/sf-enrich/SKILL.md`
-  - Action: Add instructions to read the editorial corpus, use claim register/page intent map for proof gaps, and avoid unsupported public claims.
-  - User story link: Keeps generated and enriched copy aligned with code, specs and business contracts.
-  - Depends on: Task 12
-  - Validate with: `rg -n "claim register|page intent|docs/editorial|Editorial Reader|unsupported public claims|proof gap|claim mismatch" skills/sf-audit-copy/SKILL.md skills/sf-redact/SKILL.md skills/sf-enrich/SKILL.md`
-  - Notes: Keep `sf-redact` and `sf-enrich` capable of writing runtime content while respecting project schemas.
+- [ ] Task 13: Update copy and content-generation skills.
+  - File : `skills/sf-audit-copy/SKILL.md`, `skills/sf-redact/SKILL.md`, `skills/sf-enrich/SKILL.md`
+  - Action : Add instructions to use the editorial corpus, claim register, page intent map, and Astro schema policy before auditing, drafting, or enriching public content.
+  - User story link : Prevents copy audits and content generation from drifting beyond product evidence.
+  - Depends on : Task 12.
+  - Validate with : `rg -n "claim register|page intent|docs/editorial|Astro content schema|unsupported public claims|surface missing|proof gap" skills/sf-audit-copy/SKILL.md skills/sf-redact/SKILL.md skills/sf-enrich/SKILL.md`
+  - Notes : Runtime content may be edited only within schema-compatible fields.
 
-- [ ] Task 14: Update workflow and public documentation.
-  - File: `shipflow-spec-driven-workflow.md`, `README.md`, `site/src/pages/docs.astro`
-  - Action: Explain editorial coherence at a high level: public content is checked when behavior changes, while internal role files remain implementation details.
-  - User story link: Helps users understand why content updates are part of reliable agent-assisted delivery.
-  - Depends on: Task 13
-  - Validate with: `rg -n "editorial coherence|Editorial Reader|public content|claims|CONTENT_MAP|docs/editorial|pending final copy" shipflow-spec-driven-workflow.md README.md site/src/pages/docs.astro`
-  - Notes: Keep public language concise; do not expose all internal role machinery.
+- [ ] Task 14: Update README, workflow docs, and public docs page.
+  - File : `README.md`, `shipflow-spec-driven-workflow.md`, `site/src/pages/docs.astro`
+  - Action : Add concise references to editorial coherence, content governance, public claim safety, and Astro runtime-content schema boundaries.
+  - User story link : Makes the editorial layer discoverable to operators and public readers without exposing internal machinery.
+  - Depends on : Tasks 10 through 13.
+  - Validate with : `rg -n "editorial coherence|content governance|public content|claims|CONTENT_MAP|docs/editorial|Astro content" README.md shipflow-spec-driven-workflow.md site/src/pages/docs.astro`
+  - Notes : Keep public wording short; do not copy the internal gate.
 
-- [ ] Task 15: Validate metadata, schemas and readiness.
-  - File: `specs/shipflow-editorial-content-governance-layer-for-ai-agents.md`, `docs/editorial/`, `templates/artifacts/editorial_content_context.md`, modified skills/docs
-  - Action: Run metadata lint, check Astro content schema has not been violated, run rg validations, and rerun `/sf-ready`.
-  - User story link: Proves the spec can be implemented without breaking docs or runtime content.
-  - Depends on: Tasks 1-14
-  - Validate with: `"$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py" specs/shipflow-editorial-content-governance-layer-for-ai-agents.md docs/editorial templates/artifacts/editorial_content_context.md && cd site && npm run build`
-  - Notes: If `site` build is too slow or dependencies are unavailable, report the exact blocker and run static schema checks instead.
+- [ ] Task 15: Final validation and integration.
+  - File : `specs/shipflow-editorial-content-governance-layer-for-ai-agents.md`, `docs/editorial/`, `templates/artifacts/editorial_content_context.md`, `skills/references/editorial-content-corpus.md`, `skills/references/subagent-roles/editorial-reader.md`, modified skills/docs/site files
+  - Action : Run metadata lint, static `rg` validations, and the Astro build when dependencies are available.
+  - User story link : Proves the layer does not break ShipFlow artifacts or the public Astro site.
+  - Depends on : All previous tasks.
+  - Validate with : `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py specs/shipflow-editorial-content-governance-layer-for-ai-agents.md docs/editorial templates/artifacts/editorial_content_context.md && test -f skills/references/subagent-roles/editorial-reader.md && test ! -e skills/references/subagent-roles/reader.md && cd site && npm run build`
+  - Notes : If build cannot run, report the exact dependency blocker and run static schema checks.
 
 ## Acceptance Criteria
 
-- [ ] AC 1: Given `sf-build` handles a chantier with possible public content impact, when it starts diagnostic work, then it can launch a Technical Reader and an Editorial Reader as separate read-only roles.
-- [ ] AC 2: Given both readers run, when they complete, then the master has both a `Documentation Update Plan` and an `Editorial Update Plan` or explicit no-impact justifications.
-- [ ] AC 3: Given the Editorial Reader finds a sensitive public claim affected by code or product behavior, when the claim lacks proof, then the plan marks `claim mismatch` or `needs proof` and no content executor publishes the stronger claim.
-- [ ] AC 4: Given a user-visible behavior changes, when `sf-build` prepares closure, then impacted public docs, FAQ, landing, pricing, support, changelog candidates or skill pages are updated, marked no-impact with reason, or marked `pending final copy` with a resolution condition.
-- [ ] AC 5: Given a public page is not listed in `CONTENT_MAP.md` or `page-intent-map.md`, when it is affected, then the Editorial Reader reports `surface missing` and shared map updates are handled sequentially.
-- [ ] AC 6: Given an Editorial Reader is active, when it identifies files to change, then it does not edit, stage, format or validate destructively; it only reports paths, reasons, risks and plan items.
-- [ ] AC 7: Given two readers are active in parallel, when neither writes files, then the workflow allows parallel read diagnostics; any write-capable follow-up remains sequential unless a ready spec defines exclusive write sets.
-- [ ] AC 8: Given a ready spec defines editorial `Execution Batches` with one exclusive page file per executor and no shared file, when `sf-build` reaches that batch, then it may parallelize those edits and must integrate before the next batch.
-- [ ] AC 9: Given a runtime content schema does not allow ShipFlow fields, when content files are edited, then no incompatible frontmatter is added and context versions are reported outside the runtime file.
-- [ ] AC 10: Given `sf-redact` or `sf-enrich` generates public content, when a claim touches security, compliance, privacy, AI reliability, automation, speed, savings, availability, pricing or business outcomes, then it checks the claim register or downgrades the claim.
-- [ ] AC 11: Given `sf-docs audit` runs after implementation, when editorial governance files exist, then it can flag stale page intents, stale claim evidence, missing surfaces and stale public content.
-- [ ] AC 12: Given an agent fresh to the repo reads `docs/editorial/README.md`, when it needs to understand editorial governance, then it can find `CONTENT_MAP.md`, page intent map, claim register, update gate, and role boundaries without reading this conversation.
-- [ ] AC 13: Given the implementation finishes, when validation runs, then metadata lint passes for ShipFlow artifacts and the Astro site build or static schema check confirms runtime content schemas were not broken.
+- [ ] AC 1: Given a fresh agent needs to evaluate public content impact, when it opens `CONTENT_MAP.md` and `docs/editorial/README.md`, then it can find public surfaces, claim register, page intent map, Astro schema policy, and update gate.
+- [ ] AC 2: Given a chantier changes user-visible behavior, when the editorial gate runs, then it produces an `Editorial Update Plan` or explicit `no editorial impact` justification.
+- [ ] AC 2b: Given `sf-build` needs public-content impact analysis, when it launches an editorial analysis role, then it uses `skills/references/subagent-roles/editorial-reader.md` and does not rely on or create a generic `reader.md` alias.
+- [ ] AC 3: Given a sensitive public claim changes, when the claim lacks proof, then the `Claim Impact Plan` marks it `needs proof`, `claim mismatch`, or `blocked`.
+- [ ] AC 4: Given a page exists under `site/src/pages/`, when it is public-facing, then it appears in `public-surface-map.md` or is explicitly documented as excluded.
+- [ ] AC 5: Given public skill content is edited under `site/src/content/skills/`, when validation runs, then it still satisfies `site/src/content.config.ts`.
+- [ ] AC 6: Given blog/article content is requested, when no blog surface is declared, then the agent reports `surface missing: blog` and does not invent a path.
+- [ ] AC 7: Given `README.md` or public docs copy changes, when the change affects positioning or claims, then `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, and `claim-register.md` are checked.
+- [ ] AC 8: Given shared editorial files need changes, when execution is planned, then those files are edited sequentially.
+- [ ] AC 9: Given two exclusive public skill pages need copy-only updates, when a ready spec assigns one file per executor and no shared files are touched, then parallel edits may be allowed and integrated before closure.
+- [ ] AC 10: Given `sf-docs`, `sf-repurpose`, `sf-audit-copy`, `sf-redact`, or `sf-enrich` touches public content, then the relevant skill instructions point to the editorial corpus and claim boundaries.
+- [ ] AC 11: Given public docs are rendered by Astro, when the site builds, then no incompatible frontmatter or broken route/schema is introduced.
+- [ ] AC 12: Given implementation finishes, when verification runs, then metadata lint passes for ShipFlow editorial artifacts and `cd site && npm run build` passes or the blocker is documented.
 
 ## Test Strategy
 
-- Unit: None, because this change is primarily markdown instructions, docs and workflow contracts.
-- Static checks: run the `rg` validations listed in each implementation task.
-- Metadata: run `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py` on the new spec, `docs/editorial/`, and the new template.
-- Runtime content safety: inspect `site/src/content.config.ts` and run `cd site && npm run build` after implementation to catch incompatible content frontmatter or broken page imports.
-- Manual scenario 1: simulate a code-only refactor and verify Editorial Reader returns `no editorial impact` with reason.
-- Manual scenario 2: simulate a user-visible feature change and verify Editorial Reader identifies landing/docs/FAQ/skill-page impacts or justifies no impact.
-- Manual scenario 3: simulate a risky claim such as automation quality or speed improvement and verify the claim register blocks unsupported wording.
-- Manual scenario 4: simulate two readers in parallel and verify no edits happen until the master merges plans.
-- Manual scenario 5: simulate two editorial page updates in a ready batch and verify shared files remain sequential.
-- Regression: verify `sf-build`, `sf-docs`, `sf-repurpose`, `sf-audit-copy`, `sf-redact`, and `sf-enrich` keep their existing purpose and do not become duplicate content registries.
+Structural checks:
+
+- `test -f docs/editorial/README.md`
+- `test -f docs/editorial/public-surface-map.md`
+- `test -f docs/editorial/page-intent-map.md`
+- `test -f docs/editorial/claim-register.md`
+- `test -f docs/editorial/editorial-update-gate.md`
+- `test -f docs/editorial/astro-content-schema-policy.md`
+- `test -f docs/editorial/blog-and-article-surface-policy.md`
+- `test -f templates/artifacts/editorial_content_context.md`
+- `test -f skills/references/editorial-content-corpus.md`
+- `test -f skills/references/subagent-roles/editorial-reader.md`
+- `test ! -e skills/references/subagent-roles/reader.md`
+- `rg -n "Editorial Reader Agent Contract|read-only|editorial corpus|Editorial Update Plan|Claim Impact Plan|no edits|no staging" skills/references/subagent-roles/editorial-reader.md`
+
+Coherence checks:
+
+- `rg -n "TODO|TBD|PLACEHOLDER" docs/editorial templates/artifacts/editorial_content_context.md skills/references/editorial-content-corpus.md`
+- Compare `docs/editorial/public-surface-map.md` against `find site/src/pages -maxdepth 2 -type f` and `site/src/content/skills/`.
+- Check that blog/article policy states no blog path is currently declared.
+- Check that README and `site/src/pages/docs.astro` mention the editorial layer without reproducing internal role details.
+
+Astro checks:
+
+- Confirm local Astro version from `site/package-lock.json`.
+- Confirm `site/src/content.config.ts` still validates the `skills` collection fields.
+- Run `cd site && npm run build` after implementation.
+
+Claim and safety checks:
+
+- `rg -n "security|privacy|compliance|AI|automation|speed|savings|availability|pricing" docs/editorial/claim-register.md`
+- Manually review any strong public claims in README, public pages, docs overview, FAQ, pricing, and skill pages against the claim register.
+- Verify `docs/editorial/` does not expose internal-only secrets, private URLs, credentials, tokens, or sensitive logs.
 
 ## Risks
 
-- Security impact: yes, because public claims can misrepresent security, privacy, compliance, permissions, data handling, or AI behavior; mitigated by claim register, proof states, and stop conditions.
-- Product risk: high if public content promises more than the code/spec supports; mitigated by Editorial Reader, claim impact checks, and closure gates.
-- Edit conflict risk: medium-high if multiple agents edit shared editorial maps or site-wide pages; mitigated by read-only readers, sequential shared-file edits, and spec-gated parallelism only for exclusive page files.
-- Schema risk: medium if ShipFlow metadata is added to runtime content; mitigated by preserving Astro content schemas and putting ShipFlow metadata in governance artifacts instead.
-- Documentation risk: medium if `docs/editorial/` becomes a content calendar or duplicate marketing strategy; mitigated by scope boundaries and `CONTENT_MAP.md` as canonical surface map.
-- Workflow complexity risk: medium if two readers create too much process for small changes; mitigated by allowing `no editorial impact` with short justification for internal-only changes.
-- Stale-contract risk: medium because `CONTENT_MAP.md` and `sf-build` specs are draft; mitigated by `/sf-ready` review and explicit dependency status.
+- Security and trust risk: public claims can misrepresent security, privacy, compliance, permissions, data handling, or AI behavior.
+- Product risk: public content can promise more than the code, specs, or reviewed business/product contracts support.
+- Schema risk: adding ShipFlow metadata to runtime Astro content can break the site build.
+- Editorial drift risk: README, public pages, FAQ, docs, and skill pages can diverge after behavior changes.
+- Blog scope risk: agents may invent a blog path because the content skills know about blog formats, even though this repo has no declared blog surface.
+- Parallel editing risk: public pages and shared maps/components can conflict when multiple agents edit content.
+- Overprocess risk: internal-only changes should be allowed to produce `no editorial impact` with reason rather than forcing content updates.
+- Maintenance risk: `docs/editorial/` can become stale if not audited by `sf-docs`.
 
 ## Execution Notes
 
-- Read first: `CONTENT_MAP.md`, `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `skills/sf-repurpose/SKILL.md`, `skills/sf-audit-copy/SKILL.md`, `skills/sf-docs/SKILL.md`, `specs/sf-build-autonomous-master-skill.md`, `specs/shipflow-technical-documentation-layer-for-ai-agents.md`, `site/src/content.config.ts`.
-- Implement in order: role contract, reader clarification, sf-build orchestration, docs/editorial foundation, maps/register/gate, template/reference, content map updates, skill integrations, workflow/public docs, validation.
-- Safe parallel waves after foundation and readiness only: create `docs/editorial/page-intent-map.md` and `docs/editorial/claim-register.md` in parallel if each executor owns exactly one file; update shared files such as `CONTENT_MAP.md`, `sf-build`, `sf-docs`, `README.md`, and `shipflow-spec-driven-workflow.md` sequentially.
-- Packages to avoid: no new package required.
-- Abstractions to avoid: no second master/leader, no separate content registry outside the repo, no automatic claim publishing, no content calendar in this chantier.
-- Commands to validate: task-level `rg` checks, metadata lint, `cd site && npm run build` if dependencies are available, then `/sf-ready ShipFlow Editorial Content Governance Layer for AI Agents`.
-- Stop conditions: no clear boundary between Technical Reader and Editorial Reader, no acceptable shared-file sequencing, stale or contradictory business/brand/GTM contracts, incompatible Astro content schema, unsupported sensitive claims, or failure to preserve user changes in the dirty worktree.
+Read first:
+
+- `CONTENT_MAP.md`, `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`.
+- `README.md`, `site/src/pages/docs.astro`, `site/src/pages/index.astro`, `site/src/pages/faq.astro`, `site/src/pages/pricing.astro`, `site/src/pages/skills/index.astro`, `site/src/pages/skills/[slug].astro`.
+- `site/src/content.config.ts`, `site/package.json`, `site/package-lock.json`.
+- `skills/sf-docs/SKILL.md`, `skills/sf-repurpose/SKILL.md`, `skills/sf-audit-copy/SKILL.md`, `skills/sf-redact/SKILL.md`, `skills/sf-enrich/SKILL.md`.
+- `specs/shipflow-technical-documentation-layer-for-ai-agents.md`.
+
+Implementation order:
+
+```text
+Foundation sequential:
+  Task 1 -> Task 2 -> Task 3 -> Task 4 -> Task 5 -> Task 6 -> Task 7
+
+Supporting artifacts:
+  Task 8 -> Task 9 -> Task 9b
+
+Integration:
+  Task 10 -> Task 11 -> Task 12 -> Task 13 -> Task 14
+
+Validation:
+  Task 15
+```
+
+Safe waves after `/sf-ready`:
+
+- Wave 0, sequential foundation: `docs/editorial/README.md`, public surface map, page intent map, claim register, gate, Astro schema policy, blog policy, `skills/references/editorial-content-corpus.md`, and `skills/references/subagent-roles/editorial-reader.md`.
+- Wave 1, parallel only if assigned as exclusive files: page intent map and claim register may be drafted by separate agents after the index exists.
+- Wave 2, sequential shared integration: `CONTENT_MAP.md`, `templates/artifacts/content_map.md`, all skill files, README, workflow docs, and public docs page.
+- Wave 3, final validation: metadata lint, static checks, Astro build.
+
+Packages:
+
+- No new package is expected.
+- Do not add CMS, blog, RSS, search, analytics, or newsletter tooling in this chantier.
+
+Abstractions to avoid:
+
+- No second content registry that replaces `CONTENT_MAP.md`.
+- No content calendar.
+- No automatic claim publishing.
+- No global ShipFlow metadata forced into Astro runtime content.
+- No public exposure of internal-only technical docs.
+
+Stop conditions:
+
+- Stop and return to `/sf-spec` if the implementation would create a blog route or collection without an explicit blog-surface decision.
+- Stop if Astro content schema changes are required beyond documenting current constraints.
+- Stop if a sensitive public claim cannot be supported by product behavior, reviewed contracts, or explicit evidence.
+- Stop if parallel edits would touch shared maps, shared pages, shared components, collection schema, nav/footer, README, docs overview, FAQ, or pricing.
+- Stop if a plan attempts to use `skills/references/subagent-roles/reader.md`; the accepted role names are `technical-reader.md` and `editorial-reader.md`.
+- Stop if the site build fails because of content schema or route changes.
 
 ## Open Questions
 
 None.
 
-The current vision is sufficient for a draft spec: add a second read-only Editorial Reader, keep `sf-build` as master, keep write execution sequential by default, and add spec-gated parallelism only for exclusive editorial files.
+The current decision is explicit: prepare editorial governance for blog/article content, but do not create a blog surface in this chantier because the repo does not declare one yet.
 
 ## Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
-| 2026-05-01 10:05:10 UTC | sf-spec | GPT-5 Codex | Created spec for ShipFlow editorial content governance layer with dedicated Editorial Reader, editorial docs, claim register, page intent map, and update gate. | draft saved | /sf-ready ShipFlow Editorial Content Governance Layer for AI Agents |
+| 2026-05-01 10:05:10 UTC | sf-spec | GPT-5 Codex | Created initial draft spec for ShipFlow editorial content governance layer. | Draft existed but was not aligned with the current repo state after the interrupted turn. | `/sf-spec ShipFlow Editorial Content Governance Layer for AI Agents` |
+| 2026-05-01 14:18:28 UTC | sf-spec | GPT-5 Codex | Reworked the spec around the actual Astro public-content surfaces, README, public docs, missing blog surface, claim governance, runtime schema constraints, and content skills. | Draft saved at `specs/shipflow-editorial-content-governance-layer-for-ai-agents.md`. | `/sf-ready ShipFlow Editorial Content Governance Layer for AI Agents` |
+| 2026-05-01 14:37:51 UTC | sf-spec | GPT-5 Codex | Added the dedicated read-only Editorial Reader role contract, aligned it with the sf-build Technical Reader / Editorial Reader split, and explicitly rejected a reader.md alias. | Draft updated. | `/sf-ready ShipFlow Editorial Content Governance Layer for AI Agents` |
+| 2026-05-01 14:50:34 UTC | sf-ready | GPT-5 Codex | Evaluated readiness gate for structure, metadata, user-story alignment, freshness, task order, docs coherence, language doctrine, adversarial risks, security posture, and open questions. | Ready: local dependency versions were aligned, Astro freshness evidence was rechecked, hidden dependencies were made explicit, metadata lint passed, and no blocking ambiguity remained. | `/sf-start ShipFlow Editorial Content Governance Layer for AI Agents` |
 
 ## Current Chantier Flow
 
-- `sf-spec`: done, draft spec created.
-- `sf-ready`: not launched.
-- `sf-start`: not launched.
-- `sf-verify`: not launched.
-- `sf-end`: not launched.
-- `sf-ship`: not launched.
+```text
+sf-spec: done, ready spec updated with dedicated Editorial Reader role and no reader.md alias
+sf-ready: ready
+sf-start: not launched
+sf-verify: not launched
+sf-end: not launched
+sf-ship: not launched
+```
 
-Next step: `/sf-ready ShipFlow Editorial Content Governance Layer for AI Agents`
+Current state:
+
+- Chantier identified: yes.
+- Implementation started: no.
+- Spec path: `specs/shipflow-editorial-content-governance-layer-for-ai-agents.md`.
+- Required next step: `/sf-start ShipFlow Editorial Content Governance Layer for AI Agents`.
+- Execution rule: spec-first; do not implement until readiness passes.
