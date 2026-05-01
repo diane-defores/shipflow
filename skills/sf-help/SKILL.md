@@ -1,6 +1,6 @@
 ---
 name: sf-help
-description: "Args: optional tasks/audit/workflows/prompts. Cheatsheet for the full task tracking and audit system — skills, modes, prompts, workflows"
+description: "ShipFlow help for skills, tasks, audits, workflows, modes, prompts, and common commands."
 disable-model-invocation: true
 argument-hint: [optional: tasks, audit, workflows, prompts]
 ---
@@ -235,6 +235,13 @@ Run any skill from `~/` (no project markers) and it asks **"Which project(s)?"**
 - `sf-scaffold` must preserve existing product/system coherence and avoid generating unsafe public-by-default artifacts.
 - `sf-check` and `sf-prod` must surface risky unknowns clearly instead of treating green checks as proof of product safety.
 - `sf-audit-code` must review business-flow abuse and product coherence, not just code style and raw security smells.
+
+### Project development mode
+- Every project should document `## ShipFlow Development Mode` in `CLAUDE.md`, or `SHIPFLOW.md` when no `CLAUDE.md` exists.
+- `local` means local dev servers and local browser checks are valid before shipping.
+- `vercel-preview-push` means any browser/manual/preview validation of changed behavior must wait for `sf-ship` followed immediately by `sf-prod`.
+- `hybrid` means local checks are valid for unit/static work, but hosted flows such as auth, OAuth callbacks, webhooks, Vercel routing, serverless/edge runtime, and deployment env vars require `sf-ship` -> `sf-prod` first.
+- `sf-prod` should use Vercel MCP as the primary source for waiting on the matching deployment when Vercel preview-push is the validation surface.
 
 ### Product coherence
 - A technically valid change is not enough if it weakens the product promise, creates a confusing flow, or diverges from established project patterns.

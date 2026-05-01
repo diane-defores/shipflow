@@ -1,6 +1,6 @@
 ---
 name: sf-prod
-description: "Args: optional project name or URL. Vérifier que la prod fonctionne après un push — status du deploy, logs Vercel, health check de l'URL live"
+description: "Production verification for deploy status, Vercel logs, runtime logs, and live health checks."
 argument-hint: [optional: project name or URL]
 ---
 
@@ -26,6 +26,9 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Project name: !`basename $(pwd)`
 - Git remote: !`git remote -v 2>/dev/null | head -1 || echo "no remote"`
 - Latest commit: !`git log --oneline -1 2>/dev/null || echo "no commits"`
+- Current branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
+- Vercel project link: !`cat .vercel/project.json 2>/dev/null || echo "no .vercel/project.json"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - CLAUDE.md (for prod URL): !`grep -i "url\|domain\|vercel\|netlify\|prod" CLAUDE.md 2>/dev/null | head -5 || echo "no CLAUDE.md or no URL found"`
 
 ## Your task
@@ -35,6 +38,8 @@ Le but est de donner un signal de confiance honnête sur la prod, pas un faux "t
 
 Le registry `PROJECTS.md` est en lecture seule dans cette skill.
 `sf-prod` ne doit jamais modifier `TASKS.md`, `AUDIT_LOG.md` ou `PROJECTS.md`.
+
+Lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` avant de choisir la cible. Si le projet est en mode `vercel-preview-push`, `sf-prod` vérifie le déploiement Vercel correspondant au dernier commit poussé et renvoie l'URL de preview prête pour les tests. Dans ce mode, le mot "prod" désigne le gate post-push, pas forcément le domaine de production custom.
 
 ---
 
@@ -54,7 +59,21 @@ Sinon, utiliser le répertoire courant. Si pas de git remote, utiliser **AskUser
 
 ### Step 2 — Vérifier le status du dernier deploy
 
+**Source primaire Vercel MCP quand Vercel est détecté :**
+
+Si `.vercel/project.json` existe, si le status GitHub pointe vers Vercel, ou si le mode projet est `vercel-preview-push` :
+1. Utiliser le serveur MCP Vercel avant de conclure :
+   - `mcp__vercel__list_deployments` pour trouver les déploiements récents du projet.
+   - `mcp__vercel__get_deployment` pour suivre le déploiement qui correspond au dernier commit, à la branche courante ou à l'URL fournie.
+   - `mcp__vercel__get_deployment_build_logs` pour les logs build.
+   - `mcp__vercel__get_runtime_logs` si le build est vert mais que le health check ou le flow live échoue.
+2. Attendre l'état final du déploiement via MCP (`READY`, `ERROR`, `CANCELED`, ou équivalent). Ne pas demander un test preview tant que le déploiement correspondant au push n'est pas prêt.
+3. Si aucun `teamId` ou `projectId` n'est connu, lire `.vercel/project.json`, puis utiliser `list_teams` / `list_projects` pour retrouver le projet. Si cela reste impossible, signaler le blocage et utiliser les GitHub statuses comme fallback partiel.
+4. Si plusieurs déploiements existent, préférer celui qui correspond au dernier SHA local (`git rev-parse HEAD`) et à la branche courante. Signaler explicitement si la correspondance SHA/branche n'a pas pu être prouvée.
+
 **Via GitHub commit statuses API** (Vercel, Netlify y publient leurs résultats) :
+
+Utiliser cette voie comme fallback ou comme corroboration lorsque Vercel MCP n'est pas disponible, pas comme source primaire pour un projet Vercel en mode preview-push.
 
 ```bash
 # Récupérer le SHA du dernier commit
@@ -106,9 +125,10 @@ Boucle d'attente avec backoff progressif :
 ### Step 3 — Health check de l'URL live
 
 **Trouver l'URL de prod** (dans cet ordre) :
-1. `target_url` du deployment status (URL du preview Vercel)
-2. URL dans CLAUDE.md (domaine custom)
-3. Demander à l'utilisateur via **AskUserQuestion**
+1. URL du déploiement confirmé par Vercel MCP quand disponible
+2. `target_url` du deployment status (URL du preview Vercel)
+3. URL dans CLAUDE.md (domaine custom)
+4. Demander à l'utilisateur via **AskUserQuestion**
 
 **Lancer le check :**
 ```bash
@@ -211,6 +231,8 @@ Si tout est OK :
 **Build :**         32s, 0 warnings
 **URL :**           https://winflowz.vercel.app
 **Health check :**  ✓ 200 OK (142ms)
+**Mode dev :**      vercel-preview-push
+**Source deploy :** Vercel MCP
 
 Tout est live.
 ```
@@ -241,10 +263,11 @@ Dans tous les cas, ajouter une ligne `Hypothèses / risques restants` dès qu'un
 ### Rules
 
 - Ne jamais rollback automatiquement — toujours demander confirmation
-- Si le build est encore pending, patienter (30s x 3) avant de déclarer un problème
+- Si le build est encore pending, patienter selon la boucle de polling ci-dessus avant de déclarer un problème
 - Toujours fournir le lien vers les logs — l'utilisateur peut vouloir regarder lui-même
 - Ne jamais conclure sur un échec avec des logs tronqués: d'abord collecter/paginer, ensuite filtrer.
 - En cas de Vercel, privilégier `get_deployment_build_logs` + filtrage local; dashboard web en fallback, pas en source primaire.
+- En mode `vercel-preview-push`, Vercel MCP est la source primaire pour attendre la fin du déploiement; les GitHub commit statuses ne suffisent pas à autoriser le test preview.
 - Si pas de CI/CD détecté (pas de statuses sur le commit), proposer un simple curl + signaler que le projet n'a pas de deploy automatique
 - Compatible Vercel, Netlify, et tout service qui publie des GitHub commit statuses
 - Ne jamais déclarer "prod OK" si seuls des signaux partiels ont été vérifiés. Préférer une conclusion précise du type : "deploy vert et URL répond, mais validation fonctionnelle/sécurité partielle".

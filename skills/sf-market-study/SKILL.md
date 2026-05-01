@@ -1,6 +1,6 @@
 ---
 name: sf-market-study
-description: "Args: niche or product idea. Complete market study for a product/niche — demand analysis, competition audit, keyword volumes, monetization strategy, GO/NO-GO verdict with structured report"
+description: "Market study for demand, competitors, keywords, monetization, and go/no-go verdicts."
 disable-model-invocation: true
 argument-hint: <niche or product idea>
 ---

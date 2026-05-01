@@ -1,6 +1,6 @@
 ---
 name: sf-ship
-description: "Args: skip-check, all-dirty/ship-all/tout-dirty, end/fin/close task. Ship changes quickly by default (commit + push). Run full session-closing flow only when explicitly requested."
+description: "Ship workflow for checks, commits, pushes, and optional full task closeout."
 argument-hint: [optional: commit message | "end la tache" for full close | skip-check | all-dirty]
 ---
 
@@ -22,6 +22,7 @@ Before shipping a spec-first chantier, load `$SHIPFLOW_ROOT/skills/references/ch
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
 - Git diff stat: !`git diff HEAD --stat 2>/dev/null || echo ""`
 - Current branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Recent commits (style reference): !`git log --oneline -5 2>/dev/null || echo "no commits"`
 - Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No TASKS.md"`
 - Existing CHANGELOG: !`head -20 CHANGELOG.md 2>/dev/null || echo "no CHANGELOG.md"`
@@ -29,6 +30,8 @@ Before shipping a spec-first chantier, load `$SHIPFLOW_ROOT/skills/references/ch
 ## Your task
 
 `sf-ship` has two modes.
+
+Before choosing mode, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and inspect the project-local `## ShipFlow Development Mode` section in `CLAUDE.md` or `SHIPFLOW.md`. This does not change quick vs full shipping, but it changes the required next action after a successful push.
 
 ### Mode 1 — Quick ship (default)
 
@@ -193,6 +196,18 @@ git push
 # if no upstream: git push -u origin <branch>
 ```
 
+## Step 7.5 — Post-push deployment handoff
+
+If the push succeeds and the project development mode is `vercel-preview-push`, the immediate next action is:
+
+```bash
+/sf-prod [project name or deployment URL if known]
+```
+
+If the project development mode is `hybrid`, require the same `/sf-prod` handoff when the shipped change needs hosted validation: auth/OAuth, callbacks, webhooks, Vercel routing, edge/serverless runtime, deployment env vars, or preview/prod-only data behavior.
+
+Do not tell the user to run manual/browser tests before `sf-prod` has confirmed the matching deployment is ready. In the report, state that the push is complete but preview validation is still pending behind `sf-prod`.
+
 ## Step 8 — One report
 
 Quick mode report:
@@ -203,6 +218,7 @@ Quick mode report:
 Checks: [passed / skipped / failed]
 Mode: quick (commit + push only)
 Scope: [current task/session changes / all dirty repo files]
+Development mode: [local / vercel-preview-push / hybrid / unknown]
 Bug risk gate: [blocked / partial-risk / not assessed / clear]
 User story / product status: [not assessed / partially validated / validated enough for this iteration]
 Documentation coherence: [updated / not impacted / gap remains / not assessed]
@@ -226,7 +242,7 @@ Reste a faire:
 - [item or None]
 
 Prochaine etape:
-- [explicit action | None]
+- [/sf-prod [project or URL] if preview-push validation is required | explicit action | None]
 
 Verdict sf-ship:
 - [shipped | not shipped | blocked | skipped checks]
@@ -239,6 +255,7 @@ Full mode report:
 [SHORT_SHA] — "[commit message]" -> [branch]
 Checks: [passed / skipped / failed]
 Scope: [current task/session changes / all dirty repo files]
+Development mode: [local / vercel-preview-push / hybrid / unknown]
 Tasks/Changelog: updated
 Bug risk gate: [blocked / partial-risk / not assessed / clear]
 Session closed: [completed/in-progress summary]
@@ -264,7 +281,7 @@ Reste a faire:
 - [item or None]
 
 Prochaine etape:
-- [explicit action | None]
+- [/sf-prod [project or URL] if preview-push validation is required | explicit action | None]
 
 Verdict sf-ship:
 - [shipped | not shipped | blocked | skipped checks]
@@ -284,3 +301,4 @@ Verdict sf-ship:
 - Prefer honest "docs not checked" wording over implying feature docs are aligned
 - If the change may affect public behavior or safety posture and the status is unclear, ask before shipping
 - If linked bug status is `blocked`, `partial-risk`, or `not assessed`, say it explicitly in the report.
+- If project mode is `vercel-preview-push`, never make `/sf-test` the next step before `/sf-prod`.

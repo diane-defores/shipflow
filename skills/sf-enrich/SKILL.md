@@ -1,6 +1,6 @@
 ---
 name: sf-enrich
-description: "Args: file-path or folder. Research the web and upgrade a blog article, product page, or entire content folder — fresh data, actionable advice, user-centric, conversion-driven"
+description: "Content enrichment with fresh research, stronger advice, user focus, and conversion fit."
 disable-model-invocation: true
 argument-hint: <file-path or folder>
 ---

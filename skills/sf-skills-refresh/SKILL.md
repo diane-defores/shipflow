@@ -1,6 +1,6 @@
 ---
 name: sf-skills-refresh
-description: "Args: skill-name optional. Rafraîchir les skills avec l'état de l'art récent — recherche web en parallèle, puis applique les nouveautés (AEO/GEO, WCAG, CSS 2026, AI-slop, etc.) aux SKILL.md sans les réécrire"
+description: "Skill refresh with current best practices, targeted research, and conservative SKILL.md updates."
 disable-model-invocation: true
 argument-hint: '[skill-name] (omit to pick multiple)'
 ---
@@ -96,6 +96,7 @@ For each returned report:
 3. For each **EXISTING CHECK TO UPDATE**: use `Edit` with exact old/new strings.
 4. For each **NEW PHASE PROPOSAL**: evaluate. Only add if genuinely missing (not a rename of existing content). Insert between existing phases, matching numbering convention.
 5. Update report template / score rubric at the bottom to include new categories.
+6. If a refresh edits `description`, `argument-hint`, `agents/openai.yaml`, discovery wording, or materially changes `SKILL.md` length, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/skill-context-budget.md` and run `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/skill_budget_audit.py --skills-root "${SHIPFLOW_ROOT:-$HOME/shipflow}/skills"` before reporting.
 
 **Rules:**
 - Never delete a check that's still valid today.
@@ -153,6 +154,7 @@ If any research agent returned findings that need human judgment (ambiguous, con
 - **Cadence**: designed for ~monthly runs. More frequent wastes research effort; less frequent means drift.
 - **Parallel research is the whole point.** Never do searches yourself sequentially — delegate to agents.
 - **Additive mindset**: a skill that accumulates every check ever written becomes unwieldy. When a check is strictly obsoleted by a newer one, update in place instead of stacking both.
+- **Skill budget compliance stays scoped here**: enforce Codex/Claude Code skill budget rules during skill refreshes, not through broad reminders in unrelated agent guidelines.
 - **Never touch `name:` in frontmatter.** It's the invocation key.
 - **Match language**: French-described skills get French additions; English-described skills get English.
 - **Don't refresh `sf-skills-refresh` itself** from this skill — that's a manual edit job.

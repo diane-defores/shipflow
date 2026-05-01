@@ -1,6 +1,6 @@
 ---
 name: sf-repurpose
-description: "Args: optional focus or target surface. Repurpose either the current work conversation or user-supplied source content into faithful documentation, marketing content, release notes, FAQs, articles, page updates, or content angles. Use when a paragraph, article, feature discussion, or source text should be transformed into reusable content without inventing beyond the source. If the user asks to apply, create, update, fill the site, or do the recommended content, this skill must write the justified target surfaces instead of only describing them."
+description: "Source-faithful repurposing into docs, marketing, release notes, FAQs, articles, or site updates."
 argument-hint: [optional focus such as "doc", "marketing", "full", "release notes", "faq", "newsletter", "article", "site", "apply", or a target surface]
 ---
 
@@ -82,6 +82,8 @@ Default to `apply mode` when the user says or clearly implies:
 
 In `apply mode`, do not stop at a recommendation list. The final answer must identify the files changed and the validations run.
 
+When the source is the current conversation and the user says to continue after agreeing on placement, assume `apply mode` and write the justified surfaces. Do not leave the durable idea as an unexecuted recommendation unless the target surface is missing, ambiguous, or unsafe.
+
 In `pack mode`, keep generated prose concise. Do not draft full articles, full landing sections, or long FAQ answers in chat unless the user asked for a draft-only response. If a target file exists and the user wants action, write the content into the file instead.
 
 If the skill recommends a dedicated article, it must also decide one of:
@@ -93,6 +95,8 @@ If the skill recommends a dedicated article, it must also decide one of:
 ## Conversation reuse doctrine
 
 Some of the best content is created while explaining the work to the user. Do not discard clear conversational explanations just because they appeared in chat first.
+
+If the conversation establishes a durable product proof, workflow rule, recurring customer objection, technical constraint, or positioning clarification, treat that as content debt until it is placed in the right repository surface. The default is not "summarize it in chat"; the default is to preserve it through `CONTENT_MAP.md` and the mapped public or technical surface.
 
 When the conversation contains a sentence, analogy, diagram, list, or troubleshooting explanation that is clearer than a fresh rewrite:
 
@@ -121,6 +125,8 @@ Use repetition deliberately:
 - `CONTENT_MAP.md` records the cluster and cross-surface update rule
 
 Repeat the same concept with different jobs per surface. Do not duplicate the same paragraph everywhere.
+
+For workflow-level ideas, one public page is also not enough. If the point changes how ShipFlow should operate, update the relevant internal `SKILL.md`, reference doc, README/context route, or verification/audit gate in addition to any editorial surface. Public proof and operational workflow must stay connected.
 
 ## Core doctrine
 
@@ -243,6 +249,8 @@ For site-facing content, classify each justified output as:
 - `do not write`: too speculative, duplicate, or unsupported
 
 In `apply mode`, write every `must write` item and every `should write` item unless the surface is missing or unsafe. Optional items can be reported as follow-up.
+
+When a `must write` or `should write` item is a workflow rule, include at least one operational target such as a `SKILL.md`, `skills/references/*.md`, README/context route, or verification/audit gate. A site page alone is not enough to preserve workflow behavior.
 
 ### Phase 2.5 — Plan the diffusion map
 

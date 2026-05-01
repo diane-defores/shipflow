@@ -13,6 +13,14 @@ const items = [
     a: "No. Some skills treat the argument as plain task text, but others use it as a mode switch or a structured input. That is why reading the skill contract matters."
   },
   {
+    q: "Do ShipFlow skills work with both Codex and Claude Code?",
+    a: "Yes. ShipFlow maintains skill metadata for both discovery models: Codex starts from each skill name, description, and path, while Claude Code relies on description and optional when_to_use metadata with a 1536-character per-skill listing cap. ShipFlow treats the stricter shared budget as the rule: descriptions are front-loaded, audited, and kept within the roughly 2% or 8000-character Codex baseline. The current audit reports 49 skills, 0 hard violations, a 7230-character absolute discovery estimate, and an average description length of 88.4 characters.",
+    links: [
+      ["Codex skills documentation", "https://developers.openai.com/codex/skills"],
+      ["Claude Code skills documentation", "https://code.claude.com/docs/en/skills"]
+    ]
+  },
+  {
     q: "What is a skill mode?",
     a: "A skill mode is a specialized workflow triggered by a specific argument pattern or keyword. For example, a docs skill may switch into metadata migration mode instead of normal documentation-writing mode."
   },
@@ -73,6 +81,18 @@ const items = [
             <details class="faq-item">
               <summary>{item.q}</summary>
               <p>{item.a}</p>
+              {
+                "links" in item && (
+                  <p>
+                    {item.links.map(([label, href], index) => (
+                      <>
+                        <a href={href}>{label}</a>
+                        {index < item.links.length - 1 ? " · " : ""}
+                      </>
+                    ))}
+                  </p>
+                )
+              }
             </details>
           ))
         }

@@ -1,6 +1,6 @@
 ---
 name: sf-start
-description: "Args: task description or TASKS.md item. Execute a task end-to-end from kickoff to implementation. Use spec-first guardrails when the scope is non-trivial."
+description: "Task execution from kickoff through implementation with spec-first guardrails when needed."
 argument-hint: <task description or TASKS.md item>
 ---
 
@@ -22,6 +22,7 @@ Before executing from a ready spec, load `$SHIPFLOW_ROOT/skills/references/chant
 - Project name: !`basename $(pwd)`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Available specs: !`find docs specs -maxdepth 2 -type f -name "*.md" 2>/dev/null | sort | head -40`
@@ -85,6 +86,11 @@ If `spec-first` and no matching `Status: ready` spec exists:
 ### Step 3 — Load context, derive execution contract, and track task (silent)
 
 - Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/documentation-freshness-gate.md` when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Preserve the gate verdict in the execution contract.
+- Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md`, then inspect the project-local `## ShipFlow Development Mode` section in `CLAUDE.md` or `SHIPFLOW.md`.
+  - Add the development mode to the execution contract: `local`, `vercel-preview-push`, `hybrid`, or `unknown`.
+  - If the section is missing and Vercel signals exist (`.vercel/project.json`, `vercel.json`, Vercel dependency, or Vercel deployment status), classify as `unknown-vercel` and do not run preview-dependent browser/manual validation until the mode is clarified or documented.
+  - If the user explicitly says this project uses Vercel previews as the development/test surface, treat the current run as `vercel-preview-push` and update or request the project section before the next validation step.
+  - If no hosting signal exists, default to `local` for this run and recommend adding the section during project setup.
 - If Supabase is in the stack and the task touches auth, storage, uploads, DB, or RLS, load only the relevant references among `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-storage.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-db.md` before editing.
 - Si la tâche est `spec-first`, préférer une exécution sur contexte frais :
   - lancer un subagent sans historique si c'est possible
@@ -102,6 +108,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - invariants and non-goals
   - linked systems / consequences to revalidate
   - documentation surfaces to update or explicitly leave unchanged
+  - project development mode and validation surface: whether success must be proven locally or through `sf-ship` -> `sf-prod` on a Vercel preview
   - fresh external docs verdict when the task depends on external documented behavior: dependency/service, local version when available, Context7 or official docs source, and whether the implementation path is supported
   - abuse cases / misuse cases and security constraints when present
   - validation commands and stop conditions
@@ -245,6 +252,12 @@ Run focused validation relevant to the modified area:
 - include a documentation coherence check when the user-visible feature behavior changed
 - include abuse-case / security sanity checks when the contract names them
 
+Project development mode gate:
+- If `development_mode` is `local`, run the focused validation normally with the local dev server or local tooling when needed.
+- If `development_mode` is `vercel-preview-push`, local static checks are allowed, but browser/manual/integration/user-flow validation must be deferred until after `sf-ship` pushes the change and `sf-prod` confirms the matching Vercel deployment. Do not ask the user to test a local URL as proof for this mode.
+- If `development_mode` is `hybrid`, use local validation only for purely local unit/static/UI checks. For auth, OAuth, webhooks, hosted env vars, serverless/edge runtime, Vercel routing, or anything that differs by deployment environment, require the `sf-ship` -> `sf-prod` sequence before the manual or browser test.
+- When preview-push validation is required, stop after implementation and quick local checks with next step `/sf-ship [task]`. The next action after that successful push must be `/sf-prod [project or URL]`; testing follows only after `sf-prod` returns the ready preview/deployment URL.
+
 If checks fail, report clearly and include next repair action.
 
 ### Step 8 — Report
@@ -258,6 +271,8 @@ Mode: [direct / spec-first]
 Primary execution model: [model]
 Reasoning effort: [low / medium / high / xhigh]
 Execution topology: [single-agent / multi-agent]
+Development mode: [local / vercel-preview-push / hybrid / unknown-vercel]
+Validation surface: [local / preview after sf-ship -> sf-prod / mixed]
 Contract: [ready spec path / direct mini-contract]
 Fresh context: [used fresh subagent / user asked to open new thread / not necessary]
 User story: [one-line promise]
@@ -297,7 +312,7 @@ Security / abuse checks:
 - [check] -> [pass/fail]
 
 Next step:
-- /sf-verify [task]
+- [/sf-verify [task] | /sf-ship [task] when preview-push validation is required]
 
 ## Chantier
 
@@ -316,7 +331,7 @@ Reste a faire:
 - [item or None]
 
 Prochaine etape:
-- /sf-verify [task]
+- [/sf-verify [task] | /sf-ship [task] puis /sf-prod si le mode impose une preview Vercel]
 
 Verdict sf-start:
 - [implemented | partial | blocked | rerouted]
@@ -326,6 +341,7 @@ Verdict sf-start:
 
 - Implement by default (do not stop at planning)
 - Do NOT commit or push
+- Exception: when the documented project mode requires Vercel preview-push validation, `sf-start` still must not run raw git commands itself, but it must route the immediate next action to `sf-ship`, followed by `sf-prod`, before any preview/browser/manual test is treated as proof.
 - Do NOT update CHANGELOG.md (handled by end/ship flow)
 - For non-trivial tasks, block without a `ready` spec
 - If request and spec conflict, surface the conflict before coding

@@ -1,6 +1,6 @@
 ---
 name: sf-research
-description: "Args: topic. Deep web research on any topic — multi-source investigation, structured markdown report saved to file"
+description: "Deep web research with multi-source investigation and a structured Markdown report."
 disable-model-invocation: true
 argument-hint: <topic>
 ---

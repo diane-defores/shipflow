@@ -29,6 +29,7 @@ limits:
   - "It can improve documentation quality, but only the code proves real behavior"
   - "Docs still need product judgment when the underlying decision is unsettled"
   - "Bug workflow docs should be checked for coherence across TEST_LOG.md, BUGS.md, dossier formats, and public skill pages"
+  - "Docs audits should also verify skill-budget coherence with the ShipFlow skill budget audit script when skill docs change"
 related_skills:
   - "sf-context"
   - "sf-spec"
@@ -42,3 +43,5 @@ order: 350
 `sf-docs` should look for bug-workflow drift as part of a normal docs audit. That means checking whether `TEST_LOG.md`, `BUGS.md`, dossier templates, and public skill pages still describe the same operating model.
 
 If one page still implies the old tracker behavior, the docs result should call out the mismatch instead of silently accepting it.
+
+When public or internal skill documentation changes, `sf-docs` should also treat the skill budget audit as part of documentary coherence. The skill catalog has to remain understandable to humans and discoverable by Codex and Claude Code.

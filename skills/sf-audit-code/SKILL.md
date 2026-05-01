@@ -1,6 +1,6 @@
 ---
 name: sf-audit-code
-description: "Args: file-path or \"global\"; omit for full project. Professional code review — single file (with argument) or full project audit (no argument). User story fit, product coherence, workflow abuse/bypass, security, architecture, reliability, modern practices."
+description: "Code review for correctness, product fit, security, architecture, reliability, and test risk."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

@@ -1,6 +1,6 @@
 ---
 name: sf-auth-debug
-description: "Args: bug auth, URL, provider, or flow. Diagnostiquer un bug d'authentification dans un navigateur réel avec Playwright MCP — Clerk, Supabase Auth, OAuth, Google login, cookies, callbacks, middleware, redirects, sessions."
+description: "Auth debug for Clerk, Supabase, OAuth, cookies, callbacks, redirects, sessions, and browser flows."
 argument-hint: <bug auth, URL, provider, ou flow à diagnostiquer>
 ---
 
@@ -27,6 +27,8 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Project name: !`basename $(pwd)`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
+- Vercel project link: !`cat .vercel/project.json 2>/dev/null || echo "no .vercel/project.json"`
 - CLAUDE.md (constraints / URLs): !`grep -i "auth\\|clerk\\|supabase\\|google\\|oauth\\|domain\\|url\\|vercel\\|netlify" CLAUDE.md 2>/dev/null | head -20 || echo "no CLAUDE.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null | head -40 || echo "No local TASKS.md"`
 
@@ -64,6 +66,7 @@ Références locales à charger selon le contexte:
 - `references/python-convex.md` pour scripts Python, jobs, imports et clients Convex
 - `references/sdk-policy.md` pour choisir stable/beta/non-officiel dans le stack ShipFlow
 - `references/flutter-web-clerkjs-bridge.md` pour le pattern ContentFlow: Flutter web + routes HTML ClerkJS + bridge Dart
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` pour savoir si la preuve auth doit se faire en local ou après push sur preview Vercel
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md` pour Supabase Auth, `@supabase/ssr`, cookies, redirects, callbacks et limites `getUser()` / `getSession()`
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/flutter-web-clerkjs-auth-pattern.md` comme documentation technique transverse à réutiliser dans les autres repos Flutter
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/tubeflow-youtube-oauth-nextjs-convex-pattern.md` comme documentation technique transverse pour YouTube OAuth via Next.js + Convex
@@ -90,6 +93,7 @@ Si `$ARGUMENTS` est fourni, l'utiliser comme point de départ.
 Extraire ou reformuler explicitement:
 - acteur concerné
 - environnement visé (`local`, `staging`, `prod`)
+- mode de développement ShipFlow (`local`, `vercel-preview-push`, `hybrid`, ou `unknown-vercel`)
 - URL ou flow à tester
 - provider d'auth (`Clerk`, `Supabase`, `Google`, autre)
 - comportement observé
@@ -103,11 +107,22 @@ Toujours reformuler le problème comme une mini user story:
 - rupture
 - résultat attendu
 
+Lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md`, puis inspecter `CLAUDE.md` ou `SHIPFLOW.md`:
+- Si le mode est `vercel-preview-push`, utiliser une URL de déploiement confirmée par `sf-prod` comme surface de preuve pour tout bug auth/callback/session qui dépend du navigateur ou de l'environnement hébergé.
+- Si le mode est `hybrid`, utiliser local seulement pour les signaux purement UI/static. Pour OAuth, callbacks, cookies secure/sameSite, domaines autorisés, variables d'env déployées, middleware serverless/edge, ou bug visible seulement en preview/prod, exiger la séquence `sf-ship` -> `sf-prod` avant de déclarer le flow réparé.
+- Si le mode manque et que Vercel est détecté, classer `unknown-vercel`, signaler le trou documentaire, et ne pas conclure que local prouve preview/prod.
+
 ---
 
 ### Step 2 — Identifier la stratégie de repro
 
 Choisir l'approche la plus réaliste avant de lancer Playwright.
+
+Garder la surface de test cohérente avec le mode projet:
+- `local`: Playwright peut cibler le serveur local quand le flow auth est configuré pour localhost.
+- `vercel-preview-push`: si des changements non poussés sont nécessaires au diagnostic, router d'abord vers `/sf-ship [scope]`, puis `/sf-prod [project or URL]`; reprendre `sf-auth-debug` sur l'URL confirmée par `sf-prod`.
+- `hybrid`: diagnostiquer localement seulement jusqu'au point utile; pour OAuth/callback/session/domaine/cookies hébergés, basculer vers preview après `sf-prod`.
+- `unknown-vercel`: demander ou documenter le mode avant de traiter un succès local comme une preuve hébergée.
 
 Cas autorisés:
 - flow public jusqu'au bouton de login
@@ -146,6 +161,7 @@ Charger les références locales pertinentes avant de conclure:
 - Clerk ou `@clerk/*` détecté -> lire `references/clerk-tooling.md`, puis `references/clerk-testing.md` si l'agent doit réellement tester, puis `references/clerk.md`
 - Supabase Auth, `@supabase/ssr`, `@supabase/supabase-js`, `supabase.auth`, `auth/v1`, callback email/OAuth Supabase, ou dossier `supabase/` détecté -> lire `references/supabase-tooling.md`, puis `references/supabase-testing.md` si l'agent doit réellement tester, puis `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`
 - Vercel ou problème de runtime/deploy/logs détecté -> lire `references/vercel-tooling.md`
+- Mode `vercel-preview-push`, `hybrid` avec flow hébergé, ou Vercel détecté -> lire aussi `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` et utiliser `sf-prod` pour obtenir l'URL de déploiement fiable avant Playwright
 - Google OAuth direct ou social login Google -> lire `references/google-oauth.md`
 - Convex détecté -> lire `references/convex-tooling.md`
 - Convex avec Clerk ou session backend Convex -> lire `references/convex-clerk.md`
@@ -175,6 +191,11 @@ Le but ici est de guider l'observation Playwright, pas de faire une revue exhaus
 ### Step 4 — Reproduire avec Playwright MCP
 
 Utiliser Playwright pour observer le comportement réel.
+
+Si le mode projet exige une preview Vercel:
+- ne pas ouvrir une URL locale comme preuve finale du flow auth
+- utiliser l'URL de preview/déploiement confirmée par `sf-prod`
+- si `sf-prod` n'a pas encore confirmé le déploiement du dernier push, arrêter le diagnostic avec next step `/sf-prod [project or URL]`
 
 Minimum à capturer:
 - URL de départ
@@ -255,6 +276,10 @@ User story:
 Environment:
 - [local / staging / prod]
 
+Development mode:
+- [local / vercel-preview-push / hybrid / unknown-vercel]
+- Validation authority: [local authoritative / preview required via sf-ship -> sf-prod / partial only]
+
 Flow tested:
 - [URL de départ]
 - [action déclenchée]
@@ -272,6 +297,7 @@ Primary diagnosis:
 - [catégorie + hypothèse principale]
 
 Evidence:
+- [déploiement vérifié par sf-prod / non requis / manquant]
 - [URL finale]
 - [message visible]
 - [signal réseau / console utile]
@@ -302,6 +328,7 @@ Utiliser `sf-auth-debug` comme capability intégrée au workflow existant:
 - pendant `sf-start` si l'implémentation dépend d'un diagnostic navigateur réel
 - avant `sf-verify` pour prouver que le flux cassé a été reproduit
 - après un fix pour confirmer que la rupture a disparu
+- après `sf-ship` et `sf-prod` quand le projet utilise `vercel-preview-push` ou un mode `hybrid` concerné par auth hébergée
 
 Règle d'intégration:
 - consommer d'abord la spec ou le bug report existant
@@ -319,3 +346,4 @@ Règle d'intégration:
 - Toujours nommer l'étape exacte de rupture
 - Toujours distinguer symptôme, preuve, hypothèse et correctif recommandé
 - Si l'auth complète est bloquée, pousser le diagnostic aussi loin que possible au lieu d'abandonner trop tôt
+- Ne jamais traiter un succès auth local comme preuve suffisante d'une preview Vercel quand le projet est en `vercel-preview-push` ou quand le bug dépend de callback, domaine, cookie, env déployée, edge/serverless ou provider OAuth hébergé.

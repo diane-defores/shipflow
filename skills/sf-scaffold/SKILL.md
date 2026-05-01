@@ -1,6 +1,6 @@
 ---
 name: sf-scaffold
-description: "Args: type name. Generate new files matching existing project patterns — pages, components, layouts, API routes, hooks, utils"
+description: "Project scaffolding for pages, components, layouts, API routes, hooks, and utilities."
 disable-model-invocation: true
 argument-hint: <type> <name> (e.g., "page about", "component UserCard")
 ---

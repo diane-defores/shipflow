@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: "shipflow"
 created: "2026-04-29"
 updated: "2026-05-01"
@@ -28,6 +28,7 @@ evidence:
   - "Claude Code skills documentation checked on 2026-04-29"
   - "Local ShipFlow skill inventory measured at about 50 skills and about 12.7k initial-list characters"
   - "User decision 2026-05-01: sf-docs audit should verify skill budget compliance through a dedicated script"
+  - "User decision 2026-05-01: keep skill budget reminders scoped to skill documentation and skill refresh workflows, not global agent context"
 next_review: "2026-05-29"
 next_step: "/sf-start raccourcir les descriptions des skills ShipFlow"
 ---
@@ -105,6 +106,8 @@ Default targets:
 - Installed skills: keep the always-enabled set small enough that `name + description + path` stays below 8,000 characters.
 
 Descriptions must front-load trigger words because both Codex and Claude Code can shorten long descriptions.
+
+This policy should be enforced in skill-specific workflows such as `sf-docs` and `sf-skills-refresh`, plus the executable audit. Do not add broad reminders to general agent files such as `AGENT.md`, `CONTEXT.md`, or `GUIDELINES.md`; agents working on unrelated tasks should not carry this extra decision load.
 
 Good description pattern:
 

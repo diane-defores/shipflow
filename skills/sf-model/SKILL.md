@@ -1,6 +1,6 @@
 ---
 name: sf-model
-description: "Args: task description, spec path, or scope. Choisir le bon modèle pour une tâche ShipFlow avant exécution. Use when Codex/OpenAI or Claude Code needs routing between premium, coding-agentic, fast, cheap, or planning-focused models according to scope, cost, latency, reliability, provider runtime, and freshness requirements."
+description: "Model routing for ShipFlow tasks across premium, coding, fast, cheap, and planning profiles."
 argument-hint: <task description, spec path, ou scope>
 ---
 

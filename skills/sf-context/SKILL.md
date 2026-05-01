@@ -1,6 +1,6 @@
 ---
 name: sf-context
-description: "Args: what you want to do. Prime context for a task — calls context_continue + context_retrieve to find relevant files before starting work. Minimizes token usage by reusing cached context and only reading what's needed."
+description: "Task context priming with cached memory and focused file retrieval before implementation."
 argument-hint: <what you want to do>
 ---
 

@@ -28,6 +28,7 @@ example_prompts:
 limits:
   - "It updates the framework layer, not end-user product behavior directly"
   - "Refreshing doctrine still needs maintainers to judge what is truly worth adopting"
+  - "Skill maintenance also has to respect Codex and Claude Code discovery budgets, not just improve the body text"
 related_skills:
   - "sf-docs"
   - "sf-review"

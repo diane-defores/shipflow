@@ -1,6 +1,6 @@
 ---
 name: sf-review
-description: "Args: optional: daily, weekly, sprint, release. Review recent work, generate summary, update docs, and plan next session"
+description: "Session review for recent changes, summaries, documentation updates, and next-step planning."
 disable-model-invocation: false
 argument-hint: [optional: daily, weekly, sprint, release]
 ---

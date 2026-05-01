@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.2.0"
 project: "shipflow"
 created: "2026-04-26"
-updated: "2026-04-26"
+updated: "2026-04-29"
 status: reviewed
 source_skill: manual
 scope: guidelines
@@ -17,11 +17,13 @@ linked_systems:
   - "config.sh"
   - "local/"
   - "skills/"
+  - "shipflow-spec-driven-workflow.md"
   - "templates/artifacts/"
 security_impact: yes
 docs_impact: yes
 evidence:
   - "CLAUDE.md and current repo structure define active shell, workflow, and metadata conventions"
+  - "User decision 2026-04-29: standardize ShipFlow internal contracts in English and user-facing interaction in the user's active language."
 depends_on: []
 supersedes: []
 next_review: "2026-05-26"
@@ -49,6 +51,7 @@ This file defines stable engineering and documentation rules for working inside 
 - Prefer idempotent operations over check-then-act races.
 - Do not treat generated runtime config as primary source of truth.
 - Keep documentation contracts versioned when they guide implementation or audits.
+- Follow the ShipFlow language doctrine: English for internal contracts, the user's active language for user-facing interaction.
 
 ## Preferred Patterns
 
@@ -82,6 +85,16 @@ This file defines stable engineering and documentation rules for working inside 
 - `CONTEXT.md` maps the repo operationally.
 - Specialized context docs stay narrow.
 - Business, product, GTM, brand, architecture, and guidelines docs should each keep an exclusive role.
+
+## Language Doctrine
+
+- ShipFlow internal contracts use English by default: `SKILL.md` instructions, workflow steps, YAML/frontmatter keys, stable section headings, acceptance criteria, stop conditions, validation notes, and technical documentation.
+- User-facing interaction uses the user's active language: questions, short progress updates, final reports, and visible product copy should stay consistent with the language used by the user or configured for the project.
+- French user-facing output must use proper accents and natural French. Do not write accentless French unless a technical identifier, command, slug, or ASCII-only file format requires it.
+- Stable machine-readable labels stay English even inside otherwise localized content, for example `Status`, `Scope In`, `Acceptance Criteria`, `Skill Run History`, and command names such as `sf-build`.
+- Do not mix languages casually inside one artifact. If an internal English document needs to show a user prompt, quote the prompt in the user's language and label it clearly.
+- Legacy mixed-language artifacts do not require a broad migration. When editing a touched section, move it toward this doctrine without rewriting unrelated history.
+- Preserve the original language of quoted user input, source evidence, legal text, or externally sourced material.
 
 ## Tracker Boundaries
 

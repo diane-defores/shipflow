@@ -1,6 +1,6 @@
 ---
 name: sf-fix
-description: "Args: bug description, error message, or failing behavior. Bug-first entrypoint. Triage a bug quickly, then either fix it directly or route to the spec-driven path."
+description: "Bug-first triage and repair routing for errors, regressions, and failing behavior."
 argument-hint: <bug description, error message, or failing behavior>
 ---
 
@@ -27,6 +27,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Project name: !`basename $(pwd)`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 
@@ -139,6 +140,13 @@ Read only the 3-5 most relevant files and classify the bug as `direct` or `spec-
 
 Apply the shared Documentation Freshness Gate from `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/documentation-freshness-gate.md` during triage when the bug may depend on current framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior. Local repo versions and patterns come first; Context7 official docs come next; official web docs are the fallback.
 
+Apply the shared Project Development Mode gate from `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` before deciding how the fix can be retested:
+- Read the project-local `## ShipFlow Development Mode` section in `CLAUDE.md` or `SHIPFLOW.md`.
+- If the mode is `vercel-preview-push`, quick local checks are allowed, but browser/manual/integration retest evidence requires `sf-ship` -> `sf-prod` first.
+- If the mode is `hybrid`, require `sf-ship` -> `sf-prod` for hosted-only bugs: auth callbacks, OAuth redirect URLs, webhooks, deployment env vars, Vercel routing, edge/serverless runtime, preview/prod data, or bugs that reproduce only on a hosted URL.
+- If the section is missing and Vercel signals exist, classify the validation mode as `unknown-vercel`, report the documentation gap, and do not claim a preview retest until the mode is clarified.
+- If the user confirms the project mode during the fix, update `CLAUDE.md` or `SHIPFLOW.md` with the canonical section from the reference before routing to retest.
+
 If Supabase is detected and the bug touches auth, storage, upload, DB, or RLS behavior, load only the relevant references among `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-storage.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-db.md` before classifying or patching.
 
 During triage, verify four things before choosing `direct`:
@@ -191,6 +199,7 @@ If `direct`:
 - if the expected row or section moved, re-read once and recompute; if it is still ambiguous, stop and ask the user
 - run relevant checks for the changed area
 - run at least one user-story sanity check
+- if the development mode requires Vercel preview-push validation, do not ask for or record a passing manual/browser retest yet; route next to `/sf-ship [BUG-ID or bug title]`, then `/sf-prod [project or URL]`, then `/sf-test --preview --retest BUG-ID`
 - if `sf-fix` is the first skill to persist this bug, create an initial dossier that includes:
   - summary/title/status/severity/next step
   - reproduction / expected / observed
@@ -242,6 +251,8 @@ Clarifications asked: [none / short list]
 Product coherence: [ok / risk]
 Documentation coherence: [ok / risk / not impacted]
 Fresh external docs: [checked / not needed / gap / conflict]
+Development mode: [local / vercel-preview-push / hybrid / unknown-vercel]
+Preview verification gate: [not needed / requires sf-ship -> sf-prod / completed]
 Security posture: [ok / risk]
 Bug status transition: [in-diagnosis -> fix-attempted -> fixed-pending-verify | other]
 Retest evidence: [required / present / missing]
@@ -267,3 +278,4 @@ Scope estimate: [small / medium / large]
 - If direct-fix verification fails or reveals broader ambiguity, reroute to spec-first
 - If the user chooses `diagnostic only`, do not implement
 - Do not close a bug without retest evidence in `bugs/BUG-ID.md` (`Retest History`).
+- Do not treat a local retest as closure evidence when the documented project mode requires Vercel preview-push validation.

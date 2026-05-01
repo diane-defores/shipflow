@@ -1,6 +1,6 @@
 ---
 name: sf-docs
-description: "Args: file-path, readme, api, components, audit, update, metadata, or migrate-frontmatter. Générer, auditer et harmoniser la documentation — README, API docs, component docs, audit de cohérence, migration frontmatter, ou fichier spécifique"
+description: "Documentation generation and audit for README, API docs, component docs, metadata, and drift."
 disable-model-invocation: true
 argument-hint: [file-path | "readme" | "api" | "components" | "audit" | "update" | "metadata" | "migrate-frontmatter"]
 ---
@@ -49,6 +49,7 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 La documentation est une surface produit active :
 - quand une feature change, vérifier README, docs, guides, exemples, FAQ, onboarding, pricing, changelog, support copy, screenshots, `.env.example` et API docs si pertinents
+- quand une conversation révèle une preuve produit, une règle workflow durable, une objection client récurrente, ou une clarification utile, ne pas la laisser seulement dans le chat; router via `CONTENT_MAP.md`, puis mettre à jour la surface publique ou technique pertinente
 - ne pas documenter des capacités non prouvées par le code ou les specs
 - distinguer `implemented`, `verified`, `assumed`, `deprecated` et `removed`
 - signaler les docs stale comme risque produit quand elles touchent sécurité, paiement, permissions, API publique, migration, données sensibles ou actions destructives
@@ -285,7 +286,7 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
    - Commentaires d'en-tête de composants
    - `.env.example` vs variables réellement utilisées
    - Frontmatter ShipFlow sur les artefacts internes : specs, reports, reviews, research, audit docs, API/component docs générées, AGENT/CONTEXT docs
-   - Si `$SHIPFLOW_ROOT/skills/` existe, frontmatter des skills ShipFlow via `$SHIPFLOW_ROOT/tools/skill_budget_audit.py`
+   - Si l'audit porte sur ShipFlow, `skills/`, `skills/*/SKILL.md`, la discovery de skills, ou la compatibilité Codex/Claude Code, frontmatter des skills via `$SHIPFLOW_ROOT/tools/skill_budget_audit.py`
 
 2. **Vérifier la cohérence code ↔ doc :**
    - **Drift** : la doc mentionne-t-elle des fonctions/fichiers/routes qui n'existent plus ?
@@ -295,10 +296,11 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
    - **Variables d'env** : `.env.example` liste-t-il toutes les variables utilisées dans le code ? Y a-t-il des variables documentées mais inutilisées ?
    - **Feature behavior** : les docs décrivent-elles encore le comportement actuel des features, permissions, limites, erreurs, pricing et intégrations ?
    - **Public promises** : les pages/docs promettent-elles sécurité, conformité, IA, automatisation, disponibilité ou gains sans preuve dans le produit ?
+   - **Conversation persistence** : une conversation récente a-t-elle établi une preuve produit, une règle workflow durable, ou une FAQ utile qui n'existe pas encore dans README, docs, site, FAQ, skill pages, `CONTENT_MAP.md`, ou docs techniques ?
    - **Professional bug loop** : la doc décrit-elle correctement les rôles `TEST_LOG.md` (tracker compact), `BUGS.md` (index compact), bug dossier `bugs/BUG-ID.md`, et `test-evidence/BUG-ID/` (preuves redigées) ?
    - **Bug tracker vs artifact** : une doc confond-elle `BUGS.md` avec le bug dossier ?
    - **ShipFlow metadata** : les artefacts internes ShipFlow ont-ils le frontmatter obligatoire (`artifact`, `project`, `created`, `updated`, `status`, `scope`, `source_skill`) ?
-   - **Skill budget compliance** : si le repo est ShipFlow ou si `$SHIPFLOW_ROOT/skills/` existe, lancer `$SHIPFLOW_ROOT/tools/skill_budget_audit.py --skills-root "$SHIPFLOW_ROOT/skills" --format markdown` et vérifier `name`, `path`, `description` en une phrase, absence de `Args:`, seuils `120/140/200`, total `name+description+path < 8000`, et corps `SKILL.md > 500` lignes.
+   - **Skill budget compliance** : uniquement si la demande ou les fichiers touchent `skills/`, `skills/*/SKILL.md`, `agents/openai.yaml`, les descriptions/discovery de skills, ou la conformité Codex/Claude Code; lire `$SHIPFLOW_ROOT/skills/references/skill-context-budget.md`, puis lancer `$SHIPFLOW_ROOT/tools/skill_budget_audit.py --skills-root "$SHIPFLOW_ROOT/skills" --format markdown` et vérifier `name`, `path`, `description` en une phrase, absence de `Args:`, seuils `120/140/200`, total `name+description+path < 8000`, et corps `SKILL.md > 500` lignes.
    - **Version sync** : les specs, audits et reviews référencent-ils des versions business/techniques encore actuelles dans `depends_on` ?
 
 3. **Vérifier les conventions :**
@@ -382,10 +384,18 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
 
 1. **Lancer d'abord un audit silencieux** (même logique que AUDIT MODE mais sans rapport).
 
-1aa. **Vérifier le budget des skills si ShipFlow est disponible** :
-   - Si `$SHIPFLOW_ROOT/skills/` existe, lancer `$SHIPFLOW_ROOT/tools/skill_budget_audit.py --skills-root "$SHIPFLOW_ROOT/skills"`.
+1aa. **Vérifier le budget des skills seulement si la mise à jour touche les skills** :
+   - Si la mise à jour touche `skills/`, `skills/*/SKILL.md`, `agents/openai.yaml`, les descriptions/discovery de skills, ou une preuve de conformité Codex/Claude Code, lire `$SHIPFLOW_ROOT/skills/references/skill-context-budget.md`, puis lancer `$SHIPFLOW_ROOT/tools/skill_budget_audit.py --skills-root "$SHIPFLOW_ROOT/skills"`.
+   - Sinon, ne pas lancer cet audit : la conformité des skills ne doit pas devenir une charge globale pour les tâches documentaires sans lien avec les skills.
    - Si le script manque, signaler que la conformité des descriptions de skills n'est pas prouvée.
    - En mode `update`, ne pas réécrire toutes les descriptions automatiquement sauf demande explicite; classer les violations comme P0/P1/P2 selon impact.
+
+1ab. **Persister les preuves et règles sorties d'une conversation** :
+   - Relire `CONTENT_MAP.md` quand la demande vient d'une conversation produit, d'une clarification utilisateur, d'un résultat d'audit, ou d'une preuve client nouvellement formulée.
+   - Classer la surface cible: README, docs overview, FAQ, page skill, skill workflow interne, changelog, support copy, ou site public.
+   - Écrire les surfaces `must write` et `should write` quand l'utilisateur demande d'appliquer ou dit de continuer.
+   - Ne pas transformer une idée de chat en promesse publique si la preuve n'est pas présente dans le code, une spec prête, un audit, ou un résultat de validation.
+   - Si une idée doit vivre dans un workflow de skill, mettre à jour le `SKILL.md` concerné plutôt que seulement une page éditoriale.
 
 1a. **Vérifier la cohérence du modèle bug dans la doc** :
    - Les docs QA/ops expliquent `TEST_LOG.md` comme tracker compact.

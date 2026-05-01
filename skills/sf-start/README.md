@@ -35,6 +35,7 @@ The skill is designed to preserve the promised user outcome, not just complete a
 - a concise execution report with files changed, checks run, and documentation impact
 - or a reroute to `sf-spec` and `sf-ready` if the contract is not strong enough
 - when needed, an explicit diagnostic pass through `sf-auth-debug` before or during the implementation
+- development-mode-aware validation: local projects can validate locally, while Vercel-preview projects route next to `sf-ship` then `sf-prod` before browser/manual testing
 
 ## Typical Examples
 
@@ -55,3 +56,4 @@ The skill is designed to preserve the promised user outcome, not just complete a
 - `sf-auth-debug` when the task depends on reproducing a Clerk, OAuth, or browser-session failure
 - `sf-verify` to judge whether the finished work is ready to ship
 - `sf-ship` once the implementation is ready to commit and push
+- `sf-prod` immediately after `sf-ship` when the project uses Vercel preview-push validation

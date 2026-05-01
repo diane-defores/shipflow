@@ -1,6 +1,6 @@
 ---
 name: sf-audit-copywriting
-description: "Args: file-path or \"global\"; omit for full project. Audit copywriting & marketing — analyse le parcours client depuis le persona jusqu'à la conversion. Évalue la stratégie de persuasion, pas la qualité rédactionnelle."
+description: "Marketing copy audit from persona and offer through persuasion strategy and conversion path."
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: sf-priorities
-description: "Args: optional priority criteria. Analyze and reorder tasks by priority using impact/effort matrix"
+description: "Priority analysis and task reordering with impact, effort, blockers, and quick wins."
 disable-model-invocation: false
 argument-hint: [optional priority criteria: impact, effort, blockers, quick-wins]
 ---

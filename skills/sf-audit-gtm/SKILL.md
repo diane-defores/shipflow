@@ -1,6 +1,6 @@
 ---
 name: sf-audit-gtm
-description: "Args: file-path or \"global\"; omit for full project. Professional go-to-market review — single page (with argument) or full project audit (no argument)"
+description: "Go-to-market audit for positioning, funnel coherence, offer clarity, and growth readiness."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

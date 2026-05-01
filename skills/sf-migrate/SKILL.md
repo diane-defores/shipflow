@@ -1,6 +1,6 @@
 ---
 name: sf-migrate
-description: "Args: package@version optional. Framework upgrade assistant — research migration guide, scan for breaking changes, apply with backup branch"
+description: "Framework migration assistant for upgrade research, breaking changes, and guarded application."
 disable-model-invocation: true
 argument-hint: '[package@version] (e.g., "astro@5")'
 ---

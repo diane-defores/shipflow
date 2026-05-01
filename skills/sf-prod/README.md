@@ -4,7 +4,7 @@
 
 ## What It Does
 
-`sf-prod` verifies the latest deployment by combining deploy status, live URL checks, and build-log access when something failed. It is intentionally skeptical: a green homepage alone is not treated as proof that the shipped feature works.
+`sf-prod` verifies the latest deployment by combining deploy status, live URL checks, and build-log access when something failed. On projects that use Vercel preview-push validation, it is also the required post-`sf-ship` gate that waits for the matching Vercel deployment before manual/browser tests. It is intentionally skeptical: a green homepage alone is not treated as proof that the shipped feature works.
 
 For a solo founder, this is the post-deploy confidence pass that catches “looks live, still broken” situations before users do.
 
@@ -28,6 +28,7 @@ For a solo founder, this is the post-deploy confidence pass that catches “look
 ## What You Get Back
 
 - deploy-status confirmation or failure signal
+- a Vercel MCP-backed preview/deployment URL when the project uses preview-push validation
 - health-check results on the live URL
 - log access or a dashboard link when the build failed
 - a short risk statement about what remains unverified

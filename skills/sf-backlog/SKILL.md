@@ -1,6 +1,6 @@
 ---
 name: sf-backlog
-description: "Args: optional idea, defer, review, or clean. Manage backlog items - capture ideas, defer non-urgent tasks, and keep active work focused"
+description: "Backlog triage for captured ideas, deferred work, active focus, and cleanup."
 disable-model-invocation: false
 argument-hint: [optional: add "idea", move "defer", review, clean]
 ---

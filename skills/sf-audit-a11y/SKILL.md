@@ -1,6 +1,6 @@
 ---
 name: sf-audit-a11y
-description: "Args: file-path or \"global\"; omit for full project. Deep specialist audit of accessibility — full WCAG 2.2 + W3C ARIA Authoring Practices (APG) patterns for custom components (Radix/React Aria level). Keyboard nav, focus management, ARIA per component, aria-live, screen reader announcements. Cross-platform (web ARIA + Flutter Semantics)."
+description: "Accessibility audit for WCAG, ARIA patterns, keyboard flow, focus, live regions, and semantics."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

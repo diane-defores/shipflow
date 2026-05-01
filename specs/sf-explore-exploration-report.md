@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-04-29"
 created_at: "2026-04-29 11:03:18 UTC"
 updated: "2026-04-30"
-updated_at: "2026-04-30 22:26:02 UTC"
+updated_at: "2026-04-30 22:30:51 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -289,13 +289,14 @@ None
 | 2026-04-29 17:12:28 UTC | sf-start | GPT-5 Codex | Implemented durable exploration report template, sf-explore threshold/redaction behavior, and doctrine/help/public docs alignment | implemented | /sf-verify Durable Exploration Reports for sf-explore |
 | 2026-04-30 21:12:59 UTC | sf-verify | GPT-5 Codex | Verified durable exploration reports, fixed metadata/template enforcement and docs coherence gaps | partial | Resolve unrelated dirty-worktree and optional site-check gaps, then /sf-end Durable Exploration Reports for sf-explore |
 | 2026-04-30 22:26:02 UTC | sf-ship | GPT-5 Codex | Full close and ship for durable `sf-explore` exploration reports | shipped | None |
+| 2026-04-30 22:30:51 UTC | sf-verify | GPT-5 Codex | Post-ship verification of commit `fd4510f` against durable exploration report contract | verified | None |
 
 ## Current Chantier Flow
 
 - `sf-spec`: done, draft spec updated after readiness findings.
 - `sf-ready`: ready.
 - `sf-start`: implemented.
-- `sf-verify`: partial; verification completed and fixed direct gaps, with residual dirty-worktree/check warnings.
+- `sf-verify`: verified post-ship against commit `fd4510f`.
 - `sf-end`: closed by `sf-ship end` full close.
 - `sf-ship`: shipped.
 

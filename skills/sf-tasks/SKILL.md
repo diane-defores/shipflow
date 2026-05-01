@@ -1,6 +1,6 @@
 ---
 name: sf-tasks
-description: "Args: optional focus area or task type. Update TASKS.md with completed items, add remaining tasks, and suggest next steps"
+description: "Task tracker update for completed work, remaining items, and suggested next steps."
 disable-model-invocation: false
 argument-hint: [optional focus area or task type]
 ---

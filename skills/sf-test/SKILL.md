@@ -1,6 +1,6 @@
 ---
 name: sf-test
-description: "Args: optional: feature, flow, bug id, --retest BUG-ID, --prod, --preview, --local. Guided manual QA after implementation — prompts the user through concrete test steps, captures structured results, writes TEST_LOG.md, and opens BUGS.md entries when failures are found."
+description: "Guided manual QA for feature flows, retests, environments, structured logs, and bug capture."
 argument-hint: [optional: feature, flow, bug id, --retest BUG-ID, --prod, --preview, --local]
 ---
 
@@ -28,6 +28,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
 - Git diff stat: !`git diff --stat 2>/dev/null || echo "no diff"`
+- ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Recent commits: !`git log --oneline -8 2>/dev/null || echo "no commits"`
 - Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null | head -80 || echo "No master TASKS.md"`
 - Local TASKS.md: !`cat TASKS.md 2>/dev/null | head -80 || echo "No local TASKS.md"`
@@ -62,6 +63,18 @@ Do not treat this skill as a generic "run tests" command. It is guided manual QA
 Never invent test results.
 
 If you did not observe the behavior yourself with tooling and the user has not reported the result, the status is `not run`.
+
+Before generating a manual test, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and inspect the project-local `## ShipFlow Development Mode` section in `CLAUDE.md` or `SHIPFLOW.md`.
+
+If the project mode is `vercel-preview-push` and the requested test targets changed app behavior:
+- Do not generate a preview/manual test while the repo has dirty code changes that have not been shipped.
+- Route first to `/sf-ship [scope]`.
+- After a successful push, route to `/sf-prod [project or URL]` and wait for the matching Vercel deployment.
+- Only then generate the manual test using the deployment URL confirmed by `sf-prod`.
+
+If the project mode is `hybrid`, apply the same gate for hosted-only flows: auth/OAuth, callbacks, webhooks, deployment env vars, Vercel routing, edge/serverless behavior, preview/prod data, or issues that reproduce only remotely.
+
+If the user explicitly requests `--local` in a preview-push project, allow the local test but label it as non-authoritative for deployed behavior and still route to `sf-ship` -> `sf-prod` when preview evidence is required.
 
 The normal flow is:
 
@@ -359,6 +372,7 @@ Required sections to keep current:
 After logging:
 
 - if all required scenarios pass: recommend `/sf-verify [scope]` if not already done, otherwise `/sf-ship`
+- if preview-push deployment is required before a valid test: recommend `/sf-ship [scope]` first, then `/sf-prod [project or URL]`, then rerun `/sf-test --preview [scope]`
 - if a bug was opened: recommend `/sf-fix [bug title]`
 - if auth/browser evidence is needed: recommend `/sf-auth-debug [bug title]`
 - if the test was blocked by unclear expected behavior: recommend `/sf-spec [scope]` or `/sf-ready [scope]`

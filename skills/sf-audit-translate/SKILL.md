@@ -1,6 +1,6 @@
 ---
 name: sf-audit-translate
-description: "Args: file-path, \"global\", or \"sync\"/\"apply\". Translation audit + i18n sync operations. Audits quality/consistency and can fill missing translations across locales."
+description: "Translation audit and i18n sync for locale quality, consistency, and missing strings."
 disable-model-invocation: true
 argument-hint: '[file-path | "global" | "sync" | "apply"] (omit for full project audit)'
 ---

@@ -1,6 +1,6 @@
 ---
 name: sf-ready
-description: "Args: spec path or task name. Gate de readiness pour une spec avant implémentation. Vérifie qu'elle est complète, alignée sur la user story, résistante en revue adverse, exécutable sans ambiguïté et suffisamment solide en cyber sécurité."
+description: "Spec readiness gate for completeness, user-story fit, execution clarity, and security review."
 argument-hint: <spec path or task name>
 ---
 

@@ -41,6 +41,7 @@ By default, `sf-ship` stages only changes that clearly belong to the current tas
 - a staged, committed, and pushed change
 - a short shipping report with branch, commit, checks, and remaining risk framing
 - in full-close mode: updated `TASKS.md` and `CHANGELOG.md`
+- for Vercel-preview projects: an explicit next step to run `sf-prod` before manual/browser tests
 
 ## Typical Examples
 
@@ -61,3 +62,4 @@ By default, `sf-ship` stages only changes that clearly belong to the current tas
 - `sf-verify` for ship-readiness and risk review
 - `sf-review` for session closure and next-step planning
 - `sf-tasks` when tracker updates are needed without pushing code
+- `sf-prod` immediately after push when preview deployment is the validation surface

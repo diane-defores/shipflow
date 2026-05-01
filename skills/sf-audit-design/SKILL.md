@@ -1,6 +1,6 @@
 ---
 name: sf-audit-design
-description: "Args: file-path, \"global\", or \"deep\"; omit for light audit. Professional UI/UX design audit (NN/g heuristics, WCAG 2.2, visual hierarchy) — light by default, or deep (orchestrates 3 specialist agents in parallel)"
+description: "UI/UX design audit for heuristics, visual hierarchy, accessibility, and interaction quality."
 disable-model-invocation: true
 argument-hint: '[file-path | "global" | "deep"] (omit for full project light audit)'
 ---

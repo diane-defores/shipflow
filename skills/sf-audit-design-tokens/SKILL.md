@@ -1,6 +1,6 @@
 ---
 name: sf-audit-design-tokens
-description: "Args: file-path or \"global\"; omit for full project. Deep specialist audit of the 4 design token systems (theme + typography + spacing + motion) — token coverage matrix per mode, modular ratio analysis, dependency graph, historical drift, DTCG compliance. Called by sf-audit-design in deep mode, or run standalone."
+description: "Design token audit for theme, typography, spacing, motion, drift, coverage, and DTCG fit."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

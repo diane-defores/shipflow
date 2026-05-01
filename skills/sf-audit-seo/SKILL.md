@@ -1,6 +1,6 @@
 ---
 name: sf-audit-seo
-description: "Args: file-path or \"global\"; omit for full project. Professional SEO audit — single page (with argument) or full technical + on-page site audit (no argument)"
+description: "SEO audit for technical health, on-page quality, indexing, metadata, and search intent fit."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

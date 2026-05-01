@@ -1,6 +1,6 @@
 ---
 name: continue
-description: "Args: optional focus. Resume the next useful step from the global conversation by choosing whether to execute locally or delegate to a fresh subagent, then report what was done, what remains, and the next step."
+description: "Resume paused work, choose the next useful action, and report progress plus remaining steps."
 argument-hint: <optional focus>
 ---
 

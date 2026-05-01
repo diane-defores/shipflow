@@ -8,6 +8,8 @@
 
 It is designed for cases where static code reading is not enough because the failure only becomes clear once the real browser flow runs.
 
+It respects the project development mode: local projects can prove local auth flows locally, while Vercel preview-push projects must use `sf-ship` -> `sf-prod` before a preview auth result is treated as authoritative.
+
 ## Who It's For
 
 - Founders debugging login issues on their own apps
@@ -34,6 +36,7 @@ It is designed for cases where static code reading is not enough because the fai
 - browser-level evidence: URLs, page state, visible errors, and useful network/console signals
 - a primary diagnosis category tied to code or configuration
 - the next recommended fix or verification step
+- a clear distinction between local-only evidence and preview/prod-authoritative evidence
 
 ## Bundled References
 
@@ -76,3 +79,4 @@ It is designed for cases where static code reading is not enough because the fai
 - `sf-start` to implement the chosen fix path
 - `sf-verify` to confirm the repaired auth flow is ready to ship
 - `sf-prod` if the issue only appears after deployment
+- `sf-ship` then `sf-prod` before preview auth retests when the project uses Vercel preview-push validation

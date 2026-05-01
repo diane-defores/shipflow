@@ -25,6 +25,7 @@ evidence:
   - "Updated on 2026-04-26 to clarify the documentation frame, context layer, metadata doctrine, and artifact boundaries"
   - "Updated on 2026-04-26 to add CONTENT_MAP.md as the content architecture and repurposing artifact"
   - "Updated on 2026-04-27 to define canonical ShipFlow path resolution for tools and references"
+  - "Updated on 2026-04-29 to formalize the ShipFlow language doctrine: English internal contracts, user-facing interaction in the user's active language."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -213,6 +214,23 @@ The linter is intentionally dependency-free. It checks the default ShipFlow arti
 When a skill runs from a project repository, ShipFlow-owned docs, tools, references, templates, and skill-local `references/*` still resolve from `${SHIPFLOW_ROOT:-$HOME/shipflow}`. Only project artifacts and source files resolve from the current project root.
 
 This decision-contract layer is wired into the active ShipFlow workflow: agent routing (`AGENT.md`), project orientation (`CONTEXT.md`), documentation doctrine (`README.md`, this file, `shipflow-metadata-migration-guide.md`), the `sf-docs` skill, and `tools/shipflow_metadata_lint.py`.
+
+## Language Doctrine
+
+ShipFlow uses a two-layer language model:
+
+- Internal contract language: English. Use English for skill instructions, workflow rules, YAML/frontmatter keys, stable section headings, acceptance criteria, stop conditions, validation notes, and technical decision documentation.
+- User-facing language: the user's active language. Use that language for questions, short progress updates, final reports, onboarding copy, and product-visible text. If the user writes in French, answer in natural French with proper accents.
+
+The rule is not "one language everywhere"; it is "one language per layer." A skill can be internally documented in English while still asking:
+
+```text
+Veux-tu modifier l'existant ou ajouter un comportement séparé ?
+```
+
+Stable machine-readable anchors stay English even in localized artifacts: `Status`, `Scope In`, `Scope Out`, `Acceptance Criteria`, `Test Strategy`, `Skill Run History`, `Current Chantier Flow`, and command names such as `sf-build`.
+
+Do not rewrite old mixed-language artifacts only for language cleanup. Apply the doctrine to new artifacts and to touched sections when the change is already in scope.
 
 For existing projects with legacy docs, follow [`shipflow-metadata-migration-guide.md`](./shipflow-metadata-migration-guide.md) and prefer additive frontmatter migration before deeper document rewrites.
 

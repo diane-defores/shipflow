@@ -4,6 +4,29 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-01 — project development mode doctrine
+
+**Added:**
+- Shared reference — `project-development-mode.md` defines local, Vercel preview-push, and hybrid validation modes
+- `sf-init` — project-local `## ShipFlow Development Mode` section for `CLAUDE.md` / `SHIPFLOW.md`
+- `sf-start` — execution contract now records development mode and routes preview-push validation to `sf-ship` -> `sf-prod`
+- `sf-fix` — bug retest routing now respects local vs Vercel preview-push validation
+- `sf-ship` — successful push now hands off to `sf-prod` when preview deployment is the validation surface
+- `sf-prod` — Vercel MCP is primary for waiting on matching preview deployments in preview-push mode
+- `sf-test` — preview/manual tests are blocked until changed code is shipped and `sf-prod` confirms deployment
+- `sf-help` — global doctrine now explains project development modes and the preview-push sequence
+- `sf-auth-debug` — auth diagnostics now respect project development mode and require `sf-ship` -> `sf-prod` before authoritative Vercel preview auth proof
+
+**Updated:**
+- `sf-prod` pending rule now points to the full polling loop instead of a shorter fixed wait
+- READMEs for `sf-start`, `sf-fix`, `sf-ship`, and `sf-prod` mention development-mode-aware routing
+- `sf-auth-debug` README and Vercel tooling reference now distinguish local auth evidence from preview/prod-authoritative evidence
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (manual workflow doctrine update)
+
 ## 2026-04-20 — sf-audit-code
 
 **Added:**

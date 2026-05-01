@@ -1,6 +1,6 @@
 ---
 name: sf-init
-description: "Args: project path optional. Bootstrap a new project for ShipFlow tracking — detect stack, generate CLAUDE.md, create TASKS.md, register in PROJECTS.md"
+description: "Project bootstrap for ShipFlow tracking, stack detection, task files, and registry setup."
 disable-model-invocation: true
 argument-hint: '[project-path] (omit to init current directory)'
 ---
@@ -68,6 +68,18 @@ This file provides guidance to Claude Code when working in this project.
 ## Commands
 [Auto-detected from package.json scripts, Makefile, or shell scripts]
 
+## ShipFlow Development Mode
+
+- development_mode: local | vercel-preview-push | hybrid
+- validation_surface: local | vercel-preview | production | mixed
+- ship_before_preview_test: yes | no | conditional
+- post_ship_verification: sf-prod | other | none
+- deployment_provider: vercel | netlify | cloudflare | other | none
+- preview_source: Vercel MCP deployment target_url | static URL | not applicable
+- production_url: [URL or unknown]
+- notes: [short project-specific rule]
+- last_reviewed: [YYYY-MM-DD]
+
 ## Architecture
 [Auto-detected: directory structure, key patterns]
 
@@ -81,6 +93,58 @@ Use **AskUserQuestion** to let the user review and confirm:
   - **Create as-is** — "Save the generated CLAUDE.md" (Recommended)
   - **Edit first** — "Let me review and adjust before saving"
   - **Skip** — "Don't create CLAUDE.md"
+
+### Step 2.5: Record ShipFlow development mode
+
+Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md`.
+
+Every initialized project should have a project-local `## ShipFlow Development Mode` section in `CLAUDE.md`. If `CLAUDE.md` is skipped or absent, create or update `SHIPFLOW.md` with the same section.
+
+If Vercel is detected, ask which mode this project uses:
+- **Local dev** — "Tests run on local dev server; Vercel is checked after shipping"
+- **Vercel preview push** — "Every browser/manual preview test requires sf-ship, then sf-prod waits for Vercel"
+- **Hybrid** — "Local for unit/static checks, Vercel preview for auth, env, webhooks, serverless, routing"
+
+If Vercel is not detected, default to local unless another hosted preview workflow is explicitly configured:
+```markdown
+- development_mode: local
+- validation_surface: local
+- ship_before_preview_test: no
+- post_ship_verification: none
+- deployment_provider: none
+- preview_source: not applicable
+- production_url: unknown
+- notes: Local validation is the default until a hosting provider or preview workflow is configured.
+- last_reviewed: [YYYY-MM-DD]
+```
+
+When the selected mode is `vercel-preview-push`, write:
+```markdown
+- development_mode: vercel-preview-push
+- validation_surface: vercel-preview
+- ship_before_preview_test: yes
+- post_ship_verification: sf-prod
+- deployment_provider: vercel
+- preview_source: Vercel MCP deployment target_url
+- production_url: [custom domain or unknown]
+- notes: After each code change that needs browser/manual validation, run sf-ship first, then sf-prod must wait for the matching Vercel deployment before testing.
+- last_reviewed: [YYYY-MM-DD]
+```
+
+When the selected mode is `hybrid`, write:
+```markdown
+- development_mode: hybrid
+- validation_surface: mixed
+- ship_before_preview_test: conditional
+- post_ship_verification: sf-prod
+- deployment_provider: vercel
+- preview_source: Vercel MCP deployment target_url
+- production_url: [custom domain or unknown]
+- notes: Local checks are valid for unit/static work; hosted flows require sf-ship -> sf-prod before manual/browser testing.
+- last_reviewed: [YYYY-MM-DD]
+```
+
+Never leave the section with pipe-delimited placeholders after init. Pick the confirmed/default values and keep unknowns explicit.
 
 ### Step 3: Create TASKS.md
 

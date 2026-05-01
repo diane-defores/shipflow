@@ -1,6 +1,6 @@
 ---
 name: sf-veille
-description: "Args: URLs or paste content. Analyze URLs or pasted content for business relevance — fetches, summarizes, then prompts per-link triage (ignorer/backlog contenu/backlog archi/creuser) with actions into TASKS.md and tools.md"
+description: "Business-relevance veille for URLs or pasted sources, triage decisions, and tracker actions."
 disable-model-invocation: true
 argument-hint: <URLs or paste content>
 ---

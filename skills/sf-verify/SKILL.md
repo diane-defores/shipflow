@@ -1,6 +1,6 @@
 ---
 name: sf-verify
-description: "Args: optional: tâche ou scope à vérifier. Vérifier que le travail est prêt à ship — user story tenue, complétude, correctitude, cohérence, dépendances et risques (SEC/PERF/DATA). Complémentaire à sf-check (purement technique)."
+description: "Ship-readiness verification for user story, completeness, correctness, coherence, and risks."
 argument-hint: [optional: tâche ou scope à vérifier]
 ---
 

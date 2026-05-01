@@ -1,6 +1,6 @@
 ---
 name: sf-audit-components
-description: "Args: file-path or \"global\"; omit for full project. Deep specialist audit of component architecture — atomic design inventory, duplication detection, god components, unused components, AHA rule application, variant systems adoption, headless primitives, composition vs configuration, API hygiene. Cross-platform (React/Vue/Svelte/Astro + Flutter)."
+description: "Component architecture audit for duplication, variants, composition, API hygiene, and reuse."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "shipflow"
 created: "2026-04-30"
 created_at: "2026-04-30 22:58:17 UTC"
 updated: "2026-05-01"
-updated_at: "2026-05-01 06:16:32 UTC"
-status: draft
+updated_at: "2026-05-01 06:23:35 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: audit-fix
@@ -34,7 +34,7 @@ depends_on:
     artifact_version: "1.0.0"
     required_status: reviewed
   - artifact: "skills/references/skill-context-budget.md"
-    artifact_version: "0.1.0"
+    artifact_version: "0.2.0"
     required_status: draft
 supersedes: []
 evidence:
@@ -45,9 +45,11 @@ evidence:
   - "Local inventory 2026-04-30: 49 current SKILL.md files, 22 frontmatter descriptions over 200 characters, 0 name/directory issues, about 12.6k estimated name+description+path characters."
   - "Local inventory 2026-04-30: path plus name overhead leaves about 5.1k characters for descriptions under an 8k budget, about 104 characters average per skill."
   - "Local inventory 2026-04-30: 5 SKILL.md files exceed 500 lines."
-  - "Implementation 2026-05-01: created tools/skill_budget_audit.py and wired sf-docs audit to run it when ShipFlow skills are available."
+  - "Implementation 2026-05-01: created tools/skill_budget_audit.py and wired sf-docs audit for skill-related docs work."
   - "User request 2026-05-01: confirm all official skill limits and ensure validation exists for them."
-next_step: "/sf-ready Skill Description Budget Compliance"
+  - "sf-ready 2026-05-01: rechecked official Codex, Claude Code, Claude.ai, and Agent Skills documentation before readiness verdict."
+  - "User decision 2026-05-01: keep skill budget compliance scoped to skill documentation and skill refresh workflows, not broad agent context."
+next_step: "/sf-start Skill Description Budget Compliance"
 ---
 
 # Spec: Skill Description Budget Compliance
@@ -58,7 +60,7 @@ Skill Description Budget Compliance
 
 ## Status
 
-draft
+ready
 
 ## User Story
 
@@ -139,7 +141,7 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
 - Local docs: `skills/references/skill-context-budget.md`, `GUIDELINES.md`, `ARCHITECTURE.md`.
 - Local skills: every `skills/*/SKILL.md`.
 - Local tooling: `tools/`, especially the existing pattern of `tools/shipflow_metadata_lint.py`.
-- External docs checked 2026-04-30:
+- External docs checked 2026-05-01:
   - Codex skills: https://developers.openai.com/codex/skills
   - Claude Code skills: https://code.claude.com/docs/en/skills
   - Claude.ai skill creation: https://claude.com/docs/skills/how-to
@@ -168,7 +170,7 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
 ## Documentation Coherence
 
 - Update `skills/references/skill-context-budget.md` to add the one-sentence rule, average budget target, name/path constraints, and batch remediation policy.
-- Update `GUIDELINES.md` only if the existing reference to `skill-context-budget.md` is insufficient after implementation.
+- Do not add broad skill-budget reminders to `AGENT.md`, `CONTEXT.md`, or `GUIDELINES.md`; keep the durable rule in `skill-context-budget.md`, `sf-docs`, `sf-skills-refresh`, and the audit script.
 - Add audit command usage to the reference doc, not to every skill.
 - Mention the remediation in `CHANGELOG.md` only during `/sf-end` or `/sf-ship`, not inside this spec.
 - Do not modify operational trackers as part of this spec.
@@ -220,13 +222,13 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
 
 - [x] Task 5: Wire skill budget audit into sf-docs
   - File: `skills/sf-docs/SKILL.md`
-  - Action: Add `SKILL BUDGET COMPLIANCE` to audit reports and require `sf-docs audit` / silent update audits to run `tools/skill_budget_audit.py` when ShipFlow skills are available.
+  - Action: Add `SKILL BUDGET COMPLIANCE` to audit reports and require `sf-docs audit` / silent update audits to run `tools/skill_budget_audit.py` only when the docs request touches skills, skill discovery, or Codex/Claude Code skill compliance.
   - User story link: Makes future documentation audits catch skill discovery budget regressions.
   - Depends on: Tasks 2-4
   - Validate with: `rg -n "skill_budget_audit|SKILL BUDGET COMPLIANCE" skills/sf-docs/SKILL.md`
   - Notes: `sf-docs` orchestrates the check; the Python script owns deterministic validation.
 
-- [ ] Task 6: Rewrite high-risk descriptions first
+- [x] Task 6: Rewrite high-risk descriptions first
   - File: `skills/continue/SKILL.md`, `skills/sf-audit-components/SKILL.md`, `skills/sf-audit/SKILL.md`, `skills/sf-audit-code/SKILL.md`, `skills/sf-design-playground/SKILL.md`, `skills/sf-auth-debug/SKILL.md`, `skills/sf-ready/SKILL.md`, `skills/sf-audit-design-tokens/SKILL.md`, `skills/sf-resume/SKILL.md`, `skills/sf-docs/SKILL.md`, `skills/sf-spec/SKILL.md`, `skills/sf-audit-copywriting/SKILL.md`, `skills/sf-audit-design/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-audit-a11y/SKILL.md`, `skills/sf-context/SKILL.md`, `skills/sf-repurpose/SKILL.md`, `skills/sf-redact/SKILL.md`, `skills/sf-skills-refresh/SKILL.md`, `skills/sf-veille/SKILL.md`, `skills/sf-verify/SKILL.md`, `skills/sf-model/SKILL.md`
   - Action: Replace each over-200-character description with one concise sentence and keep arguments in `argument-hint`.
   - User story link: Removes the largest budget violations.
@@ -234,7 +236,7 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
   - Validate with: `tools/skill_budget_audit.py --skills-root skills`
   - Notes: Split this task across worker batches; each worker owns only assigned files and does not edit shared docs or tools.
 
-- [ ] Task 7: Rewrite remaining weak or multi-sentence descriptions
+- [x] Task 7: Rewrite remaining weak or multi-sentence descriptions
   - File: `skills/*/SKILL.md`
   - Action: Use the audit report to update descriptions that pass the hard length limit but still include `Args:`, multiple sentences, weak trigger terms, or unnecessary detail.
   - User story link: Keeps automatic skill matching accurate after compaction.
@@ -242,7 +244,7 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
   - Validate with: `tools/skill_budget_audit.py --skills-root skills --strict`
   - Notes: Preserve specialized trigger keywords, especially for audit, prod, auth, docs, spec, and ship workflows.
 
-- [ ] Task 8: Check `name` and path compliance
+- [x] Task 8: Check `name` and path compliance
   - File: `skills/*/SKILL.md`
   - Action: Verify every `name` matches its directory, uses only lowercase letters/numbers/hyphens, is at most 64 characters, and has no unnecessary nested path.
   - User story link: Ensures name and path metadata do not waste budget or break invocation.
@@ -250,7 +252,7 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
   - Validate with: `tools/skill_budget_audit.py --skills-root skills --check-names --check-paths`
   - Notes: Current inventory shows no name/directory issues, so expected result is verification, not renaming.
 
-- [ ] Task 9: Report long SKILL.md bodies as follow-up
+- [x] Task 9: Report long SKILL.md bodies as follow-up
   - File: `skills/sf-audit-design/SKILL.md`, `skills/sf-audit-code/SKILL.md`, `skills/sf-docs/SKILL.md`, `skills/sf-audit-copywriting/SKILL.md`, `skills/sf-init/SKILL.md`
   - Action: Report that these files exceed 500 lines and recommend a separate reference-splitting chantier if needed.
   - User story link: Keeps the current chantier focused on discovery budget while preserving Claude Code body-size guidance.
@@ -258,7 +260,7 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
   - Validate with: `find skills -mindepth 2 -maxdepth 2 -name SKILL.md -print0 | xargs -0 wc -l | awk '$1>500{print}'`
   - Notes: Do not refactor these bodies in this chantier unless description work is complete and risk remains low.
 
-- [ ] Task 10: Final aggregate validation
+- [x] Task 10: Final aggregate validation
   - File: `tools/skill_budget_audit.py`, `skills/*/SKILL.md`
   - Action: Run the audit after all batches are integrated and verify zero hard violations, aggregate under 8,000 characters, and average description length within target.
   - User story link: Proves the warning condition has been addressed.
@@ -266,7 +268,7 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
   - Validate with: `tools/skill_budget_audit.py --skills-root skills --strict`
   - Notes: If the aggregate remains high, do not declare success; tighten descriptions or open a separate decision about disabling niche skills.
 
-- [ ] Task 11: Update implementation history and docs closeout
+- [x] Task 11: Update implementation history and docs closeout
   - File: `specs/skill-description-budget-compliance.md`, optional `CHANGELOG.md`
   - Action: Record the audit result and changed file count in `Skill Run History`; leave changelog updates for `/sf-end` or `/sf-ship`.
   - User story link: Keeps the chantier trace durable.
@@ -285,7 +287,7 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
 - [ ] CA 7: Given worker batches are used, when agents edit descriptions, then each worker modifies only its assigned `SKILL.md` files and does not touch shared docs or tools.
 - [ ] CA 8: Given a skill description is compacted, when the skill is reviewed, then its trigger keywords still identify the workflow more clearly than generic verbs like "manage" or "help".
 - [ ] CA 9: Given all edits are complete, when the final report is produced, then it lists count of skills checked, hard violations, warnings, aggregate characters, average description length, and any follow-up for long skill bodies.
-- [ ] CA 10: Given `sf-docs audit` runs in a ShipFlow environment, when `$SHIPFLOW_ROOT/tools/skill_budget_audit.py` exists, then the audit report includes `SKILL BUDGET COMPLIANCE` and the script result.
+- [ ] CA 10: Given `sf-docs audit` or `sf-docs update` touches skills, skill discovery, or Codex/Claude Code skill compliance, when `$SHIPFLOW_ROOT/tools/skill_budget_audit.py` exists, then the audit report includes `SKILL BUDGET COMPLIANCE` and the script result.
 - [ ] CA 11: Given a `SKILL.md` body exceeds 500 lines, when the audit runs, then it is reported as a separate risk and does not block initial discovery compliance by itself.
 - [ ] CA 12: Given a skill has `when_to_use`, when the audit runs, then `description + when_to_use` is verified below 1,536 characters.
 - [ ] CA 13: Given a skill has `compatibility`, when the audit runs, then it is verified below 500 characters.
@@ -311,6 +313,17 @@ Define a strict ShipFlow skill metadata contract, implement a deterministic whol
 - A strict average budget can become stale if the number of installed skills changes; the audit must compute the current target dynamically.
 - External tool behavior can change; keep the source links and re-check docs before changing the policy.
 - Long `SKILL.md` bodies remain a separate context risk after invocation and compaction; report but do not overload this chantier.
+
+## Security Review
+
+Security impact: none, because this chantier only reads and rewrites local ShipFlow skill metadata and documentation, does not handle auth, tenant data, payments, uploads, secrets, or external write APIs, and the audit script prints metadata summaries rather than full skill bodies.
+
+Implementation safety constraints:
+
+- Do not paste full `SKILL.md` bodies into agent prompts; send only assigned paths and the compact policy.
+- Do not run the audit on secret folders or arbitrary user data; keep `--skills-root` scoped to ShipFlow skills.
+- Do not delete, rename, or disable skills as a hidden budget workaround.
+- Do not hardcode tokens, API keys, credentials, or private deployment data in any skill description, reference, script, or report.
 
 ## Execution Notes
 
@@ -340,12 +353,15 @@ None for the spec. The user has already decided to formalize the constraint and 
 | 2026-05-01 05:35:56 UTC | manual alignment | GPT-5 Codex | Added missing official validations for `when_to_use`, `compatibility`, name hyphen rules, and body token risk | Script, reference, and acceptance criteria updated | Re-run skill budget audit |
 | 2026-05-01 06:04:53 UTC | sf-spec | GPT-5 Codex | Updated spec to explicitly cite Agent Skills specification and standard `description <= 1024` validation | Existing chantier remains draft with validation coverage clarified | /sf-ready Skill Description Budget Compliance |
 | 2026-05-01 06:16:32 UTC | sf-ship | GPT-5 Codex | Shipped quick commit for sf-prod log collection, sf-docs skill-budget audit wiring, reference docs, spec, and audit tool | Shipped with known remaining description remediation tasks | /sf-ready Skill Description Budget Compliance |
+| 2026-05-01 06:23:35 UTC | sf-ready | GPT-5 Codex | Evaluated readiness, rechecked official external docs, and recorded explicit security review | Ready for remaining description remediation implementation | /sf-start Skill Description Budget Compliance |
+| 2026-05-01 06:37:27 UTC | sf-start | GPT-5 Codex | Compacted 49 skill descriptions and ran strict budget validation | Implemented: 0 hard violations, 0 warnings, 7230 absolute estimate, 88.4 average description length; long bodies remain separate risks | /sf-verify Skill Description Budget Compliance |
+| 2026-05-01 12:37:19 UTC | sf-docs | GPT-5 Codex | Scoped skill budget compliance to skill docs and skill refresh workflows, and kept broad agent context files out of the rule | Verified: no global reminders in README/AGENT/CONTEXT/GUIDELINES; strict audit still passes | /sf-verify Skill Description Budget Compliance |
 
 ## Current Chantier Flow
 
-- sf-spec: done, draft saved in `specs/skill-description-budget-compliance.md`
-- sf-ready: not launched
-- sf-start: partially bypassed by direct user approval for audit-tool implementation
+- sf-spec: done, spec saved in `specs/skill-description-budget-compliance.md`
+- sf-ready: ready
+- sf-start: implemented
 - sf-verify: not launched
 - sf-end: not launched
 - sf-ship: shipped quick commit for audit tooling and documentation
@@ -353,5 +369,5 @@ None for the spec. The user has already decided to formalize the constraint and 
 Next command:
 
 ```bash
-/sf-ready Skill Description Budget Compliance
+/sf-verify Skill Description Budget Compliance
 ```
