@@ -49,6 +49,7 @@ For each selected skill, read its `SKILL.md` and identify:
 - **Current phases**: what's already covered (avoid duplication)
 - **Obvious 2025+ patterns**: signals the skill was recently refreshed — adjust research accordingly
 - **Likely gaps**: what could be new in the domain since ~6 months ago
+- **Language doctrine gaps**: compare touched sections against `GUIDELINES.md` and `shipflow-spec-driven-workflow.md` when available. Internal skill contracts should be English; user-facing prompts and reports should use the active user/project language; French user-facing text needs proper accents; casual language mixing inside one artifact should be flagged unless it is a quoted source, quoted user prompt, legal text, external material, or stable machine-readable anchor.
 
 ---
 
@@ -101,9 +102,11 @@ For each returned report:
 **Rules:**
 - Never delete a check that's still valid today.
 - Never reword a check purely for style — only substantive updates.
-- Preserve the skill's language (FR stays FR, EN stays EN).
+- Preserve legacy structure and author tone, but apply the ShipFlow language doctrine to touched sections: write new internal contracts in English, keep user-facing prompts/examples in the active user/project language, keep stable machine-readable labels in English, and preserve quoted/source/legal/external text in its original language.
 - Preserve the author's tone — additive edits only.
 - If a new check replaces an outdated one (e.g., FID → INP), update in place. Don't leave both.
+- When refreshing French user-facing output, fix missing accents in touched text. Treat accentless French as an error unless the text is a technical identifier, command, slug, or ASCII-only format.
+- Flag inappropriate casual language mixing as a refresh finding; do not launch a broad legacy rewrite unless the user explicitly requests it.
 
 ---
 
@@ -156,6 +159,6 @@ If any research agent returned findings that need human judgment (ambiguous, con
 - **Additive mindset**: a skill that accumulates every check ever written becomes unwieldy. When a check is strictly obsoleted by a newer one, update in place instead of stacking both.
 - **Skill budget compliance stays scoped here**: enforce Codex/Claude Code skill budget rules during skill refreshes, not through broad reminders in unrelated agent guidelines.
 - **Never touch `name:` in frontmatter.** It's the invocation key.
-- **Match language**: French-described skills get French additions; English-described skills get English.
+- **ShipFlow language doctrine**: internal contracts use English; user-facing interaction uses the active user/project language; stable machine-readable labels stay English; quoted user input, source evidence, legal text, and external material keep their original language.
 - **Don't refresh `sf-skills-refresh` itself** from this skill — that's a manual edit job.
-- **Accents français obligatoires** lors de toute écriture française — é, è, ê, à, â, ù, û, ô, î, ï, ç, œ, æ. Les accents manquants sont une faute d'orthographe.
+- **French accents are required** in French user-facing output: é, è, ê, à, â, ù, û, ô, î, ï, ç, œ, æ. Missing accents are spelling errors unless a technical identifier, command, slug, or ASCII-only format requires them.

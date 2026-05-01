@@ -243,6 +243,23 @@ Règle de verdict:
 
 **Résultat** : liste des écarts de cohérence
 
+### Step 6.1 — Vérifier la doctrine de langue ShipFlow
+
+Quand le scope touche des artefacts ShipFlow, des skills, des specs, des rapports, des docs techniques, des prompts utilisateur ou de la copie visible produit, lire `GUIDELINES.md` et `shipflow-spec-driven-workflow.md` si présents, puis vérifier :
+- les contrats internes ShipFlow attendus sont en anglais : `SKILL.md` instructions, workflow rules, YAML/frontmatter keys, stable section headings, acceptance criteria, stop conditions, validation notes, technical decision docs
+- les questions, progress updates, rapports finaux, onboarding copy et product-visible text sont dans la langue active de l'utilisateur ou du projet
+- si la langue active est le français, le texte user-facing utilise un français naturel avec accents corrects; l'absence d'accents est acceptable seulement pour identifiants techniques, commandes, slugs ou formats ASCII-only
+- les ancres machine stables restent en anglais même dans un artefact localisé : `Status`, `Scope In`, `Scope Out`, `Acceptance Criteria`, `Test Strategy`, `Skill Run History`, `Current Chantier Flow`
+- aucun artefact ne mélange les langues de façon casual; les citations de prompt utilisateur, source evidence, legal text ou contenu externe conservent leur langue originale et sont clairement labellisées
+- les artefacts legacy mixtes ne déclenchent pas une migration large, mais toute section touchée doit avancer vers cette doctrine
+
+Signalement :
+- `CRITICAL` si l'écart peut faire implémenter, vérifier ou shipper contre le mauvais contrat
+- `WARNING` si l'écart peut dégrader compréhension, localisation, onboarding ou support
+- `SUGGESTION` pour une amélioration non bloquante sur un artefact legacy non touché
+
+**Résultat** : doctrine de langue conforme / gaps avec preuves
+
 ### Step 6.5 — Vérifier les liens et conséquences
 
 Quand une spec ou le diff révèle des systèmes liés, vérifier explicitement qu'ils ont bien été pris en compte :
@@ -352,6 +369,7 @@ Générer UN rapport structuré :
 | Cohérence    | Conforme / N écarts         |
 | Metadata     | Versions OK / gaps          |
 | Docs         | Alignées / gaps             |
+| Langue       | Doctrine OK / gaps          |
 | Dev mode     | local / vercel-preview-push / hybrid / unknown |
 | Bug gate     | clear / partial-risk / blocks ship / not assessed |
 | Dépendances  | N ajoutées, vulnérabilités  |
@@ -400,6 +418,15 @@ Ajouter ensuite un bloc workflow explicite :
 - Dependency status: [current / outdated / unknown / not applicable]
 - Outdated contracts: [BUSINESS.md, BRANDING.md, GUIDELINES.md, API docs, architecture docs, ...]
 - Impact: [none / revalidation required / blocks ship]
+```
+
+```text
+### ShipFlow Language Doctrine
+- Internal contracts English: [pass / partial / fail / not applicable]
+- User-facing active language: [pass / partial / fail / not applicable]
+- French accents when active: [pass / partial / fail / not applicable]
+- Casual language mixing: [none / found / justified by quoted source or machine anchor]
+- Impact: [none / warning / blocks ship]
 ```
 
 ```text
@@ -501,6 +528,7 @@ Si le verdict est `✓`, ne pas poser cette question et proposer `/sf-end`, sauf
 - Chaque issue doit avoir une recommandation actionnable avec référence fichier:ligne
 - Prioriser les écarts qui cassent la promesse utilisateur ou ouvrent un bypass de sécurité/workflow
 - Prioriser aussi les docs stale qui peuvent faire utiliser la feature de travers ou masquer une limite importante
+- Prioriser aussi les écarts de doctrine de langue qui brouillent le contrat interne, la langue utilisateur active, les accents français user-facing, ou mélangent les langues sans justification.
 - Si une question manquante empêche une conclusion fiable, la faire remonter explicitement au lieu de conclure "ça a l'air bon"
 - Préférer SUGGESTION à WARNING, WARNING à CRITICAL en cas de doute
 - Ne pas inventer de problèmes — vérifier avec des preuves (code lu, tests lancés)

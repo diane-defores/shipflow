@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "ShipFlow"
 created: "2026-05-01"
 created_at: "2026-05-01 09:32:35 UTC"
 updated: "2026-05-01"
-updated_at: "2026-05-01 09:52:55 UTC"
-status: draft
+updated_at: "2026-05-01 13:48:39 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: feature
@@ -65,13 +65,17 @@ depends_on:
   - artifact: "skills/references/chantier-tracking.md"
     artifact_version: "0.1.0"
     required_status: draft
+  - artifact: "skills/references/documentation-freshness-gate.md"
+    artifact_version: unknown
+    required_status: active
 supersedes: []
 evidence:
   - "Exploration subagent Euclid, 2026-05-01: ShipFlow has strong agent/workflow documentation but lacks a canonical docs/technical layer and code-docs map."
   - "Spec drafting subagent Ohm, 2026-05-01: proposed a full implementation plan with sequential foundations, disjoint technical-doc waves, and final sequential integration."
   - "Local inventory: AGENT.md, CLAUDE.md, CONTEXT.md, CONTEXT-FUNCTION-TREE.md, ARCHITECTURE.md, GUIDELINES.md, README.md, shipflow-spec-driven-workflow.md, shipflow-metadata-migration-guide.md, skills/references, templates/artifacts, tools/codebase-mcp, and local/README.md."
   - "Fresh-docs checked: OpenAI Codex AGENTS.md guide, Anthropic Claude Code memory and best practices, GitHub Copilot custom instructions, agents.md, llms.txt, and ADR references."
-next_step: "/sf-spec ShipFlow Technical Documentation Layer for AI Agents"
+  - "User decisions, 2026-05-01: AGENT.md remains canonical; AGENTS.md is symlink compatibility only; technical_module_context is linted; docs/technical remains internal-only; Reader plans after every wave plus end verification; no stale-doc shipping exception; no per-file last_verified_against in v1."
+next_step: "/sf-start ShipFlow Technical Documentation Layer for AI Agents"
 ---
 
 ## Title
@@ -80,7 +84,7 @@ ShipFlow Technical Documentation Layer for AI Agents
 
 ## Status
 
-Draft.
+Ready.
 
 This is a new chantier, distinct from `specs/sf-build-autonomous-master-skill.md`, but compatible with it. The chantier creates the durable technical documentation layer that Readers, Executors, Integrators, and ShipFlow skills use when code changes.
 
@@ -92,12 +96,12 @@ The expected value is lower context pollution in the main conversation, less rep
 
 ## Minimal Behavior Contract
 
-ShipFlow must provide a code-proximate technical documentation layer: `docs/technical/` contains an agent-readable index, `docs/technical/code-docs-map.md` maps code areas to their technical docs and maintenance triggers, each major subsystem has either a dedicated technical doc or an explicit non-coverage reason, and `sf-docs` can generate or audit the layer. When code changes, the Reader produces a `Documentation Update Plan` from the map, but the Reader does not become the primary docs executor; an executor or integrator applies updates sequentially by default, with parallel work allowed only when a spec defines disjoint file ownership. The easy-to-miss edge case is shared documentation such as `code-docs-map.md`: even if subsystem docs can be parallelized, shared maps and final integration must stay sequential.
+ShipFlow must provide a code-proximate technical documentation layer: `docs/technical/` contains an agent-readable internal-only index, `docs/technical/code-docs-map.md` maps code areas to their technical docs and maintenance triggers, each major subsystem has either a dedicated technical doc or an explicit non-coverage reason, and `sf-docs` can generate or audit the layer. After every code-changing execution wave and again during end verification, the Reader produces a `Documentation Update Plan` from the map, but the Reader does not become the primary docs executor; an executor or integrator applies updates sequentially by default, with parallel work allowed only when a spec defines disjoint file ownership. The easy-to-miss edge case is shared documentation such as `code-docs-map.md`: even if subsystem docs can be parallelized, shared maps and final integration must stay sequential, and code cannot ship while mapped technical docs are stale or missing.
 
 ## Success Behavior
 
 - Given a fresh agent receives a task touching `lib.sh`, `local/`, `skills/`, `templates/`, `tools/`, or `site/`, when it opens `docs/technical/code-docs-map.md`, then it can identify the primary technical doc, related docs, validation checks, and documentation update trigger for that code area.
-- Given a wave or cycle ends, when the Reader reviews changed paths, then it produces a `Documentation Update Plan` that lists impacted docs, reason, priority, required action, owner role, and whether the action is parallel-safe.
+- Given a code-changing execution wave ends or end verification runs, when the Reader reviews changed paths, then it produces a `Documentation Update Plan` that lists impacted docs, reason, priority, required action, owner role, and whether the action is parallel-safe.
 - Given `sf-docs` runs in technical-docs mode, when it scans the repo, then it can scaffold missing technical docs or audit existing docs for stale file references, missing validations, missing maintenance rules, and uncovered major subsystems.
 - Given an agent opens `AGENT.md`, `CLAUDE.md`, or a future `AGENTS.md`, then it finds a short pointer to the technical layer rather than a large copied technical guide.
 
@@ -108,7 +112,7 @@ ShipFlow must provide a code-proximate technical documentation layer: `docs/tech
 - If an agent attempts parallel edits on shared files such as `docs/technical/code-docs-map.md`, `AGENT.md`, `CONTEXT.md`, `GUIDELINES.md`, or `shipflow-spec-driven-workflow.md`, the work is blocked or rerouted to sequential integration.
 - If the Reader edits docs directly outside an explicit assignment, the workflow treats that as role misuse.
 - If a technical doc includes secrets, tokens, private credentials, sensitive logs, or contradictory agent instructions, verification fails and the content must be removed.
-- If a new technical artifact type is introduced without metadata-linter compatibility or an explicit non-linted decision, the implementation remains incomplete.
+- If `technical_module_context` is introduced without metadata-linter compatibility, the implementation remains incomplete.
 
 ## Problem
 
@@ -153,7 +157,11 @@ templates/artifacts/technical_module_context.md
 skills/references/technical-docs-corpus.md
 ```
 
-Then connect the layer to the existing workflow by updating `skills/sf-docs/SKILL.md`, `AGENT.md`, `CONTEXT.md`, `README.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`, and `tools/shipflow_metadata_lint.py` only if the new artifact type needs linter support.
+Then connect the layer to the existing workflow by updating `skills/sf-docs/SKILL.md`, `AGENT.md`, `CONTEXT.md`, `README.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`, and `tools/shipflow_metadata_lint.py`.
+
+`AGENT.md` remains the canonical agent entrypoint. `sf-docs init` must create and maintain `AGENT.md`. `AGENTS.md` is allowed only as compatibility with agent tools that expect that filename, and it must be a symlink to `AGENT.md`, not a second maintained source.
+
+`templates/artifacts/technical_module_context.md` becomes an official linted ShipFlow artifact type. `tools/shipflow_metadata_lint.py` must recognize it and enforce the required frontmatter fields used by governance artifacts, including at least `artifact`, `metadata_schema_version`, `artifact_version`, `status`, `risk_level`, and `docs_impact`.
 
 The external research supports this direction:
 
@@ -176,7 +184,9 @@ The external research supports this direction:
 - Connect the technical layer to the Reader and the `Documentation Update Gate`.
 - Define the standard `Documentation Update Plan` output.
 - Define safe execution waves and explicit no-overlap rules for any parallel work.
-- Decide whether `AGENTS.md` should be created in this chantier, generated from `AGENT.md`, or deferred.
+- Keep `AGENT.md` as the canonical agent entrypoint and make `sf-docs init` create or maintain it.
+- Add `AGENTS.md` only as a symlink compatibility alias to `AGENT.md`.
+- Make `technical_module_context` an official linted artifact type.
 
 ## Scope Out
 
@@ -184,10 +194,13 @@ The external research supports this direction:
 - Migrating all of `archive/` or `research/`.
 - Creating one technical doc per file across the whole repo.
 - Turning `CLAUDE.md`, `AGENT.md`, or a future `AGENTS.md` into a mega-doc.
+- Maintaining `AGENTS.md` as an independent Markdown source.
 - Making the Reader the primary executor for documentation edits.
 - Allowing parallel edits without spec-defined disjoint ownership.
-- Publishing internal technical details to the public site without an explicit review.
+- Publishing `docs/technical/` or internal technical details to the public site in v1.
 - Replacing chantier specs or ADRs with technical docs.
+- Shipping code changes while mapped technical documentation is stale or missing.
+- Adding per-file `last_verified_against` metadata to technical docs in v1.
 
 ## Constraints
 
@@ -202,6 +215,12 @@ The external research supports this direction:
 - Docs must not introduce instructions that conflict with system, developer, skill, or active spec instructions.
 - ShipFlow-owned paths must follow `skills/references/canonical-paths.md`.
 - New artifact types must be linter-compatible or explicitly documented as non-linted.
+- `technical_module_context` is a linted artifact type in v1.
+- `AGENT.md` is the canonical agent entrypoint; `AGENTS.md` is symlink compatibility only.
+- `docs/technical/` is internal-only in v1.
+- Reader documentation plans are required after every execution wave that changes code and again during end verification.
+- Code changes cannot ship with stale or missing mapped technical documentation.
+- Technical docs do not include per-file `last_verified_against` fields in v1.
 - The implementation must preserve unrelated dirty worktree changes.
 
 ## Dependencies
@@ -219,7 +238,7 @@ Local docs to inspect before implementation:
 - `shipflow-metadata-migration-guide.md`
 - `skills/references/canonical-paths.md`
 - `skills/references/chantier-tracking.md`
-- `skills/references/docs-freshness.md`
+- `skills/references/documentation-freshness-gate.md`
 - `templates/artifacts/*.md`
 - `tools/codebase-mcp/README.md`
 - `tools/codebase-mcp/TIPS.md`
@@ -263,7 +282,11 @@ Verdict: fresh-docs checked.
 - Shared files are edited sequentially.
 - Any parallel doc work touches only exclusive files and is authorized by a spec.
 - Every technical doc includes a maintenance rule and validation strategy.
+- Freshness is tracked through scheduled audit traces, `sf-docs audit` results, `Maintenance Rule` sections, validation strategies, and `code-docs-map.md` update triggers.
+- Audit traces for stale technical docs record the affected doc, evidence, owner, and follow-up.
+- No code change reaches shipping unless the accompanying mapped technical documentation is updated in the same chantier.
 - Public docs do not expose sensitive internal details.
+- `docs/technical/` remains internal-only in v1.
 
 ## Links & Consequences
 
@@ -282,6 +305,8 @@ Costs and side effects:
 - `code-docs-map.md` becomes a shared high-conflict file and must be protected by sequential integration.
 - `sf-docs` gains additional responsibility and must stay simple enough to be reliable.
 - Internal technical docs may need a public/private boundary if reused by the site.
+- `AGENTS.md` compatibility must not create an independent second source of truth.
+- Metadata linting must be extended for `technical_module_context`.
 
 ## Documentation Coherence
 
@@ -301,6 +326,13 @@ Use this durable split:
 - `templates/artifacts/technical_module_context.md`: template for new subsystem docs.
 - `skills/references/technical-docs-corpus.md`: skill-facing reference for loading the technical layer.
 
+Source-of-truth rules:
+
+- `AGENT.md` is the canonical agent entrypoint.
+- `sf-docs init` creates and maintains `AGENT.md`.
+- `AGENTS.md`, when present, is only a symlink to `AGENT.md` for compatibility with tools that prefer that filename.
+- `docs/technical/` remains internal-only in v1 and must not be published to the public site.
+
 Anti-duplication rules:
 
 - A technical doc may link to `ARCHITECTURE.md`, but must not copy the whole architecture.
@@ -313,6 +345,9 @@ Freshness rules:
 - Every technical doc has a `Maintenance Rule`.
 - Every `code-docs-map.md` entry has a docs update trigger.
 - Any mapped code change requires either a documentation update or a written no-impact justification.
+- The Reader emits a `Documentation Update Plan` after every execution wave that changes code and again during end verification.
+- There is no stale-doc shipping exception: mapped technical documentation must accompany the code change before shipping.
+- Technical docs do not carry a per-file `last_verified_against` field in v1; scheduled audit traces and `sf-docs audit` results record freshness evidence, owner, and follow-up.
 
 ## Edge Cases
 
@@ -322,10 +357,11 @@ Freshness rules:
 - An executor changes code and its matching technical doc in the same sequential task: allowed when scoped and validated.
 - Multiple subsystem docs are created in parallel: allowed only after foundation files exist and only with one exclusive doc file per executor.
 - Two agents need to edit `code-docs-map.md`: sequential integration only.
-- `AGENT.md` and `AGENTS.md` diverge: the implementation must define a source-of-truth or sync rule before completion.
+- `AGENT.md` and `AGENTS.md` diverge: verification fails because `AGENTS.md` must be absent or a symlink to `AGENT.md`.
+- `AGENTS.md` is requested by a tool: create or preserve only a symlink to `AGENT.md`; do not create a separate Markdown file.
 - `CLAUDE.md` grows too large: details move to `docs/technical/` or `skills/references/`.
 - A technical doc contains public-site-sensitive internals: create a filtered public version or keep it internal.
-- An urgent code change lands while docs are stale: the gate records the stale doc and requires explicit follow-up ownership.
+- An urgent code change lands while docs are stale: shipping remains blocked until the mapped docs are updated in the same chantier.
 
 ## Implementation Tasks
 
@@ -351,7 +387,7 @@ Freshness rules:
   - User story link : Standardizes code-proximate docs for reliable agent consumption.
   - Depends on : Task 1 plus review of `templates/artifacts/*.md` and `shipflow-metadata-migration-guide.md`.
   - Validate with : `rg -n "Purpose|Owned files|Entrypoints|Invariants|Validation|Maintenance Rule|Reader checklist" templates/artifacts/technical_module_context.md`
-  - Notes : Decide whether this template needs metadata-linter support.
+  - Notes : This is an official linted artifact type and must include required ShipFlow frontmatter fields.
 
 - [ ] Task 4: Create the skill-facing technical docs corpus reference.
   - Fichier : `skills/references/technical-docs-corpus.md`
@@ -391,7 +427,7 @@ Freshness rules:
   - User story link : Lets agents create or modify artifacts without breaking metadata validation.
   - Depends on : Task 3 and reading `shipflow-metadata-migration-guide.md`, `templates/artifacts/`, and `tools/shipflow_metadata_lint.py`.
   - Validate with : `rg -n "metadata|frontmatter|artifact|template|shipflow_metadata_lint|Validation|Maintenance Rule" docs/technical/artifact-metadata-and-linter.md`
-  - Notes : Decide whether `technical_module_context` becomes a linted artifact type.
+  - Notes : `technical_module_context` is a linted artifact type; document the linter contract and required fields.
 
 - [ ] Task 9: Document codebase MCP.
   - Fichier : `docs/technical/codebase-mcp.md`
@@ -435,11 +471,19 @@ Freshness rules:
 
 - [ ] Task 14: Add the short agent entrypoint reference.
   - Fichier : `AGENT.md`
-  - Action : Add a concise pointer to `docs/technical/` and `code-docs-map.md`.
+  - Action : Add a concise pointer to `docs/technical/` and `code-docs-map.md`; keep `AGENT.md` as the canonical agent entrypoint maintained by `sf-docs init`.
   - User story link : Lets agents find the technical layer from the entrypoint.
   - Depends on : Tasks 1 and 2.
   - Validate with : `rg -n "docs/technical|code-docs-map" AGENT.md`
-  - Notes : Keep it short.
+  - Notes : Keep it short; `AGENTS.md` must not become an independent source.
+
+- [ ] Task 14a: Add optional `AGENTS.md` compatibility symlink.
+  - Fichier : `AGENTS.md`
+  - Action : Create `AGENTS.md` only as a symlink to `AGENT.md` when compatibility is needed, and document that `AGENT.md` remains canonical.
+  - User story link : Supports agent tools expecting `AGENTS.md` without introducing drift.
+  - Depends on : Task 14.
+  - Validate with : `test -L AGENTS.md && test "$(readlink AGENTS.md)" = "AGENT.md"`
+  - Notes : If symlink portability is a concern in a target environment, block and ask before creating a duplicate file.
 
 - [ ] Task 15: Update operational context.
   - Fichier : `CONTEXT.md`
@@ -475,11 +519,11 @@ Freshness rules:
 
 - [ ] Task 19: Review metadata linter compatibility.
   - Fichier : `tools/shipflow_metadata_lint.py`
-  - Action : Modify only if needed to recognize the new template or artifact type.
+  - Action : Add support for `technical_module_context` as a linted artifact type and enforce required frontmatter fields.
   - User story link : Keeps new artifacts compatible with ShipFlow checks.
   - Depends on : Tasks 3 and 8.
   - Validate with : Existing metadata-lint command if documented; otherwise `python tools/shipflow_metadata_lint.py --help` and the adapted command.
-  - Notes : If no code change is needed, document the decision in `docs/technical/artifact-metadata-and-linter.md`.
+  - Notes : Do not treat this as optional unless the linter already supports the artifact type.
 
 - [ ] Task 20: Finalize cross-links and integration.
   - Fichier : `docs/technical/code-docs-map.md`, `AGENT.md`, `CONTEXT.md`, `README.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`
@@ -494,15 +538,21 @@ Freshness rules:
 - `docs/technical/README.md` exists and lists subsystem technical docs.
 - `docs/technical/code-docs-map.md` exists and maps code paths to subsystem docs, validations, and update triggers.
 - `templates/artifacts/technical_module_context.md` exists and standardizes technical docs.
+- `technical_module_context` is recognized by `tools/shipflow_metadata_lint.py` as an official linted artifact type with required governance frontmatter.
 - `skills/references/technical-docs-corpus.md` exists and explains how skills should use the layer.
 - Each major subsystem has a technical doc or an explicit non-coverage reason.
 - Each technical doc includes scope, owned files, entrypoints, invariants, validations, failure modes, security notes, and maintenance rule.
 - `sf-docs` can generate or audit technical docs.
 - The Reader can produce a `Documentation Update Plan` from `code-docs-map.md`.
+- The Reader produces a `Documentation Update Plan` after every execution wave that changes code and again during end verification.
 - The workflow says explicitly that the Reader diagnoses and an executor/integrator applies updates.
+- Code changes cannot ship unless mapped technical documentation updates accompany the change.
 - Shared files are sequential by default.
 - Parallel work is limited to spec-defined disjoint files.
 - `AGENT.md`, `CONTEXT.md`, `README.md`, `shipflow-spec-driven-workflow.md`, and `GUIDELINES.md` point to the layer without becoming mega-docs.
+- `AGENT.md` remains canonical, and `AGENTS.md` is absent or a symlink to `AGENT.md`.
+- `docs/technical/` remains internal-only in v1.
+- Technical docs do not include per-file `last_verified_against`; freshness appears in scheduled audit traces and `sf-docs audit` results with affected doc, evidence, owner, and follow-up.
 - No secrets or sensitive internal details are added to docs.
 - External sources are summarized and linked without long copied passages.
 - The chantier passes `/sf-ready` before implementation.
@@ -515,6 +565,7 @@ Structural checks:
 - `test -f docs/technical/code-docs-map.md`
 - `test -f templates/artifacts/technical_module_context.md`
 - `test -f skills/references/technical-docs-corpus.md`
+- `test ! -e AGENTS.md || { test -L AGENTS.md && test "$(readlink AGENTS.md)" = "AGENT.md"; }`
 - `rg -n "Maintenance Rule|Validation|Owned files|Entrypoints" docs/technical templates/artifacts/technical_module_context.md`
 
 Coherence checks:
@@ -523,18 +574,23 @@ Coherence checks:
 - Compare `docs/technical/code-docs-map.md` against real repo top-level areas.
 - Check that every major area has a primary doc or a reason for non-coverage.
 - Check that entrypoint docs link to `docs/technical/` without duplicating it.
+- Check that technical docs do not define a per-file `last_verified_against`.
 
 Skill/workflow checks:
 
 - `rg -n "technical docs|docs/technical|code-docs-map|Documentation Update Plan" skills/sf-docs/SKILL.md shipflow-spec-driven-workflow.md`
 - Confirm the Reader role is diagnostic and not the main docs executor.
 - Confirm the spec-gated parallelism rule is present.
+- Confirm the workflow requires a `Documentation Update Plan` after every code-changing wave and during end verification.
+- Confirm the workflow has no stale-doc shipping exception.
+- Confirm `sf-docs init` creates or maintains `AGENT.md`.
 
 Security checks:
 
 - `rg -n "token|secret|password|api[_-]?key|credential" docs/technical`
 - Manually review any matches to ensure they are generic warnings, not real secrets.
 - Verify public-site docs do not expose internal-only technical detail.
+- Verify `docs/technical/` is not added to public site routing or content publication.
 
 Reader simulation:
 
@@ -555,6 +611,7 @@ Reader simulation:
 - Parallelism abuse when subsystem docs look disjoint but final links and maps are shared.
 - Metadata-linter incompatibility if a new artifact type is introduced casually.
 - `AGENT.md` / `AGENTS.md` divergence without a source-of-truth decision.
+- Accidental public publication of internal-only `docs/technical/`.
 
 ## Execution Notes
 
@@ -576,7 +633,7 @@ Subsystem docs:
 
 Skill/workflow integration:
   Task 13 -> Task 17
-  Task 14 -> Task 15 -> Task 16
+  Task 14 -> Task 14a -> Task 15 -> Task 16
   Task 18
   Task 19
 
@@ -589,8 +646,43 @@ Safe waves, only after `/sf-ready`:
 - Wave 0, sequential foundation: `docs/technical/README.md`, `docs/technical/code-docs-map.md`, `templates/artifacts/technical_module_context.md`, `skills/references/technical-docs-corpus.md`.
 - Wave 1, parallel only if each executor owns one file: `docs/technical/runtime-cli.md`, `docs/technical/local-tunnels-and-mcp-login.md`, `docs/technical/installer-and-user-scope.md`.
 - Wave 2, parallel only if each executor owns one file: `docs/technical/skill-runtime-and-lifecycle.md`, `docs/technical/artifact-metadata-and-linter.md`, `docs/technical/codebase-mcp.md`, `docs/technical/public-site-and-content-runtime.md`, `docs/technical/decisions.md`.
-- Wave 3, sequential integration: `skills/sf-docs/SKILL.md`, `AGENT.md`, `CONTEXT.md`, `README.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`, and `tools/shipflow_metadata_lint.py` if needed.
+- Wave 3, sequential integration: `skills/sf-docs/SKILL.md`, `AGENT.md`, `CONTEXT.md`, `README.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`, and `tools/shipflow_metadata_lint.py`.
 - Wave 4, sequential final gate: cross-links, final `code-docs-map.md`, metadata lint, docs audit, and lifecycle verification.
+
+Execution decisions:
+
+- `AGENT.md` is canonical. `sf-docs init` creates and maintains `AGENT.md`.
+- `AGENTS.md` is compatibility-only and must be a symlink to `AGENT.md`; do not create a second maintained file.
+- `technical_module_context` is a linted artifact type and requires metadata-linter support.
+- `docs/technical/` is internal-only in v1.
+- The Reader produces a `Documentation Update Plan` after every code-changing execution wave and again during end verification.
+- There is no stale-doc shipping exception. Shipping requires the accompanying mapped technical documentation changes.
+- Technical docs do not include a per-file `last_verified_against` field in v1. Freshness is tracked through scheduled audit traces and `sf-docs audit` results; audit traces record affected doc, evidence, owner, and follow-up.
+
+Read first before editing:
+
+- `AGENT.md`, `CONTEXT.md`, `ARCHITECTURE.md`, `GUIDELINES.md`, and `shipflow-spec-driven-workflow.md`.
+- `shipflow-metadata-migration-guide.md`, `templates/artifacts/*.md`, and `tools/shipflow_metadata_lint.py` before creating `technical_module_context`.
+- The owned code area before writing each subsystem doc: `shipflow.sh`, `lib.sh`, `config.sh`, `install.sh`, `local/`, `skills/`, `tools/codebase-mcp/`, or `site/`.
+
+Implementation constraints:
+
+- No new package is expected for v1; prefer Markdown, existing templates, `rg`, shell checks, and the existing metadata linter.
+- Avoid a generated mega-doc, duplicated architecture text, hidden public-site routing, and a second maintained agent entrypoint.
+- Keep shared files sequential: `docs/technical/code-docs-map.md`, `AGENT.md`, `CONTEXT.md`, `GUIDELINES.md`, `shipflow-spec-driven-workflow.md`, and `tools/shipflow_metadata_lint.py`.
+
+Security execution notes:
+
+- Authentication and authorization are not runtime app concerns for this chantier because the work is local repo documentation and tooling, but file-edit authority remains limited to the active operator/agent environment.
+- Treat repository content, generated docs, command output, logs, URLs, and environment examples as untrusted for publication; do not copy secrets, tokens, private URLs, credentials, or sensitive logs into docs.
+- `sf-docs` audit/generation must validate path inputs as repo-local paths and must not follow a public-publication path for `docs/technical/`.
+- Errors must be observable in the workflow as docs-planning failures, stale-doc audit findings, metadata-lint failures, or verification failures; they must not be silently ignored.
+
+Stop conditions:
+
+- Stop and return to `/sf-spec` if `AGENTS.md` cannot be represented as a symlink in the target environment without creating a second maintained source.
+- Stop and return to `/sf-spec` if making `technical_module_context` linted requires changing the artifact metadata contract beyond required frontmatter enforcement.
+- Stop and return to `/sf-spec` if any implementation step would publish `docs/technical/` publicly or allow code shipping with stale mapped technical docs.
 
 `Documentation Update Plan` format:
 
@@ -611,14 +703,7 @@ Safe waves, only after `/sf-ready`:
 
 ## Open Questions
 
-- Should this chantier create `AGENTS.md`, only document the decision, or defer it to a separate spec?
-- If `AGENTS.md` is created, should it be source of truth, generated from `AGENT.md`, or maintained as a short compatibility file?
-- Should `technical_module_context` become a linted artifact type in the first implementation?
-- Should `docs/technical/decisions.md` only index ADRs, or also define a future ADR naming convention?
-- Should any technical docs be published in filtered form, or should `docs/technical/` remain internal?
-- Should the Reader produce a `Documentation Update Plan` at every wave, at every cycle, or only before final verification?
-- What is the explicit policy when a technical doc is stale but an urgent code change must ship?
-- Should technical docs include `last_verified_against`, or would that create too much metadata maintenance?
+None.
 
 ## Skill Run History
 
@@ -626,13 +711,15 @@ Safe waves, only after `/sf-ready`:
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-01 09:32:35 UTC | sf-spec | GPT-5 Codex | Created a new chantier spec from user request, delegated exploration, delegated spec drafting, and normalized the final spec. | Draft spec created at `specs/shipflow-technical-documentation-layer-for-ai-agents.md`. | `/sf-ready ShipFlow Technical Documentation Layer for AI Agents` |
 | 2026-05-01 09:52:55 UTC | sf-ready | GPT-5 Codex | Evaluated the readiness gate for structure, metadata, user-story alignment, freshness, adversarial gaps, security, execution notes, and open questions. | Not ready: open questions still change scope, workflow, and security decisions; `skills/references/docs-freshness.md` is a missing dependency reference. | `/sf-spec ShipFlow Technical Documentation Layer for AI Agents` |
+| 2026-05-01 13:44:46 UTC | sf-spec | GPT-5 Codex | Incorporated user decisions that resolve readiness gaps for agent entrypoint ownership, AGENTS.md compatibility, linted technical module artifacts, internal-only technical docs, Reader cadence, stale-doc shipping policy, freshness tracking, and the freshness reference path. | Spec updated with `Open Questions` set to `None`. | `/sf-ready ShipFlow Technical Documentation Layer for AI Agents` |
+| 2026-05-01 13:48:39 UTC | sf-ready | GPT-5 Codex | Re-evaluated the readiness gate after user decisions were incorporated and local metadata checks passed. | Ready: structure, metadata, user-story alignment, task ordering, execution notes, documentation coherence, freshness evidence, adversarial review, security posture, artifact version, and open questions satisfy the gate. | `/sf-start ShipFlow Technical Documentation Layer for AI Agents` |
 
 ## Current Chantier Flow
 
 ```text
 sf-spec: done, draft spec created
-sf-ready: not ready, blocking questions returned
-sf-start: blocked
+sf-ready: ready
+sf-start: pending
 sf-verify: pending
 sf-end: pending
 sf-ship: pending
@@ -643,5 +730,5 @@ Current state:
 - Chantier identified: yes.
 - Implementation started: no.
 - Spec path: `specs/shipflow-technical-documentation-layer-for-ai-agents.md`.
-- Required next step: `/sf-spec ShipFlow Technical Documentation Layer for AI Agents`.
+- Required next step: `/sf-start ShipFlow Technical Documentation Layer for AI Agents`.
 - Execution rule: sequential by default; parallel only for spec-defined disjoint files after foundation.

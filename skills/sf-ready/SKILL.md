@@ -38,6 +38,7 @@ Cette skill applique la `Definition of Ready` du flow spec-driven :
 - fichiers cibles identifiés
 - systèmes liés et conséquences explicités
 - cohérence documentaire explicitée pour les changements de feature
+- doctrine de langue ShipFlow explicitée quand la spec touche des contrats internes, skills, docs, prompts ou copie user-facing
 - critères d'acceptation vérifiables
 - revue adversariale suffisante pour empêcher une implémentation naïve ou contournable
 - sécurité proportionnée au scope, pensée dès la spec
@@ -139,6 +140,12 @@ Contrôler :
   - cas limites
 - les prérequis de données, auth, permissions, feature flags, migrations ou config sont explicités si pertinents
 - les non-goals de `Scope Out` bornent bien le travail
+- si la spec touche des artefacts ShipFlow, skills, rapports, docs techniques, prompts utilisateur ou copie visible produit, elle respecte la doctrine de langue ShipFlow issue de `GUIDELINES.md` et `shipflow-spec-driven-workflow.md` :
+  - contrats internes en anglais (`SKILL.md` instructions, workflow rules, YAML/frontmatter keys, stable section headings, acceptance criteria, stop conditions, validation notes, technical decision docs)
+  - interaction user-facing dans la langue active de l'utilisateur ou du projet
+  - français user-facing naturel et accentué quand la langue active est le français
+  - ancres machine stables en anglais même dans un artefact localisé (`Status`, `Scope In`, `Acceptance Criteria`, `Skill Run History`)
+  - pas de mélange casual de langues dans un même artefact; citations utilisateur, sources, texte légal et contenus externes gardent leur langue originale et sont labellisés
 
 Si un point change matériellement le comportement, le scope ou la sécurité et n'est ni prouvé par le code existant ni tranché par la spec, verdict `not ready`. Ne pas combler ce vide par inférence généreuse.
 
@@ -166,6 +173,7 @@ Critiquer la spec comme si tu voulais :
 - un système lié pourrait-il casser sans être revalidé ?
 - une conséquence hors des fichiers principaux est-elle oubliée ?
 - une page de doc, FAQ, onboarding, pricing, screenshot, exemple ou support devient-elle fausse après la feature ?
+- une spec, skill ou doc technique peut-elle être mal interprétée parce que le contrat interne n'est pas en anglais, que la sortie user-facing n'est pas dans la langue active, que le français visible manque d'accents, ou que l'artefact mélange les langues sans raison claire ?
 - le test plan permet-il vraiment à `sf-verify` de juger la conformité ?
 - la spec s'appuie-t-elle sur un comportement externe récent sans preuve de docs officielles actuelles ?
 - le flow peut-il être bypassé par saut d'étape, replay, double soumission, ordre invalide, état périmé ou entrée concurrente ?
@@ -234,6 +242,7 @@ Checklist:
 - Success behavior: [ok / fail]
 - Error behavior: [ok / fail]
 - Documentation coherence: [ok / fail]
+- Language doctrine: [ok / fail / not applicable]
 - Fresh external docs: [ok / fail / not applicable]
 - Execution notes: [ok / fail]
 - Minimal behavior contract: [ok / fail]
@@ -249,6 +258,9 @@ Adversarial gaps:
 
 Security gaps:
 - [missing auth/authz/input validation/data protection/logging/abuse control]
+
+Language doctrine gaps:
+- [internal contract not English / user-facing output not in active language / French accents missing / casual language mixing]
 
 Verdict:
 - ready
@@ -292,6 +304,7 @@ Verdict sf-ready:
 - Toujours faire une passe "comment est-ce que ça casse ?" avant de conclure `ready`
 - Toujours expliciter le niveau de risque cyber sécurité, même si l'impact est nul ou faible
 - Toujours vérifier que les docs actives restent alignées quand une feature change
+- Toujours vérifier la doctrine de langue ShipFlow quand la spec touche des contrats internes, skills, docs, prompts ou copie user-facing
 - Toujours vérifier la Documentation Freshness Gate quand la spec dépend d'un framework, SDK, service, API, auth, build, migration ou intégration externe
 - Si une question manquante change le contrat ou la sécurité, bloquer au lieu de supposer
 - Donner des corrections actionnables, pas des critiques vagues

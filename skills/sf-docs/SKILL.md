@@ -304,8 +304,10 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
    - **Version sync** : les specs, audits et reviews référencent-ils des versions business/techniques encore actuelles dans `depends_on` ?
 
 3. **Vérifier les conventions :**
-   - **Langue** : la doc est-elle dans la bonne langue ? (FR pour projets FR, EN pour projets EN — vérifier CLAUDE.md)
-   - **Accents français** : si doc en FR, vérifier que tous les accents sont corrects
+   - **ShipFlow language doctrine** : pour les artefacts ShipFlow, lire `GUIDELINES.md` et `shipflow-spec-driven-workflow.md` si présents, puis vérifier que les contrats internes attendus sont en anglais (`SKILL.md` instructions, workflow rules, YAML/frontmatter keys, stable section headings, acceptance criteria, stop conditions, validation notes, technical decision docs).
+   - **User-facing active language** : les questions, progress updates, rapports finaux, onboarding copy et product-visible text doivent rester dans la langue active de l'utilisateur ou du projet.
+   - **Accents français** : si la langue active est le français, vérifier que le texte user-facing est en français naturel avec accents corrects; signaler l'écriture sans accents sauf identifiant technique, commande, slug ou format ASCII-only.
+   - **No casual language mixing** : signaler le mélange non justifié de langues dans un même artefact; autoriser les ancres machine stables en anglais (`Status`, `Scope In`, `Acceptance Criteria`, `Skill Run History`) et les citations clairement labellisées dans leur langue d'origine.
    - **Format** : les fichiers .md suivent-ils un format cohérent entre eux ? (titres, sections, style)
    - **CLAUDE.md** : les règles et patterns documentés reflètent-ils le code actuel ?
    - **Nommage** : les noms de fichiers de doc suivent-ils une convention cohérente ?
@@ -333,7 +335,10 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
 - [ ] [README.md] arborescence ne correspond plus à la réalité
 
 ### CONVENTIONS
+- [ ] [skills/example/SKILL.md] internal workflow contract is not English where ShipFlow expects English
+- [ ] [README.md] user-facing copy is not in the active user/project language
 - [ ] [fichier.md] accents manquants : "genere" → "génère"
+- [ ] [docs/guide.md] mélange casual FR/EN dans un même artefact sans citation ni ancre machine
 - [ ] [docs/API.md] format incohérent avec docs/COMPONENTS.md
 
 ### STALE (doc périmée)
@@ -450,7 +455,7 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
 
 3. **Classer les problèmes techniques par priorité :**
    - **P0** : drift dangereux (doc qui induit en erreur — mauvaises commandes, fonctions supprimées)
-   - **P1** : conventions non respectées (langue, accents, format)
+   - **P1** : conventions non respectées (doctrine de langue ShipFlow, langue active, accents, format)
    - **P2** : doc périmée mais pas fausse (dates, compteurs, arborescences)
    - **P3** : manques de couverture (code non documenté)
 
@@ -468,6 +473,7 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
    - Pour les arborescences : régénérer depuis le filesystem réel
    - Pour les compteurs/dates : mettre à jour avec les valeurs actuelles
    - Pour les accents : corriger systématiquement
+   - Pour la doctrine de langue ShipFlow : convertir seulement les sections touchées; garder les contrats internes en anglais, le contenu user-facing dans la langue active, les ancres machine en anglais, et les citations dans leur langue originale.
    - Pour les manques : ajouter la documentation (inline ou fichier séparé selon le pattern existant)
 
 6. **Rapport final :**
@@ -649,6 +655,7 @@ Detect documentation gaps and suggest what to document.
 - **Read actual code** — never invent functionality that doesn't exist.
 - **Match existing doc style** — if the project uses a specific documentation format, follow it.
 - **French for French projects** — GoCharbon, claiire, plaisirsurprise (FR content).
+- **ShipFlow language doctrine** — internal contracts use English; user-facing interaction uses the active user/project language; stable machine-readable labels stay English; quoted user input, source evidence, legal text, and external material keep their original language.
 - Every code example must be **syntactically correct** and **runnable**.
 - Don't over-document. Simple, self-explanatory code doesn't need comments.
 - For component docs, include the actual prop types from the source code.
