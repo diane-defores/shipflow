@@ -334,63 +334,70 @@ should_show_session_scan_loader() {
 render_session_scan_frame() {
     local frame="$1"
     local sweep_a sweep_b sweep_c sweep_d
+    local host_label="${REMOTE_HOST:-serveur}"
+
+    if [ "${#host_label}" -gt 22 ]; then
+        host_label="${host_label:0:19}..."
+    fi
 
     case $((frame % 4)) in
         0)
-            sweep_a="          |          "
-            sweep_b="          |          "
-            sweep_c="----------o----------"
-            sweep_d="          |          "
+            sweep_a="      |      "
+            sweep_b="      |      "
+            sweep_c="------o------"
+            sweep_d="      |      "
             ;;
         1)
-            sweep_a="       /             "
-            sweep_b="     /               "
-            sweep_c="----o----------------"
-            sweep_d="       \\             "
+            sweep_a="   /         "
+            sweep_b=" /           "
+            sweep_c="--o----------"
+            sweep_d="   \\         "
             ;;
         2)
-            sweep_a="                     "
-            sweep_b="                     "
-            sweep_c="----------o----------"
-            sweep_d="                     "
+            sweep_a="             "
+            sweep_b="             "
+            sweep_c="------o------"
+            sweep_d="             "
             ;;
         *)
-            sweep_a="             \\       "
-            sweep_b="               \\     "
-            sweep_c="----------------o----"
-            sweep_d="             /       "
+            sweep_a="         \\   "
+            sweep_b="           \\ "
+            sweep_c="----------o--"
+            sweep_d="         /   "
             ;;
     esac
 
-    printf "%b\n" "${CYAN}        .----------------------------.${NC}" > /dev/tty
-    printf "%b\n" "${CYAN}        |${NC} ${BLUE}SONAR SSH${NC}  ${YELLOW}scan réseau${NC}       ${CYAN}|${NC}" > /dev/tty
-    printf "%b\n" "${CYAN}        |${NC}      .-----------.       ${CYAN}|${NC}" > /dev/tty
-    printf "%b\n" "${CYAN}        |${NC}    .( ${GREEN}${sweep_a}${NC} ).    ${CYAN}|${NC}" > /dev/tty
-    printf "%b\n" "${CYAN}        |${NC}   (  ${GREEN}${sweep_b}${NC}  )   ${CYAN}|${NC}" > /dev/tty
-    printf "%b\n" "${CYAN}        |${NC}   (  ${GREEN}${sweep_c}${NC}  )   ${CYAN}|${NC}" > /dev/tty
-    printf "%b\n" "${CYAN}        |${NC}   (  ${GREEN}${sweep_d}${NC}  )   ${CYAN}|${NC}" > /dev/tty
-    printf "%b\n" "${CYAN}        |${NC}      '-----------'       ${CYAN}|${NC}" > /dev/tty
-    printf "%b\n" "${CYAN}        '----------------------------'${NC}" > /dev/tty
-    printf "%b\n" "${BLUE}        Recherche de session sur ${GREEN}${REMOTE_HOST}${BLUE}...${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      .------------------------.${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC} ${BLUE}SONAR SSH${NC}  ${YELLOW}scan réseau${NC} ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}      .--------.        ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}    .( ${GREEN}${sweep_a}${NC} ). ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}   (  ${GREEN}${sweep_b}${NC}  )  ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}   (  ${GREEN}${sweep_c}${NC}  )  ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}   (  ${GREEN}${sweep_d}${NC}  )  ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      '------------------------'${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${BLUE}      Recherche SSH: ${GREEN}${host_label}${BLUE}...${NC}" > /dev/tty
 }
 
 clear_session_scan_loader() {
-    local lines=10
+    local lines=9
     local i=0
 
+    printf "\033[%sA\r" "$lines" > /dev/tty
     while [ "$i" -lt "$lines" ]; do
-        printf "\033[2K\r\n" > /dev/tty
+        printf "\033[2K\r" > /dev/tty
+        [ "$i" -lt $((lines - 1)) ] && printf "\n" > /dev/tty
         i=$((i + 1))
     done
-    printf "\033[%sA\r" "$lines" > /dev/tty
+    printf "\033[%sA\r" "$((lines - 1))" > /dev/tty
 }
 
 cleanup_session_scan_loader_state() {
     local fetch_pid="${1:-}"
     local tmp_file="${2:-}"
+    local rendered="${3:-0}"
 
     [ -n "$fetch_pid" ] && kill "$fetch_pid" 2>/dev/null || true
-    clear_session_scan_loader 2>/dev/null || true
+    [ "$rendered" = "1" ] && clear_session_scan_loader 2>/dev/null || true
     printf "\033[?25h" > /dev/tty 2>/dev/null || true
     [ -n "$tmp_file" ] && rm -f "$tmp_file"
 }
@@ -399,6 +406,7 @@ fetch_server_session_info_with_loader() {
     local tmp_file=""
     local fetch_pid=""
     local frame=0
+    local rendered_frame=0
     local status=0
 
     tmp_file=$(mktemp "${TMPDIR:-/tmp}/shipflow-session.XXXXXX") || {
@@ -406,22 +414,22 @@ fetch_server_session_info_with_loader() {
         return
     }
 
-    trap 'status=$?; cleanup_session_scan_loader_state "$fetch_pid" "$tmp_file"; exit "$status"' INT TERM
+    trap 'status=$?; cleanup_session_scan_loader_state "$fetch_pid" "$tmp_file" "$rendered_frame"; exit "$status"' INT TERM
 
     fetch_server_session_info > "$tmp_file" &
     fetch_pid=$!
 
     printf "\033[?25l" > /dev/tty
     while kill -0 "$fetch_pid" 2>/dev/null; do
-        printf "\033[s" > /dev/tty
+        [ "$frame" -gt 0 ] && printf "\033[9A\r" > /dev/tty
         render_session_scan_frame "$frame"
-        printf "\033[u" > /dev/tty
+        rendered_frame=1
         frame=$((frame + 1))
         sleep 0.18
     done
 
     wait "$fetch_pid" || status=$?
-    clear_session_scan_loader
+    [ "$rendered_frame" = "1" ] && clear_session_scan_loader
     printf "\033[?25h" > /dev/tty
     trap - INT TERM
 
