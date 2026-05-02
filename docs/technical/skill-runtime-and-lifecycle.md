@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-05-02"
 status: reviewed
 source_skill: sf-start
 scope: skill-runtime-and-lifecycle
@@ -16,23 +16,30 @@ docs_impact: yes
 linked_systems:
   - skills/
   - skills/references/
+  - skills/sf-browser/SKILL.md
+  - skills/sf-init/SKILL.md
+  - skills/sf-docs/SKILL.md
+  - specs/sf-build-autonomous-master-skill.md
   - shipflow-spec-driven-workflow.md
   - templates/artifacts/
+  - docs/technical/
   - docs/editorial/
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.6.0"
+    artifact_version: "0.7.0"
     required_status: draft
   - artifact: "skills/references/technical-docs-corpus.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: active
   - artifact: "skills/references/editorial-content-corpus.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: active
 supersedes: []
 evidence:
   - "Skill inventory and workflow doctrine."
   - "Editorial content corpus and Editorial Reader role added for public-content impact analysis."
+  - "Governance corpus lifecycle added: sf-init bootstraps, sf-docs maintains, sf-build consumes."
+  - "sf-browser added as the generic non-auth Playwright MCP browser evidence skill."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -58,8 +65,12 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 
 - `sf-explore -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end`: normal non-trivial flow.
 - `sf-fix`: bug-first entrypoint that may route direct or spec-first.
+- `sf-init`: project bootstrap that reports or creates minimal technical and editorial governance corpus state.
 - `sf-docs`: documentation generation, audit, metadata, and technical-docs mode.
+- `sf-docs technical`: technical governance bootstrap, code-docs map creation, and audit.
 - `sf-docs editorial`: editorial governance scaffolding and audit for public-content drift, claim register, page intent, and runtime content schema preservation.
+- `sf-browser`: generic non-auth browser verification through Playwright MCP for URLs, page-level assertions, screenshots, console summaries, and network summaries.
+- `sf-build`: future user-facing orchestrator that consumes the governance corpus gate before implementation, closure, and ship.
 - `sf-ship` and `sf-prod`: shipping and deployed verification.
 
 ## Control Flow
@@ -69,6 +80,7 @@ source skill
   -> possible chantier
   -> sf-spec
   -> sf-ready
+  -> Governance Corpus Gate
   -> sf-start
   -> Documentation Update Plan after code-changing wave
   -> Editorial Update Plan after public-content or claim-impacting wave
@@ -87,14 +99,25 @@ source skill
 - Shared files are sequential by default.
 - Fresh context is preferred for non-trivial spec-first execution when available.
 - ShipFlow-owned references resolve from `$SHIPFLOW_ROOT`, not the project repo.
+- `sf-init` bootstraps minimal governance corpus state; `sf-docs` owns corpus creation, update, and audit; `sf-build` consumes the corpus through gates.
+- Technical governance applies to code projects by default. Editorial governance applies when public pages, README promises, docs, FAQ, pricing, support copy, public skill pages, blog/article intent, claims, or runtime content surfaces exist.
+- Skills that use Playwright MCP for browser evidence must load
+  `skills/references/playwright-mcp-runtime.md` first and refuse stale Linux
+  ARM64 Chrome-stable fallback evidence.
+- `sf-browser` owns generic non-auth browser proof. `sf-auth-debug` owns auth, session, callback, provider, tenant, and protected-route browser proof.
 
 ## Failure Modes
 
 - A weak spec that lacks success/error behavior or explicit constraints must route back to readiness instead of being silently repaired during coding.
 - If mapped docs are missing from a `Documentation Update Plan`, the docs gate fails.
 - If public content, README, FAQ, pricing, public docs, skill pages, or claims are affected but missing from an `Editorial Update Plan`, the editorial gate fails.
+- If `sf-build` prepares implementation with missing or stale `docs/technical/code-docs-map.md`, applicable `docs/editorial/`, or `CONTENT_MAP.md`, it must route to `sf-docs` or record explicit no-impact/no-surface status before proceeding.
+- If future projects are told to rerun ShipFlow's shipped governance specs instead of using `sf-init` and `sf-docs`, treat that as workflow drift.
 - If the Reader edits docs directly outside assignment, treat it as role misuse.
 - If `AGENTS.md` diverges from `AGENT.md`, verification fails.
+- If Playwright MCP reports `/opt/google/chrome/chrome` on Linux ARM64 after
+  BUG-2026-05-02-001, treat the current MCP process as stale or misconfigured;
+  do not diagnose the app until the runtime preflight passes.
 
 ## Security Notes
 
@@ -107,6 +130,7 @@ source skill
 ```bash
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 python3 tools/shipflow_metadata_lint.py skills/references/technical-docs-corpus.md skills/references/editorial-content-corpus.md skills/references/subagent-roles/editorial-reader.md shipflow-spec-driven-workflow.md AGENT.md
+rg -n "Governance Corpus Gate|sf-init.*bootstrap|sf-docs.*maintain|sf-build.*consume|docs/technical|docs/editorial" skills/sf-init/SKILL.md skills/sf-docs/SKILL.md specs/sf-build-autonomous-master-skill.md shipflow-spec-driven-workflow.md README.md
 ```
 
 Run focused `rg` checks for the affected skill contract and linked references.
@@ -114,7 +138,10 @@ Run focused `rg` checks for the affected skill contract and linked references.
 ## Reader Checklist
 
 - `skills/*/SKILL.md` changed -> check this doc, `technical-docs-corpus.md`, and workflow docs.
+- Playwright MCP usage changed -> check `skills/references/playwright-mcp-runtime.md`
+  and `skills/sf-auth-debug/references/playwright-auth.md`.
 - Public-content skill changed -> check `editorial-content-corpus.md`, `docs/editorial/`, and workflow docs.
+- Governance corpus bootstrap or adoption changed -> check `skills/sf-init/SKILL.md`, `skills/sf-docs/SKILL.md`, `technical-docs-corpus.md`, `editorial-content-corpus.md`, `README.md`, and workflow docs.
 - A lifecycle rule changed -> update `shipflow-spec-driven-workflow.md`.
 - A docs gate changed -> update `skills/sf-docs/SKILL.md`, `technical-docs-corpus.md`, and `code-docs-map.md`.
 - An editorial gate changed -> update `skills/sf-docs/SKILL.md`, `editorial-content-corpus.md`, `docs/editorial/`, and workflow docs.

@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.3.0"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-02"
@@ -29,6 +29,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [Unreleased]
 
 ### Added
+- Governance corpus lifecycle across `sf-init`, `sf-docs`, and the `sf-build` spec: init bootstraps technical/editorial corpus state, docs owns first-run adoption and audit, and `sf-build` now has a Governance Corpus Gate before implementation.
 - Editorial content governance layer under `docs/editorial/`, covering public surface mapping, page intent, claim boundaries, editorial update gates, Astro content schema policy, and missing blog/article surface rules
 - Read-only Editorial Reader role and editorial content corpus reference for public-content impact, claim impact, and runtime content schema analysis
 - `editorial_content_context` artifact template and metadata-linter support for editorial governance artifacts
@@ -55,6 +56,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Skill discovery budget audit for ShipFlow skills, with strict checks for one-sentence descriptions, name/path metadata, listing budgets, and separate long-body risks
 
 ### Changed
+- README, workflow doctrine, corpus references, and skill lifecycle docs now explain that future projects should use `sf-init` and `sf-docs` for project-local governance corpora instead of rerunning ShipFlow's shipped governance specs per project.
 - README, workflow docs, content map, public docs page, technical docs, and content-focused skills now route public-content work through the editorial governance layer before strengthening public claims or editing Astro runtime content
 - Agent and workflow docs now route code-changing work through `docs/technical/code-docs-map.md` and require a `Documentation Update Plan` for mapped code changes
 - Ready specs with missing confidence or draft-style versions were normalized so the default ShipFlow metadata lint baseline passes again

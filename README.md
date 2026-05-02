@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.3.0"
+artifact_version: "0.5.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-01"
+updated: "2026-05-02"
 status: draft
 source_skill: sf-docs
 scope: readme
@@ -19,11 +19,13 @@ linked_systems:
   - config.sh
   - install.sh
   - skills
+  - skills/sf-browser/SKILL.md
   - docs/technical
   - docs/editorial
 depends_on: []
 supersedes: []
-evidence: []
+evidence:
+  - "Added sf-browser as the generic non-auth browser verification path."
 next_step: "/sf-docs audit README.md"
 ---
 
@@ -166,8 +168,9 @@ The local menu stores the remote host, SSH user, and optional SSH key path used 
 Notes:
 - `dataforseo` is configured but disabled by default in Codex unless
   `SHIPFLOW_ENABLE_DATAFORSEO_MCP=1` and credentials are available.
-- `playwright` MCP uses local Chromium on ARM when available, otherwise uses
-  default Playwright runtime.
+- `playwright` MCP points to the local Playwright Chromium/Headless Shell
+  executable when available, especially on Linux ARM64 where Google Chrome
+  stable is not a valid fallback.
 
 ShipFlow also installs the terminal tooling commonly needed to operate those integrations:
 - `node` / Node.js (from NodeSource if needed)
@@ -179,6 +182,7 @@ ShipFlow also installs the terminal tooling commonly needed to operate those int
 - `gh` (GitHub CLI)
 - `flox`
 - `caddy`
+- Playwright Chromium runtime libraries for the default browser MCP
 - `python3` and `PyYAML`
 - core tools: `git`, `curl`, `jq`, `fuser`, `ss` (`iproute2`), `python3-pip` (if needed)
 
@@ -234,6 +238,14 @@ sf-auth-debug -> sf-fix or sf-start -> sf-verify
 
 Use `sf-auth-debug` before guessing from static code when the bug involves Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, cookies, callbacks, protected routes, or Flutter web auth bridges. It can use Playwright where a real browser flow is accessible, and it carries local reference docs for the auth stacks ShipFlow projects use most often.
 
+General browser verification path:
+
+```text
+sf-browser -> sf-fix, sf-test, sf-prod, sf-auth-debug, or sf-verify
+```
+
+Use `sf-browser` when you need browser evidence for a non-auth URL, route, preview, or production page: visible assertions, quick visual inspection, console/network summaries, screenshots, and page-level checks. It keeps deployment truth in `sf-prod`, auth/session diagnosis in `sf-auth-debug`, and durable manual QA logs in `sf-test`.
+
 Fast thread recap:
 
 ```text
@@ -264,6 +276,14 @@ docs/technical/code-docs-map.md -> primary subsystem doc -> Documentation Update
 ```
 
 Use this layer for code-changing work. It keeps technical details close to the code without bloating `AGENT.md`, `CONTEXT.md`, or public docs. `docs/technical/` is internal-only in v1.
+
+Governance corpus lifecycle:
+
+```text
+sf-init -> sf-docs -> sf-build
+```
+
+`sf-init` bootstraps `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and applicable `docs/editorial/` files, or reports why a layer is skipped or blocked. `sf-docs` owns first-run bootstrap, adoption, update, and audit through `/sf-docs technical`, `/sf-docs editorial`, and `/sf-docs update`. `sf-build` consumes those project-local corpora as gates before implementation, closure, and ship; missing governance routes back to `sf-docs` instead of requiring the operator to rerun ShipFlow's shipped governance specs per project.
 
 For non-trivial coding work, the default workflow is:
 

@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-04-29"
 created_at: "2026-04-29 09:02:11 UTC"
-updated: "2026-05-01"
-updated_at: "2026-05-01 18:18:07 UTC"
+updated: "2026-05-02"
+updated_at: "2026-05-02 09:48:41 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -34,6 +34,12 @@ linked_systems:
   - skills/references/subagent-roles/sequential-executor.md
   - skills/references/subagent-roles/wave-executor.md
   - skills/references/subagent-roles/integrator.md
+  - skills/references/technical-docs-corpus.md
+  - skills/references/editorial-content-corpus.md
+  - docs/technical/
+  - docs/technical/code-docs-map.md
+  - docs/editorial/
+  - CONTENT_MAP.md
   - GUIDELINES.md
   - shipflow-spec-driven-workflow.md
   - README.md
@@ -52,13 +58,25 @@ depends_on:
     artifact_version: "1.0.0"
     required_status: "reviewed"
   - artifact: "README.md"
-    artifact_version: "0.2.0"
+    artifact_version: "0.4.0"
     required_status: "draft"
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.5.0"
+    artifact_version: "0.7.0"
     required_status: "draft"
   - artifact: "skills/references/chantier-tracking.md"
     artifact_version: "0.1.0"
+    required_status: "draft"
+  - artifact: "skills/references/technical-docs-corpus.md"
+    artifact_version: "1.1.0"
+    required_status: "active"
+  - artifact: "skills/references/editorial-content-corpus.md"
+    artifact_version: "1.1.0"
+    required_status: "active"
+  - artifact: "docs/technical/code-docs-map.md"
+    artifact_version: "1.0.0"
+    required_status: "reviewed"
+  - artifact: "CONTENT_MAP.md"
+    artifact_version: "0.3.0"
     required_status: "draft"
 supersedes: []
 evidence:
@@ -81,6 +99,7 @@ evidence:
   - "User decision 2026-05-01: technical documentation updates should happen at the end of each execution cycle or wave, before the next wave, unless explicitly marked pending final integration with a reason."
   - "User decision 2026-05-01: replace the generic Reader role with separate Technical Reader and Editorial Reader role files, with no reader.md alias and no loss of existing Reader responsibilities."
   - "sf-ready 2026-05-01: blocked on dependency metadata alignment and ShipFlow language doctrine for internal contracts."
+  - "User decision 2026-05-02: sf-build must consume project-local technical and editorial governance corpora instead of relying on conversation memory or manual per-project governance chantiers."
 next_step: "/sf-start sf-build Autonomous Master Skill"
 ---
 
@@ -100,23 +119,23 @@ En tant qu'utilisatrice finale ShipFlow non-développeuse, je veux lancer une se
 
 ## Minimal Behavior Contract
 
-When the user runs `sf-build` with an intent, the skill becomes the single user-facing pilot for the current chantier: it first checks whether an active spec already covers the same promise, creates or attaches a spec, loops spec/readiness until the contract is executable, applies model routing before `sf-start` when the chantier is large or risky, then executes through bounded delegation. The default execution mode is one bounded subagent at a time for reading, editing, validation, documentation alignment, closure, and ship preparation; parallel work is allowed only when a ready spec defines ordered `Execution Batches` with non-overlapping ownership and validation per batch. Success is observable through a chantier spec with run history, a short user-facing status trail, verified implementation, docs/content alignment or justified pending items, and a final `sf-end` plus `sf-ship` path when gates pass. Failure is observable through a concise blocking question or stop report before dangerous action. The easy edge case to miss is letting convenience override the gates: editing in the master conversation, spawning opportunistic parallel agents, creating a duplicate spec, shipping dirty files outside scope, or moving to the next wave before technical docs and public content impact have been handled.
+When the user runs `sf-build` with an intent, the skill becomes the single user-facing pilot for the current chantier: it first checks whether an active spec already covers the same promise, creates or attaches a spec, loops spec/readiness until the contract is executable, runs the Governance Corpus Gate, applies model routing before `sf-start` when the chantier is large or risky, then executes through bounded delegation. The Governance Corpus Gate checks project-local `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and applicable `docs/editorial/` state before implementation, routing to `sf-docs` bootstrap/audit or recording an explicit no-impact/no-surface reason before work continues. The default execution mode is one bounded subagent at a time for reading, editing, validation, documentation alignment, closure, and ship preparation; parallel work is allowed only when a ready spec defines ordered `Execution Batches` with non-overlapping ownership and validation per batch. Success is observable through a chantier spec with run history, a short user-facing status trail, verified implementation, governance corpus status, docs/content alignment or justified pending items, and a final `sf-end` plus `sf-ship` path when gates pass. Failure is observable through a concise blocking question or stop report before dangerous action. The easy edge case to miss is letting convenience override the gates: editing in the master conversation, spawning opportunistic parallel agents, creating a duplicate spec, shipping dirty files outside scope, treating shipped ShipFlow governance specs as per-project tasks, or moving to the next wave before technical docs and public content impact have been handled.
 
 ## Success Behavior
 
 - Preconditions: the user provides a story, task, bug, or goal; the current repository is identifiable; lifecycle skills are available; and the user can answer material decision questions.
 - Trigger: the user runs `/sf-build <story>` or `$sf-build <story>`.
 - User/operator result: the master conversation stays focused on product decisions, short status, and final outcome; routine file reading, edits, validation, and technical reports are delegated to bounded subagents by default; `sf-build` does not ask again before every sequential subagent while the action remains inside the current chantier scope.
-- System effect: `sf-build` performs an `Existing Chantier Check`, attaches to a matching active spec when possible, creates a new spec only for a new promise or result, traces its run when one spec is in scope, loops `sf-spec` and `sf-ready` until ready or blocked, applies a `Model Routing Gate` before `sf-start` for high-risk or costly work, runs one bounded write-capable subagent at a time by default, uses the Technical Reader for code-docs impact, uses the Editorial Reader for public-surface and claim impact, applies technical docs and editorial updates through a write-capable executor or integrator, verifies the user story, runs `sf-end`, then calls `sf-ship` only when verification, closure, bug-risk, secret, and staging gates pass.
+- System effect: `sf-build` performs an `Existing Chantier Check`, attaches to a matching active spec when possible, creates a new spec only for a new promise or result, traces its run when one spec is in scope, loops `sf-spec` and `sf-ready` until ready or blocked, applies a `Governance Corpus Gate`, applies a `Model Routing Gate` before `sf-start` for high-risk or costly work, runs one bounded write-capable subagent at a time by default, uses the Technical Reader for code-docs impact, uses the Editorial Reader for public-surface and claim impact, applies technical docs and editorial updates through a write-capable executor or integrator, verifies the user story, runs `sf-end`, then calls `sf-ship` only when verification, closure, bug-risk, secret, and staging gates pass.
 - Success proof: the chantier spec includes `Skill Run History` and `Current Chantier Flow`; the final user-facing report names the result, validations, execution mode (`main-only`, `delegated sequential`, or `spec-gated parallel`), commit/push when `sf-ship` succeeds, files excluded from ship if any, and remaining proof limits if any.
 - Silent success: not allowed. The user must see material decisions, high-level phase status, selected execution mode, any parallel batches, and final verdict.
 
 ## Error Behavior
 
-- Expected failures: vague story, multiple matching specs, unavailable subagents, unavailable integrated prompt tool, rejected single-agent degradation, requested parallelism without `Execution Batches`, overlapping ownership, invalid batch dependency order, out-of-scope file need, uncertain permission to touch existing behavior or design, failed readiness, blocked subagent, incompatible subagent outputs, failed checks or verification, partial changes, secrets or unrelated dirty files, blocking bug risk, and failed push.
+- Expected failures: vague story, multiple matching specs, unavailable subagents, unavailable integrated prompt tool, rejected single-agent degradation, requested parallelism without `Execution Batches`, overlapping ownership, invalid batch dependency order, missing or stale governance corpus state, public/content surfaces without editorial governance, code areas without a technical map or explicit non-coverage reason, out-of-scope file need, uncertain permission to touch existing behavior or design, failed readiness, blocked subagent, incompatible subagent outputs, failed checks or verification, partial changes, secrets or unrelated dirty files, blocking bug risk, and failed push.
 - User/operator response: if a user answer can unblock the chantier, `sf-build` asks one concise question with 2 or 3 prepared options plus free-form answer support; otherwise it reports the blocking condition and the next safe action, without claiming the work is delivered.
-- System effect: no subagent is launched outside the current authorized scope; no write-capable subagents run in parallel without ready `Execution Batches`; no next wave starts while impacted technical docs or public-content updates from the current wave remain unresolved, unless every remaining item is marked `pending final integration` or `pending final copy` with reason and resolution condition; no `sf-start` runs before the spec is ready; no full `sf-end` runs before the user story is sufficiently verified; no `sf-ship` runs if checks, bug gate, secret check, staging scope, or central validation fail without explicit user approval.
-- Must never happen: implement outside validated scope, create a duplicate spec for an existing chantier, modify sensitive existing behavior without a decision, do routine file edits in the master conversation when sequential delegation is available, let executors change code without Technical Reader docs impact review or Editorial Reader public-content impact review, run concurrent write-capable subagents without ready non-overlapping batches, ask for delegation consent before every bounded sequential subagent, ignore a readiness failure, ship a half-coded feature, hide a regression, commit unrelated dirty files, use `all-dirty` without explicit request, overwrite user changes, or produce a long technical final report for an end user.
+- System effect: no subagent is launched outside the current authorized scope; no write-capable subagents run in parallel without ready `Execution Batches`; no next wave starts while impacted technical docs or public-content updates from the current wave remain unresolved, unless every remaining item is marked `pending final integration` or `pending final copy` with reason and resolution condition; no `sf-start` runs before the spec is ready and the Governance Corpus Gate has passed, routed to `sf-docs`, or recorded explicit no-impact/no-surface status; no full `sf-end` runs before the user story is sufficiently verified; no `sf-ship` runs if checks, bug gate, secret check, staging scope, or central validation fail without explicit user approval.
+- Must never happen: implement outside validated scope, create a duplicate spec for an existing chantier, modify sensitive existing behavior without a decision, do routine file edits in the master conversation when sequential delegation is available, let executors change code without Technical Reader docs impact review or Editorial Reader public-content impact review, bypass missing project-local governance corpus state, rerun ShipFlow's shipped governance specs as project bootstrap work, run concurrent write-capable subagents without ready non-overlapping batches, ask for delegation consent before every bounded sequential subagent, ignore a readiness failure, ship a half-coded feature, hide a regression, commit unrelated dirty files, use `all-dirty` without explicit request, overwrite user changes, or produce a long technical final report for an end user.
 - Silent failure: not allowed. Each blocked step must be visible as a user decision, missing proof, failed validation, or runtime constraint.
 
 ## Problem
@@ -129,7 +148,7 @@ The previous readiness passes established three core constraints: `sf-build` inv
 
 ## Solution
 
-Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for end-to-end ShipFlow work. It keeps the master conversation at the level of product decisions and high-level status, delegates file work sequentially by default, uses role-specific internal subagent contracts, gates parallelism through ready `Execution Batches`, loops spec/readiness until executable, applies model routing before implementation when needed, and then runs implementation, verification, manual testing when relevant, closure, and ship only when gates pass.
+Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for end-to-end ShipFlow work. It keeps the master conversation at the level of product decisions and high-level status, delegates file work sequentially by default, uses role-specific internal subagent contracts, gates parallelism through ready `Execution Batches`, loops spec/readiness until executable, checks the project-local governance corpus before implementation, applies model routing before implementation when needed, and then runs implementation, verification, manual testing when relevant, closure, and ship only when gates pass.
 
 ## Scope In
 
@@ -138,8 +157,9 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - Define three execution modes: `main-only` for purely conversational answers, `delegated sequential` by default for file reading/editing/validation, and `spec-gated parallel` only from ready non-overlapping `Execution Batches`.
 - Treat `/sf-build <story>` or `$sf-build <story>` as explicit user request for bounded subagents in the current chantier, run sequentially by default.
 - Create one role reference file per internal role under `skills/references/subagent-roles/`: `technical-reader.md`, `editorial-reader.md`, `sequential-executor.md`, `wave-executor.md`, and `integrator.md`; do not create `reader.md`.
-- Define the Technical Reader as a strict read-only role that loads the technical documentation corpus, maps code to docs, identifies technical documentation impact, and produces a `Documentation Update Plan`.
-- Define the Editorial Reader as a strict read-only role that loads `CONTENT_MAP.md`, business/product/brand/GTM contracts, public pages, claims, and content surfaces, then produces an `Editorial Update Plan` and a `Claim Impact Plan` when public behavior or promises are affected.
+- Define a `Governance Corpus Gate` before implementation that checks `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and applicable `docs/editorial/` state, then routes to `sf-docs` bootstrap/audit or records an explicit no-impact/no-surface reason before `sf-start`.
+- Define the Technical Reader as a strict read-only role that loads `skills/references/technical-docs-corpus.md` and project-local `docs/technical/code-docs-map.md`, maps code to docs, identifies technical documentation impact, and produces a `Documentation Update Plan`.
+- Define the Editorial Reader as a strict read-only role that loads `skills/references/editorial-content-corpus.md`, `CONTENT_MAP.md`, project-local `docs/editorial/`, business/product/brand/GTM contracts, public pages, claims, and content surfaces, then produces an `Editorial Update Plan` and a `Claim Impact Plan` when public behavior or promises are affected.
 - Define the `Documentation Update Gate`: after every parallel wave or large sequential block, impacted technical docs are applied by a write-capable executor or integrator and reviewed by the Technical Reader before the next wave, unless marked `pending final integration` with reason and resolution condition.
 - Define the `Editorial Update Gate`: after every wave or large sequential block that changes visible behavior, copy, public pages, public docs, pricing, support copy, skill pages, or claims, impacted public content is applied by a write-capable executor or integrator and reviewed by the Editorial Reader before closure or ship, unless marked `pending final copy` with reason and resolution condition.
 - Define fallback to master/single-agent execution only when subagents are unavailable or refused, and require explicit user agreement for non-trivial file, validation, or ship work.
@@ -172,6 +192,7 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - Do not automatically revert user changes or unrelated files.
 - Do not change existing lifecycle skill behavior except for discoverability, chantier matrix registration, or explicitly listed documentation compatibility.
 - Do not turn ShipFlow into autonomous automation without product accountability from the user.
+- Do not use ShipFlow's own shipped technical/editorial governance specs as per-project bootstrap tasks; future projects use `sf-init` and `sf-docs`.
 
 ## Constraints
 
@@ -186,6 +207,9 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - In sequential mode, the master integrates or validates each result before launching the next subagent.
 - Each internal role must have a short, stable, independently loadable reference file.
 - Technical and Editorial Readers are read-only. They diagnose impact and produce plans; executors or integrators apply changes.
+- The Governance Corpus Gate runs before `sf-start`. Missing `docs/technical/`, missing `docs/technical/code-docs-map.md`, missing applicable `docs/editorial/`, or stale `CONTENT_MAP.md` must become `created`, `already existed`, `needs audit`, `skipped`, or `blocked` status before implementation proceeds.
+- A code-changing chantier must have a technical map or an explicit technical no-impact/non-coverage reason.
+- A public-content, visible-behavior, README, FAQ, pricing, support, public skill page, blog/article, or claim-changing chantier must have editorial governance or an explicit no editorial impact/no-surface reason.
 - A wave or large execution block is not complete until impacted docs and public content are updated, reviewed, explicitly marked no-impact, or marked pending with reason and resolution condition.
 - Questions must be asked before dangerous action.
 - Prepared options must always allow a free-form answer when the options do not fit.
@@ -199,8 +223,8 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - Local runtime: ShipFlow skill system, markdown specs, git, project checks, and existing `sf-end` / `sf-ship` mechanisms.
 - Codex runtime: subagents are available in Codex CLI/app only when requested or authorized; for `sf-build`, command invocation is the explicit bounded delegation request for the current chantier. Subagents inherit parent sandbox and approval controls and may fail if fresh approval cannot be surfaced in non-interactive mode. Parallelism remains optional and spec-gated.
 - Prompt runtime: integrated question tooling such as `AskUserQuestion` may be unavailable; `sf-build` must provide a plain-text fallback.
-- Document contracts: `BUSINESS.md` 1.1.0 reviewed, `PRODUCT.md` 1.1.0 reviewed, `GUIDELINES.md` 1.3.0 reviewed, `BRANDING.md` 1.0.0 reviewed, `README.md` 0.2.0 draft, `shipflow-spec-driven-workflow.md` 0.5.0 draft, `skills/references/chantier-tracking.md` 0.1.0 draft.
-- Draft dependency acceptance: `README.md`, `shipflow-spec-driven-workflow.md`, and `skills/references/chantier-tracking.md` are still draft but are active ShipFlow governance docs for this chantier; their exact versions are recorded and no dependency is marked stale.
+- Document contracts: `BUSINESS.md` 1.1.0 reviewed, `PRODUCT.md` 1.1.0 reviewed, `GUIDELINES.md` 1.3.0 reviewed, `BRANDING.md` 1.0.0 reviewed, `README.md` 0.4.0 draft, `shipflow-spec-driven-workflow.md` 0.7.0 draft, `skills/references/chantier-tracking.md` 0.1.0 draft, `skills/references/technical-docs-corpus.md` 1.1.0 active, `skills/references/editorial-content-corpus.md` 1.1.0 active, `docs/technical/code-docs-map.md` 1.0.0 reviewed, and `CONTENT_MAP.md` 0.3.0 draft.
+- Draft dependency acceptance: `README.md`, `shipflow-spec-driven-workflow.md`, `CONTENT_MAP.md`, and `skills/references/chantier-tracking.md` are still draft but are active ShipFlow governance docs for this chantier; their exact versions are recorded and no dependency is marked stale.
 - Fresh external docs: fresh-docs checked on 2026-05-01 against official OpenAI documentation: Codex Subagents (`https://developers.openai.com/codex/subagents`), Codex CLI (`https://developers.openai.com/codex/cli`), Codex Agent Internet Access (`https://developers.openai.com/codex/cloud/internet-access`), and OpenAI Docs MCP (`https://developers.openai.com/learn/docs-mcp`). Decision: the spec may rely on bounded Codex subagents because invoking `sf-build` is the explicit delegation request for the current chantier; the skill must keep fan-out to one write-capable subagent at a time except ready `Execution Batches`, preserve parent approvals/sandbox, and avoid unbounded external access without a separate gate.
 
 ## Invariants
@@ -212,6 +236,8 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - One write-capable subagent may be active at a time unless a ready spec defines safe `Execution Batches`.
 - If the agent wonders whether it should parallelize but no ready spec says so, it must first update the spec or rerun readiness.
 - Any change to existing behavior must be bounded by the spec or approved by the user.
+- Project-local governance corpus state is an implementation gate, not optional background context.
+- The shipped governance specs are historical ShipFlow doctrine; `sf-build` consumes the corpora created or maintained by `sf-init` and `sf-docs`.
 - A partially implemented feature cannot be closed as delivered.
 - Ship does not prove product correctness; `sf-build` must distinguish pushed from proven.
 - `sf-build` should ask too many useful product questions rather than too few when an answer prevents a regression.
@@ -224,6 +250,7 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - Core lifecycle: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-test`, `sf-end`, and `sf-ship` become orchestrated internal phases.
 - Existing chantier routing: `sf-build` treats `specs/` as the durable registry and continues a matching chantier instead of creating a duplicate.
 - Runtime orchestration: `sf-build` must name when it delegates, which subagent owns which files or surfaces, how outputs are integrated, and which parallel waves are allowed.
+- Governance corpus orchestration: before `sf-start`, `sf-build` checks project-local technical/editorial corpus state and routes missing or stale layers through `sf-docs` rather than duplicating bootstrap logic.
 - Technical documentation orchestration: the Technical Reader maps code changes to `docs/technical/`, README, guides, workflow docs, specs, and internal references; the master blocks the next wave unless updates are applied, no-impact is justified, or pending status is explicit.
 - Editorial orchestration: the Editorial Reader maps visible behavior and claim changes to `CONTENT_MAP.md`, public Astro pages, public docs, FAQ, pricing, skill pages, support copy, README, and claim surfaces; closure and ship are blocked unless updates are applied, no-impact is justified, or pending final copy is explicit.
 - Model routing: `sf-model` remains a helper; `sf-build` may use it as a gate before `sf-start` and records the decision in its own report/trace.
@@ -239,11 +266,12 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - `skills/sf-build/SKILL.md` must be created with frontmatter, argument hint, canonical paths, chantier tracking, lifecycle role, complete orchestration workflow, question fallback, and the rule that invocation is bounded delegation consent for the current chantier.
 - `skills/sf-build/SKILL.md` must include an `Existing Chantier Check` before any launch or spec creation.
 - `skills/sf-build/SKILL.md` must include `Execution Modes`: `main-only`, `delegated sequential`, and `spec-gated parallel`.
+- `skills/sf-build/SKILL.md` must include a `Governance Corpus Gate` before `sf-start`, with concrete checks for `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, applicable `docs/editorial/`, and route-to-`sf-docs` outcomes.
 - `skills/sf-build/SKILL.md` must include `Spec-Gated Parallelism` rules that block opportunistic parallelism and route back to spec/readiness when batches are missing or unsafe.
 - `skills/sf-build/SKILL.md` must include a `Documentation Update Gate` with `pending final integration` as a documented exception.
 - `skills/sf-build/SKILL.md` must include an `Editorial Update Gate` with `no editorial impact` and `pending final copy` as documented outcomes.
-- `skills/references/subagent-roles/technical-reader.md` must define the `Technical Reader Agent Contract`: strict read-only behavior, technical documentation corpus, code-docs mapping, `Documentation Update Plan`, outputs, and no edit/stage/destructive validation permissions.
-- `skills/references/subagent-roles/editorial-reader.md` must define the `Editorial Reader Agent Contract`: strict read-only behavior, editorial corpus, public surfaces, Astro pages, README/public docs, claims, `Editorial Update Plan`, `Claim Impact Plan`, outputs, and no edit/stage/destructive validation permissions.
+- `skills/references/subagent-roles/technical-reader.md` must define the `Technical Reader Agent Contract`: strict read-only behavior, `skills/references/technical-docs-corpus.md`, project-local `docs/technical/code-docs-map.md`, code-docs mapping, `Documentation Update Plan`, outputs, and no edit/stage/destructive validation permissions.
+- `skills/references/subagent-roles/editorial-reader.md` must define the `Editorial Reader Agent Contract`: strict read-only behavior, `skills/references/editorial-content-corpus.md`, `CONTENT_MAP.md`, project-local `docs/editorial/`, public surfaces, Astro pages, README/public docs, claims, `Editorial Update Plan`, `Claim Impact Plan`, outputs, and no edit/stage/destructive validation permissions.
 - `skills/references/subagent-roles/sequential-executor.md` must define the `Sequential Executor Contract`: one active write-capable executor by default, assigned write set, approved technical/editorial update application, stop conditions, validation expectations, and output summary.
 - `skills/references/subagent-roles/wave-executor.md` must define the `Wave Executor Contract`: temporary role, only launched from ready `Execution Batches`, exclusive write set, no shared surfaces unless explicitly assigned, and integrable output.
 - `skills/references/subagent-roles/integrator.md` must define the `Integrator Contract`: integrate between waves, detect conflicts, validate updates, ensure docs/content gates are satisfied, and authorize the next wave only after proof.
@@ -265,6 +293,10 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - Multiple active specs appear close: `sf-build` asks which one to continue or whether the request is new, then waits for the answer.
 - The user runs `/sf-build <story>`: the invocation is bounded delegation consent for the current chantier, so `sf-build` may launch necessary bounded sequential subagents without asking again for each one.
 - The user requests a micro-fix that still requires file reading or editing: `sf-build` keeps the master clean and delegates the file work unless the answer is purely conversational.
+- The project has code but no `docs/technical/code-docs-map.md`: `sf-build` routes to `/sf-docs technical` or blocks before implementation unless the current request has an explicit technical no-impact reason.
+- The project has public pages, README public promises, FAQ, pricing, support copy, public skill pages, or runtime content but no `docs/editorial/`: `sf-build` routes to `/sf-docs editorial` or blocks before closure/ship unless the current request has an explicit no editorial impact reason.
+- The project has no public/content surfaces: `sf-build` records `no editorial surfaces detected` and continues without fabricating a public-content corpus.
+- The project has an Astro or MDX runtime content schema: the Editorial Reader preserves that schema and does not add ShipFlow metadata to runtime content unless the schema accepts it.
 - An executor changes code in a separate workspace/zspace: the Technical Reader compares the planned or summarized change with the technical documentation corpus and names docs to update before `sf-end`.
 - An executor changes visible behavior, a public promise, public page, or Astro content: the Editorial Reader maps impacted public surfaces and claims before closure or ship.
 - A wave ends with impacted technical docs: a write-capable executor or integrator applies updates, the Technical Reader reviews them, then the Integrator may authorize the next wave.
@@ -315,18 +347,18 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 
 - [ ] Task 3a: Create the Technical Reader contract
   - File: `skills/references/subagent-roles/technical-reader.md`
-  - Action: Add a strict read-only `Technical Reader Agent Contract` with technical documentation corpus loading, code context collection, code-docs mapping, `Documentation Update Plan`, expected outputs, no-edit/no-stage restrictions, and compact report format.
+  - Action: Add a strict read-only `Technical Reader Agent Contract` with `skills/references/technical-docs-corpus.md` loading, project-local `docs/technical/code-docs-map.md` loading, code context collection, code-docs mapping, `Documentation Update Plan`, expected outputs, no-edit/no-stage restrictions, and compact report format.
   - User story link: Preserves technical context and docs impact analysis without polluting the master conversation.
   - Depends on: Task 3
-  - Validate with: `test -f skills/references/subagent-roles/technical-reader.md && rg -n "Technical Reader Agent Contract|read-only|technical documentation corpus|code-docs|Documentation Update Plan|no edits|dependencies|risks|write sets|report" skills/references/subagent-roles/technical-reader.md`
+  - Validate with: `test -f skills/references/subagent-roles/technical-reader.md && rg -n "Technical Reader Agent Contract|read-only|technical documentation corpus|technical-docs-corpus|docs/technical/code-docs-map|code-docs|Documentation Update Plan|no edits|dependencies|risks|write sets|report" skills/references/subagent-roles/technical-reader.md`
   - Notes: The Technical Reader may propose batches, risks, and documentation targets; it must never edit files.
 
 - [ ] Task 3b: Create the Editorial Reader contract
   - File: `skills/references/subagent-roles/editorial-reader.md`
-  - Action: Add a strict read-only `Editorial Reader Agent Contract` with editorial corpus loading, public surfaces, Astro pages, README/public docs, claims, `Editorial Update Plan`, `Claim Impact Plan`, expected outputs, no-edit/no-stage restrictions, and compact report format.
+  - Action: Add a strict read-only `Editorial Reader Agent Contract` with `skills/references/editorial-content-corpus.md`, `CONTENT_MAP.md`, project-local `docs/editorial/`, public surfaces, Astro pages, README/public docs, claims, `Editorial Update Plan`, `Claim Impact Plan`, expected outputs, no-edit/no-stage restrictions, and compact report format.
   - User story link: Keeps public messaging, content, and claims aligned without merging analysis and execution.
   - Depends on: Task 3
-  - Validate with: `test -f skills/references/subagent-roles/editorial-reader.md && rg -n "Editorial Reader Agent Contract|read-only|editorial corpus|public surfaces|Astro|Editorial Update Plan|Claim Impact Plan|no edits|claims|report" skills/references/subagent-roles/editorial-reader.md`
+  - Validate with: `test -f skills/references/subagent-roles/editorial-reader.md && rg -n "Editorial Reader Agent Contract|read-only|editorial corpus|editorial-content-corpus|CONTENT_MAP|docs/editorial|public surfaces|Astro|Editorial Update Plan|Claim Impact Plan|no edits|claims|report" skills/references/subagent-roles/editorial-reader.md`
   - Notes: The Editorial Reader may name public surfaces and claim risks; it must never edit files.
 
 - [ ] Task 3c: Create the Sequential Executor contract
@@ -376,6 +408,14 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
   - Depends on: Task 4b
   - Validate with: `rg -n "dirty|regression|existing behavior|design|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|security|fresh-docs|stop" skills/sf-build/SKILL.md`
   - Notes: Work with existing user changes; do not revert them.
+
+- [ ] Task 5a: Add the Governance Corpus Gate
+  - File: `skills/sf-build/SKILL.md`
+  - Action: Add a pre-`sf-start` gate that checks `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, applicable `docs/editorial/`, `skills/references/technical-docs-corpus.md`, and `skills/references/editorial-content-corpus.md`, then routes missing or stale layers to `sf-docs` bootstrap/audit or records explicit no-impact/no-surface status before implementation.
+  - User story link: Ensures future `sf-build` work consumes project-local governance corpora instead of relying on chat memory or repeated governance chantiers.
+  - Depends on: Task 5
+  - Validate with: `rg -n "Governance Corpus Gate|docs/technical|docs/editorial|technical-docs-corpus|editorial-content-corpus|CONTENT_MAP|sf-docs technical|sf-docs editorial" skills/sf-build/SKILL.md`
+  - Notes: The gate consumes corpus state; it must not duplicate full `sf-docs` scaffold logic.
 
 - [ ] Task 6: Add the `sf-model` gate before `sf-start`
   - File: `skills/sf-build/SKILL.md`
@@ -430,7 +470,7 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
   - Action: Review the instructions as a fresh agent, verify gates are testable, verify language doctrine is respected, then rerun `/sf-ready sf-build Autonomous Master Skill`.
   - User story link: Proves the workflow can be implemented without chat history.
   - Depends on: Tasks 1-11
-  - Validate with: `rg -n "invocation.*sf-build|Execution Modes|delegated sequential|Spec-Gated Parallelism|Execution Batches|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|Model Routing Gate|sf-model|Question Gate|plain-text|sf-end|sf-ship|all-dirty|fresh-docs" skills/sf-build/SKILL.md specs/sf-build-autonomous-master-skill.md && rg -n "Technical Reader Agent Contract|Editorial Reader Agent Contract|Sequential Executor Contract|Wave Executor Contract|Integrator Contract" skills/references/subagent-roles && test ! -e skills/references/subagent-roles/reader.md`
+  - Validate with: `rg -n "invocation.*sf-build|Execution Modes|delegated sequential|Spec-Gated Parallelism|Execution Batches|Governance Corpus Gate|docs/technical|docs/editorial|technical-docs-corpus|editorial-content-corpus|CONTENT_MAP|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|Model Routing Gate|sf-model|Question Gate|plain-text|sf-end|sf-ship|all-dirty|fresh-docs" skills/sf-build/SKILL.md specs/sf-build-autonomous-master-skill.md && rg -n "Technical Reader Agent Contract|Editorial Reader Agent Contract|Sequential Executor Contract|Wave Executor Contract|Integrator Contract" skills/references/subagent-roles && test ! -e skills/references/subagent-roles/reader.md`
   - Notes: If readiness still fails on a contract point, correct the spec before implementation.
 
 ## Acceptance Criteria
@@ -443,9 +483,11 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - [ ] AC 3b: Given a ready spec contains `Execution Batches` with exclusive files/surfaces, dependencies, and per-batch validations, when `sf-build` reaches a parallel batch, then it may launch the batch agents concurrently and must integrate results before the next batch.
 - [ ] AC 3c: Given the ready spec lacks `Execution Batches` or write sets overlap, when `sf-build` considers parallelism, then it blocks parallelism and routes to spec update or readiness review.
 - [ ] AC 3d: Given a fresh agent must fulfill an internal role, when `sf-build` launches or reuses that role, then it loads the dedicated reference file (`technical-reader`, `editorial-reader`, `sequential-executor`, `wave-executor`, or `integrator`) and does not expect a `reader.md` alias.
-- [ ] AC 3e: Given an executor changes or plans to change code in a separate workspace/zspace, when the master prepares integration or closure, then the Technical Reader provides a code-docs map and `Documentation Update Plan` naming technical docs to align or justifying no technical docs impact.
+- [ ] AC 3e: Given an executor changes or plans to change code in a separate workspace/zspace, when the master prepares integration or closure, then the Technical Reader loads `skills/references/technical-docs-corpus.md` plus project-local `docs/technical/code-docs-map.md` and provides a `Documentation Update Plan` naming technical docs to align or justifying no technical docs impact.
 - [ ] AC 3f: Given a parallel wave or large sequential block changes code, when `sf-build` wants to proceed to the next wave or `sf-end`, then impacted technical docs are applied by a write-capable executor and reviewed by the Technical Reader, or every remaining item is marked `pending final integration` with reason and resolution condition.
-- [ ] AC 3g: Given a parallel wave or large sequential block changes visible behavior, copy, public page, public docs, or a claim, when `sf-build` wants closure or ship, then the Editorial Reader provides an `Editorial Update Plan` and, when relevant, a `Claim Impact Plan`; updates are applied and reviewed, or every remaining item is marked `pending final copy` with reason and resolution condition.
+- [ ] AC 3g: Given a parallel wave or large sequential block changes visible behavior, copy, public page, public docs, or a claim, when `sf-build` wants closure or ship, then the Editorial Reader loads `skills/references/editorial-content-corpus.md`, `CONTENT_MAP.md`, and project-local `docs/editorial/`, then provides an `Editorial Update Plan` and, when relevant, a `Claim Impact Plan`; updates are applied and reviewed, or every remaining item is marked `pending final copy` with reason and resolution condition.
+- [ ] AC 3h: Given a project-local technical corpus is missing or stale, when `sf-build` prepares implementation, then the Governance Corpus Gate routes to `/sf-docs technical`, records explicit no technical impact/non-coverage, or blocks before `sf-start`.
+- [ ] AC 3i: Given public/content surfaces are relevant but editorial governance is missing or stale, when `sf-build` prepares implementation, closure, or ship, then the Governance Corpus Gate routes to `/sf-docs editorial`, records explicit no editorial impact/no-surface status, or blocks.
 - [ ] AC 4: Given the runtime cannot spawn subagents or the user refuses them, when `sf-build` detects the limitation, then it asks whether to proceed single-agent, split the chantier, or stop.
 - [ ] AC 4b: Given the chantier is long, high-risk, parallel, multi-domain, ambiguous, token-costly, or high-cost-of-error, when `sf-build` has a ready spec and is about to run `sf-start`, then it runs or applies `sf-model` before implementation.
 - [ ] AC 4c: Given the chantier is small, clear, and local, when `sf-build` evaluates the model gate, then it may record that `sf-model` is not needed and continue with the current model.
@@ -463,13 +505,15 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 ## Test Strategy
 
 - Unit: None, because ShipFlow skills are markdown instruction artifacts without an executable unit harness today.
-- Static checks: run `rg` validations for `sf-build`, `Trace category`, `Process role`, `Question Gate`, `Execution Modes`, `delegated sequential`, `Spec-Gated Parallelism`, `Execution Batches`, `Documentation Update Gate`, `Editorial Update Gate`, `pending final integration`, `pending final copy`, `Model Routing Gate`, `sf-model`, invocation-as-delegation-consent, `plain-text`, `sf-end`, `sf-ship`, `all-dirty`, `fresh-docs`, and `Current Chantier Flow` across modified skill/docs.
-- Role reference checks: verify each role file exists and contains its exact contract heading: `Technical Reader Agent Contract`, `Editorial Reader Agent Contract`, `Sequential Executor Contract`, `Wave Executor Contract`, and `Integrator Contract`; verify the technical reader includes `technical documentation corpus`, `code-docs`, and `Documentation Update Plan`; verify the editorial reader includes `editorial corpus`, `public surfaces`, `Editorial Update Plan`, and `Claim Impact Plan`.
+- Static checks: run `rg` validations for `sf-build`, `Trace category`, `Process role`, `Question Gate`, `Execution Modes`, `delegated sequential`, `Spec-Gated Parallelism`, `Execution Batches`, `Governance Corpus Gate`, `docs/technical`, `docs/editorial`, `technical-docs-corpus`, `editorial-content-corpus`, `CONTENT_MAP`, `Documentation Update Gate`, `Editorial Update Gate`, `pending final integration`, `pending final copy`, `Model Routing Gate`, `sf-model`, invocation-as-delegation-consent, `plain-text`, `sf-end`, `sf-ship`, `all-dirty`, `fresh-docs`, and `Current Chantier Flow` across modified skill/docs.
+- Role reference checks: verify each role file exists and contains its exact contract heading: `Technical Reader Agent Contract`, `Editorial Reader Agent Contract`, `Sequential Executor Contract`, `Wave Executor Contract`, and `Integrator Contract`; verify the technical reader includes `technical documentation corpus`, `technical-docs-corpus`, `docs/technical/code-docs-map.md`, `code-docs`, and `Documentation Update Plan`; verify the editorial reader includes `editorial corpus`, `editorial-content-corpus`, `CONTENT_MAP.md`, `docs/editorial/`, `public surfaces`, `Editorial Update Plan`, and `Claim Impact Plan`.
 - Language doctrine checks: verify internal contracts, workflow rules, acceptance criteria, stop conditions, and validation notes are English; verify user-facing French examples are accented and clearly labeled as examples.
 - Integration checks: run metadata/readiness checks on the new skill and docs with `rg`, then run `/sf-ready sf-build Autonomous Master Skill`.
 - Manual scenario 1: simulate a vague story; verify no final spec or implementation starts before actor, result, scope, and exclusions are stable.
 - Manual scenario 1b: simulate a request extending `sf-build Autonomous Master Skill`; verify `sf-build` continues the existing spec.
 - Manual scenario 1c: simulate two plausible specs; verify `sf-build` asks which chantier to continue.
+- Manual scenario 1d: simulate a code project without `docs/technical/code-docs-map.md`; verify `sf-build` routes to `/sf-docs technical` or blocks before `sf-start`.
+- Manual scenario 1e: simulate a public/content project without `docs/editorial/`; verify `sf-build` routes to `/sf-docs editorial`, or records `no editorial impact` only when the request has no public/content consequence.
 - Manual scenario 2: simulate `/sf-build "build X"`; verify invocation is treated as bounded delegation consent and sequential subagents do not require repeated consent.
 - Manual scenario 2b: simulate a large parallel chantier with ready `Execution Batches`; verify `sf-model` is applied before `sf-start`, only non-overlapping agents launch in a batch, and model/execution decisions are recorded.
 - Manual scenario 2c: simulate a large chantier without `Execution Batches`; verify `sf-build` does not parallelize and routes to `sf-spec`/`sf-ready`.
@@ -496,14 +540,14 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 
 ## Execution Notes
 
-- Read first: `skills/sf-spec/SKILL.md`, `skills/sf-ready/SKILL.md`, `skills/sf-start/SKILL.md`, `skills/sf-verify/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-end/SKILL.md`, `skills/sf-ship/SKILL.md`, `skills/references/chantier-tracking.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`.
+- Read first: `skills/sf-spec/SKILL.md`, `skills/sf-ready/SKILL.md`, `skills/sf-start/SKILL.md`, `skills/sf-verify/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-end/SKILL.md`, `skills/sf-ship/SKILL.md`, `skills/references/chantier-tracking.md`, `skills/references/technical-docs-corpus.md`, `skills/references/editorial-content-corpus.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`.
 - External docs checked for this spec on 2026-05-01: `https://developers.openai.com/codex/subagents`, `https://developers.openai.com/codex/cli`, `https://developers.openai.com/codex/cloud/internet-access`, `https://developers.openai.com/learn/docs-mcp`.
-- Implement in this order: create `sf-build`; add question gate and language-aware fallback; add execution modes; create role files; add `Execution Batches` rules and no-opportunistic-parallelism stop condition; add spec/readiness loop; add Existing Chantier Check; add anti-regression gates; add model routing gate; add implementation/verify/test orchestration; add end/ship integration; update chantier doctrine; update help/workflow/README; update `TASKS.md`; run readiness.
+- Implement in this order: create `sf-build`; add question gate and language-aware fallback; add execution modes; create role files; add `Execution Batches` rules and no-opportunistic-parallelism stop condition; add spec/readiness loop; add Existing Chantier Check; add anti-regression gates; add Governance Corpus Gate; add model routing gate; add implementation/verify/test orchestration; add end/ship integration; update chantier doctrine; update help/workflow/README; update `TASKS.md`; run readiness.
 - Packages to avoid: no new runtime package or SDK unless `sf-start` proves necessity and reruns the freshness gate.
 - Patterns to follow: existing skill frontmatter, canonical paths section, chantier tracking block, exact `Trace category` / `Process role` wording, standard `Chantier` final block, internal English contract language, and concise user-facing reports in the active user language.
 - Abstractions to avoid: do not build a second task registry, do not duplicate all checks from lifecycle skills, do not create a hidden state machine outside markdown skill instructions, and do not create a `reader.md` alias.
-- Commands to validate: `rg -n "sf-build" skills/sf-build/SKILL.md skills/sf-help/SKILL.md skills/references/chantier-tracking.md shipflow-spec-driven-workflow.md README.md`; `rg -n "Existing Chantier Check|Execution Modes|delegated sequential|Spec-Gated Parallelism|Execution Batches|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|invocation.*sf-build|Model Routing Gate|sf-model|Question Gate|plain-text|sf-end|sf-ship|all-dirty|fresh-docs" skills/sf-build/SKILL.md`; `rg -n "Technical Reader Agent Contract|technical documentation corpus|code-docs|Documentation Update Plan|Editorial Reader Agent Contract|editorial corpus|Editorial Update Plan|Claim Impact Plan|Sequential Executor Contract|Wave Executor Contract|Integrator Contract" skills/references/subagent-roles`; `test ! -e skills/references/subagent-roles/reader.md`; `/sf-ready sf-build Autonomous Master Skill`.
-- Stop conditions: no unique interpretation of ship behavior, disagreement with lifecycle skill contracts, missing decision about touching existing behavior, missing `Execution Batches` for requested parallelism, overlapping ownership, inability to preserve user changes in a dirty worktree, failed verification gate, docs/content contract contradiction, stale or mismatched dependency metadata, language doctrine violation in internal contracts, or public docs that imply autonomy without user decision gates.
+- Commands to validate: `rg -n "sf-build" skills/sf-build/SKILL.md skills/sf-help/SKILL.md skills/references/chantier-tracking.md shipflow-spec-driven-workflow.md README.md`; `rg -n "Existing Chantier Check|Execution Modes|delegated sequential|Spec-Gated Parallelism|Execution Batches|Governance Corpus Gate|docs/technical|docs/editorial|technical-docs-corpus|editorial-content-corpus|CONTENT_MAP|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|invocation.*sf-build|Model Routing Gate|sf-model|Question Gate|plain-text|sf-end|sf-ship|all-dirty|fresh-docs" skills/sf-build/SKILL.md`; `rg -n "Technical Reader Agent Contract|technical documentation corpus|technical-docs-corpus|docs/technical/code-docs-map|code-docs|Documentation Update Plan|Editorial Reader Agent Contract|editorial corpus|editorial-content-corpus|CONTENT_MAP|docs/editorial|Editorial Update Plan|Claim Impact Plan|Sequential Executor Contract|Wave Executor Contract|Integrator Contract" skills/references/subagent-roles`; `test ! -e skills/references/subagent-roles/reader.md`; `/sf-ready sf-build Autonomous Master Skill`.
+- Stop conditions: no unique interpretation of ship behavior, disagreement with lifecycle skill contracts, missing decision about touching existing behavior, missing governance corpus status before implementation, missing `Execution Batches` for requested parallelism, overlapping ownership, inability to preserve user changes in a dirty worktree, failed verification gate, docs/content contract contradiction, stale or mismatched dependency metadata, language doctrine violation in internal contracts, or public docs that imply autonomy without user decision gates.
 - Implementation boundary: do not alter existing lifecycle skill behavior unless required for discoverability, matrix registration, or explicitly listed documentation compatibility; `sf-build` should compose them first.
 
 ## Open Questions

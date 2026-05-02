@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-05-02"
 status: active
 source_skill: sf-start
 scope: technical-docs-corpus
@@ -25,6 +25,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Ready spec requires a skill-facing reference for technical docs loading."
+  - "sf-docs first-run bootstrap and update adoption now treat missing code-docs maps as recoverable bootstrap state."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -37,8 +38,8 @@ This reference tells ShipFlow skills how to use the internal `docs/technical/` l
 
 ## Loading Rule
 
-1. Read `docs/technical/code-docs-map.md` first for any code-changing task.
-2. Match changed or target paths to the map.
+1. Read `docs/technical/code-docs-map.md` first for any code-changing task when it exists; if it is missing, report a technical governance bootstrap trigger and route to `/sf-docs technical`.
+2. Match changed or target paths to the map when present.
 3. Load only the primary technical doc and necessary secondary docs.
 4. Produce a `Documentation Update Plan` after every code-changing execution wave and again during end verification.
 5. Keep shared docs sequential unless the ready spec assigns disjoint ownership.
@@ -47,11 +48,16 @@ This reference tells ShipFlow skills how to use the internal `docs/technical/` l
 
 `sf-docs technical` or `sf-docs technical audit` should:
 
+- treat a missing `docs/technical/code-docs-map.md` as a first-run bootstrap trigger, not as an immediate read failure
+- create minimal `docs/technical/README.md` and `docs/technical/code-docs-map.md` scaffolding for code projects when safe
+- record an explicit `non-coverage` reason when no major code area can be mapped
 - verify that every major code area in `code-docs-map.md` has a primary technical doc or explicit non-coverage reason
 - scaffold missing subsystem docs from `templates/artifacts/technical_module_context.md`
 - check stale path references, missing validations, missing `Maintenance Rule` sections, and missing Reader triggers
 - verify that `technical_module_context` files pass `tools/shipflow_metadata_lint.py`
 - fail or report a blocking gap when a mapped code area changed but no impacted doc appears in the `Documentation Update Plan`
+
+`sf-docs update` should also detect missing technical governance in existing projects and report one of `created`, `already existed`, `needs audit`, `skipped - no code areas detected`, or `blocked` with `/sf-docs technical` as the recovery command.
 
 ## Documentation Update Plan
 

@@ -586,6 +586,72 @@ Générer automatiquement depuis les dossiers détectés (`src/content`, `conten
 
 Ne pas le transformer en calendrier éditorial ou backlog. Si aucun blog/newsletter/FAQ n'existe, noter la surface comme absente ou `planned`, pas comme chemin inventé.
 
+### Step 7.5: Governance Corpus Bootstrap
+
+After `CONTENT_MAP.md` generation or skip decision, detect and report the project-local governance corpus state. This step is a bootstrap and status gate; long-term maintenance stays owned by `sf-docs`.
+
+Load these ShipFlow-owned references from `$SHIPFLOW_ROOT` before creating or auditing governance files:
+- `skills/references/technical-docs-corpus.md`
+- `skills/references/editorial-content-corpus.md`
+- `templates/artifacts/technical_module_context.md`
+- `templates/artifacts/editorial_content_context.md`
+
+Detect:
+- code areas: `package.json`, lockfiles, `src/`, `app/`, `pages/`, `components/`, `lib/`, `convex/`, `supabase/`, `server/`, `api/`, `*.sh`, `*.py`, `*.ts`, `*.tsx`, `*.js`, `*.jsx`, `*.astro`, `*.vue`, or framework config files
+- public surfaces: public routes, `site/`, `src/pages/`, `app/`, `pages/`, `docs/`, README public promises, FAQ, pricing, support copy, public skill pages, blog/article intent, `src/content`, `content/`, Astro/MDX runtime content, newsletter/social surfaces
+- existing governance files: `docs/technical/README.md`, `docs/technical/code-docs-map.md`, `docs/editorial/README.md`, `CONTENT_MAP.md`
+- agent entrypoint state: `AGENT.md` and `AGENTS.md`
+
+#### Technical governance bootstrap
+
+Technical governance is applicable to code projects by default.
+
+If code areas are detected and `docs/technical/` can be written:
+- create `docs/technical/README.md` when missing, using the `technical_module_context` schema as the metadata model but keeping the body as a concise index
+- create `docs/technical/code-docs-map.md` when missing, with path patterns, primary technical doc targets, required validation commands, and documentation update triggers based on detected code areas
+- when no major code area can be mapped precisely, still create `docs/technical/code-docs-map.md` with an explicit `non-coverage` reason and next step `/sf-docs technical`
+- do not create a mega-doc during init; route subsystem detail to `/sf-docs technical`
+
+If `docs/technical/` already exists:
+- do not overwrite it
+- report `docs/technical: already existed` or `docs/technical: needs audit`
+- name `/sf-docs technical` as the recovery command when the map is missing, stale, or incomplete
+
+If no code areas are detected:
+- report `technical governance: skipped - no code areas detected`
+- do not invent code paths
+
+#### Editorial governance bootstrap
+
+Editorial governance is applicable when public pages, README public promises, docs, FAQ, pricing, support copy, public skill pages, blog/article intent, or runtime content surfaces exist.
+
+If public surfaces are detected and `docs/editorial/` can be written:
+- create `docs/editorial/README.md` when missing
+- create minimal project-specific editorial governance files when evidence exists: `public-surface-map.md`, `page-intent-map.md`, `claim-register.md`, `editorial-update-gate.md`, `astro-content-schema-policy.md`, and `blog-and-article-surface-policy.md`
+- keep entries evidence-based; do not copy ShipFlow's own repository-specific conclusions into the target project
+- preserve runtime content schema boundaries. Do not add ShipFlow metadata to `src/content/**`, Astro collections, MDX consumed by the app, CMS entries, or other runtime content unless the local schema explicitly accepts it
+- if a blog or article output is requested but no blog route is declared, record `surface missing: blog` instead of inventing a route
+
+If no public/content surfaces are detected:
+- report `editorial governance: skipped - no editorial surfaces detected`
+- name `/sf-docs editorial` as the adoption command if public surfaces appear later
+
+If public surfaces are detected but `docs/editorial/` cannot be created safely:
+- report `editorial governance: blocked`
+- name the blocked files and the next safe command `/sf-docs editorial`
+- do not strengthen README, docs, public claims, FAQ, pricing, or support copy until the editorial governance state is created, audited, skipped with reason, or explicitly marked pending
+
+#### Agent entrypoint compatibility
+
+`AGENT.md` is the canonical agent routing entrypoint.
+
+- If `AGENT.md` is missing, create a minimal project-specific entrypoint that points to `CLAUDE.md`, `CONTEXT.md` when present, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and `README.md`.
+- If `AGENTS.md` is missing and symlinks are supported, create `AGENTS.md -> AGENT.md` as compatibility only.
+- If `AGENTS.md` exists as a symlink to `AGENT.md`, report it as OK.
+- If `AGENTS.md` exists as a real file or points elsewhere, report `AGENTS.md: compatibility conflict` and ask before converting or preserving it as external-tool-specific guidance.
+
+The final report must make silent success impossible by showing `created`, `already existed`, `skipped`, `blocked`, or `needs audit` for each governance layer.
+
 ### Step 8: Confirm domain applicability
 
 Use **AskUserQuestion**:
@@ -610,6 +676,10 @@ BUSINESS.md: [created / skipped / already existed]
 BRANDING.md: [created / skipped / already existed]
 CONTENT_MAP.md: [created / skipped / already existed]
 GUIDELINES.md: [created / skipped / already existed]
+AGENT.md:    [created / already existed / blocked]
+AGENTS.md:   [symlink created / symlink ok / absent / compatibility conflict]
+docs/technical: [created / already existed / skipped - no code areas detected / needs audit / blocked]
+docs/editorial: [created / already existed / skipped - no editorial surfaces detected / needs audit / blocked]
 MCP:         [configured / skipped]
 PROJECTS:    [registered / already registered]
 Domains:     [list of applicable domains]
@@ -618,6 +688,8 @@ Next steps:
   /sf-audit        — Run initial audit
   /sf-check        — Verify build passes
   /sf-tasks        — Start tracking work
+  /sf-docs technical — Bootstrap or audit technical governance
+  /sf-docs editorial — Bootstrap or audit editorial governance when public surfaces exist
 ```
 
 ---

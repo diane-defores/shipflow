@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-05-02"
 status: active
 source_skill: sf-start
 scope: editorial-content-corpus
@@ -34,6 +34,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Ready spec requires a compact loading reference for editorial and content agents."
+  - "sf-docs first-run bootstrap and update adoption now treat missing editorial governance as recoverable bootstrap state when public surfaces exist."
 next_review: "2026-06-01"
 next_step: "/sf-docs audit editorial"
 ---
@@ -47,7 +48,7 @@ This reference tells content, copy, docs, and Editorial Reader agents how to loa
 ## Load Order
 
 1. Read `CONTENT_MAP.md` first. It is the canonical public content routing map.
-2. Read `docs/editorial/README.md` for the editorial governance index.
+2. Read `docs/editorial/README.md` for the editorial governance index when present; if it is missing on a public/content project, report an editorial governance bootstrap trigger and route to `/sf-docs editorial`.
 3. Read `docs/editorial/public-surface-map.md` for public surfaces and update triggers.
 4. Read `docs/editorial/page-intent-map.md` for page jobs, CTAs, source contracts, and shared-file risk.
 5. Read `docs/editorial/claim-register.md` when public claims touch security, privacy, compliance, AI reliability, automation, speed, savings, availability, pricing, or business outcomes.
@@ -91,6 +92,8 @@ These skills should use this corpus before changing or judging public content:
 
 ## Output Expectations
 
+- Missing `docs/editorial/README.md` on a public/content project: treat it as a first-run bootstrap trigger.
+- Existing project adoption: `sf-docs update` reports editorial governance as `created`, `already existed`, `needs audit`, `skipped - no editorial surfaces detected`, or `blocked`.
 - Public-content impact: produce an `Editorial Update Plan`.
 - Sensitive public claims: produce a `Claim Impact Plan`.
 - No public impact: state `no editorial impact` with a reason.

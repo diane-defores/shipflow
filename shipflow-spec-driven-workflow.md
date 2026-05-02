@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.6.0"
+artifact_version: "0.8.0"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-05-01"
+updated: "2026-05-02"
 status: draft
 source_skill: sf-docs
 scope: spec-driven-workflow
@@ -31,6 +31,8 @@ evidence:
   - "Updated on 2026-04-29 to formalize the ShipFlow language doctrine: English internal contracts, user-facing interaction in the user's active language."
   - "Updated on 2026-05-01 to add the internal technical documentation layer and Documentation Update Plan gate."
   - "Updated on 2026-05-01 to add editorial content governance, public claim safety, Astro runtime-content schema boundaries, and the Editorial Update Gate."
+  - "Updated on 2026-05-02 to define the governance corpus lifecycle: sf-init bootstraps, sf-docs maintains, sf-build consumes."
+  - "Updated on 2026-05-02 to add sf-browser as the generic non-auth browser evidence path."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -67,6 +69,14 @@ Bug intake entrypoint:
 ```text
 sf-fix -> fix directly or route to spec-first path
 ```
+
+General browser evidence entrypoint:
+
+```text
+sf-browser -> sf-fix / sf-test / sf-prod / sf-auth-debug / sf-verify
+```
+
+Use `sf-browser` for non-auth page-level browser proof: visible assertions, quick visual checks, accessibility snapshots, screenshots, console summaries, and network summaries.
 
 Optional model-selection entrypoint before execution:
 
@@ -140,6 +150,16 @@ ShipFlow maintains a public-content governance layer under `docs/editorial/`.
 When a wave changes visible behavior, public content, README guidance, public docs, FAQ, pricing, support copy, public skill promises, or claims, the Editorial Reader produces an `Editorial Update Plan`. Sensitive claims also get a `Claim Impact Plan`.
 
 The Editorial Reader is read-only. It diagnoses public-content impact; an executor or integrator applies updates. Shared editorial files stay sequential unless a ready spec assigns exclusive write ownership.
+
+## Governance Corpus Lifecycle
+
+Future projects should not rerun ShipFlow's shipped technical or editorial governance specs as manual per-project chantiers. Those specs are source doctrine. The normal project workflow uses lightweight project-local corpora:
+
+- `sf-init` bootstraps `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and applicable `docs/editorial/` files, or reports `skipped`, `needs audit`, or `blocked` with a recovery command.
+- `sf-docs` owns ongoing corpus creation, first-run bootstrap, update, and audit. Use `/sf-docs technical`, `/sf-docs editorial`, or `/sf-docs update` to adopt missing governance layers in existing projects.
+- `sf-build` consumes the corpora through a Governance Corpus Gate before implementation and before closure/ship when public-content impact is relevant. Missing or stale corpus state routes to `sf-docs` or blocks instead of relying on chat memory.
+
+Technical governance applies to code projects by default. Editorial governance applies when public pages, README promises, docs, FAQ, pricing, support copy, public skill pages, blog/article intent, claims, or runtime content surfaces exist. If a layer is not applicable, the workflow records the reason instead of silently skipping it.
 
 ## Core Principles
 
@@ -631,7 +651,9 @@ When `sf-test` finds a failure first, the bug should already exist as a compact 
 
 When `sf-fix` is the first skill to touch a bug, it should usually create that compact index entry plus dossier itself instead of leaving the correction documented only in chat history or git diff. Only narrow minor exceptions such as copy-only or purely cosmetic fixes may skip dossier creation, and that exception should be stated explicitly in the final report.
 
-When the bug is auth or browser-flow related, run `sf-auth-debug` before coding from theory. It consumes the bug report or spec, reproduces with Playwright where possible, and isolates failures across Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, cookies, callbacks, protected routes, and Flutter web auth bridges. Its output should route back into `sf-fix`, `sf-start`, or `sf-verify` with evidence rather than guesses.
+When the bug is auth or browser-session related, run `sf-auth-debug` before coding from theory. It consumes the bug report or spec, reproduces with Playwright where possible, and isolates failures across Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, cookies, callbacks, protected routes, and Flutter web auth bridges. Its output should route back into `sf-fix`, `sf-start`, or `sf-verify` with evidence rather than guesses.
+
+When the issue needs browser evidence but is not auth-specific, use `sf-browser` for the reproduction or observation. It collects the narrow browser proof, preserves read-only defaults, and routes actionable bugs back to `sf-fix` or non-trivial follow-up to `sf-spec`.
 
 ### 1. `sf-explore`
 
@@ -725,6 +747,7 @@ Behavior:
 - chooses `single-agent` or `multi-agent` execution before launching work
 - loads only the execution-relevant files and the linked systems that must be revalidated
 - prefers fresh context for spec-first execution when that reduces residual ambiguity
+- routes non-auth browser proof to `sf-browser` and auth/session/protected-flow proof to `sf-auth-debug`
 
 The key rule:
 - if the work is ambiguous or multi-file, `sf-start` should not invent the missing intent
