@@ -47,6 +47,8 @@ Elle intervient quand le sujet touche à l'auth réelle côté navigateur:
 - retour inattendu vers login
 - boucle d'auth
 
+Boundary: use `/sf-browser` for public UI, visual, console, network, and non-auth navigation checks. Keep `sf-auth-debug` for Clerk, Supabase Auth, OAuth, cookies, sessions, callbacks, tenants, protected routes, and auth provider behavior.
+
 Le but n'est pas de "faire passer Playwright à tout prix".
 Le but est de localiser précisément le point de rupture et de produire un diagnostic exploitable par la suite du workflow.
 
@@ -70,6 +72,7 @@ Références locales à charger selon le contexte:
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md` pour Supabase Auth, `@supabase/ssr`, cookies, redirects, callbacks et limites `getUser()` / `getSession()`
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/flutter-web-clerkjs-auth-pattern.md` comme documentation technique transverse à réutiliser dans les autres repos Flutter
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/tubeflow-youtube-oauth-nextjs-convex-pattern.md` comme documentation technique transverse pour YouTube OAuth via Next.js + Convex
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/playwright-mcp-runtime.md` avant tout appel Playwright MCP, pour eviter le fallback Linux ARM64 vers Google Chrome stable absent
 
 Ne charger que les références utiles au bug courant. Si une info de référence est critique et peut avoir changé récemment, vérifier ponctuellement la documentation officielle, puis mettre à jour la référence locale si nécessaire.
 
@@ -165,7 +168,7 @@ Charger les références locales pertinentes avant de conclure:
 - Google OAuth direct ou social login Google -> lire `references/google-oauth.md`
 - Convex détecté -> lire `references/convex-tooling.md`
 - Convex avec Clerk ou session backend Convex -> lire `references/convex-clerk.md`
-- Diagnostic Playwright, session persistée, preuve navigateur ou auth automatisée -> lire `references/playwright-auth.md`
+- Diagnostic Playwright, session persistée, preuve navigateur ou auth automatisée -> lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/playwright-mcp-runtime.md`, puis `references/playwright-auth.md`
 - Astro ou `@clerk/astro` détecté -> lire `references/astro-clerk.md`
 - Flutter, Dart, `clerk_flutter`, `clerk_auth`, ou `convex_dart` détecté -> lire `references/flutter-clerk-convex.md`
 - Flutter web avec ClerkJS, `web_auth/`, `clerk-runtime.js`, `/sign-in`, `/sso-callback`, ou bridge JS/Dart -> lire `references/flutter-web-clerkjs-bridge.md`
@@ -191,6 +194,11 @@ Le but ici est de guider l'observation Playwright, pas de faire une revue exhaus
 ### Step 4 — Reproduire avec Playwright MCP
 
 Utiliser Playwright pour observer le comportement réel.
+
+Avant le premier appel `mcp__playwright__*`, appliquer la preflight Playwright MCP de `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/playwright-mcp-runtime.md`:
+- si la config Playwright MCP pointe vers Google Chrome stable, un channel `chrome`, ou seulement `["-y", "@playwright/mcp@latest"]` sur Linux ARM64, ne pas lancer Playwright comme preuve; router vers `/sf-fix BUG-2026-05-02-001`
+- si la config est correcte mais que le MCP renvoie encore `/opt/google/chrome/chrome`, conclure que le process MCP courant est stale et demander un reload Codex/MCP avant de retester
+- le rapport final doit indiquer `Playwright MCP runtime: executable-path <path>`, `chromium fallback`, ou `blocked/stale config`
 
 Si le mode projet exige une preview Vercel:
 - ne pas ouvrir une URL locale comme preuve finale du flow auth

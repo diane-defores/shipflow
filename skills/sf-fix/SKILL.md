@@ -162,6 +162,8 @@ If the bug touches browser authentication, protected routes, OAuth redirects, Cl
 - use it to locate the exact failure step instead of inferring the auth break only from static code
 - keep `sf-fix` as the router and execution owner; `sf-auth-debug` provides evidence, not a separate workflow
 
+If the bug needs browser reproduction but is not auth-specific, prefer `/sf-browser [URL or route] [objective]` for public UI, visual, console, network, or non-auth navigation evidence before patching. Keep `sf-fix` as the execution owner when a direct fix is still appropriate.
+
 Force `spec-first` if any unresolved point could change:
 - who can see/do the action
 - what data becomes visible, editable, deletable, or triggerable
@@ -232,6 +234,7 @@ If `spec-first`:
 If `diagnostic only`:
 - do not code
 - if the bug is auth/browser-flow related, prefer `/sf-auth-debug [bug title]`
+- if the bug needs non-auth browser evidence, prefer `/sf-browser [URL or route] [objective]`
 - otherwise report the suspected root cause and concrete next step command
 
 ### Step 4 — Report

@@ -41,6 +41,8 @@ Le registry `PROJECTS.md` est en lecture seule dans cette skill.
 
 Lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` avant de choisir la cible. Si le projet est en mode `vercel-preview-push`, `sf-prod` vérifie le déploiement Vercel correspondant au dernier commit poussé et renvoie l'URL de preview prête pour les tests. Dans ce mode, le mot "prod" désigne le gate post-push, pas forcément le domaine de production custom.
 
+After `sf-prod` confirms the deployment URL and deploy/runtime state, route page-level browser assertions, visual checks, console summaries, and non-auth network checks to `/sf-browser [URL] [objective]`. Keep deployment discovery, Vercel status, build logs, runtime logs, and live health ownership in `sf-prod`.
+
 ---
 
 ### Step 1 — Identifier le projet
@@ -157,6 +159,7 @@ Quand c'est faisable sans inventer de scénario fragile, ajouter un check de coh
 Si la release concerne l'auth, une zone protégée, un dashboard privé, ou un callback OAuth:
 - signaler qu'un `200` public ne prouve pas le flow principal
 - recommander un passage `sf-auth-debug` ou une vérification Playwright ciblée si le doute principal porte sur login, session ou redirect
+- recommander `/sf-browser [URL] [objective]` for a non-auth browser assertion after the deployment URL is confirmed
 
 Si la nature de la release rend le health check insuffisant, dire explicitement ce qui n'a pas été vérifié au lieu de conclure trop fort.
 
@@ -273,3 +276,4 @@ Dans tous les cas, ajouter une ligne `Hypothèses / risques restants` dès qu'un
 - Ne jamais déclarer "prod OK" si seuls des signaux partiels ont été vérifiés. Préférer une conclusion précise du type : "deploy vert et URL répond, mais validation fonctionnelle/sécurité partielle".
 - Si la release semble sensible (auth, paiement, données privées, permissions, multi-tenant, webhooks, admin), être explicite sur l'absence éventuelle de preuve côté sécurité ou cohérence produit et recommander `/sf-verify` ou une vérification manuelle ciblée.
 - Si le risque principal est un flow d'auth navigateur, recommander explicitement `/sf-auth-debug [URL ou bug]`.
+- If the main remaining risk is a non-auth browser assertion after deployment confirmation, recommend `/sf-browser [URL] [objective]`.

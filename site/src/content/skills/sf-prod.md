@@ -21,6 +21,7 @@ what_you_get:
   - "A production health check"
   - "Visibility into deployment status and live errors"
   - "A tighter release confidence loop"
+  - "A route into sf-browser when the confirmed URL needs page-level browser proof"
 example_prompts:
   - "/sf-prod"
   - "/sf-prod check latest deploy"
@@ -31,6 +32,7 @@ limits:
 related_skills:
   - "sf-ship"
   - "sf-check"
+  - "sf-browser"
   - "sf-fix"
 featured: false
 order: 530

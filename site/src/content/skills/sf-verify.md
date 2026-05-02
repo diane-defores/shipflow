@@ -22,6 +22,7 @@ what_you_get:
   - "Findings around completeness, risk, and regressions"
   - "A verification result in the spec's chantier flow when a unique spec is in scope"
   - "A callout for linked open bug records when they affect the scope"
+  - "A route to sf-browser when non-auth browser evidence is missing"
   - "A stronger basis for end-of-task or shipping decisions"
 example_prompts:
   - "/sf-verify"
@@ -32,6 +33,7 @@ limits:
   - "Weak upstream specs still reduce the strength of downstream verification"
   - "Open linked bugs remain part of the verification verdict when they touch the scope"
 related_skills:
+  - "sf-browser"
   - "sf-check"
   - "sf-end"
   - "sf-ship"

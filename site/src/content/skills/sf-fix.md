@@ -22,6 +22,7 @@ what_you_get:
   - "Either a direct-fix path or a spec-first reroute"
   - "A bug-dossier-driven fix loop when BUG-ID is provided"
   - "A durable bug record even when the fix starts as a direct local patch, except for explicit minor exceptions"
+  - "A route to sf-browser when the bug needs non-auth browser evidence"
   - "A sharper understanding of the real bug boundary"
 example_prompts:
   - "/sf-fix users can still access archived projects"
@@ -33,6 +34,7 @@ limits:
   - "When a bug id is supplied, the skill consumes bugs/BUG-ID.md and appends diagnosis and fix attempts there instead of relying on chat history"
 related_skills:
   - "sf-spec"
+  - "sf-browser"
   - "sf-start"
   - "sf-verify"
 featured: true

@@ -27,6 +27,7 @@ what_you_get:
   - "A compact BUGS.md index entry when the test fails"
   - "A per-bug dossier under bugs/BUG-ID.md"
   - "Redacted evidence references under test-evidence/BUG-ID/ when needed"
+  - "A route into sf-browser when a narrow non-auth browser check is enough"
   - "A clean route into sf-fix or sf-auth-debug when the failure needs diagnosis"
 example_prompts:
   - "/sf-test"
@@ -39,6 +40,7 @@ limits:
 related_skills:
   - "sf-check"
   - "sf-verify"
+  - "sf-browser"
   - "sf-auth-debug"
   - "sf-fix"
   - "sf-ship"

@@ -32,6 +32,7 @@ For a solo founder, this is the post-deploy confidence pass that catches “look
 - health-check results on the live URL
 - log access or a dashboard link when the build failed
 - a short risk statement about what remains unverified
+- a route to `sf-browser` when the next proof is a non-auth page-level browser assertion
 - a clear reminder when auth or protected flows still need `sf-auth-debug`
 
 ## Typical Examples
@@ -52,5 +53,6 @@ For a solo founder, this is the post-deploy confidence pass that catches “look
 
 - `sf-check` before pushing
 - `sf-ship` to send the change
+- `sf-browser` when the confirmed deployment URL needs non-auth page, visual, console, or network evidence
 - `sf-auth-debug` when production doubts are really about login, callbacks, redirects, or private app flows
 - `sf-research` or `sf-fix` if the failure needs investigation

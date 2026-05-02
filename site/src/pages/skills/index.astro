@@ -100,6 +100,56 @@ const groupedSkills = categoryOrder.map((category) => ({
 
     <section class="section">
       <div class="section-heading">
+        <p class="eyebrow">Browser Evidence</p>
+        <h2>Use the right browser skill for the kind of proof you need.</h2>
+        <p>
+          Browser evidence is not one workflow. A public page check, an auth
+          callback failure, a manual user-flow test, and a deployment health
+          check each need a different level of proof.
+        </p>
+      </div>
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>General page proof</h3>
+          <p>
+            Use `sf-browser` when you need a real browser to inspect one
+            non-auth objective: visible state, layout, screenshot, console, or
+            network signal.
+          </p>
+          <a class="doc-action" href="/skills/sf-browser">Open sf-browser</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Auth flow diagnosis</h3>
+          <p>
+            Use `sf-auth-debug` when the risk is login, OAuth, cookies,
+            callbacks, sessions, tenants, providers, or protected routes.
+          </p>
+          <a class="doc-action" href="/skills/sf-auth-debug">Open sf-auth-debug</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Manual user-flow proof</h3>
+          <p>
+            Use `sf-test` when the work needs a guided scenario, structured
+            user response, test log, retest, or bug dossier.
+          </p>
+          <a class="doc-action" href="/skills/sf-test">Open sf-test</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Deployment truth first</h3>
+          <p>
+            Use `sf-prod` when the preview or production URL, deployment state,
+            build logs, runtime logs, or live readiness are still uncertain.
+          </p>
+          <a class="doc-action" href="/skills/sf-prod">Open sf-prod</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
         <p class="eyebrow">Featured Skills</p>
         <h2>The core moves most founders will touch first.</h2>
       </div>

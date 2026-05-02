@@ -48,6 +48,8 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Internal skill taxonomy for chantier intake, including `source-de-chantier` process roles and standard `Chantier potentiel` routing to `/sf-spec`
 - `sf-resume` — fast current-thread recap skill with task status bullets, close/keep-open verdict, and one critical reminder
 - `sf-auth-debug` — browser-auth diagnostic skill for Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, sessions, callbacks, protected routes, and Playwright-based reproduction
+- `sf-browser` — general non-auth browser verification skill for page-level assertions, visual checks, screenshots, console/network summaries, and safe browser evidence handoffs
+- `skills/sf-browser/references/browser-evidence.md` for redaction rules, verdict labels, screenshot/snapshot policy, console/network summary limits, and production read-only safety
 - Cross-project auth reference docs for the ContentFlow Flutter web ClerkJS bridge and the TubeFlow Next.js + Convex YouTube OAuth flow
 - Public site tutorial page explaining how ShipFlow skill arguments can act as mode switches, structured inputs, or free-form tasks
 - Dedicated public FAQ page for common ShipFlow questions around skills, docs scope, and workflow behavior
@@ -73,6 +75,9 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` now report chantier status and trace lifecycle results when a unique spec-first chantier is identified
 - Workflow documentation now links metadata doctrine to executable templates and linting
 - `sf-fix`, `sf-start`, `sf-verify`, and `sf-prod` now route auth/browser-flow uncertainty through `sf-auth-debug` when browser evidence is needed
+- `sf-start`, `sf-fix`, `sf-check`, `sf-test`, `sf-prod`, and `sf-verify` now route non-auth browser evidence through `sf-browser` instead of stretching `sf-auth-debug`
+- Public skill pages, the skills hub, and the FAQ now explain when to use `sf-browser` versus `sf-auth-debug`, `sf-test`, and `sf-prod`
+- Playwright MCP setup now prefers local Playwright Chromium or Chromium fallback over Google Chrome stable on Linux ARM64, with a shared runtime preflight reference for browser-evidence skills
 - `sf-fix` now requires durable bug memory for direct fixes by creating or reusing a `BUG-ID` and per-bug dossier unless a narrow minor exception is explicitly justified
 - Internal and public skill documentation now explain when to use `sf-auth-debug` and which auth references it carries
 - Internal linking across the public site now routes homepage, docs, about, and "Why not just prompts?" traffic toward the new skill-modes tutorial and FAQ surfaces

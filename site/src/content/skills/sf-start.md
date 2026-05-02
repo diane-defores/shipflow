@@ -22,6 +22,7 @@ what_you_get:
   - "Either direct execution or a reroute to stronger contract work"
   - "A chantier trace when a unique spec-first workstream is in scope"
   - "Focused validation tied to the task being built"
+  - "A route to sf-browser when non-auth browser evidence is needed"
 example_prompts:
   - "/sf-start"
   - "/sf-start build the public skills hub"
@@ -32,6 +33,7 @@ limits:
 related_skills:
   - "sf-spec"
   - "sf-ready"
+  - "sf-browser"
   - "sf-verify"
 featured: true
 order: 50

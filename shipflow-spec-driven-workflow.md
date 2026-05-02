@@ -15,6 +15,7 @@ security_impact: unknown
 docs_impact: yes
 linked_systems:
   - skills/
+  - skills/sf-browser/SKILL.md
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
   - skills/references/canonical-paths.md
@@ -381,7 +382,7 @@ Documentation role map:
 - `BUSINESS.md` -> business/product contract: for whom, what problem, what value, what model
 - `BRANDING.md` -> brand contract: tone, posture, vocabulary, claims
 - `GTM.md` -> public promise and sales contract: offer, funnel, objections, proof, channels, KPIs
-- `CONTENT_MAP.md` -> content architecture contract: surfaces, page roles, cocons sémantiques, pillar pages, and update rules
+- `CONTENT_MAP.md` -> content architecture contract: surfaces, page roles, semantic clusters, pillar pages, and update rules
 - `docs/editorial/` -> editorial governance contract: public surfaces, claim register, page intent, content gates, and runtime schema policy
 - `GUIDELINES.md` -> technical constraints and conventions
 - `PRODUCT.md` -> operational product contract

@@ -180,6 +180,7 @@ It records evidence; it does not prove the absence of every bug.
 ## Related Skills
 
 - `sf-verify` before manual test planning
+- `sf-browser` when a one-off non-auth browser proof is enough and no durable QA log is needed
 - `sf-auth-debug` when auth failure needs browser-level diagnosis
 - `sf-fix` when a failed test creates an actionable bug
 - `sf-ship` once checks, verification, and testing are good enough

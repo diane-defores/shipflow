@@ -379,6 +379,46 @@ fi
 
 echo ""
 
+install_first_available_apt_package() {
+    local label="$1"
+    shift
+    local pkg
+
+    for pkg in "$@"; do
+        if dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
+            success "$label déjà installé ($pkg)"
+            return 0
+        fi
+    done
+
+    for pkg in "$@"; do
+        if apt-cache show "$pkg" >/dev/null 2>&1; then
+            apt-get install -y "$pkg"
+            success "$label installé ($pkg)"
+            return 0
+        fi
+    done
+
+    warning "Dépendance Playwright introuvable dans apt: $label ($*)"
+    return 1
+}
+
+# Playwright MCP is provisioned by default. Install the Chromium runtime
+# libraries explicitly so Linux ARM64 hosts do not fall through to Chrome stable.
+info "Vérification des dépendances runtime Playwright..."
+apt-get update >/dev/null 2>&1 || warning "apt-get update a échoué; tentative avec le cache apt existant"
+install_first_available_apt_package "ATK" libatk1.0-0t64 libatk1.0-0 || true
+install_first_available_apt_package "ATK bridge" libatk-bridge2.0-0t64 libatk-bridge2.0-0 || true
+install_first_available_apt_package "ALSA" libasound2t64 libasound2 || true
+install_first_available_apt_package "GBM" libgbm1 || true
+install_first_available_apt_package "X composite" libxcomposite1 || true
+install_first_available_apt_package "X damage" libxdamage1 || true
+install_first_available_apt_package "X fixes" libxfixes3 || true
+install_first_available_apt_package "X randr" libxrandr2 || true
+install_first_available_apt_package "AT-SPI" libatspi2.0-0t64 libatspi2.0-0 || true
+
+echo ""
+
 # 7. Vérifier/Installer GitHub CLI
 if command -v gh >/dev/null 2>&1; then
     GH_VERSION=$(gh --version | head -n1)
@@ -634,22 +674,65 @@ configure_dataforseo_mcp() {
     fi
 }
 
-playwright_mcp_args_json() {
+playwright_mcp_executable_path() {
     local target_home="$1"
     local arch
-    local chromium_path=""
+    local candidate=""
 
-    arch="$(uname -m)"
-    if [ "$arch" = "aarch64" ] || [ "$arch" = "arm64" ]; then
-        chromium_path=$(find "$target_home/.cache/ms-playwright" \
-            -path '*/chrome-linux/chrome' \
-            -type f -perm -111 2>/dev/null | sort -Vr | head -n 1 || true)
+    if [ -n "${SHIPFLOW_PLAYWRIGHT_EXECUTABLE_PATH:-}" ] && [ -x "$SHIPFLOW_PLAYWRIGHT_EXECUTABLE_PATH" ]; then
+        printf '%s' "$SHIPFLOW_PLAYWRIGHT_EXECUTABLE_PATH"
+        return 0
     fi
 
-    if [ -n "$chromium_path" ]; then
-        printf '["-y","@playwright/mcp@latest","--executable-path","%s","--headless","--no-sandbox"]' "$chromium_path"
+    arch="$(uname -m)"
+    candidate=$(find "$target_home/.cache/ms-playwright" \
+        -path '*/chrome-linux/chrome' \
+        -type f -perm -111 2>/dev/null | sort -Vr | head -n 1 || true)
+    if [ -n "$candidate" ]; then
+        printf '%s' "$candidate"
+        return 0
+    fi
+
+    candidate=$(find "$target_home/.cache/ms-playwright" \
+        -path '*/chrome-linux/headless_shell' \
+        -type f -perm -111 2>/dev/null | sort -Vr | head -n 1 || true)
+    if [ -n "$candidate" ]; then
+        printf '%s' "$candidate"
+        return 0
+    fi
+
+    for candidate in chromium chromium-browser; do
+        candidate="$(command -v "$candidate" 2>/dev/null || true)"
+        if [ -n "$candidate" ] && [ -x "$candidate" ]; then
+            printf '%s' "$candidate"
+            return 0
+        fi
+    done
+
+    # Google Chrome stable is not available through Playwright on Linux ARM64.
+    if [ "$arch" != "aarch64" ] && [ "$arch" != "arm64" ]; then
+        for candidate in google-chrome google-chrome-stable chrome; do
+            candidate="$(command -v "$candidate" 2>/dev/null || true)"
+            if [ -n "$candidate" ] && [ -x "$candidate" ]; then
+                printf '%s' "$candidate"
+                return 0
+            fi
+        done
+    fi
+
+    return 1
+}
+
+playwright_mcp_args_json() {
+    local target_home="$1"
+    local executable_path=""
+
+    executable_path="$(playwright_mcp_executable_path "$target_home" || true)"
+
+    if [ -n "$executable_path" ]; then
+        printf '["-y","@playwright/mcp@latest","--executable-path","%s","--headless","--no-sandbox"]' "$executable_path"
     else
-        printf '["-y","@playwright/mcp@latest"]'
+        printf '["-y","@playwright/mcp@latest","--browser","chromium","--headless","--no-sandbox"]'
     fi
 }
 

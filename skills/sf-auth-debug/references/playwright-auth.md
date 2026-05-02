@@ -2,6 +2,8 @@
 
 Use this reference when `sf-auth-debug` needs browser-level evidence or a repeatable auth validation pass.
 
+Before using Playwright MCP, load `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/playwright-mcp-runtime.md` and run its runtime preflight. Browser evidence is not valid if the MCP is still configured to fall back to Google Chrome stable on Linux ARM64.
+
 Sources checked:
 - https://clerk.com/docs/guides/development/testing/playwright/test-helpers
 - https://developers.google.com/identity/gsi/web/guides/supported-browsers
@@ -52,6 +54,7 @@ Last reviewed: 2026-04-26
 
 ## Debug Checklist
 
+- Run the Playwright MCP runtime preflight and record the runtime path or blocked/stale status.
 - Start from the exact URL in the bug report or spec.
 - Capture a baseline unauthenticated page state.
 - Click the same user-facing control the user would click.

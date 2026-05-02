@@ -21,6 +21,7 @@ what_you_get:
   - "A combined technical check pass"
   - "Visibility into type, lint, and build failures"
   - "A cleaner basis for verification and release"
+  - "A clear route to sf-browser when non-auth browser evidence is the missing proof"
 example_prompts:
   - "/sf-check"
   - "/sf-check after auth refactor"
@@ -29,6 +30,7 @@ limits:
   - "It validates technical correctness, not user-story correctness by itself"
   - "Passing checks do not prove the product behavior is right"
 related_skills:
+  - "sf-browser"
   - "sf-verify"
   - "sf-start"
   - "sf-ship"

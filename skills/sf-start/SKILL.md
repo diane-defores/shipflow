@@ -64,6 +64,8 @@ If the task includes a known auth bug or a browser flow that is failing in reali
 - pull in `sf-auth-debug` logic before patching when browser evidence is needed to avoid coding blind
 - do not assume static code reading is enough for Clerk/OAuth/session issues
 
+If the task needs browser evidence but does not touch auth, sessions, callbacks, tenants, protected routes, or provider behavior, route non-auth browser proof through `sf-browser` instead of `sf-auth-debug`.
+
 If any unresolved question could change permissions, data exposure, tenant boundaries, money movement, destructive behavior, external side effects, or workflow integrity, force `spec-first`.
 
 If the triage is borderline (signals are mixed), use **AskUserQuestion**:
@@ -141,6 +143,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
 - Read only the files needed to implement plus the linked systems that must be sanity-checked
 - Include associated tests or entry points
 - If the task touches auth, redirects, protected pages, callback flows, or browser session state, include the relevant login/callback entrypoints and the minimum routes needed for `sf-auth-debug`
+- If the task touches non-auth browser behavior, visual state, console errors, network failures, or page-level assertions, include the minimum routes and validation objective needed for `sf-browser`
 - If the task touches Supabase, include the matching schema/policy/migration files, storage path conventions, and the exact client split (`browser`, `server`, `service-role`) in the read-first set
 - Update task tracking to `🔄 in progress` in master TASKS.md
 - Update local TASKS.md too when present
@@ -244,6 +247,7 @@ Run focused validation relevant to the modified area:
 - validate `Success Behavior` and `Error Behavior` when the contract names them; if an error path cannot be exercised, state the gap explicitly
 - include a sanity check that success is not silent and failure is not silent unless explicitly justified by the contract
 - when the user story depends on a browser auth flow or protected app path, run or emulate `sf-auth-debug` logic to confirm the observable flow in a real browser
+- when the user story depends on non-auth browser proof, route to or emulate `sf-browser` logic after the Playwright MCP runtime preflight
 - targeted tests if available
 - quick lint/type check for touched modules when practical
 - syntax check for touched shell scripts if relevant

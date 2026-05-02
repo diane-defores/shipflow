@@ -88,6 +88,7 @@ Règles de verdict:
 - En `hybrid`, appliquer la même règle aux surfaces hébergées: auth/OAuth/callbacks, webhooks, env vars déployées, Vercel routing, edge/serverless runtime, cookies, preview/prod data, ou bug uniquement visible en remote.
 - Si le mode est absent et que Vercel est détecté, classer `unknown-vercel`, dégrader la confiance, et recommander de documenter le mode avant de conclure sur une preuve preview.
 - Si la vérification est pré-push et que la preuve preview est requise, le verdict doit être `partial` ou `blocked`, avec next step `/sf-ship [scope]`, puis `/sf-prod [project or URL]`, puis `/sf-test --preview [scope]` ou `/sf-auth-debug [scope]` selon le flow.
+For non-auth browser proof such as public UI, visual state, console, network, or page-level assertions, use or request `/sf-browser [URL or scope] [objective]`. Keep `/sf-auth-debug` reserved for auth, session, callback, cookie, tenant, provider, and protected-route risks.
 
 ### Step 2 — Vérifier la user story
 
@@ -130,6 +131,8 @@ Si le scope touche à l'auth navigateur, aux redirects, aux callbacks, aux pages
 - ne pas se contenter d'une preuve par lecture de code ou tests unitaires si une vérification navigateur est faisable
 - utiliser ou émuler `sf-auth-debug` pour confirmer le comportement observable
 - si cette vérification n'a pas été faite, le rapport doit le signaler explicitement comme gap de preuve
+
+If the scope needs browser proof but is not auth-specific, use or request `sf-browser` evidence instead of stretching `sf-auth-debug`.
 
 ### Step 3 — Vérifier les metadata et versions de contrat
 
@@ -274,6 +277,8 @@ Si une conséquence attendue n'a pas été vérifiée ou si un système lié a d
 Quand le système lié principal est un flow d'auth réel:
 - vérifier si une reproduction navigateur a été faite
 - sinon recommander `/sf-auth-debug [scope]` avant de conclure que le travail est prêt à ship
+
+When the linked system needs browser evidence but is not auth-specific, check whether `sf-browser` evidence exists; otherwise recommend `/sf-browser [URL or scope] [objective]` before claiming that browser-observable behavior is proven.
 
 Quand le mode projet impose une preview Vercel:
 - vérifier si `sf-prod` a confirmé le déploiement correspondant au dernier push
@@ -441,7 +446,7 @@ Ajouter ensuite un bloc workflow explicite :
 - Mode: [local / vercel-preview-push / hybrid / unknown-vercel]
 - Required validation surface: [local / Vercel preview after sf-ship -> sf-prod / mixed / unknown]
 - Deployment evidence: [sf-prod confirmed / not needed / missing]
-- Preview/manual evidence: [sf-test or sf-auth-debug present / not needed / missing]
+- Preview/manual evidence: [sf-test, sf-browser, or sf-auth-debug present / not needed / missing]
 - Impact: [none / partial verdict / blocks ready-to-ship verdict]
 ```
 

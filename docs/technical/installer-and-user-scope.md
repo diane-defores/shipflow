@@ -79,6 +79,8 @@ sudo ./install.sh
 - Live downloads or package installers can fail partially; messages must identify the failing step.
 - `--only` or component-scoped install paths can leave stale aliases or symlinks if final synchronization is skipped.
 - Missing runtime tools should produce direct diagnostics, not secondary shell errors.
+- Missing Playwright Chromium runtime libraries should be installed by the
+  server bootstrap because Playwright MCP is configured by default.
 - Incorrect user targeting can install private workflow config for the wrong account.
 
 ## Security Notes
@@ -101,6 +103,8 @@ For behavioral changes, prefer a disposable host/container or a narrowly scoped 
 - `install.sh` changed -> review this doc and `README.md`.
 - Alias/symlink behavior changed -> check local and server install docs.
 - MCP config changed -> check provider docs references and remote login docs.
+- Playwright MCP config changed -> confirm Linux ARM64 keeps using the local
+  Playwright Chromium executable instead of a Google Chrome stable channel.
 - User targeting changed -> check installer ownership specs.
 
 ## Maintenance Rule

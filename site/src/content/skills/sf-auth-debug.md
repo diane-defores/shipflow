@@ -34,8 +34,10 @@ example_prompts:
 limits:
   - "Some human-gated steps such as MFA or captcha may limit full automation"
   - "Google login through Playwright may require a prepared test account, saved state, or manual handoff when anti-bot checks trigger"
+  - "Generic public page, visual, console, or network checks belong in sf-browser instead"
   - "It diagnoses the failure path; it does not replace the later fix or verification step"
 related_skills:
+  - "sf-browser"
   - "sf-fix"
   - "sf-spec"
   - "sf-start"

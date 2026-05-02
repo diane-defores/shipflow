@@ -26,7 +26,7 @@ linked_systems:
   - docs/editorial/
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.7.0"
+    artifact_version: "0.8.0"
     required_status: draft
   - artifact: "skills/references/technical-docs-corpus.md"
     artifact_version: "1.1.0"

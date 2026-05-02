@@ -58,6 +58,8 @@ Did a real human try the real user flow?
 
 Do not treat this skill as a generic "run tests" command. It is guided manual QA plus project memory.
 
+For one-off browser proof that does not need a guided manual QA campaign, `TEST_LOG.md`, `BUGS.md`, or a bug dossier, route to `/sf-browser [URL or objective]`. Keep `sf-test` for scenario planning, human confirmation, durable test logs, retests, and bug records.
+
 ## Core Rule
 
 Never invent test results.
@@ -375,6 +377,7 @@ After logging:
 - if preview-push deployment is required before a valid test: recommend `/sf-ship [scope]` first, then `/sf-prod [project or URL]`, then rerun `/sf-test --preview [scope]`
 - if a bug was opened: recommend `/sf-fix [bug title]`
 - if auth/browser evidence is needed: recommend `/sf-auth-debug [bug title]`
+- if non-auth one-off browser evidence is needed without a durable manual test log: recommend `/sf-browser [URL or scope] [objective]`
 - if the test was blocked by unclear expected behavior: recommend `/sf-spec [scope]` or `/sf-ready [scope]`
 - if the test was blocked by environment/deploy: recommend `/sf-prod` or the project-specific deployment check
 

@@ -21,6 +21,7 @@ That matters because a “quick fix” can easily create a worse product problem
 - when it is unclear whether the fix is truly local
 - when a small bug may hide a contract or security decision
 - when an auth or protected-route bug may need browser-level diagnosis before patching
+- when a non-auth browser bug needs visible, console, or network evidence before patching
 
 ## What You Give It
 
@@ -34,6 +35,7 @@ That matters because a “quick fix” can easily create a worse product problem
 - either a local fix or an exact next-step command
 - explicit product, documentation, and security considerations
 - a reroute to `sf-auth-debug` when the bug needs real browser-auth evidence
+- a reroute to `sf-browser` when the bug needs non-auth browser evidence
 - development-mode-aware retest routing, including `sf-ship` -> `sf-prod` before preview retests on Vercel-preview projects
 
 ## Typical Examples
@@ -52,6 +54,7 @@ That matters because a “quick fix” can easily create a worse product problem
 
 - `sf-spec` when the bug needs a clear contract first
 - `sf-auth-debug` when the broken behavior lives in Clerk, OAuth, redirects, or browser session state
+- `sf-browser` when the broken behavior needs non-auth page, visual, console, or network evidence
 - `sf-start` to execute the approved fix path
 - `sf-verify` after a direct fix on important flows
 - `sf-ship` then `sf-prod` before `sf-test --preview --retest BUG-ID` when the project requires Vercel preview-push validation

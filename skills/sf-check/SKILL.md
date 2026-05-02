@@ -147,6 +147,7 @@ If nothing indicates functional validation of the main user flow, say so plainly
 
 If project mode is `vercel-preview-push`, include the next deployment step explicitly:
 - `Next step: /sf-ship [scope]`, then `/sf-prod [project or URL]`
+- If the checked change needs non-auth browser proof, add `/sf-browser [URL or scope] [objective]` after `sf-prod`
 - If the checked change affects auth or protected flows, add `/sf-auth-debug [scope]` after `sf-prod`
 - If it affects a manual user flow, add `/sf-test --preview [scope]` after `sf-prod`
 
@@ -158,4 +159,5 @@ If project mode is `vercel-preview-push`, include the next deployment step expli
 - If the project CLAUDE.md specifies custom check commands, use those instead.
 - A passing `sf-check` run means "no obvious issues in the checks that were executed", not "product is production-ready".
 - When security-relevant checks fail or are missing (for example auth flows, permission boundaries, secret/config validation, dependency audit access), call that out explicitly and recommend the next skill when appropriate (`/sf-verify`, `/sf-prod`, `/sf-deps`).
+- When browser-observable behavior is unproven but the issue is not auth-specific, recommend `/sf-browser [URL or scope] [objective]` rather than stretching `/sf-auth-debug`.
 - In `vercel-preview-push` or relevant `hybrid` mode, recommend `/sf-ship` -> `/sf-prod` after passing checks when changed behavior needs preview validation.

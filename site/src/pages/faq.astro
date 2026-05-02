@@ -25,6 +25,16 @@ const items = [
     a: "A skill mode is a specialized workflow triggered by a specific argument pattern or keyword. For example, a docs skill may switch into metadata migration mode instead of normal documentation-writing mode."
   },
   {
+    q: "When should I use sf-browser instead of sf-auth-debug, sf-test, or sf-prod?",
+    a: "Use sf-browser for one narrow non-auth browser check: visible state, layout, screenshot, console, or network evidence. Use sf-auth-debug for login, OAuth, cookies, sessions, callbacks, tenants, providers, or protected routes. Use sf-test for guided manual QA and durable test or bug records. Use sf-prod first when the deployment URL, runtime logs, or live deploy state are still uncertain.",
+    links: [
+      ["sf-browser", "/skills/sf-browser"],
+      ["sf-auth-debug", "/skills/sf-auth-debug"],
+      ["sf-test", "/skills/sf-test"],
+      ["sf-prod", "/skills/sf-prod"]
+    ]
+  },
+  {
     q: "Why not just prompt agents harder?",
     a: "Because stronger prompting does not remove weak handoffs, stale docs, ambiguous task framing, or drift between product intent and implementation."
   },

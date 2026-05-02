@@ -31,6 +31,7 @@ Quick reference for the skill system, modes, and workflows.
 |-------|---------|-----------|
 | `/sf-fix` | Bug-first intake and routing (direct fix vs spec-first) | `<bug description>` |
 | `/sf-auth-debug` | Browser-auth diagnosis for Clerk, Supabase Auth, OAuth, Google/YouTube, Convex, sessions, callbacks | `<bug/URL/flow>` |
+| `/sf-browser` | General browser verification for public UI, visual state, console/network evidence, screenshots, and page-level assertions | `<URL or route> <objective>` |
 | `/sf-test` | Guided manual QA: prompts the user through real flow tests, logs evidence, and opens bug records | `[feature]`, `--retest BUG-ID`, `--prod` |
 | `/sf-model` | Choose model, reasoning level, and fast/cheap fallback before execution | `<task description>` or `<spec path>` |
 | `/sf-tasks` | Track work, check off items, suggest next | `[focus area]` |
@@ -64,6 +65,7 @@ Quick reference for the skill system, modes, and workflows.
 
 Note: `/sf-verify` now includes guided next-step prompting when verdict is not ready (`corriger maintenant`, `repasser par spec`, `stop/reprendre`).
 Note: `/sf-auth-debug` is the required diagnostic path for auth bugs that need browser evidence before implementation.
+Note: `/sf-browser` is the generic browser evidence path for non-auth page assertions; use `/sf-auth-debug` for auth/session/provider issues, `/sf-prod` for deployment truth, and `/sf-test` for durable manual QA logs.
 Note: `/sf-test` sits after verification and before shipping when a human needs to confirm the real user flow; it writes compact `TEST_LOG.md`, compact `BUGS.md`, and a bug dossier when needed.
 Note: `/sf-start` now reuses the `sf-model` routing matrix and can choose `single-agent` vs `multi-agent` execution with explicit file ownership and per-group model overrides.
 Note: `/sf-spec` → `/sf-ready` → `/sf-start` → `/sf-verify` now share a `User Story` contract and should ask targeted user questions whenever behavior, scope, or security is still ambiguous.
@@ -107,6 +109,7 @@ Internal role matrix:
 | `skills/sf-audit/SKILL.md` | conditionnel | source-de-chantier | Master audit findings become a chantier for transversal P1/P2 clusters or multi-domain remediation. |
 | `skills/sf-auth-debug/SKILL.md` | conditionnel | source-de-chantier | Auth findings become a chantier for session, callback, provider, tenant, or permission risk beyond a direct fix. |
 | `skills/sf-backlog/SKILL.md` | conditionnel | pilotage | Backlog ideas become a spec only on explicit user intent or clear high-risk follow-up. |
+| `skills/sf-browser/SKILL.md` | conditionnel | source-de-chantier | Browser findings become a chantier for non-trivial page, deploy, runtime, security, or workflow issues beyond one direct observation. |
 | `skills/sf-changelog/SKILL.md` | conditionnel | support-de-chantier | Supports release documentation; not a source by default. |
 | `skills/sf-check/SKILL.md` | conditionnel | source-de-chantier | Failed checks become a chantier when failures span domains, block release, or need staged remediation. |
 | `skills/sf-context/SKILL.md` | non-applicable | helper | Context discovery is read-only; not a chantier source. |
@@ -386,6 +389,7 @@ Provide explicit arguments and prompts don't appear:
 ```bash
 /sf-fix "short bug description"    # Triage + direct fix or route
 /sf-auth-debug "Google login returns to sign-in" # Reproduce auth flow and isolate the failure point
+/sf-browser "https://example.com" "verify Example Domain is visible" # Collect non-auth browser evidence
 # If local and clear -> fix now, then verify
 # If ambiguous/non-trivial -> /sf-spec -> /sf-ready -> /sf-start
 ```
