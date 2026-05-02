@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.1"
 project: "shipflow"
 created: "2026-05-02"
 created_at: "2026-05-02 15:22:13 UTC"
 updated: "2026-05-02"
-updated_at: "2026-05-02 18:04:16 UTC"
-status: draft
+updated_at: "2026-05-02 22:11:44 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "feature"
@@ -65,10 +65,10 @@ depends_on:
     artifact_version: "0.3.0"
     required_status: "draft"
   - artifact: "README.md"
-    artifact_version: "0.5.0"
+    artifact_version: "0.5.1"
     required_status: "draft"
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.8.0"
+    artifact_version: "0.8.1"
     required_status: "draft"
   - artifact: "CONTENT_MAP.md"
     artifact_version: "0.3.0"
@@ -105,7 +105,7 @@ evidence:
   - "Repo investigation 2026-05-02: public skill pages are Astro content under site/src/content/skills/ and are listed by site/src/pages/skills/index.astro."
   - "Repo investigation 2026-05-02: CONTENT_MAP.md and docs/editorial/ define public skill page, claim, page intent, and Astro content schema gates."
   - "Repo investigation 2026-05-02: docs/technical/code-docs-map.md maps skills/**/SKILL.md changes to docs/technical/skill-runtime-and-lifecycle.md and skill budget validation."
-next_step: "/sf-ready specs/sf-skill-build-master-skill.md"
+next_step: "/sf-end specs/sf-skill-build-master-skill.md"
 ---
 
 # Spec: sf-skill-build Master Skill
@@ -116,7 +116,7 @@ sf-skill-build Master Skill
 
 ## Status
 
-draft
+ready
 
 ## User Story
 
@@ -190,6 +190,8 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
 - Internal skill contracts, section names, stop conditions, and validation rules are written in English.
 - User-facing prompts and final reports use the active user language; French user-facing text must use proper accents.
 - The master skill must ask targeted questions only when the answer materially changes skill name, invocation, public promise, security posture, scope, or ship risk.
+- The skill is public by default: creation or material modification requires a public skill page path unless the user explicitly approves an internal-only exception in the spec.
+- Invocation rename policy is strict: if implementation proposes renaming the invocation key, the flow must block and require explicit user approval before any rename edits.
 - New skill creation is high risk because it changes the agent operating surface and public catalog; default to spec-first.
 - Shared files are sequential integration surfaces: `skills/sf-help/SKILL.md`, `README.md`, `shipflow-spec-driven-workflow.md`, `CONTENT_MAP.md`, `docs/editorial/**`, `docs/technical/code-docs-map.md`, `site/src/content.config.ts`, and public hub copy.
 - Parallel edits to multiple skill pages are allowed only when a ready spec assigns exclusive files and no shared schema, hub, docs, map, or claim file changes in the same wave.
@@ -208,7 +210,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
 - Public content governance: `CONTENT_MAP.md`, `docs/editorial/README.md`, `docs/editorial/public-surface-map.md`, `docs/editorial/page-intent-map.md`, `docs/editorial/editorial-update-gate.md`, `docs/editorial/claim-register.md`, and `docs/editorial/astro-content-schema-policy.md`.
 - Public site runtime: Astro skills collection in `site/src/content.config.ts`, public skill content in `site/src/content/skills/`, hub route `site/src/pages/skills/index.astro`, detail route `site/src/pages/skills/[slug].astro`, and build command `npm --prefix site run build`.
 - Product and public-claim contracts: `BUSINESS.md` 1.1.0 reviewed, `PRODUCT.md` 1.1.0 reviewed, `BRANDING.md` 1.0.0 reviewed, `GTM.md` 1.1.0 reviewed, and `GUIDELINES.md` 1.3.0 reviewed.
-- Fresh external docs verdict: fresh-docs not required for this spec creation because the implementation contract is based on local ShipFlow doctrine and local tools. During implementation, if `sf-skill-build` changes compatibility limits, discovery-budget thresholds, or runtime assumptions for Codex, Claude Code, Claude.ai, Agent Skills, or Astro, recheck the current official docs before finalizing those rules.
+- Fresh external docs verdict: fresh-docs checked on 2026-05-02 for Astro runtime assumptions used by this spec. Local version discovered from `site/package-lock.json`: `astro@5.18.1`. Official docs consulted: content collections guide (`https://docs.astro.build/en/guides/content-collections/`) and build/deploy guidance (`https://docs.astro.build/en/develop-and-build/`, `https://docs.astro.build/en/guides/deploy/`). Decision impact: keep schema-first content constraints in `site/src/content.config.ts` and keep `npm --prefix site run build` as a required validation gate when public skill content or routes change.
 
 ## Invariants
 
@@ -216,6 +218,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
 - `site/src/content/skills/*.md` is the public source for rendered skill detail pages and must stay schema-compatible.
 - `sf-help` must not describe a skill lifecycle that differs from the implemented skill contracts.
 - A public skill page must not promise a capability absent from its internal `SKILL.md`.
+- Failed gates must report a visible reason and safe recovery command, and reports must never expose secrets, tokens, credentials, or private keys.
 - Adding one skill increases discovery-budget pressure; budget validation is part of the feature, not an optional cleanup.
 - `sf-skills-refresh` supports the chantier but does not replace spec/readiness/verification.
 - The chantier spec remains the durable history for lifecycle runs.
@@ -260,7 +263,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
 
 ## Implementation Tasks
 
-- [ ] Task 1: Confirm the target master skill contract and existing overlap
+- [x] Task 1: Confirm the target master skill contract and existing overlap
   - File: `specs/sf-skill-build-master-skill.md`
   - Action: Re-read this spec, search existing skills for overlap with `sf-build`, `sf-skills-refresh`, and system `skill-creator`, then confirm that the new ShipFlow skill name remains `sf-skill-build`.
   - User story link: Prevents duplicate or confusing skill entrypoints.
@@ -268,7 +271,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `rg -n "sf-skill-build|skill-build|skills-refresh|skill-creator|sf-build" skills specs site/src/content/skills README.md shipflow-spec-driven-workflow.md`
   - Notes: If a better name is proposed, stop for explicit user approval before renaming the target.
 
-- [ ] Task 2: Create the master skill contract
+- [x] Task 2: Create the master skill contract
   - File: `skills/sf-skill-build/SKILL.md`
   - Action: Add a compact frontmatter `name`, one-sentence `description`, `argument-hint`, canonical path rule, chantier tracking rule, mission, lifecycle gates, stop conditions, validation commands, and final report shape.
   - User story link: Provides the single operator entrypoint for skill creation and modification.
@@ -276,7 +279,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
   - Notes: Do not duplicate full bodies of `sf-spec`, `sf-skills-refresh`, `sf-docs`, `sf-verify`, or `sf-ship`; orchestrate them and link to their roles.
 
-- [ ] Task 3: Encode lifecycle gating in the skill body
+- [x] Task 3: Encode lifecycle gating in the skill body
   - File: `skills/sf-skill-build/SKILL.md`
   - Action: Define the required sequence `sf-spec -> edit/create SKILL.md -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship`, including rerun rules when refresh or docs updates change the skill contract.
   - User story link: Keeps the operator from manually remembering the safe skill-maintenance order.
@@ -284,7 +287,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `rg -n "sf-spec|sf-skills-refresh|skill_budget_audit|sf-verify|sf-docs|sf-help|sf-ship" skills/sf-skill-build/SKILL.md`
   - Notes: Include stop conditions for failed readiness, failed budget audit, failed verification, failed site build, and unrelated dirty files.
 
-- [ ] Task 4: Add public skill content
+- [x] Task 4: Add public skill content
   - File: `site/src/content/skills/sf-skill-build.md`
   - Action: Create a public-facing skill page with schema-compatible frontmatter, concise public promise, examples, limits, related skills, and category selection.
   - User story link: Makes the new master skill discoverable on the public skills site.
@@ -292,7 +295,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `npm --prefix site run build`
   - Notes: Use the Astro skills schema only. Do not add ShipFlow artifact metadata to this runtime content file.
 
-- [ ] Task 5: Review public skills hub and listing behavior
+- [x] Task 5: Review public skills hub and listing behavior
   - File: `site/src/pages/skills/index.astro`
   - Action: Confirm the new public skill appears in the intended category and update hub copy only if the new skill materially changes how visitors should understand skill maintenance.
   - User story link: Keeps public skill discovery coherent.
@@ -300,7 +303,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `rg -n "sf-skill-build|Meta & Setup|Operate & Ship|skills Catalog|Featured Skills" site/src/pages/skills/index.astro site/src/content/skills/sf-skill-build.md`
   - Notes: The hub is collection-driven, so a content file may be enough unless category copy or featured status changes.
 
-- [ ] Task 6: Update internal help
+- [x] Task 6: Update internal help
   - File: `skills/sf-help/SKILL.md`
   - Action: Add `sf-skill-build` to the relevant help tables, role matrix, and lifecycle notes so operators can find the skill creation/modification path.
   - User story link: Prevents internal help from lagging behind the new entrypoint.
@@ -308,7 +311,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `rg -n "sf-skill-build|skill creation|skill modification|skill maintenance" skills/sf-help/SKILL.md`
   - Notes: Keep help concise; avoid duplicating the full master skill body.
 
-- [ ] Task 7: Update workflow and repo docs if the entrypoint becomes official
+- [x] Task 7: Update workflow and repo docs if the entrypoint becomes official
   - File: `README.md`, `shipflow-spec-driven-workflow.md`
   - Action: Add the skill-maintenance lifecycle where official workflows are listed, or record a no-impact justification if the skill remains maintainer-only and not a recommended public entrypoint.
   - User story link: Keeps official docs aligned with the new master skill.
@@ -316,7 +319,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `rg -n "sf-skill-build|skill maintenance|skill creation|skills-refresh|skill budget" README.md shipflow-spec-driven-workflow.md`
   - Notes: If edited, bump artifact metadata according to `sf-docs` versioning rules.
 
-- [ ] Task 8: Update technical documentation impact
+- [x] Task 8: Update technical documentation impact
   - File: `docs/technical/skill-runtime-and-lifecycle.md`, `docs/technical/code-docs-map.md`
   - Action: Update the skill lifecycle doc for the new master skill and only update the map if validations, triggers, or path ownership rules change.
   - User story link: Keeps code-proximate docs aligned for future agents.
@@ -324,7 +327,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `rg -n "sf-skill-build|skill_budget_audit|public skill pages|sf-skills-refresh" docs/technical/skill-runtime-and-lifecycle.md docs/technical/code-docs-map.md`
   - Notes: Produce a `Documentation Update Plan` before editing shared technical docs.
 
-- [ ] Task 9: Run editorial impact and update public-content governance if claims or surfaces change
+- [x] Task 9: Run editorial impact and update public-content governance if claims or surfaces change
   - File: `CONTENT_MAP.md`, `docs/editorial/public-surface-map.md`, `docs/editorial/page-intent-map.md`, `docs/editorial/editorial-update-gate.md`, `docs/editorial/claim-register.md`
   - Action: Produce an `Editorial Update Plan`; update these files only when the new skill changes public skill page roles, content routing, category framing, sensitive claims, or public-surface rules.
   - User story link: Keeps public skill claims and surfaces truthful.
@@ -332,7 +335,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `rg -n "sf-skill-build|public skill pages|skill promises|skill budget|Editorial Update Plan|Claim Impact Plan" CONTENT_MAP.md docs/editorial`
   - Notes: If no structural editorial docs need edits, record explicit `no editorial impact` for each reviewed surface.
 
-- [ ] Task 10: Run `sf-skills-refresh` for the new or changed skill
+- [x] Task 10: Run `sf-skills-refresh` for the new or changed skill
   - File: `skills/sf-skill-build/SKILL.md`, `skills/REFRESH_LOG.md`
   - Action: Run `/sf-skills-refresh sf-skill-build` after the first skill body exists, apply only targeted additive findings, and log the refresh.
   - User story link: Ensures the new skill starts aligned with current skill-maintenance practice.
@@ -340,7 +343,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `rg -n "sf-skill-build" skills/REFRESH_LOG.md skills/sf-skill-build/SKILL.md`
   - Notes: Rerun budget audit after refresh if the description, body length, or related surface changes.
 
-- [ ] Task 11: Run budget, metadata, and content validation
+- [x] Task 11: Run budget, metadata, and content validation
   - File: `skills/`, `specs/sf-skill-build-master-skill.md`, `site/`, changed docs
   - Action: Run the focused validation set for skill, spec, docs, and public site changes.
   - User story link: Proves the skill is discoverable, metadata-valid, and publicly renderable.
@@ -348,7 +351,7 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
   - Validate with: `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`; `python3 tools/shipflow_metadata_lint.py specs/sf-skill-build-master-skill.md README.md shipflow-spec-driven-workflow.md CONTENT_MAP.md docs/technical docs/editorial`; `npm --prefix site run build`; `rg -n "docs/technical|secret|token|credential" site/src CONTENT_MAP.md`
   - Notes: Review sensitive keyword matches manually; generic policy warnings are not automatically failures.
 
-- [ ] Task 12: Verify, close docs/help coherence, and ship
+- [x] Task 12: Verify, close docs/help coherence, and ship
   - File: `specs/sf-skill-build-master-skill.md`, changed skill/docs/site files
   - Action: Run `sf-verify` against this spec, ensure `sf-docs` and `sf-help` updates are complete or explicitly no-impact, then run `sf-ship` with bounded staging for the chantier.
   - User story link: Completes the full lifecycle promised by the master skill.
@@ -371,6 +374,8 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
 - [ ] AC 11: Given technical docs are mapped, when `skills/**/SKILL.md` and `site/**` change, then `docs/technical/skill-runtime-and-lifecycle.md`, `docs/technical/public-site-and-content-runtime.md`, and `docs/technical/code-docs-map.md` are reviewed through a `Documentation Update Plan`.
 - [ ] AC 12: Given validation is complete, when `sf-verify` runs, then it verifies the skill behavior contract, budget audit result, docs/help coherence, public site coherence, and ship scope.
 - [ ] AC 13: Given unrelated dirty files exist, when `sf-ship` is requested, then they are excluded unless the user explicitly authorizes the broader ship scope.
+- [ ] AC 14: Given any gate fails (readiness, budget, metadata, verification, site build, or ship scope), when the skill reports the failure, then it includes a concrete failure reason and a safe recovery command.
+- [ ] AC 15: Given validation logs or reports are produced, when output is rendered to the user, then secrets, tokens, credentials, and private keys are never printed.
 
 ## Test Strategy
 
@@ -398,12 +403,12 @@ Create a new master skill, `sf-skill-build`, that orchestrates the skill-mainten
 - Preferred implementation order: create the skill contract first, run budget audit early, add public content, update help/docs, then run refresh and validations again.
 - Use `apply_patch` for manual edits and preserve unrelated user changes.
 - Keep shared files sequential. Do not split `sf-help`, README, workflow docs, `CONTENT_MAP.md`, editorial docs, or `site/src/content.config.ts` across concurrent write agents.
-- Stop and ask if the user wants the new skill to be internal-only, if the invocation name changes, if the public promise would be stronger than the internal contract, or if budget audit warnings remain before ship.
+- Stop and ask if the user explicitly requests an internal-only exception, if the invocation name changes, if the public promise would be stronger than the internal contract, or if budget audit warnings remain before ship.
 - Do not treat this spec as permission to edit files in the current spec-only run. Implementation starts after `/sf-ready` passes and the user launches the build flow.
 
 ## Open Questions
 
-No unresolved questions block this draft. The implementation should still stop for explicit user approval if it proposes a different invocation name than `sf-skill-build`, an internal-only public-content decision, a skill rename, or a stronger public claim than the current contracts support.
+None.
 
 ## Skill Run History
 
@@ -411,18 +416,24 @@ No unresolved questions block this draft. The implementation should still stop f
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-02 15:22:13 UTC | sf-spec | GPT-5 Codex | Created the initial chantier spec for the `sf-skill-build` master skill lifecycle. | draft saved | /sf-ready sf-skill-build Master Skill |
 | 2026-05-02 18:03:33 UTC | sf-start | GPT-5 Codex | Attempted execution from this spec, blocked by readiness gate because `status: draft`. | rerouted | /sf-ready specs/sf-skill-build-master-skill.md |
+| 2026-05-02 19:55:01 UTC | sf-ready | GPT-5 Codex | Ran readiness gate and performed adversarial/security review. | not ready | /sf-spec sf-skill-build Master Skill |
+| 2026-05-02 20:07:07 UTC | sf-ready | GPT-5 Codex | Re-ran readiness after spec clarifications (public default, rename block, security/logging guarantees, freshness evidence). | ready | /sf-start specs/sf-skill-build-master-skill.md |
+| 2026-05-02 20:13:20 UTC | sf-start | GPT-5 Codex | Implemented `sf-skill-build`, added public skill content, updated help/workflow/technical docs, ran refresh logging and validation gates. | implemented | /sf-verify specs/sf-skill-build-master-skill.md |
+| 2026-05-02 20:22:02 UTC | sf-verify | GPT-5 Codex | Verified user-story delivery, lifecycle coherence, metadata/budget/site validations, and chantier-tracking role coherence for touched skills. | verified | /sf-end specs/sf-skill-build-master-skill.md |
+| 2026-05-02 22:10:07 UTC | sf-verify | GPT-5 Codex | Re-ran verification after reservation corrections: updated dependency versions, consistency checks, and revalidation gates all passed. | verified | /sf-end specs/sf-skill-build-master-skill.md |
+| 2026-05-02 22:11:44 UTC | sf-ship | GPT-5 Codex | Logged full run history and current flow updates, completed chantier-boundary stage/commit steps, and validated final scope + checks before shipping `sf-skill-build` master skill changes. | shipped | /sf-end specs/sf-skill-build-master-skill.md |
 
 ## Current Chantier Flow
 
 - sf-spec: done, initial draft created in `specs/sf-skill-build-master-skill.md`.
-- sf-ready: not launched.
+- sf-ready: ready, readiness gate passed with current contract and validations.
 - sf-build: not launched.
-- sf-start: rerouted, waiting for `/sf-ready` because the spec is still `status: draft`.
-- SKILL.md creation/edit: not launched.
-- sf-skills-refresh: not launched.
-- skill budget audit: not launched.
-- sf-verify: not launched.
-- sf-docs/help update: not launched.
+- sf-start: implemented from this ready spec.
+- SKILL.md creation/edit: done (`skills/sf-skill-build/SKILL.md`).
+- sf-skills-refresh: done (refresh entry recorded in `skills/REFRESH_LOG.md`).
+- skill budget audit: done (pass, aggregate under threshold).
+- sf-verify: verified against the ready spec and validation evidence.
+- sf-docs/help update: done (help + workflow + technical/public docs aligned).
 - sf-end: not launched.
-- sf-ship: not launched.
-- Next command: `/sf-ready specs/sf-skill-build-master-skill.md`.
+- sf-ship: shipped.
+- Next command: `/sf-end specs/sf-skill-build-master-skill.md`.

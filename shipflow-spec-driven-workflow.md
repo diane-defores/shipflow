@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.8.0"
+artifact_version: "0.8.1"
 project: ShipFlow
 created: "2026-04-22"
 updated: "2026-05-02"
@@ -93,6 +93,14 @@ sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-v
 
 `sf-build` keeps the user conversation focused on decisions and status while delegating file work in bounded sequential mode by default. Parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`.
 
+Recommended entrypoint for ShipFlow skill maintenance:
+
+```text
+sf-skill-build -> sf-spec -> skill contract edit/create -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship
+```
+
+`sf-skill-build` is scoped to skill lifecycle work and enforces public-surface, docs/help, and validation gates before ship routing.
+
 For expert manual control, the default non-trivial flow remains:
 
 ```text
@@ -177,6 +185,7 @@ Technical governance applies to code projects by default. Editorial governance a
 - `sf-spec` produces an implementation contract, not loose notes.
 - `sf-ready` enforces a real Definition of Ready before non-trivial execution.
 - `sf-build` is the master orchestrator for end users and should prefer bounded delegated sequential execution over manual command chaining.
+- `sf-skill-build` is the master orchestrator for ShipFlow skill maintenance and should keep skill contract, refresh, budget, docs/help, and public skill surfaces coherent.
 - `sf-start` begins execution from a ready contract instead of rediscovering intent, and now decides both model routing and execution topology before coding.
 - `sf-verify` checks against the spec first, then quality and risks, and can now remediate limited gaps.
 - `sf-end` closes the task against the delivered scope, not only against the diff.

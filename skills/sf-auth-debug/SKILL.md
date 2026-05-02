@@ -1,6 +1,6 @@
 ---
 name: sf-auth-debug
-description: "Auth debug for Clerk, Supabase, OAuth, cookies, callbacks, redirects, sessions, and browser flows."
+description: "Auth debug for Clerk, Supabase, OAuth, cookies, callbacks, sessions, and browser flows."
 argument-hint: <bug auth, URL, provider, ou flow à diagnostiquer>
 ---
 

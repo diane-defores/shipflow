@@ -4,6 +4,23 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-02 — sf-skill-build
+
+**Added:**
+- Contract sections for canonical paths, chantier tracking, scope gate, spec-first gate, implementation flow, freshness gate, security constraints, stop conditions, and final report shape
+- Explicit lifecycle sequence: `sf-spec -> SKILL.md -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship`
+- Validation commands for budget audit, metadata lint, and site build
+- Public-by-default rule with explicit internal-only exception policy
+- Invocation rename block rule requiring explicit user approval before any rename edits
+
+**Updated:**
+- None (new skill created)
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local doctrine and spec contract execution)
+
 ## 2026-05-01 — project development mode doctrine
 
 **Added:**

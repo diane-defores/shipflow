@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.5.0"
+artifact_version: "0.5.1"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-02"
@@ -272,6 +272,14 @@ sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-v
 ```
 
 `sf-build` invocation authorizes bounded delegated sequential execution for the current chantier. It keeps user interaction focused on decisions and progress, asks useful risk questions when needed, and only allows parallel agent execution when a ready spec defines non-overlapping `Execution Batches`.
+
+For ShipFlow skill maintenance, use the dedicated entrypoint:
+
+```text
+sf-skill-build -> sf-spec -> skill contract edit/create -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship
+```
+
+`sf-skill-build` is scoped to creating or modifying `skills/*/SKILL.md` with explicit public-surface, documentation, and validation gates.
 
 If the bug is local and clear, `sf-fix` fixes it directly, then verifies.
 That fast path should still attach the bug to durable project memory with a compact `BUGS.md` entry and a `bugs/BUG-ID.md` dossier, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix.

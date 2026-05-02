@@ -67,6 +67,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Local MCP OAuth helper with guided server IP and optional SSH key configuration for local tunnels and remote Codex MCP login
 - Durable `exploration_report` artifacts for `sf-explore`, including the reusable template and default `docs/explorations/` report location
 - Skill discovery budget audit for ShipFlow skills, with strict checks for one-sentence descriptions, name/path metadata, listing budgets, and separate long-body risks
+- `sf-skill-build` master skill orchestrating skill lifecycle work (`sf-spec` → SKILL.md → `sf-skills-refresh` → budget audit → `sf-verify` → `sf-docs/help` → `sf-ship`) and public catalog coherence updates
 
 ### Changed
 - Local SSH setup now resolves bare identity filenames from the menu launch directory, `~/.ssh/`, then the user's home directory, and saves the absolute path for later `ssh -i` / `autossh -i` use.

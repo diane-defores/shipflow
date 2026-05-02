@@ -1,6 +1,6 @@
 ---
 name: sf-build
-description: "User-facing master orchestration from story to spec, implementation, verification, closure, and ship."
+description: "Master user-facing orchestration from story to spec, verify, close, and ship."
 argument-hint: <story, bug, or goal>
 ---
 

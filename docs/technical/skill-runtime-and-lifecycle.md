@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - skills/
   - skills/references/
+  - skills/sf-skill-build/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-init/SKILL.md
   - skills/sf-docs/SKILL.md
@@ -40,6 +41,7 @@ evidence:
   - "Editorial content corpus and Editorial Reader role added for public-content impact analysis."
   - "Governance corpus lifecycle added: sf-init bootstraps, sf-docs maintains, sf-build consumes."
   - "sf-browser added as the generic non-auth Playwright MCP browser evidence skill."
+  - "sf-skill-build added as the dedicated master lifecycle for ShipFlow skill maintenance."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -70,7 +72,8 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 - `sf-docs technical`: technical governance bootstrap, code-docs map creation, and audit.
 - `sf-docs editorial`: editorial governance scaffolding and audit for public-content drift, claim register, page intent, and runtime content schema preservation.
 - `sf-browser`: generic non-auth browser verification through Playwright MCP for URLs, page-level assertions, screenshots, console summaries, and network summaries.
-- `sf-build`: future user-facing orchestrator that consumes the governance corpus gate before implementation, closure, and ship.
+- `sf-build`: user-facing orchestrator that consumes the governance corpus gate before implementation, closure, and ship.
+- `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
 - `sf-ship` and `sf-prod`: shipping and deployed verification.
 
 ## Control Flow

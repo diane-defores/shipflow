@@ -1,6 +1,6 @@
 ---
 name: sf-browser
-description: "General browser verification for URLs, routes, previews, production pages, console/network evidence, screenshots, and visible assertions."
+description: "Browser verification for non-auth pages, routes, screenshots, and visible console/network evidence."
 argument-hint: <URL, route, environment, or visible objective>
 ---
 

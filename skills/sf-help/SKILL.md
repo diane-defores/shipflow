@@ -30,6 +30,7 @@ Quick reference for the skill system, modes, and workflows.
 | Skill | Purpose | Arguments |
 |-------|---------|-----------|
 | `/sf-build` | Master user-facing orchestrator from story to spec, implementation, verification, closure, and ship | `<story, bug, or goal>` |
+| `/sf-skill-build` | Master skill-maintenance orchestrator for creating or modifying ShipFlow skills with lifecycle gates | `<new skill idea | existing skill path>` |
 | `/sf-fix` | Bug-first intake and routing (direct fix vs spec-first) | `<bug description>` |
 | `/sf-auth-debug` | Browser-auth diagnosis for Clerk, Supabase Auth, OAuth, Google/YouTube, Convex, sessions, callbacks | `<bug/URL/flow>` |
 | `/sf-browser` | General browser verification for public UI, visual state, console/network evidence, screenshots, and page-level assertions | `<URL or route> <objective>` |
@@ -71,6 +72,7 @@ Note: `/sf-test` sits after verification and before shipping when a human needs 
 Note: `/sf-start` now reuses the `sf-model` routing matrix and can choose `single-agent` vs `multi-agent` execution with explicit file ownership and per-group model overrides.
 Note: `/sf-spec` → `/sf-ready` → `/sf-start` → `/sf-verify` now share a `User Story` contract and should ask targeted user questions whenever behavior, scope, or security is still ambiguous.
 Note: `/sf-build` is the recommended end-user entrypoint for non-trivial work; invocation authorizes bounded delegated sequential execution for the current chantier, while parallel execution requires ready non-overlapping `Execution Batches`.
+Note: `/sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help update -> sf-ship`).
 
 ### Professional Bug Loop (concise)
 
@@ -140,6 +142,7 @@ Internal role matrix:
 | `skills/sf-ship/SKILL.md` | obligatoire | lifecycle | Ships an existing chantier; not a source. |
 | `skills/sf-skills-refresh/SKILL.md` | conditionnel | support-de-chantier | Supports skill maintenance; route to spec for broad policy changes only. |
 | `skills/sf-spec/SKILL.md` | obligatoire | lifecycle | Creates or updates the chantier spec and initial history row. |
+| `skills/sf-skill-build/SKILL.md` | obligatoire | lifecycle | Executes the skill-maintenance lifecycle for new or modified ShipFlow skills. |
 | `skills/sf-start/SKILL.md` | obligatoire | lifecycle | Executes an existing chantier; not a source. |
 | `skills/sf-status/SKILL.md` | non-applicable | helper | Status dashboards stay read-only for chantier specs. |
 | `skills/sf-tasks/SKILL.md` | conditionnel | pilotage | Task management routes to `/sf-spec` only for durable non-trivial work. |
