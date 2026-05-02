@@ -76,6 +76,7 @@ shipflow-mcp-login
 ## Invariants
 
 - SSH target and identity path are validated before use; accepted targets are valid IPv4 addresses, dotted DNS names, exact aliases from `~/.ssh/config`, or `user@host` forms using those host rules.
+- Bare SSH identity filenames resolve from the menu launch directory, then `~/.ssh/`, then the user's home directory; the saved identity path should be absolute.
 - Local port occupancy is checked before opening a tunnel.
 - Managed tunnel stop logic should select ShipFlow-owned tunnels, not broad process patterns.
 - OAuth tokens remain owned by Codex and the provider; ShipFlow only routes the callback.

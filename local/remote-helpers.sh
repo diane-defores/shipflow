@@ -38,6 +38,44 @@ normalize_identity_path() {
     esac
 }
 
+identity_path_candidates() {
+    local identity_file="$1"
+    [ -z "$identity_file" ] && return 0
+
+    local expanded
+    expanded=$(expand_identity_path "$identity_file")
+
+    case "$expanded" in
+        /*)
+            printf '%s\n' "$expanded"
+            ;;
+        */*)
+            normalize_identity_path "$expanded"
+            ;;
+        *)
+            printf '%s\n' "$(pwd -P)/$expanded"
+            [ -n "${HOME:-}" ] && printf '%s\n' "$HOME/.ssh/$expanded"
+            [ -n "${HOME:-}" ] && printf '%s\n' "$HOME/$expanded"
+            ;;
+    esac
+}
+
+resolve_identity_path() {
+    local identity_file="$1"
+    [ -z "$identity_file" ] && return 0
+
+    local candidate
+    while IFS= read -r candidate; do
+        [ -n "$candidate" ] || continue
+        if [ -f "$candidate" ]; then
+            normalize_identity_path "$candidate"
+            return 0
+        fi
+    done < <(identity_path_candidates "$identity_file")
+
+    return 1
+}
+
 validate_connection_target() {
     local target="$1"
     [[ -n "$target" ]] || return 1
@@ -136,7 +174,8 @@ validate_identity_file() {
     [ -z "$identity_file" ] && return 0
     [[ "$identity_file" != -* ]] || return 1
     [[ "$identity_file" != *$'\n'* ]] || return 1
-    [ -f "$(normalize_identity_path "$identity_file")" ] || return 1
+    [[ "$identity_file" != *$'\r'* ]] || return 1
+    resolve_identity_path "$identity_file" >/dev/null
 }
 
 validate_tcp_port() {
@@ -148,7 +187,7 @@ validate_tcp_port() {
 ssh_args() {
     printf '%s\n' "-o" "ConnectTimeout=7" "-o" "BatchMode=yes"
     if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
-        printf '%s\n' "-i" "$(normalize_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes"
+        printf '%s\n' "-i" "$(resolve_identity_path "$SSH_IDENTITY_FILE" || normalize_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes"
     fi
 }
 

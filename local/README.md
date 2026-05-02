@@ -131,11 +131,11 @@ Le script utilise `~/.shipflow/current_connection`. Après une migration serveur
 urls
 ```
 
-Choisissez `c) Configurer nouveau serveur`, entrez une IP valide, un domaine avec un point, un alias SSH déjà défini dans `~/.ssh/config`, ou directement `user@host`, puis l'utilisateur SSH si nécessaire. Si votre clé SSH a un nom spécial, entrez aussi son chemin (`~/.ssh/ma-cle`, par exemple). Laissez le champ vide pour utiliser la configuration SSH normale. Le menu teste la connexion et enregistre la cible pour `urls`, `tunnel` et `shipflow-mcp-login`.
+Choisissez `c) Configurer nouveau serveur`, entrez une IP valide, un domaine avec un point, un alias SSH déjà défini dans `~/.ssh/config`, ou directement `user@host`, puis l'utilisateur SSH si nécessaire. Si votre clé SSH a un nom spécial, entrez aussi son chemin (`~/.ssh/ma-cle`, par exemple) ou un nom simple comme `oracle.key`. Laissez le champ vide pour utiliser la configuration SSH normale. Le menu teste la connexion et enregistre la cible pour `urls`, `tunnel` et `shipflow-mcp-login`.
 
 Si vous êtes connecté au serveur distant et ne connaissez plus l'IP publique à utiliser, ouvrez le menu ShipFlow distant et choisissez `c) Local Setup`.
 
-La clé SSH n'a pas besoin d'avoir un nom standard si le menu connaît son chemin ou si `~/.ssh/config` sait déjà quelle clé utiliser. Si vous changez de serveur, repassez par `c) Configurer nouveau serveur` plutôt que de modifier les fichiers à la main: le même enregistrement est utilisé par les tunnels d'applications et par le login OAuth MCP.
+La clé SSH n'a pas besoin d'avoir un nom standard si le menu connaît son chemin ou si `~/.ssh/config` sait déjà quelle clé utiliser. Pour un nom simple sans `/`, ShipFlow cherche dans le dossier courant, dans `~/.ssh/`, puis dans votre dossier home, et sauvegarde ensuite le chemin absolu trouvé. Si vous changez de serveur, repassez par `c) Configurer nouveau serveur` plutôt que de modifier les fichiers à la main: le même enregistrement est utilisé par les tunnels d'applications et par le login OAuth MCP.
 
 ### Workflow
 

@@ -154,11 +154,12 @@ save_and_activate_connection() {
 
     if ! validate_identity_file "$identity_file"; then
         echo -e "${RED}✗ Clé SSH invalide ou introuvable: $identity_file${NC}"
-        echo -e "${YELLOW}  Laissez vide pour utiliser la configuration SSH normale.${NC}"
+        echo -e "${YELLOW}  Si tu entres seulement un nom de fichier, ShipFlow cherche dans le dossier courant, ~/.ssh/ puis ton dossier home.${NC}"
+        echo -e "${YELLOW}  Laisse vide pour utiliser la configuration SSH normale.${NC}"
         return 1
     fi
     if [ -n "$identity_file" ]; then
-        identity_file=$(normalize_identity_path "$identity_file")
+        identity_file=$(resolve_identity_path "$identity_file")
         chmod 600 "$identity_file" 2>/dev/null || true
     fi
 
