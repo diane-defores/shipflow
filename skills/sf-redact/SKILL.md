@@ -58,6 +58,8 @@ Cette skill peut produire deux types de fichiers :
 
 Avant de planifier ou rédiger, lire le frontmatter complet de `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, `FOUNDER.md`/`AUTHOR.md` quand ils existent. Si le contenu dépend de ces contrats, reporter leurs versions :
 
+Si `docs/editorial/` existe, charger `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` avant de choisir une surface publique. Utiliser le claim register pour éviter les unsupported public claims, la page intent map pour respecter le rôle des pages publiques, l'Astro content schema policy avant de modifier du runtime content, et la blog/article surface policy avant de créer un article. Si aucune surface blog n'est déclarée, signaler `surface missing: blog` et ne pas inventer de chemin.
+
 ```yaml
 depends_on:
   - artifact: "BUSINESS.md"
@@ -232,6 +234,8 @@ Avant d'écrire, détecter où créer les fichiers :
 
 Utiliser le même répertoire que le contenu existant. Si plusieurs répertoires existent, utiliser **AskUserQuestion** pour confirmer. Respecter l'extension existante (`.md` ou `.mdx`).
 
+Si un projet ShipFlow déclare `docs/editorial/blog-and-article-surface-policy.md`, ce document prime sur les heuristiques génériques ci-dessus. Ne créer aucun blog/article sans route, collection, page intent, claim boundary et schema compatibles déclarés.
+
 #### Frontmatter
 
 Respecter le schéma de contenu du projet (depuis `content/config.ts`). Si pas de schéma, utiliser :
@@ -261,6 +265,8 @@ docs_impact: none
 ```
 
 Si le projet a déjà un schéma de frontmatter, préserver les champs requis et n'ajouter ces métadonnées que si elles sont compatibles. Ne jamais casser un schéma applicatif pour imposer les metadata ShipFlow ; reporter les versions utilisées dans le rapport final si le frontmatter ne peut pas les contenir.
+
+Pour Astro, vérifier explicitement `content.config.ts` ou `site/src/content.config.ts` avant d'ajouter un champ. L'Astro content schema et le runtime content gagnent sur les besoins de traçabilité ShipFlow; les versions de contexte peuvent rester dans le rapport final ou une doc de gouvernance.
 
 #### Écrire en tant que l'auteur
 

@@ -83,6 +83,7 @@ ARTIFACT_REQUIRED = {
     "decision_record": {"decision", "rationale", "consequences"},
     "content_map": {"content_surfaces", "next_review"},
     "technical_module_context": {"linked_systems", "next_review"},
+    "editorial_content_context": {"content_surfaces", "claim_register", "page_intent", "next_review"},
     "bug_record": {
         "bug_id",
         "title",

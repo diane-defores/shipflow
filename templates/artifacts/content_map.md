@@ -1,7 +1,7 @@
 ---
 artifact: content_map
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: "[project name]"
 created: "YYYY-MM-DD"
 updated: "YYYY-MM-DD"
@@ -15,6 +15,9 @@ content_surfaces:
   - blog
   - docs
   - landing_pages
+  - editorial_governance
+  - claim_register
+  - page_intent
   - semantic_clusters
 security_impact: unknown
 docs_impact: yes
@@ -34,6 +37,8 @@ This file maps where content lives, what each surface is for, and how content sh
 
 It is a structural context artifact, not an editorial backlog.
 
+When the project has public content, add an editorial governance layer such as `docs/editorial/` for claim boundaries, page intent, update gates, runtime content schema policy, and missing blog/article stop conditions.
+
 ## Content Surfaces
 
 | Surface | Canonical path | Purpose | Format | Source of truth | Update when |
@@ -44,6 +49,7 @@ It is a structural context artifact, not an editorial backlog.
 | Changelog / Release Notes | `[path]` | User-facing product change narrative | `[format]` | `[doc/source]` | `[trigger]` |
 | FAQ / Support | `[path]` | Objection handling, help answers, support reuse | `[format]` | `[doc/source]` | `[trigger]` |
 | Newsletter / Social | `[path or external]` | Distribution and audience relationship | `[format]` | `[doc/source]` | `[trigger]` |
+| Editorial Governance | `docs/editorial/` | Public-content impact, claim register, page intent, editorial update gate, runtime schema policy | Markdown governance artifacts | `CONTENT_MAP.md`, product/business/brand/GTM contracts, site routes | Public surfaces, claims, content schema policy, or article/blog rules change |
 
 ## Semantic Architecture
 
@@ -68,6 +74,10 @@ It is a structural context artifact, not an editorial backlog.
 - A source paragraph or article can become content angles, outlines, FAQ prompts, or newsletter/social hooks.
 - External source material must be reframed; do not mirror the author's exact structure or wording.
 - Public claims must be backed by `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, product behavior, or explicit evidence.
+- Public claims that touch security, privacy, compliance, AI reliability, automation, speed, savings, availability, pricing, or business outcomes must be checked against the claim register when one exists.
+- Public page edits should respect the page intent map when one exists.
+- Application runtime content (`src/content/**`, Astro collections, MDX consumed by the app, CMS entries) must preserve its framework schema. Store ShipFlow governance context in reports or governance docs when the runtime schema does not accept it.
+- If blog/article output is requested but no blog path or article surface is declared, report `surface missing: blog` instead of inventing a path.
 
 ## Cross-Surface Update Rules
 
@@ -78,6 +88,9 @@ It is a structural context artifact, not an editorial backlog.
 | Bug fix | Changelog, support notes, FAQ when user-visible |
 | Positioning change | Landing pages, blog intros, GTM docs, social/newsletter |
 | New pillar topic | Pillar page, supporting articles, internal links, FAQ |
+| Public content or public claim change | Editorial governance docs, claim register, page intent map, target public surface |
+| Runtime content schema change | Content schema, rendered routes, editorial schema policy |
+| Blog or article request | Declared blog/article route and collection; otherwise stop with `surface missing: blog` |
 
 ## Open Gaps
 

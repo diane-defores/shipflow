@@ -47,10 +47,13 @@ This skill is for repurposing, not inventing. Start from the source the user sup
 
 If `CONTENT_MAP.md` exists, use it before recommending target surfaces. Treat it as the project's canonical map for blog paths, docs paths, landing pages, semantic clusters, pillar pages, FAQ/support surfaces, newsletters, and other content destinations. If it is missing, infer surfaces from the repo for this run and recommend creating it from `templates/artifacts/content_map.md`.
 
+When the output is public content or changes public claims, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` after `CONTENT_MAP.md` when available. Use `docs/editorial/claim-register.md` for sensitive public claims, `docs/editorial/page-intent-map.md` for public route intent, `docs/editorial/editorial-update-gate.md` for an `Editorial Update Plan` or `Claim Impact Plan`, and `docs/editorial/blog-and-article-surface-policy.md` before recommending article output. If no declared blog surface exists, report `surface missing: blog` instead of inventing a path.
+
 Primary outcome:
 - extract the real product/technical signal from the work in progress
 - separate documentation output from marketing output
 - keep every public claim inside the bounds of what the work actually supports
+- keep every public claim inside the claim register and evidence boundaries when `docs/editorial/` exists
 - convert justified recommendations into actual repository edits when the user asks to apply them
 - distribute important product concepts across multiple relevant site surfaces instead of assuming one page will be read
 
@@ -169,6 +172,13 @@ Before choosing output forms, check `CONTENT_MAP.md` when present:
 - if the map says a surface is missing, report that gap instead of inventing a path
 - if the map appears stale or contradicts the repo, mark the target as `needs verification`
 
+Then check `docs/editorial/` when present:
+- use the claim register before publishing sensitive claims
+- use the page intent map before changing public Astro pages
+- use the Astro content schema policy before editing runtime content
+- use the blog surface policy before creating or recommending article output
+- include an `Editorial Update Plan` when public content, page intent, claim safety, FAQ, pricing, README, or public docs are impacted
+
 ## Mode detection
 
 Parse `$ARGUMENTS` as an optional focus override:
@@ -263,6 +273,8 @@ Before writing, produce a compact internal diffusion map:
 - surfaces intentionally skipped: with reason
 
 If `CONTENT_MAP.md` exists, update it when a new recurring topic, article, pillar page, or cross-surface rule is created.
+
+If `docs/editorial/` exists, check the claim register, page intent map, Astro content schema policy, and blog surface policy before applying public content. Runtime content may be edited only within schema-compatible fields; incompatible ShipFlow context versions belong in the final report or governance docs, not in app-rendered frontmatter.
 
 ### Phase 3 — Build the structured pack
 

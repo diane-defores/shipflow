@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.5.0"
+artifact_version: "0.6.0"
 project: ShipFlow
 created: "2026-04-22"
 updated: "2026-05-01"
@@ -19,6 +19,8 @@ linked_systems:
   - tools/shipflow_metadata_lint.py
   - skills/references/canonical-paths.md
   - docs/technical/
+  - docs/editorial/
+  - skills/references/editorial-content-corpus.md
 depends_on: []
 supersedes: []
 evidence:
@@ -28,6 +30,7 @@ evidence:
   - "Updated on 2026-04-27 to define canonical ShipFlow path resolution for tools and references"
   - "Updated on 2026-04-29 to formalize the ShipFlow language doctrine: English internal contracts, user-facing interaction in the user's active language."
   - "Updated on 2026-05-01 to add the internal technical documentation layer and Documentation Update Plan gate."
+  - "Updated on 2026-05-01 to add editorial content governance, public claim safety, Astro runtime-content schema boundaries, and the Editorial Update Gate."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -43,12 +46,14 @@ The current documentation frame is already solid on three axes:
 - technical: `CLAUDE.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `CONTENT_MAP.md`, `GUIDELINES.md`, and `specs/`
 - workflow: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-docs`, and versioned metadata
 - product/business: `BUSINESS.md`, `BRANDING.md`, versioned docs, and `depends_on` relationships
+- editorial coherence: `CONTENT_MAP.md`, `docs/editorial/`, public content, claims, page intent, and Astro content schema policy
 
 The recent progress is structural rather than cosmetic:
 
 - a clear agent entrypoint
 - a dedicated context layer
 - a metadata and lint doctrine
+- a public-content governance layer for claims, page intent, editorial gates, and runtime content schema boundaries
 - a cleaner separation between active docs, trackers, and runtime content
 
 Default operating stance:
@@ -118,6 +123,23 @@ The Reader diagnoses impact; an executor or integrator applies updates. A mapped
 Shared files are sequential integration files by default: `docs/technical/code-docs-map.md`, `AGENT.md`, `CONTEXT.md`, `GUIDELINES.md`, `shipflow-spec-driven-workflow.md`, and `tools/shipflow_metadata_lint.py`. Parallel documentation work is allowed only when a ready spec defines disjoint file ownership.
 
 `AGENT.md` remains the canonical agent entrypoint. `AGENTS.md`, when present, is a compatibility symlink to `AGENT.md`, not a second maintained Markdown source. `docs/technical/` remains internal-only in v1 and must not be published to the public site.
+
+## Editorial Content Governance Layer
+
+ShipFlow maintains a public-content governance layer under `docs/editorial/`.
+
+- `CONTENT_MAP.md` remains the canonical content routing map.
+- `docs/editorial/README.md` indexes public-content governance docs.
+- `docs/editorial/public-surface-map.md` maps public pages, README, FAQ, docs overview, public skill pages, and future content surfaces.
+- `docs/editorial/page-intent-map.md` records route intent, CTA, source contracts, and shared-file risk.
+- `docs/editorial/claim-register.md` bounds public claims about security, privacy, compliance, AI reliability, automation, speed, savings, availability, pricing, and business outcomes.
+- `docs/editorial/editorial-update-gate.md` defines the `Editorial Update Plan`, `Claim Impact Plan`, `no editorial impact`, and `pending final copy` statuses.
+- `docs/editorial/astro-content-schema-policy.md` protects Astro content schema and runtime content boundaries.
+- `docs/editorial/blog-and-article-surface-policy.md` requires agents to report `surface missing: blog` when no blog/article surface is declared.
+
+When a wave changes visible behavior, public content, README guidance, public docs, FAQ, pricing, support copy, public skill promises, or claims, the Editorial Reader produces an `Editorial Update Plan`. Sensitive claims also get a `Claim Impact Plan`.
+
+The Editorial Reader is read-only. It diagnoses public-content impact; an executor or integrator applies updates. Shared editorial files stay sequential unless a ready spec assigns exclusive write ownership.
 
 ## Core Principles
 
@@ -295,6 +317,8 @@ Specialized context docs can extend this layer when a repo contains a large proc
 
 `CONTENT_MAP.md` extends the context layer for content-heavy projects. It maps blog surfaces, docs, landing pages, FAQs, semantic clusters, pillar pages, and cross-surface update rules so content skills can route output without rediscovering the repository structure in every thread.
 
+`docs/editorial/` extends that map with content governance: public content impact, claim register, page intent, editorial update gates, Astro content schema policy, and blog/article surface stop conditions.
+
 This layer exists to reduce repeated discovery work in fresh threads. It is not a substitute for reading code. If a context doc and the code disagree, the code wins and the context doc should be updated.
 
 ## Decision Contract Layer
@@ -306,6 +330,7 @@ ShipFlow also separates decision contracts by role to avoid turning one document
 - `BRANDING.md` defines voice, trust posture, vocabulary, and claims boundaries.
 - `GTM.md` defines public promise, acquisition channels, proof points, objections, and funnel assumptions.
 - `CONTENT_MAP.md` defines content surfaces, semantic clusters, pillar pages, and repurposing destinations.
+- `docs/editorial/` defines public-content governance, claims, page intent, and runtime content schema boundaries.
 - `ARCHITECTURE.md` defines system organization, flows, boundaries, and structural invariants.
 - `GUIDELINES.md` defines engineering and documentation rules for contributors.
 
@@ -318,6 +343,7 @@ In practice, this clarifies the product surface:
 - `BRANDING.md` = how we speak
 - `GTM.md` = how we present and distribute it
 - `CONTENT_MAP.md` = where content lives / how ideas move across surfaces
+- `docs/editorial/` = content governance / claims / page intent / Astro content
 - `ARCHITECTURE.md` = how it is organized
 - `GUIDELINES.md` = how we work inside it
 
@@ -328,6 +354,7 @@ Documentation role map:
 - `CONTEXT.md` -> operational map of the system
 - `CONTEXT-FUNCTION-TREE.md` -> structural index for large procedural files
 - `CONTENT_MAP.md` -> editorial map for blog, docs, landing pages, semantic clusters, and repurposing destinations
+- `docs/editorial/` -> content governance for public content, claims, page intent, editorial update gates, and Astro runtime-content schema boundaries
 - `CLAUDE.md` -> critical repository constraints and rules
 - `shipflow-spec-driven-workflow.md` -> ShipFlow work doctrine
 - `shipflow-metadata-migration-guide.md` -> frontmatter migration procedure
@@ -335,6 +362,7 @@ Documentation role map:
 - `BRANDING.md` -> brand contract: tone, posture, vocabulary, claims
 - `GTM.md` -> public promise and sales contract: offer, funnel, objections, proof, channels, KPIs
 - `CONTENT_MAP.md` -> content architecture contract: surfaces, page roles, cocons sémantiques, pillar pages, and update rules
+- `docs/editorial/` -> editorial governance contract: public surfaces, claim register, page intent, content gates, and runtime schema policy
 - `GUIDELINES.md` -> technical constraints and conventions
 - `PRODUCT.md` -> operational product contract
 - `ARCHITECTURE.md` -> system view and structuring invariants

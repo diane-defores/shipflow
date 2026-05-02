@@ -67,6 +67,8 @@ Continuer l'audit dans tous les cas — ne pas bloquer. L'avertissement sert à 
 
 Use ShipFlow versioning semantics: patch = wording clarification without decision change, minor = changed message/voice guidance inside the same strategy, major = changed ICP, positioning, pricing promise, trust posture, market, or brand strategy.
 
+If `docs/editorial/` exists, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` and use it before scoring public content. Check the claim register, page intent map, Astro content schema policy, and blog/article policy when the audited copy touches public pages, README, FAQ, pricing, public docs, public skill pages, runtime content, or article output.
+
 ---
 
 ## Doctrine business et documentation
@@ -74,6 +76,9 @@ Use ShipFlow versioning semantics: patch = wording clarification without decisio
 La copy doit être jugée comme une interface produit, pas seulement comme du texte :
 - la promesse utilisateur doit rester cohérente entre landing pages, app, docs, pricing, FAQ, emails et support
 - les claims sensibles (sécurité, conformité, gains, IA, automatisation, disponibilité, économies) doivent être précis et prouvables
+- les unsupported public claims doivent être marqués comme `proof gap`, `claim mismatch`, `needs proof` ou `blocked` selon le claim register
+- les pages publiques doivent respecter leur page intent, et les contenus Astro doivent préserver leur Astro content schema
+- si un audit identifie une demande blog/article sans surface déclarée, signaler `surface missing: blog`
 - les microcopies doivent refléter les vrais états système : succès, échec, attente, permission refusée, paiement, retry
 - quand une feature change, la copy publique et la documentation active doivent être alignées ou signalées comme dette produit
 
@@ -147,6 +152,7 @@ Audit ALL web projects in the workspace for copywriting quality.
 2. Read layout/wrapper components for shared copy (nav, footer, CTAs).
 3. Read i18n/translation files if the project uses them.
 4. Identify the page's role in the user journey (landing, feature, pricing, blog, docs, etc.).
+5. If `docs/editorial/page-intent-map.md` exists, compare the page against that page intent before judging the copy. If `docs/editorial/claim-register.md` exists, check sensitive claims before assigning severity.
 
 ### Step 2: Audit against this checklist
 

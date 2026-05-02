@@ -2,7 +2,7 @@
 name: sf-docs
 description: "Documentation generation and audit for README, API docs, component docs, metadata, and drift."
 disable-model-invocation: true
-argument-hint: [file-path | "readme" | "api" | "components" | "audit" | "update" | "metadata" | "migrate-frontmatter" | "technical" | "technical audit"]
+argument-hint: [file-path | "readme" | "api" | "components" | "audit" | "update" | "metadata" | "migrate-frontmatter" | "technical" | "technical audit" | "editorial" | "editorial audit"]
 ---
 
 ## Canonical Paths
@@ -42,6 +42,7 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 - **`$ARGUMENTS` is "update"** → UPDATE MODE: harmoniser et mettre à jour la doc existante.
 - **`$ARGUMENTS` is "metadata" or "migrate-frontmatter"** → METADATA MODE: migrer et vérifier le frontmatter ShipFlow des artefacts actifs.
 - **`$ARGUMENTS` is "technical", "technical audit", or "docs/technical"** → TECHNICAL DOCS MODE: scaffold or audit the code-proximate technical documentation layer.
+- **`$ARGUMENTS` is "editorial", "editorial audit", or "docs/editorial"** → EDITORIAL GOVERNANCE MODE: scaffold or audit the public-content governance layer.
 - **`$ARGUMENTS` is empty** → AUTO MODE: detect gaps and suggest what to document.
 
 ---
@@ -51,6 +52,9 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 La documentation est une surface produit active :
 - quand une feature change, vérifier README, docs, guides, exemples, FAQ, onboarding, pricing, changelog, support copy, screenshots, `.env.example` et API docs si pertinents
 - quand une conversation révèle une preuve produit, une règle workflow durable, une objection client récurrente, ou une clarification utile, ne pas la laisser seulement dans le chat; router via `CONTENT_MAP.md`, puis mettre à jour la surface publique ou technique pertinente
+- quand une demande touche du contenu public, une promesse publique, une FAQ, une page site, un README affichable publiquement, une page skill publique, un prix ou un claim, charger `skills/references/editorial-content-corpus.md` puis `docs/editorial/`
+- vérifier le `claim register` pour les claims sensibles et la `page intent` map pour les routes publiques avant de changer la copie
+- préserver l'`Astro content schema` et le frontmatter de `runtime content`; ne pas ajouter de metadata ShipFlow à `site/src/content/**` si `site/src/content.config.ts` ne l'accepte pas
 - ne pas documenter des capacités non prouvées par le code ou les specs
 - distinguer `implemented`, `verified`, `assumed`, `deprecated` et `removed`
 - signaler les docs stale comme risque produit quand elles touchent sécurité, paiement, permissions, API publique, migration, données sensibles ou actions destructives
@@ -250,6 +254,56 @@ test ! -e AGENTS.md || { test -L AGENTS.md && test "$(readlink AGENTS.md)" = "AG
 ```
 
 Report any stale docs, missing map entries, missing validation rules, public/private boundary leaks, or metadata failures as documentation coherence gaps.
+
+---
+
+## EDITORIAL GOVERNANCE MODE
+
+Create, scaffold, or audit ShipFlow's public-content governance layer.
+
+This mode treats public content drift as a documentation risk when README, public docs, FAQ, pricing, site pages, public skill pages, or claims no longer match product truth.
+
+### Flow
+
+1. Load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md`, `CONTENT_MAP.md`, and `docs/editorial/README.md` when present.
+2. Classify the request:
+   - `editorial` or `docs/editorial` with missing docs -> scaffold from `templates/artifacts/editorial_content_context.md`.
+   - `editorial audit` -> audit existing governance docs without rewriting unrelated content.
+   - a changed public surface, claim, README, FAQ, pricing, public docs, or skill-page diff -> produce an `Editorial Update Plan`.
+3. For scaffolding, create or update only the requested editorial governance docs plus shared maps when needed:
+   - `docs/editorial/README.md`
+   - `docs/editorial/public-surface-map.md`
+   - `docs/editorial/page-intent-map.md`
+   - `docs/editorial/claim-register.md`
+   - `docs/editorial/editorial-update-gate.md`
+   - `docs/editorial/astro-content-schema-policy.md`
+   - `docs/editorial/blog-and-article-surface-policy.md`
+   - `templates/artifacts/editorial_content_context.md` when the template itself is missing or stale
+4. For audit, verify:
+   - `CONTENT_MAP.md` points to the editorial governance layer
+   - public surfaces in `site/src/pages/`, README, FAQ/pricing/docs overview, and public skill pages are represented or explicitly excluded
+   - `docs/editorial/claim-register.md` covers sensitive public claims and unsupported public claims are marked `needs proof`, `claim mismatch`, or `blocked`
+   - `docs/editorial/page-intent-map.md` records route intent, CTA, source contracts, and shared-file risk
+   - `docs/editorial/editorial-update-gate.md` defines `Editorial Update Plan`, `Claim Impact Plan`, `no editorial impact`, and `pending final copy`
+   - `docs/editorial/astro-content-schema-policy.md` protects Astro content schema and runtime content frontmatter
+   - blog/article requests without a declared route produce `surface missing: blog`
+   - `editorial_content_context` artifacts pass `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py`
+5. For changed public content, output an `Editorial Update Plan` in the format from `docs/editorial/editorial-update-gate.md`.
+
+### Editorial Documentation Update Rules
+
+- The Editorial Reader diagnoses impact; an executor or integrator applies updates.
+- Shared editorial files are sequential by default.
+- Do not publish internal-only technical details or private operational data into public pages.
+- Do not strengthen public claims beyond `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, specs, verified behavior, and claim evidence.
+- Do not change Astro runtime content frontmatter unless the local schema accepts it.
+
+### Validation
+
+```bash
+python3 tools/shipflow_metadata_lint.py docs/editorial templates/artifacts/editorial_content_context.md
+rg -n "Editorial Update Plan|Claim Impact Plan|pending final copy|surface missing|Astro content schema" docs/editorial
+```
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-01"
@@ -17,6 +17,7 @@ linked_systems:
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
   - shipflow-metadata-migration-guide.md
+  - docs/editorial/
 depends_on:
   - artifact: "shipflow-metadata-migration-guide.md"
     artifact_version: "0.2.0"
@@ -24,6 +25,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Metadata migration guide, templates, and linter source."
+  - "editorial_content_context added for docs/editorial governance artifacts."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit metadata"
 ---
@@ -40,6 +42,7 @@ This doc covers ShipFlow artifact frontmatter, templates, and `tools/shipflow_me
 | --- | --- | --- |
 | `templates/artifacts/*.md` | Artifact templates | Keep frontmatter fields compatible with linter |
 | `templates/artifacts/technical_module_context.md` | Template for subsystem technical docs | Official linted artifact type |
+| `templates/artifacts/editorial_content_context.md` | Template for editorial governance docs | Official linted artifact type for public-content governance |
 | `tools/shipflow_metadata_lint.py` | Dependency-free frontmatter validator | Keep standard-library only |
 | `shipflow-metadata-migration-guide.md` | Human procedure for metadata adoption | Update when schema behavior changes |
 
@@ -56,6 +59,7 @@ This doc covers ShipFlow artifact frontmatter, templates, and `tools/shipflow_me
 - Reviewed, ready, or active artifacts should not stay at `0.x` versions.
 - Operational trackers such as `TASKS.md`, `TEST_LOG.md`, and `BUGS.md` are not decision artifacts.
 - `technical_module_context` is an official linted artifact type in v1.
+- `editorial_content_context` is an official linted artifact type for `docs/editorial/` governance docs and requires content surfaces, claim register, page intent, and next review metadata.
 
 ## Failure Modes
 
@@ -75,11 +79,13 @@ This doc covers ShipFlow artifact frontmatter, templates, and `tools/shipflow_me
 ```bash
 python3 tools/shipflow_metadata_lint.py --help
 python3 tools/shipflow_metadata_lint.py docs/technical templates/artifacts/technical_module_context.md skills/references/technical-docs-corpus.md
+python3 tools/shipflow_metadata_lint.py docs/editorial templates/artifacts/editorial_content_context.md skills/references/editorial-content-corpus.md
 ```
 
 ## Reader Checklist
 
 - Template changed -> run linter on that template and update this doc if fields changed.
+- New governance artifact type changed -> update `ARTIFACT_REQUIRED`, its template, and the relevant governance docs.
 - Linter artifact requirements changed -> update migration guide, workflow docs, and `sf-docs`.
 - Metadata parse behavior changed -> include a narrow regression check with representative artifacts.
 

@@ -7,7 +7,8 @@ const coreDocs = [
   ["AGENT.md", "Where a fresh agent should look first depending on the task."],
   ["CONTEXT.md", "How to orient quickly in the repo, identify hotspots, and route edits."],
   ["CONTEXT-FUNCTION-TREE.md", "How to navigate large procedural shell files without re-reading everything."],
-  ["CONTENT_MAP.md", "Where content lives: blog, docs, landing pages, semantic clusters, and repurposing destinations."],
+  ["CONTENT_MAP.md", "Where content lives: docs, landing pages, semantic clusters, public surfaces, and repurposing destinations."],
+  ["docs/editorial/README.md", "How public content, claims, page intent, and Astro content schema boundaries stay aligned."],
   ["README.md", "Public overview, positioning, onboarding, and high-level framework story."],
   ["shipflow-spec-driven-workflow.md", "The execution doctrine behind sf-spec, sf-ready, sf-start, and sf-verify."]
 ];
@@ -79,6 +80,18 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
             behavior.
           </p>
           <a class="doc-action" href="/faq">Open the FAQ</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Public content stays tied to product truth</h3>
+          <p>
+            ShipFlow separates the content map from the governance layer that
+            checks public content, claims, page intent, and Astro content
+            schema boundaries before public copy drifts from delivered behavior.
+          </p>
+          <a class="doc-action" href="https://github.com/dianedef/ShipFlow/tree/main/docs/editorial">
+            Browse editorial governance
+          </a>
         </article>
 
         <article class="doc-card">

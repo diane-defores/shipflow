@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-01"
+updated: "2026-05-02"
 status: draft
 source_skill: sf-docs
 scope: documentation
@@ -29,6 +29,9 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [Unreleased]
 
 ### Added
+- Editorial content governance layer under `docs/editorial/`, covering public surface mapping, page intent, claim boundaries, editorial update gates, Astro content schema policy, and missing blog/article surface rules
+- Read-only Editorial Reader role and editorial content corpus reference for public-content impact, claim impact, and runtime content schema analysis
+- `editorial_content_context` artifact template and metadata-linter support for editorial governance artifacts
 - Internal `docs/technical/` layer with a code-to-docs map, subsystem technical docs, a technical module template, and a skill-facing technical docs corpus reference for agent handoffs
 - `technical_module_context` artifact support in the ShipFlow metadata linter and template set
 - `sf-docs technical` / `technical audit` contract for scaffolding, auditing, and planning code-proximate documentation updates
@@ -52,6 +55,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Skill discovery budget audit for ShipFlow skills, with strict checks for one-sentence descriptions, name/path metadata, listing budgets, and separate long-body risks
 
 ### Changed
+- README, workflow docs, content map, public docs page, technical docs, and content-focused skills now route public-content work through the editorial governance layer before strengthening public claims or editing Astro runtime content
 - Agent and workflow docs now route code-changing work through `docs/technical/code-docs-map.md` and require a `Documentation Update Plan` for mapped code changes
 - Ready specs with missing confidence or draft-style versions were normalized so the default ShipFlow metadata lint baseline passes again
 - `sf-start`, `sf-fix`, `sf-auth-debug`, `sf-test`, `sf-verify`, `sf-check`, `sf-end`, `sf-ship`, and `sf-prod` now distinguish local evidence from Vercel preview-push evidence and route through `sf-ship` -> `sf-prod` when remote validation is required

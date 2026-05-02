@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-01"
@@ -18,16 +18,21 @@ linked_systems:
   - skills/references/
   - shipflow-spec-driven-workflow.md
   - templates/artifacts/
+  - docs/editorial/
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.4.0"
+    artifact_version: "0.6.0"
     required_status: draft
   - artifact: "skills/references/technical-docs-corpus.md"
+    artifact_version: "1.0.0"
+    required_status: active
+  - artifact: "skills/references/editorial-content-corpus.md"
     artifact_version: "1.0.0"
     required_status: active
 supersedes: []
 evidence:
   - "Skill inventory and workflow doctrine."
+  - "Editorial content corpus and Editorial Reader role added for public-content impact analysis."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -44,6 +49,7 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 | --- | --- | --- |
 | `skills/*/SKILL.md` | Executable skill contracts | Keep descriptions compact; route heavy detail to references |
 | `skills/references/*.md` | Shared doctrine and provider-specific references | Resolve from `${SHIPFLOW_ROOT:-$HOME/shipflow}` |
+| `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `shipflow-spec-driven-workflow.md` | Global workflow doctrine | Sequential shared file |
 | `templates/artifacts/*.md` | Durable artifact templates | Keep linter-compatible |
 | `AGENT.md`, `AGENTS.md` | Agent entrypoint and compatibility alias | `AGENT.md` canonical; `AGENTS.md` symlink only |
@@ -53,6 +59,7 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 - `sf-explore -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end`: normal non-trivial flow.
 - `sf-fix`: bug-first entrypoint that may route direct or spec-first.
 - `sf-docs`: documentation generation, audit, metadata, and technical-docs mode.
+- `sf-docs editorial`: editorial governance scaffolding and audit for public-content drift, claim register, page intent, and runtime content schema preservation.
 - `sf-ship` and `sf-prod`: shipping and deployed verification.
 
 ## Control Flow
@@ -64,8 +71,10 @@ source skill
   -> sf-ready
   -> sf-start
   -> Documentation Update Plan after code-changing wave
+  -> Editorial Update Plan after public-content or claim-impacting wave
   -> sf-verify
   -> Documentation Update Plan during end verification
+  -> Editorial Update Plan during end verification when public content is impacted
   -> sf-end / sf-ship
 ```
 
@@ -74,6 +83,7 @@ source skill
 - Lifecycle skills trace into exactly one chantier spec when one is identified.
 - `sf-start` implements from the ready contract; it should not rediscover product intent while coding.
 - The Reader diagnoses docs impact; the executor or integrator applies docs updates.
+- The Technical Reader diagnoses code-docs impact; the Editorial Reader diagnoses public-content and claim impact.
 - Shared files are sequential by default.
 - Fresh context is preferred for non-trivial spec-first execution when available.
 - ShipFlow-owned references resolve from `$SHIPFLOW_ROOT`, not the project repo.
@@ -82,6 +92,7 @@ source skill
 
 - A weak spec that lacks success/error behavior or explicit constraints must route back to readiness instead of being silently repaired during coding.
 - If mapped docs are missing from a `Documentation Update Plan`, the docs gate fails.
+- If public content, README, FAQ, pricing, public docs, skill pages, or claims are affected but missing from an `Editorial Update Plan`, the editorial gate fails.
 - If the Reader edits docs directly outside assignment, treat it as role misuse.
 - If `AGENTS.md` diverges from `AGENT.md`, verification fails.
 
@@ -95,7 +106,7 @@ source skill
 
 ```bash
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
-python3 tools/shipflow_metadata_lint.py skills/references/technical-docs-corpus.md shipflow-spec-driven-workflow.md AGENT.md
+python3 tools/shipflow_metadata_lint.py skills/references/technical-docs-corpus.md skills/references/editorial-content-corpus.md skills/references/subagent-roles/editorial-reader.md shipflow-spec-driven-workflow.md AGENT.md
 ```
 
 Run focused `rg` checks for the affected skill contract and linked references.
@@ -103,9 +114,11 @@ Run focused `rg` checks for the affected skill contract and linked references.
 ## Reader Checklist
 
 - `skills/*/SKILL.md` changed -> check this doc, `technical-docs-corpus.md`, and workflow docs.
+- Public-content skill changed -> check `editorial-content-corpus.md`, `docs/editorial/`, and workflow docs.
 - A lifecycle rule changed -> update `shipflow-spec-driven-workflow.md`.
 - A docs gate changed -> update `skills/sf-docs/SKILL.md`, `technical-docs-corpus.md`, and `code-docs-map.md`.
+- An editorial gate changed -> update `skills/sf-docs/SKILL.md`, `editorial-content-corpus.md`, `docs/editorial/`, and workflow docs.
 
 ## Maintenance Rule
 
-Update this doc when skill roles, lifecycle flow, chantier tracing, technical-docs gates, model/topology rules, or shared reference resolution changes.
+Update this doc when skill roles, lifecycle flow, chantier tracing, technical-docs gates, editorial gates, model/topology rules, or shared reference resolution changes.

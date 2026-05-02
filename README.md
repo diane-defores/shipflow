@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.3.0"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-01"
@@ -20,6 +20,7 @@ linked_systems:
   - install.sh
   - skills
   - docs/technical
+  - docs/editorial
 depends_on: []
 supersedes: []
 evidence: []
@@ -66,6 +67,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [CONTEXT.md](./CONTEXT.md) — compact operational map of the project, hotspots, invariants, and edit routing
 - [CONTEXT-FUNCTION-TREE.md](./CONTEXT-FUNCTION-TREE.md) — grouped function tree for the main shell scripts
 - [CONTENT_MAP.md](./CONTENT_MAP.md) — editorial map for blog, docs, landing pages, semantic clusters, and repurposing destinations
+- [docs/editorial/README.md](./docs/editorial/README.md) — content governance layer for public content, claims, page intent, and Astro content schema boundaries
 - [docs/technical/README.md](./docs/technical/README.md) — internal technical documentation layer for code-proximate subsystem docs
 - [docs/technical/code-docs-map.md](./docs/technical/code-docs-map.md) — map from code paths to primary docs, validations, and documentation update triggers
 - [BUSINESS.md](./BUSINESS.md) — target audience, value proposition, business assumptions, and market framing
@@ -300,6 +302,7 @@ ShipFlow now uses a dedicated context layer for fast agent onboarding.
 - `CONTEXT.md` is the operational map: entry points, core flows, hotspots, invariants, and where to edit what.
 - `CONTEXT-FUNCTION-TREE.md` is a specialized companion for large procedural files such as `lib.sh`.
 - `CONTENT_MAP.md` is the editorial map: content surfaces, page roles, semantic clusters, pillar pages, and cross-surface update rules.
+- `docs/editorial/` is the editorial coherence layer: public content surfaces, claims, page intent, update gates, and Astro content schema policy.
 
 This split is intentional. `CLAUDE.md` should hold constraints and critical rules, not the full project map. The context files exist to reduce repetitive discovery work at the start of a fresh thread without pretending to replace the code.
 
@@ -310,22 +313,25 @@ ShipFlow also separates decision contracts by role:
 - `BRANDING.md` for how the product should sound
 - `GTM.md` for how the product should be presented and distributed
 - `CONTENT_MAP.md` for where content lives and how ideas should move between blog, docs, landing pages, FAQ, and semantic clusters
+- `docs/editorial/` for content governance: public content impact, public claims, page intent, and runtime content schema boundaries
 - `ARCHITECTURE.md` for how the system is organized
 - `GUIDELINES.md` for how contributors should work inside it
 
 ## Documentation Frame
 
-The current documentation structure is already solid on three axes:
+The current documentation structure is already solid on four axes:
 
 - technical: `CLAUDE.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `CONTENT_MAP.md`, `GUIDELINES.md`, and `specs/`
 - workflow: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-docs`, and versioned metadata
 - product/business: `BUSINESS.md`, `BRANDING.md`, versioned docs, and `depends_on` relationships
+- editorial coherence: `CONTENT_MAP.md`, `docs/editorial/`, public content, claims, page intent, and Astro content schema boundaries
 
 The recent step forward is structural clarity:
 
 - a clear agent entrypoint with `AGENT.md`
 - a dedicated context layer with `CONTEXT.md` and specialized context companions
 - a stronger metadata and lint doctrine with artifact versioning plus `tools/shipflow_metadata_lint.py`
+- a public-content governance layer that keeps README, docs overview, FAQ, public skill pages, pricing copy, and claims aligned with product truth
 - a cleaner separation between active docs, trackers, and runtime content
 
 This means the framework is no longer just documented. It is organized so a fresh agent can enter, locate the right contract, and distinguish decision artifacts from operational tracking or app-rendered content.

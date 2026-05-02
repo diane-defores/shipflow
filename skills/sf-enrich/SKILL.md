@@ -49,7 +49,9 @@ Cette skill enrichit souvent du contenu applicatif. Elle doit donc distinguer :
 - **Contenu applicatif runtime** (`src/content/**`, pages MD/MDX/Astro consommées par le site) : préserver le schéma existant et ajouter uniquement des champs compatibles.
 - **Artefacts ShipFlow business/content** (briefs, rapports, docs éditoriales, pages de stratégie hors runtime) : frontmatter ShipFlow obligatoire avec `metadata_schema_version`, `artifact_version` et `depends_on`.
 
-Avant l'enrichissement, lire le frontmatter complet de `BUSINESS.md`, `BRANDING.md` et des docs éditoriales/copywriting existantes (`docs/copywriting/persona.md`, `docs/copywriting/strategie.md`) quand elles existent. Le contenu enrichi doit respecter les versions de contexte utilisées.
+Avant l'enrichissement, lire le frontmatter complet de `BUSINESS.md`, `BRANDING.md` et des docs éditoriales/copywriting existantes (`docs/editorial/`, `docs/copywriting/persona.md`, `docs/copywriting/strategie.md`) quand elles existent. Le contenu enrichi doit respecter les versions de contexte utilisées.
+
+Si `docs/editorial/` existe, charger `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` avant de modifier du contenu public. Utiliser le claim register pour les unsupported public claims, la page intent map pour préserver le rôle des pages, l'Astro content schema policy avant de modifier du runtime content, et la blog/article surface policy avant de recommander ou créer un article. Si aucune surface blog n'est déclarée, signaler `surface missing: blog`.
 
 Champs compatibles à ajouter seulement si le schéma du projet les accepte :
 
@@ -271,6 +273,7 @@ Before finishing, verify:
 - [ ] Frontmatter is complete (title, description, date updated, tags, author)
 - [ ] Frontmatter metadata is preserved and enriched when compatible: `dateModified`, `source_skill`, `content_status`, `confidence`, `primary_keyword`, `target_audience`, `evidence`, `docs_impact`, `business_context_version`, `brand_context_version`, `depends_on`
 - [ ] Application content schema is still valid; incompatible ShipFlow metadata is reported instead of forced into frontmatter
+- [ ] Editorial governance checked when present: `docs/editorial/claim-register.md`, page intent, Astro content schema, blog/article policy, and proof gap handling
 - [ ] Meta description is rewritten to match the upgraded content
 - [ ] Reading flow is smooth when read top-to-bottom
 - [ ] The piece passes the "so what?" test — every section answers why the reader should care
