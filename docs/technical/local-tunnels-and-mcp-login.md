@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-05-02"
 status: reviewed
 source_skill: sf-start
 scope: local-tunnels-and-mcp-login
@@ -75,7 +75,7 @@ shipflow-mcp-login
 
 ## Invariants
 
-- SSH target and identity path are validated before use.
+- SSH target and identity path are validated before use; accepted targets are valid IPv4 addresses, dotted DNS names, exact aliases from `~/.ssh/config`, or `user@host` forms using those host rules.
 - Local port occupancy is checked before opening a tunnel.
 - Managed tunnel stop logic should select ShipFlow-owned tunnels, not broad process patterns.
 - OAuth tokens remain owned by Codex and the provider; ShipFlow only routes the callback.

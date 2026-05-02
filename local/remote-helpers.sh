@@ -42,7 +42,93 @@ validate_connection_target() {
     local target="$1"
     [[ -n "$target" ]] || return 1
     [[ "$target" != -* ]] || return 1
-    [[ "$target" =~ ^[a-zA-Z0-9._@-]+$ ]] || return 1
+    [[ "$target" != *$'\n'* ]] || return 1
+    [[ "$target" != *$'\r'* ]] || return 1
+    [[ "$target" =~ ^[A-Za-z0-9._@-]+$ ]] || return 1
+    [[ "$target" != *@*@* ]] || return 1
+
+    local user=""
+    local host="$target"
+    if [[ "$target" == *"@"* ]]; then
+        user="${target%%@*}"
+        host="${target#*@}"
+        validate_ssh_user "$user" || return 1
+    fi
+
+    validate_connection_host "$host"
+}
+
+validate_ssh_user() {
+    local user="$1"
+    [[ -n "$user" ]] || return 1
+    [[ "$user" != -* ]] || return 1
+    [[ "$user" =~ ^[A-Za-z0-9._-]+$ ]] || return 1
+}
+
+validate_connection_host() {
+    local host="$1"
+    [[ -n "$host" ]] || return 1
+    [[ "$host" != -* ]] || return 1
+    [[ "$host" != *$'\n'* ]] || return 1
+    [[ "$host" != *$'\r'* ]] || return 1
+
+    if [[ "$host" =~ ^[A-Za-z0-9._-]+$ ]] && is_exact_ssh_config_alias "$host"; then
+        return 0
+    fi
+
+    [[ "$host" =~ ^[A-Za-z0-9.-]+$ ]] || return 1
+
+    is_valid_ipv4 "$host" ||
+        is_valid_dns_name "$host"
+}
+
+is_valid_ipv4() {
+    local ip="$1"
+    [[ "$ip" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || return 1
+
+    local -a octets
+    local octet
+    IFS='.' read -r -a octets <<< "$ip"
+    for octet in "${octets[@]}"; do
+        [[ "$octet" =~ ^[0-9]+$ ]] || return 1
+        [ "$((10#$octet))" -le 255 ] || return 1
+    done
+}
+
+is_valid_dns_name() {
+    local host="$1"
+    [ "${#host}" -le 253 ] || return 1
+    [[ "$host" == *.* ]] || return 1
+    [[ "$host" != *..* ]] || return 1
+
+    local -a labels
+    local label tld
+    IFS='.' read -r -a labels <<< "$host"
+    for label in "${labels[@]}"; do
+        [ -n "$label" ] || return 1
+        [ "${#label}" -le 63 ] || return 1
+        [[ "$label" =~ ^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$ ]] || return 1
+    done
+
+    tld="${labels[$((${#labels[@]} - 1))]}"
+    [[ "$tld" =~ ^[A-Za-z][A-Za-z0-9-]*$ ]] || return 1
+}
+
+is_exact_ssh_config_alias() {
+    local alias="$1"
+    local ssh_config="${HOME:-}/.ssh/config"
+    [ -f "$ssh_config" ] || return 1
+
+    awk -v alias="$alias" '
+        tolower($1) == "host" {
+            for (i = 2; i <= NF; i++) {
+                if ($i == alias) {
+                    found = 1
+                }
+            }
+        }
+        END { exit found ? 0 : 1 }
+    ' "$ssh_config"
 }
 
 validate_identity_file() {

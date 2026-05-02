@@ -77,6 +77,20 @@ get_saved_connections() {
     fi
 }
 
+prompt_inline() {
+    printf "%b" "$1"
+}
+
+trim_input() {
+    local value="${1:-}"
+
+    value="${value//$'\r'/}"
+    value="${value#"${value%%[![:space:]]*}"}"
+    value="${value%"${value##*[![:space:]]}"}"
+
+    printf '%s' "$value"
+}
+
 normalize_menu_choice() {
     local choice="${1:-}"
 
@@ -119,6 +133,7 @@ read_menu_choice() {
             fi
         fi
         while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
+        printf '\n' > /dev/tty
     else
         read -r value
     fi
@@ -133,7 +148,7 @@ save_and_activate_connection() {
 
     if ! validate_connection_target "$target"; then
         echo -e "${RED}✗ Cible invalide: $target${NC}"
-        echo -e "${YELLOW}  Format attendu: user@ip, user@host, ou alias-ssh${NC}"
+        echo -e "${YELLOW}  Format attendu: IP, domaine avec un point, alias SSH défini dans ~/.ssh/config, ou user@host.${NC}"
         return 1
     fi
 
@@ -180,13 +195,26 @@ configure_new_server() {
     echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}${REMOTE_HOST:-non configurée}${NC}"
     echo ""
     echo -e "${BLUE}ShipFlow va enregistrer l'adresse SSH du nouveau serveur.${NC}"
-    echo -e "${BLUE}Tu peux entrer une IP, un domaine, un alias SSH, ou directement user@host.${NC}"
+    echo -e "${BLUE}Tu peux entrer une IP, un domaine, un alias SSH déjà défini, ou directement user@host.${NC}"
     echo -e "${YELLOW}Exemples:${NC} 203.0.113.10, mon-serveur.com, hetzner, ubuntu@203.0.113.10"
     echo ""
-    echo -e "${YELLOW}Adresse IP ou host du nouveau serveur:${NC} \c"
+    prompt_inline "${YELLOW}Adresse IP ou host du nouveau serveur:${NC} "
     read -r server_host
+    server_host="$(trim_input "$server_host")"
     if [ -z "$server_host" ]; then
         echo -e "${RED}✗ Adresse vide${NC}"
+        return 1
+    fi
+
+    if [[ "$server_host" == *"@"* ]]; then
+        if ! validate_connection_target "$server_host"; then
+            echo -e "${RED}✗ Adresse invalide: $server_host${NC}"
+            echo -e "${YELLOW}  Utilise user@IP, user@domaine.tld, ou user@alias-ssh déjà défini dans ~/.ssh/config.${NC}"
+            return 1
+        fi
+    elif ! validate_connection_host "$server_host"; then
+        echo -e "${RED}✗ Adresse invalide: $server_host${NC}"
+        echo -e "${YELLOW}  Entre une IP valide, un domaine avec un point, ou un alias SSH déjà défini dans ~/.ssh/config.${NC}"
         return 1
     fi
 
@@ -196,12 +224,17 @@ configure_new_server() {
         echo -e "${BLUE}Utilisateur SSH détecté dans l'adresse: ${GREEN}${target%%@*}${NC}"
     else
         echo ""
-        echo -e "${BLUE}L'utilisateur SSH est le compte Linux utilisé pour te connecter au serveur.${NC}"
-        echo -e "${BLUE}Sur beaucoup de serveurs Ubuntu cloud, c'est ${GREEN}ubuntu${BLUE}. Selon l'hébergeur, ça peut aussi être ${GREEN}root${BLUE}, ${GREEN}debian${BLUE}, ${GREEN}ec2-user${BLUE}, etc.${NC}"
+        echo -e "${BLUE}L'utilisateur SSH est le compte Linux utilisé pour te connecter au serveur. Sur beaucoup de serveurs Ubuntu cloud, c'est ${GREEN}ubuntu${BLUE}. Selon l'hébergeur, ça peut aussi être ${GREEN}root${BLUE}, ${GREEN}debian${BLUE}, ${GREEN}ec2-user${BLUE}, etc.${NC}"
         echo -e "${YELLOW}Laisse vide pour utiliser la valeur par défaut : ${GREEN}ubuntu${YELLOW}.${NC}"
         echo -e "${YELLOW}Si le test échoue, réessaie avec l'utilisateur indiqué par ton hébergeur.${NC}"
-        echo -e "${YELLOW}Utilisateur SSH:${NC} \c"
+        prompt_inline "${YELLOW}Utilisateur SSH:${NC} "
         read -r server_user
+        server_user="$(trim_input "$server_user")"
+        if [ -n "$server_user" ] && ! validate_ssh_user "$server_user"; then
+            echo -e "${RED}✗ Utilisateur SSH invalide: $server_user${NC}"
+            echo -e "${YELLOW}  Utilise seulement lettres, chiffres, point, tiret ou underscore.${NC}"
+            return 1
+        fi
         server_user="${server_user:-ubuntu}"
         target="${server_user}@${server_host}"
     fi
@@ -210,8 +243,9 @@ configure_new_server() {
     echo -e "${BLUE}La clé SSH est le fichier privé utilisé si ta connexion demande une clé spéciale.${NC}"
     echo -e "${BLUE}Exemple: ~/.ssh/id_ed25519${NC}"
     echo -e "${YELLOW}Laisse vide pour utiliser la valeur par défaut : connexion SSH normale.${NC}"
-    echo -e "${YELLOW}Chemin de la clé SSH si tu l'as enregistrée dans un dossier particulier ou avec un nom spécifique:${NC} \c"
+    prompt_inline "${YELLOW}Chemin de la clé SSH si tu l'as enregistrée dans un dossier particulier ou avec un nom spécifique:${NC} "
     read -r identity_file
+    identity_file="$(trim_input "$identity_file")"
 
     echo ""
     echo -e "${BLUE}Connexion qui va être testée:${NC} ${GREEN}$target${NC}"
@@ -256,7 +290,7 @@ select_connection() {
     echo -e "  ${CYAN}n)${NC} ➕ Nouvelle connexion"
     echo -e "  ${CYAN}x)${NC} ← Retour"
     echo ""
-    echo -e "${YELLOW}Tape la lettre de ton choix ?${NC} \c"
+    prompt_inline "${YELLOW}Tape la lettre de ton choix ?${NC} "
     read_menu_choice choice true
 
     case "$choice" in
@@ -265,11 +299,12 @@ select_connection() {
             ;;
         n)
             echo ""
-            echo -e "${BLUE}Format: user@host ou alias SSH${NC}"
-            echo -e "${YELLOW}Exemple: ubuntu@203.0.113.10, root@192.168.1.10, myserver${NC}"
+            echo -e "${BLUE}Format: IP, domaine, alias SSH déjà défini, ou user@host${NC}"
+            echo -e "${YELLOW}Exemple: ubuntu@203.0.113.10, root@192.168.1.10, mon-serveur.com, hetzner${NC}"
             echo ""
-            echo -e "${YELLOW}Nouvelle connexion:${NC} \c"
+            prompt_inline "${YELLOW}Nouvelle connexion:${NC} "
             read -r new_conn
+            new_conn="$(trim_input "$new_conn")"
 
             if [ -n "$new_conn" ]; then
                 save_and_activate_connection "$new_conn" || pause
@@ -560,7 +595,7 @@ run_mcp_login_menu() {
     echo -e "  ${CYAN}c)${NC} custom"
     echo -e "  ${CYAN}x)${NC} retour"
     echo ""
-    echo -e "${YELLOW}Tape la lettre de ton choix ?${NC} \c"
+    prompt_inline "${YELLOW}Tape la lettre de ton choix ?${NC} "
     read_menu_choice login_choice
 
     case "$login_choice" in
@@ -568,8 +603,9 @@ run_mcp_login_menu() {
         s) provider="supabase" ;;
         a) provider="all" ;;
         c)
-            echo -e "${YELLOW}Nom du provider MCP:${NC} \c"
+            prompt_inline "${YELLOW}Nom du provider MCP:${NC} "
             read -r provider
+            provider="$(trim_input "$provider")"
             ;;
         x|q) return 0 ;;
         *)
@@ -867,7 +903,7 @@ main() {
         print_header
         show_menu
 
-        echo -e "${YELLOW}Tape la lettre de ton choix ?${NC} \c"
+        prompt_inline "${YELLOW}Tape la lettre de ton choix ?${NC} "
         read_menu_choice CHOICE
 
         case $CHOICE in

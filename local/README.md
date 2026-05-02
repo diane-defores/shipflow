@@ -131,7 +131,7 @@ Le script utilise `~/.shipflow/current_connection`. Après une migration serveur
 urls
 ```
 
-Choisissez `c) Configurer nouveau serveur`, entrez l'adresse IP ou le host, puis l'utilisateur SSH. Si votre clé SSH a un nom spécial, entrez aussi son chemin (`~/.ssh/ma-cle`, par exemple). Laissez le champ vide pour utiliser la configuration SSH normale. Le menu teste la connexion et enregistre la cible pour `urls`, `tunnel` et `shipflow-mcp-login`.
+Choisissez `c) Configurer nouveau serveur`, entrez une IP valide, un domaine avec un point, un alias SSH déjà défini dans `~/.ssh/config`, ou directement `user@host`, puis l'utilisateur SSH si nécessaire. Si votre clé SSH a un nom spécial, entrez aussi son chemin (`~/.ssh/ma-cle`, par exemple). Laissez le champ vide pour utiliser la configuration SSH normale. Le menu teste la connexion et enregistre la cible pour `urls`, `tunnel` et `shipflow-mcp-login`.
 
 Si vous êtes connecté au serveur distant et ne connaissez plus l'IP publique à utiliser, ouvrez le menu ShipFlow distant et choisissez `c) Local Setup`.
 

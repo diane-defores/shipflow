@@ -94,7 +94,7 @@ fi
 
 if ! validate_connection_target "$REMOTE_HOST"; then
     echo -e "${RED}✗ Connexion distante invalide: $REMOTE_HOST${NC}"
-    echo -e "${YELLOW}  Format: user@host ou alias SSH, sans option SSH ni espace.${NC}"
+    echo -e "${YELLOW}  Format: IP, domaine avec un point, alias SSH défini dans ~/.ssh/config, ou user@host.${NC}"
     exit 1
 fi
 

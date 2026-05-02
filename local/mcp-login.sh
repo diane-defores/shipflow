@@ -92,7 +92,7 @@ load_remote_host() {
         exit 1
     fi
 
-    if [[ ! "$REMOTE_HOST" =~ ^[a-zA-Z0-9._@-]+$ ]]; then
+    if ! validate_connection_target "$REMOTE_HOST"; then
         echo -e "${RED}✗ Connexion distante invalide: $REMOTE_HOST${NC}"
         echo -e "${YELLOW}  Corrigez ~/.shipflow/current_connection via le menu local (option connexion).${NC}"
         exit 1
@@ -102,8 +102,8 @@ load_remote_host() {
         SSH_IDENTITY_FILE="$(cat "$CURRENT_IDENTITY_FILE")"
     fi
 
-    if [ -n "$SSH_IDENTITY_FILE" ] && [ ! -f "$(normalize_identity_path "$SSH_IDENTITY_FILE")" ]; then
-        echo -e "${RED}✗ Clé SSH configurée introuvable: $SSH_IDENTITY_FILE${NC}"
+    if ! validate_identity_file "$SSH_IDENTITY_FILE"; then
+        echo -e "${RED}✗ Clé SSH configurée invalide ou introuvable: $SSH_IDENTITY_FILE${NC}"
         echo -e "${YELLOW}  Ouvrez 'urls', choisissez c) Configurer nouveau serveur, puis renseignez le bon chemin de clé.${NC}"
         exit 1
     fi

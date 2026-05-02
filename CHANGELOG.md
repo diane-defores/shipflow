@@ -56,6 +56,8 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Skill discovery budget audit for ShipFlow skills, with strict checks for one-sentence descriptions, name/path metadata, listing budgets, and separate long-body risks
 
 ### Changed
+- Local SSH server configuration now rejects invalid free-form hosts before asking for the SSH user, while still accepting valid IPv4 addresses, dotted domains, and exact aliases from `~/.ssh/config`.
+- Local menu one-key prompts now print a clean newline after hidden key reads, avoiding glued Termux output such as a prompt followed immediately by the next border.
 - README, workflow doctrine, corpus references, and skill lifecycle docs now explain that future projects should use `sf-init` and `sf-docs` for project-local governance corpora instead of rerunning ShipFlow's shipped governance specs per project.
 - README, workflow docs, content map, public docs page, technical docs, and content-focused skills now route public-content work through the editorial governance layer before strengthening public claims or editing Astro runtime content
 - Agent and workflow docs now route code-changing work through `docs/technical/code-docs-map.md` and require a `Documentation Update Plan` for mapped code changes
