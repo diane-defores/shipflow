@@ -368,7 +368,7 @@ should_show_session_scan_loader() {
 
 render_session_scan_frame() {
     local frame="$1"
-    local sweep_top sweep_mid sweep_bottom
+    local scan_cap scan_upper scan_top scan_mid scan_bottom scan_lower scan_base
     local host_label="${REMOTE_HOST:-serveur}"
 
     if [ "${#host_label}" -gt 22 ]; then
@@ -377,37 +377,53 @@ render_session_scan_frame() {
 
     case $((frame % 4)) in
         0)
-            sweep_top="      |       "
-            sweep_mid=" -----o-----  "
-            sweep_bottom="      |       "
+            scan_cap="   |    "
+            scan_upper="      |     "
+            scan_top="       |      "
+            scan_mid="-------o------"
+            scan_bottom="       |      "
+            scan_lower="      |     "
+            scan_base="   |    "
             ;;
         1)
-            sweep_top="   /          "
-            sweep_mid="--o-----------"
-            sweep_bottom="   \\          "
+            scan_cap="      / "
+            scan_upper="        /   "
+            scan_top="        /     "
+            scan_mid="-------o------"
+            scan_bottom="      /       "
+            scan_lower="    /       "
+            scan_base="/       "
             ;;
         2)
-            sweep_top="              "
-            sweep_mid=" -----o-----  "
-            sweep_bottom="              "
+            scan_cap="        "
+            scan_upper="            "
+            scan_top="              "
+            scan_mid="-------o------"
+            scan_bottom="              "
+            scan_lower="            "
+            scan_base="        "
             ;;
         *)
-            sweep_top="          \\   "
-            sweep_mid="-----------o--"
-            sweep_bottom="          /   "
+            scan_cap="\\       "
+            scan_upper="    \\       "
+            scan_top="      \\       "
+            scan_mid="-------o------"
+            scan_bottom="        \\     "
+            scan_lower="        \\   "
+            scan_base="      \\ "
             ;;
     esac
 
     printf "\033[2K\r%b\n" "${CYAN}      .------------------------.${NC}" > /dev/tty
     printf "\033[2K\r%b\n" "${CYAN}      |${NC}${BLUE} SONAR SSH${NC}${YELLOW}  scan réseau ${CYAN}|${NC}" > /dev/tty
     printf "\033[2K\r%b\n" "${CYAN}      |${NC}        .------.        ${CYAN}|${NC}" > /dev/tty
-    printf "\033[2K\r%b\n" "${CYAN}      |${NC}      .'        '.      ${CYAN}|${NC}" > /dev/tty
-    printf "\033[2K\r%b\n" "${CYAN}      |${NC}     /            \\     ${CYAN}|${NC}" > /dev/tty
-    printf "\033[2K\r%b\n" "${CYAN}      |${NC}    |${GREEN}${sweep_top}${NC}|    ${CYAN}|${NC}" > /dev/tty
-    printf "\033[2K\r%b\n" "${CYAN}      |${NC}    |${GREEN}${sweep_mid}${NC}|    ${CYAN}|${NC}" > /dev/tty
-    printf "\033[2K\r%b\n" "${CYAN}      |${NC}    |${GREEN}${sweep_bottom}${NC}|    ${CYAN}|${NC}" > /dev/tty
-    printf "\033[2K\r%b\n" "${CYAN}      |${NC}     \\            /     ${CYAN}|${NC}" > /dev/tty
-    printf "\033[2K\r%b\n" "${CYAN}      |${NC}      '.        .'      ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}      .'${GREEN}${scan_cap}${NC}'.      ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}     /${GREEN}${scan_upper}${NC}\\     ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}    |${GREEN}${scan_top}${NC}|    ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}    |${GREEN}${scan_mid}${NC}|    ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}    |${GREEN}${scan_bottom}${NC}|    ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b%s%b\n" "${CYAN}      |${NC}     " "\\" "${GREEN}${scan_lower}${NC}/     ${CYAN}|${NC}" > /dev/tty
+    printf "\033[2K\r%b\n" "${CYAN}      |${NC}      '.${GREEN}${scan_base}${NC}.'      ${CYAN}|${NC}" > /dev/tty
     printf "\033[2K\r%b\n" "${CYAN}      |${NC}        '------'        ${CYAN}|${NC}" > /dev/tty
     printf "\033[2K\r%b\n" "${CYAN}      '------------------------'${NC}" > /dev/tty
     printf "\033[2K\r%b\n" "${BLUE}      Recherche SSH: ${GREEN}${host_label}${BLUE}...${NC}" > /dev/tty
