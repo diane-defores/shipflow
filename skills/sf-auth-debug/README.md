@@ -10,6 +10,8 @@ It is designed for cases where static code reading is not enough because the fai
 
 It respects the project development mode: local projects can prove local auth flows locally, while Vercel preview-push projects must use `sf-ship` -> `sf-prod` before a preview auth result is treated as authoritative.
 
+For public UI, visual, console, network, or non-auth navigation checks, use `sf-browser` instead. `sf-auth-debug` stays focused on auth, sessions, callbacks, cookies, tenants, providers, and protected routes.
+
 ## Who It's For
 
 - Founders debugging login issues on their own apps
@@ -70,11 +72,13 @@ It respects the project development mode: local projects can prove local auth fl
 
 - It does not guarantee a fully automated Google login flow.
 - MFA, captcha, device approval, WebAuthn, and similar human-gated steps may block full automation.
+- It is not the generic browser evidence path; non-auth page, visual, console, or network checks belong in `sf-browser`.
 - It is a diagnostic skill, not a replacement for `sf-fix`, `sf-start`, or `sf-verify`.
 
 ## Related Skills
 
 - `sf-fix` for quick bug triage and direct fixes
+- `sf-browser` for non-auth page, visual, console, or network evidence
 - `sf-spec` when the auth bug still lacks a clear contract
 - `sf-start` to implement the chosen fix path
 - `sf-verify` to confirm the repaired auth flow is ready to ship

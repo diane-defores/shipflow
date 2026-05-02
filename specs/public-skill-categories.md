@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-04-27"
 created_at: "2026-04-27 20:01:16 UTC"
-updated: "2026-04-27"
-updated_at: "2026-04-27 22:35:25 UTC"
+updated: "2026-05-02"
+updated_at: "2026-05-02 11:46:53 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -26,7 +26,7 @@ linked_systems:
   - site/src/pages/skill-modes.astro
 depends_on:
   - artifact: "specs/skill-taxonomy-and-chantier-sources.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: "ready"
   - artifact: "shipflow-spec-driven-workflow.md"
     artifact_version: "0.3.0"
@@ -35,7 +35,8 @@ supersedes: []
 evidence:
   - "User request 2026-04-27: after shipping internal chantier taxonomy, continue with categorizing skills on the website."
   - "Previous spec explicitly scoped public website taxonomy out of the internal chantier taxonomy."
-  - "Repo investigation 2026-04-27: public site has 48 skill pages grouped into 6 enum categories in site/src/content.config.ts."
+  - "Repo investigation 2026-04-27: initial public site had 48 skill pages grouped into 6 enum categories in site/src/content.config.ts."
+  - "sf-docs update 2026-05-02: public catalog now has 49 skill pages after adding sf-browser as a Build & Fix skill."
   - "Repo investigation 2026-04-27: skills hub groups by categoryOrder in site/src/pages/skills/index.astro and detail pages display skill.data.category."
   - "User decision 2026-04-27: use a true public reclassification with Plan & Decide, Build & Fix, Audit & Improve, Research & Grow, Operate & Ship, Meta & Setup."
   - "User decision 2026-04-27: leave continue out of the public catalog for this chantier."
@@ -63,7 +64,7 @@ Quand une visiteuse ouvre le hub public `/skills`, les skills doivent etre class
 
 ## Success Behavior
 
-- Preconditions: les 48 pages publiques sous `site/src/content/skills/` existent, `site/src/content.config.ts` valide leur frontmatter avec `z.enum`, et le hub `/skills` groupe les skills par `categoryOrder`.
+- Preconditions: les 49 pages publiques sous `site/src/content/skills/` existent, `site/src/content.config.ts` valide leur frontmatter avec `z.enum`, et le hub `/skills` groupe les skills par `categoryOrder`.
 - Trigger: une visiteuse ouvre `/skills` ou une page `/skills/[slug]`.
 - User/operator result: les categories expliquent mieux l'intention de chaque skill et rendent le catalogue plus scannable.
 - System effect: le schema de collection, l'ordre de categories, les frontmatter de skills et les textes du hub restent alignes.
@@ -90,7 +91,7 @@ Definir une taxonomie publique separee des roles de chantier, puis l'appliquer a
 
 ## Scope In
 
-- Auditer les 48 pages publiques de skills et leurs categories actuelles.
+- Auditer les 49 pages publiques de skills et leurs categories actuelles.
 - Appliquer la taxonomie publique retenue: `Plan & Decide`, `Build & Fix`, `Audit & Improve`, `Research & Grow`, `Operate & Ship`, `Meta & Setup`.
 - Mettre a jour `site/src/content.config.ts` avec les categories retenues.
 - Mettre a jour `categoryOrder` et les textes de section dans `site/src/pages/skills/index.astro`.
@@ -139,7 +140,7 @@ Definir une taxonomie publique separee des roles de chantier, puis l'appliquer a
 - Upstream systems: `site/src/content.config.ts` definit les categories autorisees.
 - Downstream systems: `site/src/pages/skills/index.astro`, `site/src/pages/skills/[slug].astro`, et `SkillCard.astro` affichent les categories.
 - Cross-cutting checks: SEO/copy coherence for public labels; build/content validation for Astro collection schema; no auth/data/security impact.
-- Performance consequence: none material. The affected Astro pages remain static, no client hydration is added, no third-party script is added, and the existing collection grouping stays bounded to 48 public skill pages.
+- Performance consequence: none material. The affected Astro pages remain static, no client hydration is added, no third-party script is added, and the existing collection grouping stays bounded to 49 public skill pages.
 
 ## Documentation Coherence
 
@@ -162,7 +163,7 @@ Definir une taxonomie publique separee des roles de chantier, puis l'appliquer a
 | Category | Public intent | Skills |
 |----------|---------------|--------|
 | `Plan & Decide` | Clarifier, cadrer, prioriser ou choisir avant de modifier le repo. | `sf-backlog`, `sf-context`, `sf-explore`, `sf-model`, `sf-priorities`, `sf-ready`, `sf-spec`, `sf-review` |
-| `Build & Fix` | Entrer dans l'execution concrete, corriger, tester ou creer des fichiers. | `sf-auth-debug`, `sf-fix`, `sf-scaffold`, `sf-start`, `sf-test` |
+| `Build & Fix` | Entrer dans l'execution concrete, corriger, tester ou creer des fichiers. | `sf-auth-debug`, `sf-browser`, `sf-fix`, `sf-scaffold`, `sf-start`, `sf-test` |
 | `Audit & Improve` | Inspecter la qualite, trouver les risques, verifier ou ameliorer un systeme existant. | `sf-audit`, `sf-audit-a11y`, `sf-audit-code`, `sf-audit-components`, `sf-audit-copy`, `sf-audit-copywriting`, `sf-audit-design`, `sf-audit-design-tokens`, `sf-audit-gtm`, `sf-audit-seo`, `sf-audit-translate`, `sf-deps`, `sf-perf`, `sf-verify` |
 | `Research & Grow` | Produire, enrichir ou transformer de l'information utile au contenu, au marche ou a la croissance. | `sf-enrich`, `sf-market-study`, `sf-redact`, `sf-repurpose`, `sf-research`, `sf-veille` |
 | `Operate & Ship` | Garder le projet exploitable, documente, verifie, deploye et pret a etre livre. | `sf-check`, `sf-changelog`, `sf-docs`, `sf-end`, `sf-migrate`, `sf-prod`, `sf-ship`, `sf-status`, `sf-tasks` |
@@ -174,7 +175,7 @@ Definir une taxonomie publique separee des roles de chantier, puis l'appliquer a
 
 - [x] Task 1: Inventorier la distribution actuelle
   - File: `site/src/content/skills/*.md`
-  - Action: Lister les 48 pages, categories actuelles, et skills eventuellement absentes du site public.
+  - Action: Lister les 49 pages, categories actuelles, et skills eventuellement absentes du site public.
   - User story link: Evite de changer les categories sans comprendre le catalogue.
   - Depends on: None
   - Validate with: `for c in "Core Workflow" Audits "Context & Docs" "Research & Growth" Operations "Meta & Utility"; do rg -l "^category: \"$c\"" site/src/content/skills/*.md | wc -l; done`
@@ -238,7 +239,7 @@ Definir une taxonomie publique separee des roles de chantier, puis l'appliquer a
 - [ ] AC 6: Given le build/check du site, when il est lance, then aucune page de skill ne casse la collection Astro.
 - [ ] AC 7: Given la taxonomie retenue, when on lit le schema et le hub, then les seules categories publiques sont `Plan & Decide`, `Build & Fix`, `Audit & Improve`, `Research & Grow`, `Operate & Ship`, `Meta & Setup`.
 - [ ] AC 8: Given la skill interne `continue`, when on inspecte `site/src/content/skills/`, then aucune page publique `continue.md` n'a ete creee pour ce chantier.
-- [ ] AC 9: Given les 48 pages publiques existantes, when on compare leur `category` a `Target Classification Map`, then chaque skill est classee dans la categorie cible indiquee.
+- [ ] AC 9: Given les 49 pages publiques existantes, when on compare leur `category` a `Target Classification Map`, then chaque skill est classee dans la categorie cible indiquee.
 
 ## Test Strategy
 

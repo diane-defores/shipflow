@@ -10,6 +10,8 @@ For a solo founder, this is the fastest way to catch broken builds, type errors,
 
 When a project uses Vercel preview-push validation, `sf-check` is only the local pre-push confidence pass. Passing checks should route next to `sf-ship` -> `sf-prod` before preview/manual evidence is trusted.
 
+If the missing proof is browser-observable behavior on a non-auth page, `sf-check` should route to `sf-browser` after local or deployment readiness is clear.
+
 ## Who It's For
 
 - Solo founders maintaining one or more codebases
@@ -36,6 +38,7 @@ When a project uses Vercel preview-push validation, `sf-check` is only the local
 - a short gap analysis when important checks are missing
 - explicit warning when “green” does not prove runtime behavior
 - the correct next step when local checks need remote preview validation
+- a route to `sf-browser` when non-auth browser evidence is the missing proof
 
 ## Typical Examples
 
@@ -49,9 +52,12 @@ When a project uses Vercel preview-push validation, `sf-check` is only the local
 
 `sf-check` does not prove the product actually works end to end. It only validates the checks it can run from the repo. It also does not install missing dependencies, invent missing test coverage, or weaken guardrails just to get a green result.
 
+It does not replace `sf-browser` for visible page assertions, console/network browser checks, or screenshots.
+
 ## Related Skills
 
 - `sf-deps` for a full dependency audit
+- `sf-browser` when green checks still need non-auth page, visual, console, or network evidence
 - `sf-verify` when the change is high-stakes
 - `sf-prod` after deployment
 - `sf-ship` then `sf-prod` when the project validates through Vercel previews

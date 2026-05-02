@@ -46,7 +46,7 @@
 | 🟠 | Implémenter Professional Bug Management avec index compact, dossiers bug et preuves séparées | ✅ done |
 | 🟠 | Durcir `sf-fix` pour exiger une trace bug durable même en fix direct, sauf exception mineure explicitement justifiée | ✅ done |
 | ✅ | Documenter et propager le mode de développement projet (`local`, `vercel-preview-push`, `hybrid`) dans les skills de validation et de ship | ✅ done |
-| ✅ | Créer `sf-browser` comme skill navigateur généraliste non-auth et l'intégrer aux routes `sf-auth-debug`, `sf-test`, `sf-prod`, `sf-fix`, `sf-start`, `sf-verify`, `sf-check` et au site public | ✅ done |
+| ✅ | Créer `sf-browser` comme skill navigateur généraliste non-auth et l'intégrer aux routes `sf-auth-debug`, `sf-test`, `sf-prod`, `sf-fix`, `sf-start`, `sf-verify`, `sf-check`, aux specs de taxonomie/catalogue, aux README internes et au site public | ✅ done |
 
 ---
 

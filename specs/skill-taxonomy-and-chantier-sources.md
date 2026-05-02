@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-04-27"
 created_at: "2026-04-27 19:34:21 UTC"
-updated: "2026-04-27"
-updated_at: "2026-04-27 19:59:25 UTC"
+updated: "2026-05-02"
+updated_at: "2026-05-02 11:46:53 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -40,6 +40,7 @@ evidence:
   - "User problem 2026-04-27: audit and diagnostic skills can produce important follow-up work that remains trapped in the conversation."
   - "Repo investigation 2026-04-27: current chantier doctrine only supports obligatoire, conditionnel, and non-applicable spec tracing."
   - "Repo investigation 2026-04-27: sf-deps, sf-perf, sf-audit, sf-check, sf-test, sf-prod, sf-migrate, and sf-auth-debug are currently conditionnel but can originate new chantiers."
+  - "sf-docs update 2026-05-02: sf-browser is a conditionnel/source-de-chantier skill for generic non-auth browser evidence."
 next_step: "None"
 ---
 
@@ -213,11 +214,11 @@ Etendre la doctrine avec une seconde taxonomie interne: la categorie de tracing 
   - Notes: Les sous-audits peuvent proposer un chantier specialise; `sf-audit` peut proposer un chantier transversal.
 
 - [x] Task 7: Mettre a jour les sources incident, verification et migration
-  - File: `skills/sf-auth-debug/SKILL.md`, `skills/sf-prod/SKILL.md`, `skills/sf-check/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-migrate/SKILL.md`, `skills/sf-fix/SKILL.md`
+  - File: `skills/sf-auth-debug/SKILL.md`, `skills/sf-browser/SKILL.md`, `skills/sf-prod/SKILL.md`, `skills/sf-check/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-migrate/SKILL.md`, `skills/sf-fix/SKILL.md`
   - Action: Ajouter le role source quand les resultats depassent le fix direct; documenter les seuils spec-first.
   - User story link: Les bugs, incidents, migrations et echecs de validation deviennent des chantiers quand le risque le justifie.
   - Depends on: Tasks 1-4
-  - Validate with: `rg -n "source-de-chantier|Chantier potentiel|spec-first" skills/sf-auth-debug/SKILL.md skills/sf-prod/SKILL.md skills/sf-check/SKILL.md skills/sf-test/SKILL.md skills/sf-migrate/SKILL.md skills/sf-fix/SKILL.md`
+  - Validate with: `rg -n "source-de-chantier|Chantier potentiel|spec-first" skills/sf-auth-debug/SKILL.md skills/sf-browser/SKILL.md skills/sf-prod/SKILL.md skills/sf-check/SKILL.md skills/sf-test/SKILL.md skills/sf-migrate/SKILL.md skills/sf-fix/SKILL.md`
   - Notes: Garder la possibilite de correction directe pour les problemes locaux.
 
 - [x] Task 8: Classer les skills de contenu, recherche et pilotage
@@ -287,10 +288,10 @@ Etendre la doctrine avec une seconde taxonomie interne: la categorie de tracing 
 ## Execution Notes
 
 - Read first: `skills/references/chantier-tracking.md`, `skills/sf-help/SKILL.md`, `specs/specs-as-chantier-registry.md`, `templates/artifacts/spec.md`.
-- Then inspect representative sources: `skills/sf-deps/SKILL.md`, `skills/sf-perf/SKILL.md`, `skills/sf-audit/SKILL.md`, `skills/sf-check/SKILL.md`, `skills/sf-prod/SKILL.md`.
+- Then inspect representative sources: `skills/sf-deps/SKILL.md`, `skills/sf-perf/SKILL.md`, `skills/sf-audit/SKILL.md`, `skills/sf-check/SKILL.md`, `skills/sf-prod/SKILL.md`, `skills/sf-browser/SKILL.md`.
 - Suggested taxonomy baseline:
   - `lifecycle`: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship`.
-  - `source-de-chantier`: `sf-deps`, `sf-perf`, all audits, `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-test`, `sf-migrate`, `sf-fix`, `sf-market-study`, `sf-veille`, maybe `sf-research` when it produces implementation decisions.
+  - `source-de-chantier`: `sf-deps`, `sf-perf`, all audits, `sf-auth-debug`, `sf-browser`, `sf-prod`, `sf-check`, `sf-test`, `sf-migrate`, `sf-fix`, `sf-market-study`, `sf-veille`, maybe `sf-research` when it produces implementation decisions.
   - `support-de-chantier`: `sf-docs`, `sf-enrich`, `sf-redact`, `sf-repurpose`, `sf-scaffold`, `sf-changelog`, `sf-design-playground`, `sf-skills-refresh`.
   - `pilotage`: `sf-tasks`, `sf-backlog`, `sf-priorities`, `sf-review`, maybe `continue`.
   - `helper`: `sf-context`, `sf-model`, `sf-help`, `sf-status`, `sf-resume`, `sf-explore`, `name`.
