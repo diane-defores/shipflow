@@ -93,7 +93,7 @@ This block coexists with the standard `Chantier` block. If the source skill is a
 
 | Skill group | Trace category | Process role | Source threshold |
 |-------------|----------------|--------------|------------------|
-| `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship` | `obligatoire` | `lifecycle` | Not a source; continue the existing chantier. |
+| `sf-spec`, `sf-ready`, `sf-build`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship` | `obligatoire` | `lifecycle` | Not a source; continue the existing chantier. |
 | `sf-audit*`, `sf-deps`, `sf-perf` | `conditionnel` | `source-de-chantier` | Major audit findings, P0/P1, cross-domain P2 clusters, or fixes needing a spec. |
 | `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-test`, `sf-migrate`, `sf-fix` | `conditionnel` | `source-de-chantier` | Incidents, failing flows, migration risk, bug dossiers, or validation failures beyond a direct fix. |
 | `sf-market-study`, `sf-veille`, `sf-research` | `conditionnel` | `source-de-chantier` | Strategic or research output that requires a product, content, architecture, or implementation decision. |

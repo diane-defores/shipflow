@@ -26,6 +26,15 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
 
+## [2026-05-02]
+
+### Added
+- `sf-build` lifecycle skill as the user-facing master orchestrator from story intake through spec/readiness, implementation, verification, closure, and ship handoff.
+- Dedicated internal subagent role contracts for technical reading, editorial reading, sequential execution, wave execution, and integration.
+
+### Changed
+- README, workflow doctrine, help, and chantier tracking now present `sf-build` as the recommended end-user entrypoint while preserving atomic skills for expert control and recovery.
+
 ## [Unreleased]
 
 ### Added

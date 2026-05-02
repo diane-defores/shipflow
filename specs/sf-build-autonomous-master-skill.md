@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-04-29"
 created_at: "2026-04-29 09:02:11 UTC"
 updated: "2026-05-02"
-updated_at: "2026-05-02 09:48:41 UTC"
+updated_at: "2026-05-02 11:01:15 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -19,11 +19,16 @@ security_impact: yes
 docs_impact: yes
 linked_systems:
   - skills/sf-build/SKILL.md
+  - skills/sf-init/SKILL.md
+  - skills/sf-docs/SKILL.md
   - skills/sf-spec/SKILL.md
   - skills/sf-ready/SKILL.md
   - skills/sf-model/SKILL.md
   - skills/sf-start/SKILL.md
   - skills/sf-verify/SKILL.md
+  - skills/sf-browser/SKILL.md
+  - skills/sf-auth-debug/SKILL.md
+  - skills/sf-prod/SKILL.md
   - skills/sf-test/SKILL.md
   - skills/sf-end/SKILL.md
   - skills/sf-ship/SKILL.md
@@ -58,10 +63,10 @@ depends_on:
     artifact_version: "1.0.0"
     required_status: "reviewed"
   - artifact: "README.md"
-    artifact_version: "0.4.0"
+    artifact_version: "0.5.0"
     required_status: "draft"
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.7.0"
+    artifact_version: "0.8.0"
     required_status: "draft"
   - artifact: "skills/references/chantier-tracking.md"
     artifact_version: "0.1.0"
@@ -100,7 +105,13 @@ evidence:
   - "User decision 2026-05-01: replace the generic Reader role with separate Technical Reader and Editorial Reader role files, with no reader.md alias and no loss of existing Reader responsibilities."
   - "sf-ready 2026-05-01: blocked on dependency metadata alignment and ShipFlow language doctrine for internal contracts."
   - "User decision 2026-05-02: sf-build must consume project-local technical and editorial governance corpora instead of relying on conversation memory or manual per-project governance chantiers."
-next_step: "/sf-start sf-build Autonomous Master Skill"
+  - "sf-ship 2026-05-02: governance corpus integration shipped; sf-init bootstraps project corpus layers, sf-docs owns technical/editorial corpus creation and audit, and sf-build consumes those layers through gates and readers."
+  - "sf-ready 2026-05-02: revalidated and blocked on dependency metadata drift after README.md and shipflow-spec-driven-workflow.md version updates."
+  - "sf-spec 2026-05-02: refreshed sf-build dependency metadata after README.md 0.5.0 and shipflow-spec-driven-workflow.md 0.8.0 became the active artifacts."
+  - "README.md 0.5.0 and shipflow-spec-driven-workflow.md 0.8.0 add sf-browser as the generic non-auth browser evidence path, distinct from sf-auth-debug for auth/session issues, sf-prod for deployment/runtime evidence, and sf-test for durable manual QA."
+  - "sf-ready 2026-05-02: validated the reconciled spec after dependency metadata, governance corpus ownership, and browser evidence routing updates."
+  - "sf-ready 2026-05-02: revalidated official OpenAI Codex docs freshness, behavior contract, language doctrine, adversarial risk, and security gates before sf-start."
+next_step: "None"
 ---
 
 # Spec: sf-build Autonomous Master Skill
@@ -119,23 +130,23 @@ En tant qu'utilisatrice finale ShipFlow non-développeuse, je veux lancer une se
 
 ## Minimal Behavior Contract
 
-When the user runs `sf-build` with an intent, the skill becomes the single user-facing pilot for the current chantier: it first checks whether an active spec already covers the same promise, creates or attaches a spec, loops spec/readiness until the contract is executable, runs the Governance Corpus Gate, applies model routing before `sf-start` when the chantier is large or risky, then executes through bounded delegation. The Governance Corpus Gate checks project-local `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and applicable `docs/editorial/` state before implementation, routing to `sf-docs` bootstrap/audit or recording an explicit no-impact/no-surface reason before work continues. The default execution mode is one bounded subagent at a time for reading, editing, validation, documentation alignment, closure, and ship preparation; parallel work is allowed only when a ready spec defines ordered `Execution Batches` with non-overlapping ownership and validation per batch. Success is observable through a chantier spec with run history, a short user-facing status trail, verified implementation, governance corpus status, docs/content alignment or justified pending items, and a final `sf-end` plus `sf-ship` path when gates pass. Failure is observable through a concise blocking question or stop report before dangerous action. The easy edge case to miss is letting convenience override the gates: editing in the master conversation, spawning opportunistic parallel agents, creating a duplicate spec, shipping dirty files outside scope, treating shipped ShipFlow governance specs as per-project tasks, or moving to the next wave before technical docs and public content impact have been handled.
+When the user runs `sf-build` with an intent, the skill becomes the single user-facing pilot for the current chantier: it first checks whether an active spec already covers the same promise, creates or attaches a spec, loops spec/readiness until the contract is executable, runs the Governance Corpus Gate, applies model routing before `sf-start` when the chantier is large or risky, then executes through bounded delegation. It also routes browser evidence through the official verification skills: `sf-browser` for generic non-auth page/route/preview evidence, `sf-auth-debug` for auth/session/callback/protected-route evidence, `sf-prod` for hosted deployment/runtime evidence, and `sf-test` for durable manual QA or retest logs. The Governance Corpus Gate checks project-local `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and applicable `docs/editorial/` state before implementation, routing to `sf-docs` bootstrap/audit or recording an explicit no-impact/no-surface reason before work continues. The default execution mode is one bounded subagent at a time for reading, editing, validation, documentation alignment, closure, and ship preparation; parallel work is allowed only when a ready spec defines ordered `Execution Batches` with non-overlapping ownership and validation per batch. Success is observable through a chantier spec with run history, a short user-facing status trail, verified implementation, correctly routed browser/manual evidence, governance corpus status, docs/content alignment or justified pending items, and a final `sf-end` plus `sf-ship` path when gates pass. Failure is observable through a concise blocking question or stop report before dangerous action. The easy edge case to miss is letting convenience override the gates: editing in the master conversation, spawning opportunistic parallel agents, creating a duplicate spec, shipping dirty files outside scope, treating shipped ShipFlow governance specs as per-project tasks, collapsing `sf-browser`, `sf-auth-debug`, `sf-prod`, and `sf-test` into one vague proof step, or moving to the next wave before technical docs and public content impact have been handled.
 
 ## Success Behavior
 
 - Preconditions: the user provides a story, task, bug, or goal; the current repository is identifiable; lifecycle skills are available; and the user can answer material decision questions.
 - Trigger: the user runs `/sf-build <story>` or `$sf-build <story>`.
 - User/operator result: the master conversation stays focused on product decisions, short status, and final outcome; routine file reading, edits, validation, and technical reports are delegated to bounded subagents by default; `sf-build` does not ask again before every sequential subagent while the action remains inside the current chantier scope.
-- System effect: `sf-build` performs an `Existing Chantier Check`, attaches to a matching active spec when possible, creates a new spec only for a new promise or result, traces its run when one spec is in scope, loops `sf-spec` and `sf-ready` until ready or blocked, applies a `Governance Corpus Gate`, applies a `Model Routing Gate` before `sf-start` for high-risk or costly work, runs one bounded write-capable subagent at a time by default, uses the Technical Reader for code-docs impact, uses the Editorial Reader for public-surface and claim impact, applies technical docs and editorial updates through a write-capable executor or integrator, verifies the user story, runs `sf-end`, then calls `sf-ship` only when verification, closure, bug-risk, secret, and staging gates pass.
-- Success proof: the chantier spec includes `Skill Run History` and `Current Chantier Flow`; the final user-facing report names the result, validations, execution mode (`main-only`, `delegated sequential`, or `spec-gated parallel`), commit/push when `sf-ship` succeeds, files excluded from ship if any, and remaining proof limits if any.
+- System effect: `sf-build` performs an `Existing Chantier Check`, attaches to a matching active spec when possible, creates a new spec only for a new promise or result, traces its run when one spec is in scope, loops `sf-spec` and `sf-ready` until ready or blocked, applies a `Governance Corpus Gate`, applies a `Model Routing Gate` before `sf-start` for high-risk or costly work, runs one bounded write-capable subagent at a time by default, uses the Technical Reader for code-docs impact, uses the Editorial Reader for public-surface and claim impact, applies technical docs and editorial updates through a write-capable executor or integrator, verifies the user story, routes browser evidence to `sf-browser`, `sf-auth-debug`, `sf-prod`, or `sf-test` according to proof type, runs `sf-end`, then calls `sf-ship` only when verification, closure, bug-risk, secret, and staging gates pass.
+- Success proof: the chantier spec includes `Skill Run History` and `Current Chantier Flow`; the final user-facing report names the result, validations, browser/manual proof route when relevant, execution mode (`main-only`, `delegated sequential`, or `spec-gated parallel`), commit/push when `sf-ship` succeeds, files excluded from ship if any, and remaining proof limits if any.
 - Silent success: not allowed. The user must see material decisions, high-level phase status, selected execution mode, any parallel batches, and final verdict.
 
 ## Error Behavior
 
-- Expected failures: vague story, multiple matching specs, unavailable subagents, unavailable integrated prompt tool, rejected single-agent degradation, requested parallelism without `Execution Batches`, overlapping ownership, invalid batch dependency order, missing or stale governance corpus state, public/content surfaces without editorial governance, code areas without a technical map or explicit non-coverage reason, out-of-scope file need, uncertain permission to touch existing behavior or design, failed readiness, blocked subagent, incompatible subagent outputs, failed checks or verification, partial changes, secrets or unrelated dirty files, blocking bug risk, and failed push.
+- Expected failures: vague story, multiple matching specs, unavailable subagents, unavailable integrated prompt tool, rejected single-agent degradation, requested parallelism without `Execution Batches`, overlapping ownership, invalid batch dependency order, missing or stale governance corpus state, public/content surfaces without editorial governance, code areas without a technical map or explicit non-coverage reason, out-of-scope file need, uncertain permission to touch existing behavior or design, failed readiness, blocked subagent, incompatible subagent outputs, failed checks or verification, misrouted browser/manual evidence, partial changes, secrets or unrelated dirty files, blocking bug risk, and failed push.
 - User/operator response: if a user answer can unblock the chantier, `sf-build` asks one concise question with 2 or 3 prepared options plus free-form answer support; otherwise it reports the blocking condition and the next safe action, without claiming the work is delivered.
 - System effect: no subagent is launched outside the current authorized scope; no write-capable subagents run in parallel without ready `Execution Batches`; no next wave starts while impacted technical docs or public-content updates from the current wave remain unresolved, unless every remaining item is marked `pending final integration` or `pending final copy` with reason and resolution condition; no `sf-start` runs before the spec is ready and the Governance Corpus Gate has passed, routed to `sf-docs`, or recorded explicit no-impact/no-surface status; no full `sf-end` runs before the user story is sufficiently verified; no `sf-ship` runs if checks, bug gate, secret check, staging scope, or central validation fail without explicit user approval.
-- Must never happen: implement outside validated scope, create a duplicate spec for an existing chantier, modify sensitive existing behavior without a decision, do routine file edits in the master conversation when sequential delegation is available, let executors change code without Technical Reader docs impact review or Editorial Reader public-content impact review, bypass missing project-local governance corpus state, rerun ShipFlow's shipped governance specs as project bootstrap work, run concurrent write-capable subagents without ready non-overlapping batches, ask for delegation consent before every bounded sequential subagent, ignore a readiness failure, ship a half-coded feature, hide a regression, commit unrelated dirty files, use `all-dirty` without explicit request, overwrite user changes, or produce a long technical final report for an end user.
+- Must never happen: implement outside validated scope, create a duplicate spec for an existing chantier, modify sensitive existing behavior without a decision, do routine file edits in the master conversation when sequential delegation is available, let executors change code without Technical Reader docs impact review or Editorial Reader public-content impact review, bypass missing project-local governance corpus state, rerun ShipFlow's shipped governance specs as project bootstrap work, run concurrent write-capable subagents without ready non-overlapping batches, ask for delegation consent before every bounded sequential subagent, ignore a readiness failure, use `sf-test`, `sf-auth-debug`, or `sf-prod` as a generic substitute for non-auth browser evidence that belongs to `sf-browser`, ship a half-coded feature, hide a regression, commit unrelated dirty files, use `all-dirty` without explicit request, overwrite user changes, or produce a long technical final report for an end user.
 - Silent failure: not allowed. Each blocked step must be visible as a user decision, missing proof, failed validation, or runtime constraint.
 
 ## Problem
@@ -148,7 +159,7 @@ The previous readiness passes established three core constraints: `sf-build` inv
 
 ## Solution
 
-Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for end-to-end ShipFlow work. It keeps the master conversation at the level of product decisions and high-level status, delegates file work sequentially by default, uses role-specific internal subagent contracts, gates parallelism through ready `Execution Batches`, loops spec/readiness until executable, checks the project-local governance corpus before implementation, applies model routing before implementation when needed, and then runs implementation, verification, manual testing when relevant, closure, and ship only when gates pass.
+Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for end-to-end ShipFlow work. It keeps the master conversation at the level of product decisions and high-level status, delegates file work sequentially by default, uses role-specific internal subagent contracts, gates parallelism through ready `Execution Batches`, loops spec/readiness until executable, checks the project-local governance corpus before implementation, applies model routing before implementation when needed, routes browser evidence to the right verification skill, and then runs implementation, verification, manual testing when relevant, closure, and ship only when gates pass.
 
 ## Scope In
 
@@ -170,6 +181,7 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - Add a question protocol with prepared options and free-form answer support for vision, scope, existing behavior, design, data, security, validation, closure, staging, and ship decisions.
 - Apply the ShipFlow language doctrine: internal skill instructions, role contracts, section headings, acceptance criteria, stop conditions, and validation notes are in English; questions and final reports are in the active user language, with proper accents for French.
 - Add a `Model Routing Gate` before `sf-start`, mandatory for large, high-risk, multi-domain, parallel, ambiguous, token-costly, or high-cost-of-error chantiers.
+- Define a `Browser Evidence Routing Gate`: use `sf-browser` for generic non-auth URL, route, preview, production page, console/network, and screenshot evidence; use `sf-auth-debug` for auth, sessions, OAuth, cookies, callbacks, organizations, tenants, protected routes, or permission failures; use `sf-prod` for hosted deployment status, Vercel/runtime logs, serverless or edge runtime evidence, and live health checks; use `sf-test` for durable manual QA plans, retests, and structured manual testing logs.
 - Define a plain-text fallback when integrated prompt tooling is unavailable.
 - Define gates that block `sf-start`, `sf-end`, or `sf-ship` when contract or proof is insufficient.
 - Document how `sf-build` interacts with `sf-end` and `sf-ship`.
@@ -211,6 +223,7 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - A code-changing chantier must have a technical map or an explicit technical no-impact/non-coverage reason.
 - A public-content, visible-behavior, README, FAQ, pricing, support, public skill page, blog/article, or claim-changing chantier must have editorial governance or an explicit no editorial impact/no-surface reason.
 - A wave or large execution block is not complete until impacted docs and public content are updated, reviewed, explicitly marked no-impact, or marked pending with reason and resolution condition.
+- Browser proof must be routed by evidence type: generic non-auth browser inspection goes to `sf-browser`, auth/session investigation goes to `sf-auth-debug`, deployment/runtime proof goes to `sf-prod`, and durable manual QA or retest protocols go to `sf-test`.
 - Questions must be asked before dangerous action.
 - Prepared options must always allow a free-form answer when the options do not fit.
 - If integrated prompt tooling is unavailable, the skill asks a short plain-text question and stops until the answer when the decision changes scope, security, data, validation, closure, staging, or ship.
@@ -223,9 +236,9 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - Local runtime: ShipFlow skill system, markdown specs, git, project checks, and existing `sf-end` / `sf-ship` mechanisms.
 - Codex runtime: subagents are available in Codex CLI/app only when requested or authorized; for `sf-build`, command invocation is the explicit bounded delegation request for the current chantier. Subagents inherit parent sandbox and approval controls and may fail if fresh approval cannot be surfaced in non-interactive mode. Parallelism remains optional and spec-gated.
 - Prompt runtime: integrated question tooling such as `AskUserQuestion` may be unavailable; `sf-build` must provide a plain-text fallback.
-- Document contracts: `BUSINESS.md` 1.1.0 reviewed, `PRODUCT.md` 1.1.0 reviewed, `GUIDELINES.md` 1.3.0 reviewed, `BRANDING.md` 1.0.0 reviewed, `README.md` 0.4.0 draft, `shipflow-spec-driven-workflow.md` 0.7.0 draft, `skills/references/chantier-tracking.md` 0.1.0 draft, `skills/references/technical-docs-corpus.md` 1.1.0 active, `skills/references/editorial-content-corpus.md` 1.1.0 active, `docs/technical/code-docs-map.md` 1.0.0 reviewed, and `CONTENT_MAP.md` 0.3.0 draft.
+- Document contracts: `BUSINESS.md` 1.1.0 reviewed, `PRODUCT.md` 1.1.0 reviewed, `GUIDELINES.md` 1.3.0 reviewed, `BRANDING.md` 1.0.0 reviewed, `README.md` 0.5.0 draft, `shipflow-spec-driven-workflow.md` 0.8.0 draft, `skills/references/chantier-tracking.md` 0.1.0 draft, `skills/references/technical-docs-corpus.md` 1.1.0 active, `skills/references/editorial-content-corpus.md` 1.1.0 active, `docs/technical/code-docs-map.md` 1.0.0 reviewed, and `CONTENT_MAP.md` 0.3.0 draft.
 - Draft dependency acceptance: `README.md`, `shipflow-spec-driven-workflow.md`, `CONTENT_MAP.md`, and `skills/references/chantier-tracking.md` are still draft but are active ShipFlow governance docs for this chantier; their exact versions are recorded and no dependency is marked stale.
-- Fresh external docs: fresh-docs checked on 2026-05-01 against official OpenAI documentation: Codex Subagents (`https://developers.openai.com/codex/subagents`), Codex CLI (`https://developers.openai.com/codex/cli`), Codex Agent Internet Access (`https://developers.openai.com/codex/cloud/internet-access`), and OpenAI Docs MCP (`https://developers.openai.com/learn/docs-mcp`). Decision: the spec may rely on bounded Codex subagents because invoking `sf-build` is the explicit delegation request for the current chantier; the skill must keep fan-out to one write-capable subagent at a time except ready `Execution Batches`, preserve parent approvals/sandbox, and avoid unbounded external access without a separate gate.
+- Fresh external docs: fresh-docs checked on 2026-05-02 against official OpenAI documentation: Codex Subagents (`https://developers.openai.com/codex/subagents`), Codex CLI subagents (`https://developers.openai.com/codex/cli/features#subagents`), Codex approvals and sandbox controls (`https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals`), Codex network access (`https://developers.openai.com/codex/agent-approvals-security#network-access-`), and Codex config reference (`https://developers.openai.com/codex/config-reference#configtoml`). Decision: the spec may rely on bounded Codex subagents because invoking `sf-build` is the explicit delegation request for the current chantier; the skill must keep fan-out to one write-capable subagent at a time except ready `Execution Batches`, preserve parent approvals/sandbox, and avoid unbounded external access without a separate gate.
 
 ## Invariants
 
@@ -247,12 +260,13 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 ## Links & Consequences
 
 - Upstream intake: `sf-explore` can remain a reflection entrypoint, but `sf-build` must also accept a direct story and run short exploration when needed.
-- Core lifecycle: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-test`, `sf-end`, and `sf-ship` become orchestrated internal phases.
+- Core lifecycle: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-test`, `sf-end`, and `sf-ship` become orchestrated internal phases when their evidence type applies.
 - Existing chantier routing: `sf-build` treats `specs/` as the durable registry and continues a matching chantier instead of creating a duplicate.
 - Runtime orchestration: `sf-build` must name when it delegates, which subagent owns which files or surfaces, how outputs are integrated, and which parallel waves are allowed.
 - Governance corpus orchestration: before `sf-start`, `sf-build` checks project-local technical/editorial corpus state and routes missing or stale layers through `sf-docs` rather than duplicating bootstrap logic.
 - Technical documentation orchestration: the Technical Reader maps code changes to `docs/technical/`, README, guides, workflow docs, specs, and internal references; the master blocks the next wave unless updates are applied, no-impact is justified, or pending status is explicit.
 - Editorial orchestration: the Editorial Reader maps visible behavior and claim changes to `CONTENT_MAP.md`, public Astro pages, public docs, FAQ, pricing, skill pages, support copy, README, and claim surfaces; closure and ship are blocked unless updates are applied, no-impact is justified, or pending final copy is explicit.
+- Browser evidence orchestration: `sf-build` does not invent a browser verification workflow; it routes generic non-auth browser inspection to `sf-browser`, auth/session debugging to `sf-auth-debug`, deployment/runtime evidence to `sf-prod`, and durable manual QA/retests to `sf-test`.
 - Model routing: `sf-model` remains a helper; `sf-build` may use it as a gate before `sf-start` and records the decision in its own report/trace.
 - Chantier tracking: `sf-build` writes its own run trace when one unique spec exists and keeps lifecycle substeps visible.
 - Task tracking: `sf-end` remains responsible for final `TASKS.md` and `CHANGELOG.md` closure updates; `sf-build` calls it at the right time instead of reimplementing that logic.
@@ -267,9 +281,11 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - `skills/sf-build/SKILL.md` must include an `Existing Chantier Check` before any launch or spec creation.
 - `skills/sf-build/SKILL.md` must include `Execution Modes`: `main-only`, `delegated sequential`, and `spec-gated parallel`.
 - `skills/sf-build/SKILL.md` must include a `Governance Corpus Gate` before `sf-start`, with concrete checks for `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, applicable `docs/editorial/`, and route-to-`sf-docs` outcomes.
+- `skills/sf-build/SKILL.md` must treat `sf-init` and `sf-docs` as the lifecycle owners for corpus bootstrap and audit; `sf-build` consumes their outputs and routes to them when corpus state is missing or stale instead of reimplementing scaffolding.
 - `skills/sf-build/SKILL.md` must include `Spec-Gated Parallelism` rules that block opportunistic parallelism and route back to spec/readiness when batches are missing or unsafe.
 - `skills/sf-build/SKILL.md` must include a `Documentation Update Gate` with `pending final integration` as a documented exception.
 - `skills/sf-build/SKILL.md` must include an `Editorial Update Gate` with `no editorial impact` and `pending final copy` as documented outcomes.
+- `skills/sf-build/SKILL.md` must include `Browser Evidence Routing` with explicit route rules for `sf-browser`, `sf-auth-debug`, `sf-prod`, and `sf-test`; it must not treat these skills as interchangeable proof buckets.
 - `skills/references/subagent-roles/technical-reader.md` must define the `Technical Reader Agent Contract`: strict read-only behavior, `skills/references/technical-docs-corpus.md`, project-local `docs/technical/code-docs-map.md`, code-docs mapping, `Documentation Update Plan`, outputs, and no edit/stage/destructive validation permissions.
 - `skills/references/subagent-roles/editorial-reader.md` must define the `Editorial Reader Agent Contract`: strict read-only behavior, `skills/references/editorial-content-corpus.md`, `CONTENT_MAP.md`, project-local `docs/editorial/`, public surfaces, Astro pages, README/public docs, claims, `Editorial Update Plan`, `Claim Impact Plan`, outputs, and no edit/stage/destructive validation permissions.
 - `skills/references/subagent-roles/sequential-executor.md` must define the `Sequential Executor Contract`: one active write-capable executor by default, assigned write set, approved technical/editorial update application, stop conditions, validation expectations, and output summary.
@@ -311,6 +327,10 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - The user asks for a change that may alter existing behavior: `sf-build` asks whether to modify existing behavior, add a parallel behavior, or stop for stricter spec work.
 - Readiness fails: `sf-build` runs a spec correction pass and another readiness review within an explicit iteration limit.
 - The spec/ready loop fails repeatedly: `sf-build` stops with a short block and a question or recommendation instead of coding anyway.
+- The change needs generic browser evidence on a public or non-auth route: `sf-build` calls `sf-browser` and records its page, console/network, screenshot, or interaction evidence instead of sending the work to `sf-test` by habit.
+- The change touches login, auth callbacks, sessions, cookies, organizations, tenants, permissions, or protected routes: `sf-build` calls `sf-auth-debug` before treating the issue as generic browser evidence.
+- The proof depends on a hosted deployment, Vercel status, runtime logs, serverless or edge functions, production health, or live deployment behavior: `sf-build` routes to `sf-prod` before browser/manual proof.
+- The proof requires a durable human QA script, repeated retests, or structured manual scenario logging: `sf-build` routes to `sf-test` and keeps `sf-browser` evidence as supporting proof only.
 - Two subagents return incompatible outputs: the master stops and integrates, asks for a decision, or launches correction; it never ships incoherent merges.
 - A subagent needs approval that cannot be surfaced: `sf-build` treats the step as blocked, stops or closes the subagent, and reports the missing decision.
 - Checks pass but `sf-verify` says the user story is not satisfied: no full `sf-end` or `sf-ship` without explicit risk acceptance.
@@ -425,13 +445,13 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
   - Validate with: `rg -n "Model Routing Gate|sf-model|model routing|reasoning|token|cost|fallback|sf-start" skills/sf-build/SKILL.md`
   - Notes: `sf-model` is non-tracing helper behavior; `sf-build` summarizes the model decision in its own report/trace.
 
-- [ ] Task 7: Integrate `sf-start`, `sf-verify`, and `sf-test`
+- [ ] Task 7: Integrate `sf-start`, `sf-verify`, browser evidence routing, and `sf-test`
   - File: `skills/sf-build/SKILL.md`
-  - Action: Describe how implementation starts from a ready spec, how verification judges the user story, when `sf-test` is required, and how failures route back to correction or user decision.
+  - Action: Describe how implementation starts from a ready spec, how verification judges the user story, how browser evidence routes to `sf-browser`, `sf-auth-debug`, `sf-prod`, or `sf-test`, and how failures route back to correction or user decision.
   - User story link: Ensures delivered work is verified beyond code existence.
   - Depends on: Task 6
-  - Validate with: `rg -n "sf-start|sf-verify|sf-test|user story|verification|manual|bug" skills/sf-build/SKILL.md`
-  - Notes: Require `sf-test` for manual flows, UI, auth, production behavior, or behavior not proven by automated checks.
+  - Validate with: `rg -n "sf-start|sf-verify|sf-browser|sf-auth-debug|sf-prod|sf-test|browser evidence|user story|verification|manual|bug" skills/sf-build/SKILL.md`
+  - Notes: Use `sf-browser` for generic non-auth browser evidence, `sf-auth-debug` for auth/session evidence, `sf-prod` for deployment/runtime evidence, and `sf-test` for durable manual QA, retests, or behavior not proven by automated checks.
 
 - [ ] Task 8: Integrate `sf-end` and `sf-ship`
   - File: `skills/sf-build/SKILL.md`
@@ -470,7 +490,7 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
   - Action: Review the instructions as a fresh agent, verify gates are testable, verify language doctrine is respected, then rerun `/sf-ready sf-build Autonomous Master Skill`.
   - User story link: Proves the workflow can be implemented without chat history.
   - Depends on: Tasks 1-11
-  - Validate with: `rg -n "invocation.*sf-build|Execution Modes|delegated sequential|Spec-Gated Parallelism|Execution Batches|Governance Corpus Gate|docs/technical|docs/editorial|technical-docs-corpus|editorial-content-corpus|CONTENT_MAP|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|Model Routing Gate|sf-model|Question Gate|plain-text|sf-end|sf-ship|all-dirty|fresh-docs" skills/sf-build/SKILL.md specs/sf-build-autonomous-master-skill.md && rg -n "Technical Reader Agent Contract|Editorial Reader Agent Contract|Sequential Executor Contract|Wave Executor Contract|Integrator Contract" skills/references/subagent-roles && test ! -e skills/references/subagent-roles/reader.md`
+  - Validate with: `rg -n "invocation.*sf-build|Execution Modes|delegated sequential|Spec-Gated Parallelism|Execution Batches|Governance Corpus Gate|docs/technical|docs/editorial|technical-docs-corpus|editorial-content-corpus|CONTENT_MAP|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|Model Routing Gate|sf-model|Browser Evidence Routing|sf-browser|sf-auth-debug|sf-prod|sf-test|Question Gate|plain-text|sf-end|sf-ship|all-dirty|fresh-docs" skills/sf-build/SKILL.md specs/sf-build-autonomous-master-skill.md && rg -n "Technical Reader Agent Contract|Editorial Reader Agent Contract|Sequential Executor Contract|Wave Executor Contract|Integrator Contract" skills/references/subagent-roles && test ! -e skills/references/subagent-roles/reader.md`
   - Notes: If readiness still fails on a contract point, correct the spec before implementation.
 
 ## Acceptance Criteria
@@ -496,6 +516,10 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - [ ] AC 6: Given integrated question tooling is unavailable, when a material decision is required, then `sf-build` asks a short plain-text question with options and waits for the answer.
 - [ ] AC 7: Given `sf-ready` returns `not ready`, when gaps are repairable without a user decision, then `sf-build` runs a spec correction pass and another readiness review within the iteration limit.
 - [ ] AC 8: Given `sf-verify` or `sf-test` fails the user story, when `sf-build` considers closure, then it blocks full `sf-end` and `sf-ship` unless the user explicitly accepts risk.
+- [ ] AC 8b: Given a change needs browser evidence for a non-auth URL, route, preview, or production page, when `sf-build` chooses the proof path, then it calls or delegates to `sf-browser` and records the evidence route.
+- [ ] AC 8c: Given a change touches auth, sessions, cookies, callbacks, organizations, tenants, protected routes, or permission failures, when `sf-build` chooses the proof path, then it calls or delegates to `sf-auth-debug` instead of generic browser verification.
+- [ ] AC 8d: Given proof depends on hosted deployment status, runtime logs, production health, serverless functions, edge functions, or live deployment behavior, when `sf-build` chooses the proof path, then it calls or delegates to `sf-prod` before treating browser/manual checks as sufficient.
+- [ ] AC 8e: Given proof requires durable manual QA, retests, or structured manual scenario logs, when `sf-build` chooses the proof path, then it calls or delegates to `sf-test` and keeps `sf-browser` evidence as supporting proof when relevant.
 - [ ] AC 9: Given dirty files outside scope exist, when `sf-build` reaches ship, then it asks for or bounds staging scope and does not ship everything by default.
 - [ ] AC 10: Given the user did not explicitly request `all-dirty` or equivalent, when `sf-build` calls `sf-ship`, then it passes a staging scope limited to the current chantier.
 - [ ] AC 11: Given implementation and verification are complete, when `sf-build` finishes, then it runs `sf-end`, then `sf-ship`, and the final report stays short with result, validations, execution mode, commit/push, excluded files, and proof limits.
@@ -505,7 +529,7 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 ## Test Strategy
 
 - Unit: None, because ShipFlow skills are markdown instruction artifacts without an executable unit harness today.
-- Static checks: run `rg` validations for `sf-build`, `Trace category`, `Process role`, `Question Gate`, `Execution Modes`, `delegated sequential`, `Spec-Gated Parallelism`, `Execution Batches`, `Governance Corpus Gate`, `docs/technical`, `docs/editorial`, `technical-docs-corpus`, `editorial-content-corpus`, `CONTENT_MAP`, `Documentation Update Gate`, `Editorial Update Gate`, `pending final integration`, `pending final copy`, `Model Routing Gate`, `sf-model`, invocation-as-delegation-consent, `plain-text`, `sf-end`, `sf-ship`, `all-dirty`, `fresh-docs`, and `Current Chantier Flow` across modified skill/docs.
+- Static checks: run `rg` validations for `sf-build`, `Trace category`, `Process role`, `Question Gate`, `Execution Modes`, `delegated sequential`, `Spec-Gated Parallelism`, `Execution Batches`, `Governance Corpus Gate`, `docs/technical`, `docs/editorial`, `technical-docs-corpus`, `editorial-content-corpus`, `CONTENT_MAP`, `Documentation Update Gate`, `Editorial Update Gate`, `pending final integration`, `pending final copy`, `Model Routing Gate`, `sf-model`, `Browser Evidence Routing`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-test`, invocation-as-delegation-consent, `plain-text`, `sf-end`, `sf-ship`, `all-dirty`, `fresh-docs`, and `Current Chantier Flow` across modified skill/docs.
 - Role reference checks: verify each role file exists and contains its exact contract heading: `Technical Reader Agent Contract`, `Editorial Reader Agent Contract`, `Sequential Executor Contract`, `Wave Executor Contract`, and `Integrator Contract`; verify the technical reader includes `technical documentation corpus`, `technical-docs-corpus`, `docs/technical/code-docs-map.md`, `code-docs`, and `Documentation Update Plan`; verify the editorial reader includes `editorial corpus`, `editorial-content-corpus`, `CONTENT_MAP.md`, `docs/editorial/`, `public surfaces`, `Editorial Update Plan`, and `Claim Impact Plan`.
 - Language doctrine checks: verify internal contracts, workflow rules, acceptance criteria, stop conditions, and validation notes are English; verify user-facing French examples are accented and clearly labeled as examples.
 - Integration checks: run metadata/readiness checks on the new skill and docs with `rg`, then run `/sf-ready sf-build Autonomous Master Skill`.
@@ -521,8 +545,12 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 - Manual scenario 4: simulate ready spec implementation; verify each sequential subagent has disjoint ownership and no concurrent writes occur without a batch.
 - Manual scenario 4b: simulate code edits in separate workspaces/zspaces; verify the Technical Reader identifies impacted technical docs, a write-capable executor applies updates, the Technical Reader reviews them, and the next wave is blocked unless docs are updated or marked `pending final integration`.
 - Manual scenario 4c: simulate visible behavior or claim edits; verify the Editorial Reader identifies public surfaces and claims, a write-capable executor applies updates before closure/ship, the Editorial Reader reviews them, and closure is blocked unless content is updated, no-impact is justified, or items are marked `pending final copy`.
+- Manual scenario 4d: simulate a non-auth browser regression on a public route; verify `sf-build` routes evidence to `sf-browser` and does not replace it with `sf-test`, `sf-auth-debug`, or `sf-prod`.
+- Manual scenario 4e: simulate an auth/session/callback/protected-route failure; verify `sf-build` routes evidence to `sf-auth-debug` before generic browser verification.
+- Manual scenario 4f: simulate proof that depends on Vercel deployment status, runtime logs, edge/serverless behavior, or live health; verify `sf-build` routes to `sf-prod`.
+- Manual scenario 4g: simulate a repeated manual QA/retest requirement; verify `sf-build` routes to `sf-test` and treats `sf-browser` output only as supporting evidence.
 - Manual scenario 5: simulate failed verification; verify no full `sf-end` or `sf-ship` happens without explicit risk acceptance.
-- Regression check: inspect `skills/sf-spec/SKILL.md`, `skills/sf-ready/SKILL.md`, `skills/sf-start/SKILL.md`, `skills/sf-verify/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-end/SKILL.md`, and `skills/sf-ship/SKILL.md` to ensure `sf-build` orchestrates rather than contradicts them.
+- Regression check: inspect `skills/sf-spec/SKILL.md`, `skills/sf-ready/SKILL.md`, `skills/sf-start/SKILL.md`, `skills/sf-verify/SKILL.md`, `skills/sf-browser/SKILL.md`, `skills/sf-auth-debug/SKILL.md`, `skills/sf-prod/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-end/SKILL.md`, and `skills/sf-ship/SKILL.md` to ensure `sf-build` orchestrates rather than contradicts them.
 
 ## Risks
 
@@ -540,21 +568,21 @@ Create a new lifecycle skill, `sf-build`, as the user-facing orchestrator for en
 
 ## Execution Notes
 
-- Read first: `skills/sf-spec/SKILL.md`, `skills/sf-ready/SKILL.md`, `skills/sf-start/SKILL.md`, `skills/sf-verify/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-end/SKILL.md`, `skills/sf-ship/SKILL.md`, `skills/references/chantier-tracking.md`, `skills/references/technical-docs-corpus.md`, `skills/references/editorial-content-corpus.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`.
-- External docs checked for this spec on 2026-05-01: `https://developers.openai.com/codex/subagents`, `https://developers.openai.com/codex/cli`, `https://developers.openai.com/codex/cloud/internet-access`, `https://developers.openai.com/learn/docs-mcp`.
-- Implement in this order: create `sf-build`; add question gate and language-aware fallback; add execution modes; create role files; add `Execution Batches` rules and no-opportunistic-parallelism stop condition; add spec/readiness loop; add Existing Chantier Check; add anti-regression gates; add Governance Corpus Gate; add model routing gate; add implementation/verify/test orchestration; add end/ship integration; update chantier doctrine; update help/workflow/README; update `TASKS.md`; run readiness.
+- Read first: `skills/sf-init/SKILL.md`, `skills/sf-docs/SKILL.md`, `skills/sf-spec/SKILL.md`, `skills/sf-ready/SKILL.md`, `skills/sf-start/SKILL.md`, `skills/sf-verify/SKILL.md`, `skills/sf-browser/SKILL.md`, `skills/sf-auth-debug/SKILL.md`, `skills/sf-prod/SKILL.md`, `skills/sf-test/SKILL.md`, `skills/sf-end/SKILL.md`, `skills/sf-ship/SKILL.md`, `skills/references/chantier-tracking.md`, `skills/references/technical-docs-corpus.md`, `skills/references/editorial-content-corpus.md`, `shipflow-spec-driven-workflow.md`, `GUIDELINES.md`.
+- External docs checked for this spec on 2026-05-02: `https://developers.openai.com/codex/subagents`, `https://developers.openai.com/codex/cli/features#subagents`, `https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals`, `https://developers.openai.com/codex/agent-approvals-security#network-access-`, `https://developers.openai.com/codex/config-reference#configtoml`.
+- Implement in this order: create `sf-build`; add question gate and language-aware fallback; add execution modes; create role files; add `Execution Batches` rules and no-opportunistic-parallelism stop condition; add spec/readiness loop; add Existing Chantier Check; add anti-regression gates; add Governance Corpus Gate; add model routing gate; add implementation/verify/browser-evidence/test orchestration; add end/ship integration; update chantier doctrine; update help/workflow/README; update `TASKS.md`; run readiness.
 - Packages to avoid: no new runtime package or SDK unless `sf-start` proves necessity and reruns the freshness gate.
 - Patterns to follow: existing skill frontmatter, canonical paths section, chantier tracking block, exact `Trace category` / `Process role` wording, standard `Chantier` final block, internal English contract language, and concise user-facing reports in the active user language.
 - Abstractions to avoid: do not build a second task registry, do not duplicate all checks from lifecycle skills, do not create a hidden state machine outside markdown skill instructions, and do not create a `reader.md` alias.
-- Commands to validate: `rg -n "sf-build" skills/sf-build/SKILL.md skills/sf-help/SKILL.md skills/references/chantier-tracking.md shipflow-spec-driven-workflow.md README.md`; `rg -n "Existing Chantier Check|Execution Modes|delegated sequential|Spec-Gated Parallelism|Execution Batches|Governance Corpus Gate|docs/technical|docs/editorial|technical-docs-corpus|editorial-content-corpus|CONTENT_MAP|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|invocation.*sf-build|Model Routing Gate|sf-model|Question Gate|plain-text|sf-end|sf-ship|all-dirty|fresh-docs" skills/sf-build/SKILL.md`; `rg -n "Technical Reader Agent Contract|technical documentation corpus|technical-docs-corpus|docs/technical/code-docs-map|code-docs|Documentation Update Plan|Editorial Reader Agent Contract|editorial corpus|editorial-content-corpus|CONTENT_MAP|docs/editorial|Editorial Update Plan|Claim Impact Plan|Sequential Executor Contract|Wave Executor Contract|Integrator Contract" skills/references/subagent-roles`; `test ! -e skills/references/subagent-roles/reader.md`; `/sf-ready sf-build Autonomous Master Skill`.
-- Stop conditions: no unique interpretation of ship behavior, disagreement with lifecycle skill contracts, missing decision about touching existing behavior, missing governance corpus status before implementation, missing `Execution Batches` for requested parallelism, overlapping ownership, inability to preserve user changes in a dirty worktree, failed verification gate, docs/content contract contradiction, stale or mismatched dependency metadata, language doctrine violation in internal contracts, or public docs that imply autonomy without user decision gates.
+- Commands to validate: `rg -n "sf-build" skills/sf-build/SKILL.md skills/sf-help/SKILL.md skills/references/chantier-tracking.md shipflow-spec-driven-workflow.md README.md`; `rg -n "Existing Chantier Check|Execution Modes|delegated sequential|Spec-Gated Parallelism|Execution Batches|Governance Corpus Gate|docs/technical|docs/editorial|technical-docs-corpus|editorial-content-corpus|CONTENT_MAP|Documentation Update Gate|Editorial Update Gate|pending final integration|pending final copy|invocation.*sf-build|Model Routing Gate|sf-model|Browser Evidence Routing|sf-browser|sf-auth-debug|sf-prod|sf-test|Question Gate|plain-text|sf-end|sf-ship|all-dirty|fresh-docs" skills/sf-build/SKILL.md`; `rg -n "Technical Reader Agent Contract|technical documentation corpus|technical-docs-corpus|docs/technical/code-docs-map|code-docs|Documentation Update Plan|Editorial Reader Agent Contract|editorial corpus|editorial-content-corpus|CONTENT_MAP|docs/editorial|Editorial Update Plan|Claim Impact Plan|Sequential Executor Contract|Wave Executor Contract|Integrator Contract" skills/references/subagent-roles`; `test ! -e skills/references/subagent-roles/reader.md`; `/sf-ready sf-build Autonomous Master Skill`.
+- Stop conditions: no unique interpretation of ship behavior, disagreement with lifecycle skill contracts, missing decision about touching existing behavior, missing governance corpus status before implementation, missing `Execution Batches` for requested parallelism, overlapping ownership, inability to preserve user changes in a dirty worktree, failed verification gate, docs/content contract contradiction, stale or mismatched dependency metadata, language doctrine violation in internal contracts, browser evidence routed to the wrong official skill, or public docs that imply autonomy without user decision gates.
 - Implementation boundary: do not alter existing lifecycle skill behavior unless required for discoverability, matrix registration, or explicitly listed documentation compatibility; `sf-build` should compose them first.
 
 ## Open Questions
 
 None
 
-Readiness note: all previously identified readiness blockers are addressed. Dependency versions now match active artifacts, internal contract sections are in English, French user-facing examples are accented and labeled by context, and the next lifecycle step is `/sf-start sf-build Autonomous Master Skill`.
+Readiness note: ready after full reconciliation. The behavior contract, language doctrine, security gates, task order, governance corpus requirements, and browser evidence routing are coherent. The 2026-05-02 dependency metadata drift reported by sf-ready has been corrected: this spec now records `README.md` 0.5.0 and `shipflow-spec-driven-workflow.md` 0.8.0, consumes the shipped `sf-init`/`sf-docs` governance corpus lifecycle, and incorporates the `sf-browser` routing introduced by the active README/workflow docs.
 
 ## Skill Run History
 
@@ -576,14 +604,23 @@ Readiness note: all previously identified readiness blockers are addressed. Depe
 | 2026-05-01 17:57:02 UTC | sf-ready | GPT-5 Codex | Reviewed readiness after Technical Reader / Editorial Reader split and gate updates; blocked on dependency metadata alignment and ShipFlow language doctrine for internal contracts | not ready | /sf-spec sf-build Autonomous Master Skill |
 | 2026-05-01 18:11:46 UTC | sf-spec | GPT-5 Codex | Resolved readiness blockers by aligning dependency metadata, rewriting internal contract sections in English, preserving accented French user-facing examples, and refreshing official Codex docs evidence | draft | /sf-ready sf-build Autonomous Master Skill |
 | 2026-05-01 18:18:07 UTC | sf-ready | GPT-5 Codex | Validated dependency metadata, language doctrine, behavior contract, task order, documentation gates, adversarial risks, security gates, and official Codex docs freshness | ready | /sf-start sf-build Autonomous Master Skill |
+| 2026-05-02 10:38:37 UTC | sf-ready | GPT-5 Codex | Revalidated readiness after governance corpus doc updates; blocked on dependency metadata drift for README.md and shipflow-spec-driven-workflow.md | not ready | /sf-spec sf-build Autonomous Master Skill |
+| 2026-05-02 10:43:55 UTC | sf-spec | GPT-5 Codex | Refreshed dependency metadata for README.md 0.5.0 and shipflow-spec-driven-workflow.md 0.8.0 after the readiness gate reported stale depends_on entries. | reviewed | /sf-ready sf-build Autonomous Master Skill |
+| 2026-05-02 10:47:34 UTC | sf-spec | GPT-5 Codex | Reconciled the material behavior changes in README.md 0.5.0 and shipflow-spec-driven-workflow.md 0.8.0 by adding sf-browser routing, sf-init/sf-docs corpus ownership, and explicit browser/manual evidence gates. | reviewed | /sf-ready sf-build Autonomous Master Skill |
+| 2026-05-02 10:52:35 UTC | sf-ready | GPT-5 Codex | Validated structure, metadata, user-story fit, task order, docs/governance coherence, browser evidence routing, language doctrine, adversarial risks, and security gates after reconciliation. | ready | /sf-start sf-build Autonomous Master Skill |
+| 2026-05-02 11:01:15 UTC | sf-ready | GPT-5 Codex | Revalidated structure, metadata/dependency versions, user-story fit, task order, governance/browser evidence gates, language doctrine, adversarial/security risks, and official OpenAI Codex docs freshness. | ready | /sf-start sf-build Autonomous Master Skill |
+| 2026-05-02 14:20:51 UTC | sf-start | GPT-5 Codex | Implemented the sf-build master skill, created missing subagent role contracts, updated chantier-tracking doctrine, and aligned sf-help/workflow/README discoverability plus task tracking. | implemented | /sf-verify sf-build Autonomous Master Skill |
+| 2026-05-02 14:27:27 UTC | sf-verify | GPT-5 Codex | Verified sf-build implementation against the ready spec, checked static contract coverage, metadata, role files, chantier doctrine, docs/workflow alignment, bug gate, risk scan, and official Codex subagent docs freshness. | verified | /sf-end sf-build Autonomous Master Skill |
+| 2026-05-02 14:29:15 UTC | sf-end | GPT-5 Codex | Closed the sf-build chantier after verification, updated local and master task trackers, prepared changelog entries, and left shipping to sf-ship. | closed | /sf-ship sf-build Autonomous Master Skill |
+| 2026-05-02 14:33:49 UTC | sf-ship | GPT-5 Codex | Quick-shipped the sf-build master skill and related role contracts, workflow/help/README/changelog updates, and chantier trace after lightweight validation. | shipped | None |
 
 ## Current Chantier Flow
 
-- `sf-spec`: done; spec revised for dependency metadata alignment, ShipFlow language doctrine, official Codex docs freshness, Technical Reader / Editorial Reader split, Documentation Update Gate, and Editorial Update Gate.
-- `sf-ready`: ready.
-- `sf-start`: not launched.
-- `sf-verify`: not launched.
-- `sf-end`: not launched.
-- `sf-ship`: not launched.
+- `sf-spec`: done; dependency metadata refreshed against current README.md 0.5.0 and shipflow-spec-driven-workflow.md 0.8.0, governance corpus ownership aligned to `sf-init`/`sf-docs`, and browser evidence routing aligned to `sf-browser`, `sf-auth-debug`, `sf-prod`, and `sf-test`.
+- `sf-ready`: ready after full reconciliation and 2026-05-02 revalidation of dependency metadata, governance/browser evidence gates, language doctrine, adversarial/security risks, and official OpenAI Codex docs freshness.
+- `sf-start`: implemented; created `skills/sf-build/SKILL.md`, added `technical-reader.md`, `sequential-executor.md`, `wave-executor.md`, and `integrator.md`, updated `skills/references/chantier-tracking.md`, and aligned `skills/sf-help/SKILL.md`, `shipflow-spec-driven-workflow.md`, `README.md`, and `TASKS.md`.
+- `sf-verify`: verified; static contract checks, metadata lint, role contract checks, skill budget audit, bug gate review, risk scan, and official Codex subagent docs freshness passed for the implemented skill/docs scope.
+- `sf-end`: closed; task trackers and changelog prepared after verification.
+- `sf-ship`: shipped; quick ship after lightweight validation and bounded staging.
 
-Next step: `/sf-start sf-build Autonomous Master Skill`
+Next step: None

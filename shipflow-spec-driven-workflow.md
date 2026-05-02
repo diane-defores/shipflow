@@ -85,7 +85,15 @@ Optional model-selection entrypoint before execution:
 sf-model -> choose model / reasoning / fallbacks before sf-start
 ```
 
-For non-trivial work, the default flow is:
+Recommended end-user entrypoint for non-trivial work:
+
+```text
+sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
+```
+
+`sf-build` keeps the user conversation focused on decisions and status while delegating file work in bounded sequential mode by default. Parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`.
+
+For expert manual control, the default non-trivial flow remains:
 
 ```text
 sf-explore -> exploration_report -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
@@ -168,6 +176,7 @@ Technical governance applies to code projects by default. Editorial governance a
 - `sf-explore` may write an `exploration_report` durable artifact when exploration is substantial or explicitly requested, but it does not write chantier spec history.
 - `sf-spec` produces an implementation contract, not loose notes.
 - `sf-ready` enforces a real Definition of Ready before non-trivial execution.
+- `sf-build` is the master orchestrator for end users and should prefer bounded delegated sequential execution over manual command chaining.
 - `sf-start` begins execution from a ready contract instead of rediscovering intent, and now decides both model routing and execution topology before coding.
 - `sf-verify` checks against the spec first, then quality and risks, and can now remediate limited gaps.
 - `sf-end` closes the task against the delivered scope, not only against the diff.
@@ -187,7 +196,7 @@ Each chantier spec should expose:
 
 Skill application categories:
 
-- `obligatoire`: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` trace their current run when exactly one chantier spec is in scope.
+- `obligatoire`: `sf-spec`, `sf-ready`, `sf-build`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` trace their current run when exactly one chantier spec is in scope.
 - `conditionnel`: audits, docs, checks, fixes, deps, perf, migrations, scaffold, content, research, test, prod, backlog, priorities, tasks, changelog, review, and veille skills trace only when the run is explicitly attached to one unique chantier spec.
 - `non-applicable`: help, context, model selection, exploration, status, resume, and session naming do not write to specs; if invoked inside a chantier flow, they report `Chantier: non applicable` or `Chantier: non trace` when useful.
 

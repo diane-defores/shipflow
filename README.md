@@ -265,6 +265,14 @@ Optional model-selection step:
 sf-model -> choose model / reasoning / fallbacks before execution
 ```
 
+Recommended end-user entrypoint for non-trivial work:
+
+```text
+sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
+```
+
+`sf-build` invocation authorizes bounded delegated sequential execution for the current chantier. It keeps user interaction focused on decisions and progress, asks useful risk questions when needed, and only allows parallel agent execution when a ready spec defines non-overlapping `Execution Batches`.
+
 If the bug is local and clear, `sf-fix` fixes it directly, then verifies.
 That fast path should still attach the bug to durable project memory with a compact `BUGS.md` entry and a `bugs/BUG-ID.md` dossier, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix.
 If the bug is ambiguous or non-trivial, `sf-fix` routes to `sf-spec -> sf-ready -> sf-start`.
@@ -292,7 +300,7 @@ sf-init -> sf-docs -> sf-build
 
 `sf-init` bootstraps `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and applicable `docs/editorial/` files, or reports why a layer is skipped or blocked. `sf-docs` owns first-run bootstrap, adoption, update, and audit through `/sf-docs technical`, `/sf-docs editorial`, and `/sf-docs update`. `sf-build` consumes those project-local corpora as gates before implementation, closure, and ship; missing governance routes back to `sf-docs` instead of requiring the operator to rerun ShipFlow's shipped governance specs per project.
 
-For non-trivial coding work, the default workflow is:
+For expert manual control, the default non-trivial workflow is:
 
 ```text
 sf-explore -> exploration_report -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
