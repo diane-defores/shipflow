@@ -377,13 +377,13 @@ render_session_scan_frame() {
 
     case $((frame % 4)) in
         0)
-            scan_cap="    |   "
+            scan_cap="     |  "
             scan_upper="      |     "
             scan_top="       |      "
             scan_mid="-------o------"
             scan_bottom="       |      "
             scan_lower="      |     "
-            scan_base="    |   "
+            scan_base="     |  "
             ;;
         1)
             scan_cap="       /"
