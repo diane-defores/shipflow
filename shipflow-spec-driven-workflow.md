@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.9.0"
+artifact_version: "0.11.0"
 project: ShipFlow
 created: "2026-04-22"
 updated: "2026-05-03"
@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - skills/
   - skills/sf-deploy/SKILL.md
+  - skills/sf-maintain/SKILL.md
   - skills/sf-browser/SKILL.md
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
@@ -23,6 +24,7 @@ linked_systems:
   - docs/technical/
   - docs/editorial/
   - skills/references/editorial-content-corpus.md
+  - skills/references/reporting-contract.md
 depends_on: []
 supersedes: []
 evidence:
@@ -36,6 +38,8 @@ evidence:
   - "Updated on 2026-05-02 to define the governance corpus lifecycle: sf-init bootstraps, sf-docs maintains, sf-build consumes."
   - "Updated on 2026-05-02 to add sf-browser as the generic non-auth browser evidence path."
   - "Updated on 2026-05-03 to add sf-deploy as the release confidence orchestrator."
+  - "Updated on 2026-05-03 to add sf-maintain as the recurring project maintenance orchestrator."
+  - "Updated on 2026-05-03 to add shared report modes: concise user reports by default and explicit detailed agent handoff reports."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -110,6 +114,14 @@ sf-deploy -> sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test 
 ```
 
 `sf-deploy` is the release confidence orchestrator. It does not replace `sf-ship`, `sf-prod`, or proof skills; it keeps their gates in order and prevents push/build/health status from being treated as complete release proof.
+
+Recommended maintenance entrypoint for existing projects:
+
+```text
+sf-maintain -> triage -> sf-spec/sf-ready when needed -> delegated maintenance lanes -> sf-verify -> sf-deploy/sf-ship
+```
+
+`sf-maintain` is the master maintenance lifecycle. Its default mode executes maintenance as far as safely possible: bug risk, dependency risk, docs drift, checks, audits, migrations, tasks, and security posture flow through owner skills, bounded subagents, verification, and ship/deploy routing. Use `quick` when the operator only wants the old read-only triage.
 
 Recommended entrypoint for ShipFlow skill maintenance:
 
@@ -203,6 +215,7 @@ Technical governance applies to code projects by default. Editorial governance a
 - `sf-spec` produces an implementation contract, not loose notes.
 - `sf-ready` enforces a real Definition of Ready before non-trivial execution.
 - `sf-build` is the master orchestrator for end users and should prefer bounded delegated sequential execution over manual command chaining.
+- `sf-maintain` is the master orchestrator for recurring project maintenance and should prefer bounded delegated sequential execution over command recommendations.
 - `sf-skill-build` is the master orchestrator for ShipFlow skill maintenance and should keep skill contract, refresh, budget, docs/help, and public skill surfaces coherent.
 - `sf-start` begins execution from a ready contract instead of rediscovering intent, and now decides both model routing and execution topology before coding.
 - `sf-verify` checks against the spec first, then quality and risks, and can now remediate limited gaps.
@@ -210,6 +223,14 @@ Technical governance applies to code projects by default. Editorial governance a
 - agent handoffs should be one-pass: complete context up front, no hidden dependency on chat history, explicit linked systems and consequences.
 - business, brand, and documentation artifacts are decision contracts, not passive notes.
 - every reusable ShipFlow artifact should be traceable through metadata, evidence, status, risk, and next step.
+
+## Report Modes
+
+ShipFlow skills default to concise user-facing final reports. The default mode is `report=user`: outcome first, compact check summary, compact chantier flow, no empty `Reste a faire` or `Prochaine etape`, and no redundant verdict lines when the heading already carries the result.
+
+Detailed reports are explicit. Use `report=agent`, `handoff`, `verbose`, or `full-report` when an orchestrator or downstream agent needs file lists, validation matrices, evidence trails, phase details, or handoff context. Skills must not infer caller identity from runtime state; master skills pass a handoff flag when they need detailed downstream evidence.
+
+Audit skills keep findings first. In user mode, they summarize top findings, proof gaps, chantier potential, and the next real action. Full audit matrices and domain checklist outputs belong in agent/handoff mode unless the user explicitly asks for the long report.
 
 ## Specs As Chantier Registry
 
@@ -223,7 +244,7 @@ Each chantier spec should expose:
 
 Skill application categories:
 
-- `obligatoire`: `sf-spec`, `sf-ready`, `sf-build`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` trace their current run when exactly one chantier spec is in scope.
+- `obligatoire`: `sf-spec`, `sf-ready`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` trace their current run when exactly one chantier spec is in scope.
 - `conditionnel`: audits, docs, checks, fixes, deps, perf, migrations, scaffold, content, research, test, prod, backlog, priorities, tasks, changelog, review, and veille skills trace only when the run is explicitly attached to one unique chantier spec.
 - `non-applicable`: help, context, model selection, exploration, status, resume, and session naming do not write to specs; if invoked inside a chantier flow, they report `Chantier: non applicable` or `Chantier: non trace` when useful.
 
@@ -879,6 +900,7 @@ It should:
 Use this rule of thumb:
 
 - bug lifecycle orchestration -> `sf-bug`
+- recurring project maintenance -> `sf-maintain`
 - bug repair intake -> `sf-fix`
 - unclear problem -> `sf-explore`
 - non-trivial scoped work -> `sf-spec`

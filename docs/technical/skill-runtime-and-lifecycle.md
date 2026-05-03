@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.6.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-03"
@@ -17,18 +17,21 @@ linked_systems:
   - skills/
   - skills/references/
   - skills/sf-deploy/SKILL.md
+  - skills/sf-maintain/SKILL.md
   - skills/sf-skill-build/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-init/SKILL.md
   - skills/sf-docs/SKILL.md
+  - skills/references/reporting-contract.md
   - specs/sf-build-autonomous-master-skill.md
+  - specs/skill-reporting-modes-and-compact-reports.md
   - shipflow-spec-driven-workflow.md
   - templates/artifacts/
   - docs/technical/
   - docs/editorial/
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.8.0"
+    artifact_version: "0.11.0"
     required_status: draft
   - artifact: "skills/references/technical-docs-corpus.md"
     artifact_version: "1.1.0"
@@ -44,6 +47,8 @@ evidence:
   - "sf-browser added as the generic non-auth Playwright MCP browser evidence skill."
   - "sf-skill-build added as the dedicated master lifecycle for ShipFlow skill maintenance."
   - "sf-deploy added as the dedicated release confidence orchestrator."
+  - "sf-maintain promoted to a master maintenance lifecycle from triage through delegated execution, verification, and ship/deploy routing."
+  - "Shared reporting contract added: concise user reports by default, explicit agent handoff reports when requested."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -60,6 +65,7 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 | --- | --- | --- |
 | `skills/*/SKILL.md` | Executable skill contracts | Keep descriptions compact; route heavy detail to references |
 | `skills/references/*.md` | Shared doctrine and provider-specific references | Resolve from `${SHIPFLOW_ROOT:-$HOME/shipflow}` |
+| `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
 | `shipflow-spec-driven-workflow.md` | Global workflow doctrine | Sequential shared file |
@@ -75,12 +81,14 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 - `sf-docs technical`: technical governance bootstrap, code-docs map creation, and audit.
 - `sf-docs editorial`: editorial governance scaffolding and audit for public-content drift, claim register, page intent, and runtime content schema preservation.
 - `sf-bug`: professional bug loop orchestrator (`sf-test -> bug dossier -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship`).
+- `sf-maintain`: master project maintenance lifecycle for bugs, dependencies, docs, checks, audits, migrations, tasks, security posture, delegated remediation, verification, and ship/deploy routing.
 - `sf-browser`: generic non-auth browser verification through Playwright MCP for URLs, page-level assertions, screenshots, console summaries, and network summaries.
 - `sf-build`: user-facing orchestrator that consumes the governance corpus gate before implementation, closure, and ship.
 - `sf-deploy`: release confidence orchestrator (`sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog`).
 - `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
 - `tools/shipflow_sync_skills.sh --check|--repair`: reusable local helper for current-user Claude/Codex skill visibility and install-time selected-user linking.
 - `sf-ship` and `sf-prod`: shipping and deployed verification.
+- `skills/references/reporting-contract.md`: shared final-report modes for concise user reports and explicit detailed agent handoffs.
 
 ## Control Flow
 
@@ -123,6 +131,20 @@ sf-bug
   -> sf-ship for final bug-risk-aware shipping
 ```
 
+Project maintenance flow:
+
+```text
+sf-maintain
+  -> maintenance intake and triage
+  -> existing chantier/spec gate
+  -> sf-spec + sf-ready when non-trivial
+  -> delegated sequential maintenance lanes
+  -> sf-bug / sf-deps / sf-docs / sf-check / sf-audit-code / sf-audit / sf-migrate / sf-fix / sf-build
+  -> Documentation Update Plan and Editorial Update Plan when impacted
+  -> sf-verify
+  -> sf-deploy or sf-ship
+```
+
 ## Invariants
 
 - Lifecycle skills trace into exactly one chantier spec when one is identified.
@@ -143,7 +165,10 @@ sf-bug
 - `sf-browser` owns generic non-auth browser proof. `sf-auth-debug` owns auth, session, callback, provider, tenant, and protected-route browser proof.
 - `sf-deploy` owns release orchestration only; `sf-ship` owns commit/push, `sf-prod` owns deployed truth, and proof skills own observed behavior.
 - `sf-bug` owns bug lifecycle orchestration only; phase skills still own bug record mutation, diagnosis, retest evidence, verification, and shipping.
+- `sf-maintain` owns the maintenance lifecycle; bugs, dependencies, docs, checks, audits, migrations, tasks, security review, repair, verification, and ship still run through their specialist owner skills and gates.
 - A release is not considered verified from push success, provider success, or a bare `200 OK` alone.
+- User-facing final reports default to `report=user`: concise, outcome-first, compact chantier block, and no empty `Reste a faire` / `Prochaine etape` boilerplate. Detailed `report=agent` handoff must be explicit; skills do not infer caller identity.
+- Audit skills still report findings first, but default user reports should summarize top findings, proof gaps, chantier potential, and next action; full matrices and domain checklists belong in `report=agent`.
 
 ## Failure Modes
 
@@ -174,7 +199,7 @@ bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh
 bash test_skill_runtime_sync.sh
 tools/shipflow_sync_skills.sh --check --all
 python3 tools/shipflow_metadata_lint.py skills/references/technical-docs-corpus.md skills/references/editorial-content-corpus.md skills/references/subagent-roles/editorial-reader.md shipflow-spec-driven-workflow.md AGENT.md
-rg -n "Governance Corpus Gate|sf-init.*bootstrap|sf-docs.*maintain|sf-build.*consume|sf-deploy|docs/technical|docs/editorial" skills/sf-init/SKILL.md skills/sf-docs/SKILL.md skills/sf-deploy/SKILL.md specs/sf-build-autonomous-master-skill.md shipflow-spec-driven-workflow.md README.md
+rg -n "Governance Corpus Gate|sf-init.*bootstrap|sf-docs.*maintain|sf-build.*consume|sf-deploy|sf-maintain|reporting-contract|report=user|docs/technical|docs/editorial" skills/sf-init/SKILL.md skills/sf-docs/SKILL.md skills/sf-deploy/SKILL.md skills/sf-maintain/SKILL.md specs/sf-build-autonomous-master-skill.md shipflow-spec-driven-workflow.md README.md skills/references/reporting-contract.md
 ```
 
 Run focused `rg` checks for the affected skill contract and linked references.
@@ -188,6 +213,7 @@ Run focused `rg` checks for the affected skill contract and linked references.
 - Public-content skill changed -> check `editorial-content-corpus.md`, `docs/editorial/`, and workflow docs.
 - Governance corpus bootstrap or adoption changed -> check `skills/sf-init/SKILL.md`, `skills/sf-docs/SKILL.md`, `technical-docs-corpus.md`, `editorial-content-corpus.md`, `README.md`, and workflow docs.
 - A lifecycle rule changed -> update `shipflow-spec-driven-workflow.md`.
+- Report mode or final-report doctrine changed -> update `skills/references/reporting-contract.md`, `skills/references/chantier-tracking.md`, and affected master/audit skills.
 - A docs gate changed -> update `skills/sf-docs/SKILL.md`, `technical-docs-corpus.md`, and `code-docs-map.md`.
 - An editorial gate changed -> update `skills/sf-docs/SKILL.md`, `editorial-content-corpus.md`, `docs/editorial/`, and workflow docs.
 

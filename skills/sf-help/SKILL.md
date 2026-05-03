@@ -31,6 +31,7 @@ Quick reference for the skill system, modes, and workflows.
 |-------|---------|-----------|
 | `/sf-build` | Master user-facing orchestrator from story to spec, implementation, verification, closure, and ship | `<story, bug, or goal>` |
 | `/sf-skill-build` | Master skill-maintenance orchestrator for creating or modifying ShipFlow skills with lifecycle gates | `<new skill idea | existing skill path>` |
+| `/sf-maintain` | Master maintenance lifecycle from triage through delegated fixes, verification, and ship | `quick`, `full`, `security`, `global`, `no-ship` |
 | `/sf-bug` | Professional bug loop orchestrator for intake, dossiers, fixes, retests, verification, and ship risk | `BUG-ID`, `--retest BUG-ID`, `--ship BUG-ID` |
 | `/sf-fix` | Bug-first intake and routing (direct fix vs spec-first) | `<bug description>` |
 | `/sf-auth-debug` | Browser-auth diagnosis for Clerk, Supabase Auth, OAuth, Google/YouTube, Convex, sessions, callbacks | `<bug/URL/flow>` |
@@ -75,6 +76,7 @@ Note: `/sf-start` now reuses the `sf-model` routing matrix and can choose `singl
 Note: `/sf-spec` → `/sf-ready` → `/sf-start` → `/sf-verify` now share a `User Story` contract and should ask targeted user questions whenever behavior, scope, or security is still ambiguous.
 Note: `/sf-build` is the recommended end-user entrypoint for non-trivial work; invocation authorizes bounded delegated sequential execution for the current chantier, while parallel execution requires ready non-overlapping `Execution Batches`.
 Note: `/sf-deploy` is the recommended release entrypoint when the operator wants the whole confidence loop after implementation: checks, bounded ship, deployment truth, post-deploy evidence routing, verification, and optional changelog.
+Note: `/sf-maintain` is the recommended recurring maintenance entrypoint for existing projects; by default it carries maintenance through spec/readiness when needed, bounded delegated execution, verification, and ship/deploy routing. Use `/sf-maintain quick` for read-only triage.
 Note: `/sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help update -> sf-ship`).
 
 ### Professional Bug Loop (concise)
@@ -134,6 +136,7 @@ Internal role matrix:
 | `skills/sf-init/SKILL.md` | conditionnel | support-de-chantier | Supports project bootstrap; route to spec only when setup policy must be formalized. |
 | `skills/sf-market-study/SKILL.md` | conditionnel | source-de-chantier | Market findings become a chantier when they require product, GTM, content, or implementation decisions. |
 | `skills/sf-migrate/SKILL.md` | conditionnel | source-de-chantier | Migration findings become a chantier for breaking changes, staged upgrades, or rollback/validation planning. |
+| `skills/sf-maintain/SKILL.md` | obligatoire | lifecycle | Master maintenance lifecycle: triage, spec/readiness, bounded delegated execution, verification, and ship/deploy routing. |
 | `skills/sf-model/SKILL.md` | non-applicable | helper | Model advice does not mutate specs; report non-trace when useful. |
 | `skills/sf-perf/SKILL.md` | conditionnel | source-de-chantier | Perf findings become a chantier for Core Web Vitals risk, systemic rendering/fetching issues, or multi-file remediation. |
 | `skills/sf-priorities/SKILL.md` | conditionnel | pilotage | Priority work routes to `/sf-spec` only when an item needs a durable contract. |
@@ -436,6 +439,13 @@ Provide explicit arguments and prompts don't appear:
 /sf-perf @src/pages/index.astro  # Performance for one file
 ```
 
+### Maintenance pass
+```bash
+/sf-maintain                 # Master maintenance lifecycle through verify and ship routing
+/sf-maintain quick           # Read-only maintenance triage
+/sf-maintain security        # Security maintenance lifecycle through remediation gates
+```
+
 ### Cross-project overview
 ```bash
 /sf-status                   # Git status dashboard for all projects
@@ -489,6 +499,8 @@ Provide explicit arguments and prompts don't appear:
 **End of day?** → `/sf-tasks` then `/sf-review daily`
 
 **Before deploy?** → `/sf-deploy` (runs check + ship + prod + proof routing + verify)
+
+**Regular maintenance?** → `/sf-maintain` (triage + spec if needed + delegated fixes + verify + ship/deploy)
 
 **Bug has a BUG-ID?** → `/sf-bug BUG-ID` (routes fix, retest, verify, or ship risk from dossier state)
 

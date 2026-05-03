@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.4.0"
 project: ShipFlow
 created: "2026-04-27"
 updated: "2026-05-03"
@@ -17,6 +17,8 @@ linked_systems:
   - specs/
   - skills/*/SKILL.md
   - skills/sf-deploy/SKILL.md
+  - skills/sf-maintain/SKILL.md
+  - skills/references/reporting-contract.md
 depends_on:
   - artifact: "specs/specs-as-chantier-registry.md"
     artifact_version: "1.0.0"
@@ -25,6 +27,8 @@ supersedes: []
 evidence:
   - "Spec specs-as-chantier-registry.md defines specs/ as the global chantier registry."
   - "sf-deploy added as a lifecycle release orchestrator."
+  - "sf-maintain promoted from recurring maintenance source-de-chantier to lifecycle master skill."
+  - "Compact user-facing reporting contract added with explicit agent handoff mode."
 next_review: "2026-05-27"
 next_step: "/sf-verify Specs as chantier registry"
 ---
@@ -39,8 +43,8 @@ Chantier tracking has two separate axes. Do not collapse them into one label.
 
 Trace category answers: may this skill write a run trace into an existing chantier spec?
 
-- `obligatoire`: lifecycle spec-first skills. When a unique chantier spec is identified, read the spec, append or update `Skill Run History`, update `Current Chantier Flow`, and end the user report with a `Chantier` block and `Verdict <skill>: ...`.
-- `conditionnel`: cross-cutting skills. Trace only when the run is attached to one unique chantier spec. If no unique spec is available, do not write to any spec and report `Chantier: non applicable` or `Chantier: non trace` with the reason.
+- `obligatoire`: lifecycle spec-first skills. When a unique chantier spec is identified, read the spec, append or update `Skill Run History`, update `Current Chantier Flow`, and end the user report with the compact `Chantier` block from `skills/references/reporting-contract.md`.
+- `conditionnel`: cross-cutting skills. Trace only when the run is attached to one unique chantier spec. If no unique spec is available, do not write to any spec and report `Chantier: non applicable` or `Chantier: non trace` with the reason. Final output still follows `skills/references/reporting-contract.md`.
 - `non-applicable`: helper/session/discovery skills. Do not write to specs. If invoked inside a chantier flow, mention that chantier tracking is non-applicable or not traced and point to the lifecycle next step when useful. Non-applicable for spec trace does not forbid non-spec durable artifacts when a skill contract allows them (for example `sf-explore` and `exploration_report`).
 
 Process role answers: can this skill originate, support, steer, or merely inspect a chantier?
@@ -89,13 +93,13 @@ Spec recommandee: /sf-spec <title and compact context>
 Prochaine etape: <next ShipFlow command or explicit none>
 ```
 
-This block coexists with the standard `Chantier` block. If the source skill is already attached to one unique chantier and the findings remain inside that chantier, use `Chantier potentiel: non` and point back to the current lifecycle next step.
+This block coexists with the compact `Chantier` block. If the source skill is already attached to one unique chantier and the findings remain inside that chantier, use `Chantier potentiel: non` and point back to the current lifecycle next step.
 
 ## Role Matrix
 
 | Skill group | Trace category | Process role | Source threshold |
 |-------------|----------------|--------------|------------------|
-| `sf-spec`, `sf-ready`, `sf-build`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship` | `obligatoire` | `lifecycle` | Not a source; continue the existing chantier. |
+| `sf-spec`, `sf-ready`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship` | `obligatoire` | `lifecycle` | Not a source; continue or create the owned chantier through the lifecycle gates. |
 | `sf-audit*`, `sf-deps`, `sf-perf` | `conditionnel` | `source-de-chantier` | Major audit findings, P0/P1, cross-domain P2 clusters, or fixes needing a spec. |
 | `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-test`, `sf-migrate`, `sf-fix`, `sf-bug` | `conditionnel` | `source-de-chantier` | Incidents, failing flows, migration risk, bug dossiers, bug lifecycle routing, or validation failures beyond a direct fix. |
 | `sf-market-study`, `sf-veille`, `sf-research` | `conditionnel` | `source-de-chantier` | Strategic or research output that requires a product, content, architecture, or implementation decision. |
@@ -121,6 +125,22 @@ This block coexists with the standard `Chantier` block. If the source skill is a
 - Never invent past runs. Only record the current run or facts already present in the spec/report.
 
 ## Final Report Block
+
+Load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` before producing final output. Use the compact block in `report=user` and the fuller metadata block only in `report=agent`, blocked runs, or handoffs that need trace state.
+
+Compact user-mode block:
+
+```text
+## Chantier
+
+<spec path | non applicable: reason | non trace: reason>
+
+Flux: sf-spec <marker> -> sf-ready <marker> -> sf-start <marker> -> sf-verify <marker> -> sf-end <marker> -> sf-ship <marker>
+Reste a faire: <only if non-empty>
+Prochaine etape: <only if non-empty>
+```
+
+Detailed agent-mode block:
 
 ```text
 ## Chantier

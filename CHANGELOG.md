@@ -31,10 +31,12 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ### Added
 - `sf-bug` professional bug loop orchestrator, public skill page, and runtime visibility links for routing bug intake, dossiers, fixes, retests, verification, and ship risk.
 - `sf-deploy` release orchestrator skill, public skill page, and runtime visibility links for the `sf-check -> sf-ship -> sf-prod -> proof -> sf-verify -> sf-changelog` flow.
+- `sf-maintain` master maintenance lifecycle, public skill page, and runtime visibility links for carrying maintenance from triage through spec/readiness, delegated fixes, verification, and ship/deploy routing.
 
 ### Changed
 - README, workflow doctrine, help, technical lifecycle docs, and chantier tracking now present `sf-bug` as the bug lifecycle router while preserving `sf-test`, `sf-fix`, `sf-auth-debug`, `sf-browser`, `sf-verify`, and `sf-ship` as phase owners.
 - README, workflow doctrine, help, technical lifecycle docs, and chantier tracking now present `sf-deploy` as the release lifecycle entrypoint while preserving atomic skills for direct expert use.
+- README, workflow doctrine, help, technical lifecycle docs, public skill content, and chantier tracking now present `sf-maintain` as a lifecycle master skill instead of a read-only router.
 - Several skill descriptions were compacted to keep the ShipFlow skill discovery budget under the hard runtime limit after adding `sf-deploy`.
 
 ### Fixed

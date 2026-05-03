@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.6.0"
+artifact_version: "0.7.0"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-03"
@@ -20,6 +20,7 @@ linked_systems:
   - install.sh
   - skills
   - skills/sf-deploy/SKILL.md
+  - skills/sf-maintain/SKILL.md
   - skills/sf-browser/SKILL.md
   - docs/technical
   - docs/editorial
@@ -28,6 +29,7 @@ supersedes: []
 evidence:
   - "Added sf-browser as the generic non-auth browser verification path."
   - "Added sf-deploy as the release confidence orchestrator."
+  - "Added sf-maintain as the recurring project maintenance orchestrator."
 next_step: "/sf-docs audit README.md"
 ---
 
@@ -308,6 +310,14 @@ sf-deploy -> sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test 
 ```
 
 `sf-deploy` is for release confidence, not just pushing code. It keeps technical checks, bounded shipping, deployment truth, post-deploy evidence, final verification, and optional release notes in one visible flow.
+
+Recommended maintenance entrypoint for existing projects:
+
+```text
+sf-maintain -> triage -> sf-spec/sf-ready when needed -> delegated maintenance lanes -> sf-verify -> sf-deploy/sf-ship
+```
+
+`sf-maintain` is the master maintenance lifecycle. It reviews bug risk, dependency posture, docs/governance drift, check coverage, audit freshness, migration candidates, and security posture, then carries needed work through spec/readiness, bounded delegated execution, verification, and ship/deploy routing. Use `/sf-maintain quick` for the old read-only triage behavior.
 
 For ShipFlow skill maintenance, use the dedicated entrypoint:
 
