@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.8.1"
+artifact_version: "0.9.0"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-05-02"
+updated: "2026-05-03"
 status: draft
 source_skill: sf-docs
 scope: spec-driven-workflow
@@ -15,6 +15,7 @@ security_impact: unknown
 docs_impact: yes
 linked_systems:
   - skills/
+  - skills/sf-deploy/SKILL.md
   - skills/sf-browser/SKILL.md
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
@@ -34,6 +35,7 @@ evidence:
   - "Updated on 2026-05-01 to add editorial content governance, public claim safety, Astro runtime-content schema boundaries, and the Editorial Update Gate."
   - "Updated on 2026-05-02 to define the governance corpus lifecycle: sf-init bootstraps, sf-docs maintains, sf-build consumes."
   - "Updated on 2026-05-02 to add sf-browser as the generic non-auth browser evidence path."
+  - "Updated on 2026-05-03 to add sf-deploy as the release confidence orchestrator."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -92,6 +94,14 @@ sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-v
 ```
 
 `sf-build` keeps the user conversation focused on decisions and status while delegating file work in bounded sequential mode by default. Parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`.
+
+Recommended release entrypoint after implementation:
+
+```text
+sf-deploy -> sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog
+```
+
+`sf-deploy` is the release confidence orchestrator. It does not replace `sf-ship`, `sf-prod`, or proof skills; it keeps their gates in order and prevents push/build/health status from being treated as complete release proof.
 
 Recommended entrypoint for ShipFlow skill maintenance:
 
@@ -205,7 +215,7 @@ Each chantier spec should expose:
 
 Skill application categories:
 
-- `obligatoire`: `sf-spec`, `sf-ready`, `sf-build`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` trace their current run when exactly one chantier spec is in scope.
+- `obligatoire`: `sf-spec`, `sf-ready`, `sf-build`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` trace their current run when exactly one chantier spec is in scope.
 - `conditionnel`: audits, docs, checks, fixes, deps, perf, migrations, scaffold, content, research, test, prod, backlog, priorities, tasks, changelog, review, and veille skills trace only when the run is explicitly attached to one unique chantier spec.
 - `non-applicable`: help, context, model selection, exploration, status, resume, and session naming do not write to specs; if invoked inside a chantier flow, they report `Chantier: non applicable` or `Chantier: non trace` when useful.
 

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-04-27"
-updated: "2026-04-27"
+updated: "2026-05-03"
 status: draft
 source_skill: sf-start
 scope: chantier-tracking
@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - specs/
   - skills/*/SKILL.md
+  - skills/sf-deploy/SKILL.md
 depends_on:
   - artifact: "specs/specs-as-chantier-registry.md"
     artifact_version: "1.0.0"
@@ -23,6 +24,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Spec specs-as-chantier-registry.md defines specs/ as the global chantier registry."
+  - "sf-deploy added as a lifecycle release orchestrator."
 next_review: "2026-05-27"
 next_step: "/sf-verify Specs as chantier registry"
 ---
@@ -93,7 +95,7 @@ This block coexists with the standard `Chantier` block. If the source skill is a
 
 | Skill group | Trace category | Process role | Source threshold |
 |-------------|----------------|--------------|------------------|
-| `sf-spec`, `sf-ready`, `sf-build`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship` | `obligatoire` | `lifecycle` | Not a source; continue the existing chantier. |
+| `sf-spec`, `sf-ready`, `sf-build`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship` | `obligatoire` | `lifecycle` | Not a source; continue the existing chantier. |
 | `sf-audit*`, `sf-deps`, `sf-perf` | `conditionnel` | `source-de-chantier` | Major audit findings, P0/P1, cross-domain P2 clusters, or fixes needing a spec. |
 | `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-test`, `sf-migrate`, `sf-fix` | `conditionnel` | `source-de-chantier` | Incidents, failing flows, migration risk, bug dossiers, or validation failures beyond a direct fix. |
 | `sf-market-study`, `sf-veille`, `sf-research` | `conditionnel` | `source-de-chantier` | Strategic or research output that requires a product, content, architecture, or implementation decision. |

@@ -62,7 +62,7 @@ Quick reference for the skill system, modes, and workflows.
 |-------|---------|-----------|
 | `/sf-ship` | Quick ship by default; full close+ship with explicit keyword | `"commit message"`, `end la tache`, `skip-check` |
 | `/sf-check` | Typecheck + lint + build + test | `[check types]`, `fix`, `nofix` |
-| `/sf-deploy` | Full deploy: check → ship → restart → verify | `skip-check` |
+| `/sf-deploy` | Release orchestrator: check → ship → prod → browser/manual proof → verify | `skip-check`, `--preview`, `--prod`, `no-changelog` |
 | `/sf-status` | Cross-project git dashboard | (none) |
 
 Note: `/sf-verify` now includes guided next-step prompting when verdict is not ready (`corriger maintenant`, `repasser par spec`, `stop/reprendre`).
@@ -72,6 +72,7 @@ Note: `/sf-test` sits after verification and before shipping when a human needs 
 Note: `/sf-start` now reuses the `sf-model` routing matrix and can choose `single-agent` vs `multi-agent` execution with explicit file ownership and per-group model overrides.
 Note: `/sf-spec` → `/sf-ready` → `/sf-start` → `/sf-verify` now share a `User Story` contract and should ask targeted user questions whenever behavior, scope, or security is still ambiguous.
 Note: `/sf-build` is the recommended end-user entrypoint for non-trivial work; invocation authorizes bounded delegated sequential execution for the current chantier, while parallel execution requires ready non-overlapping `Execution Batches`.
+Note: `/sf-deploy` is the recommended release entrypoint when the operator wants the whole confidence loop after implementation: checks, bounded ship, deployment truth, post-deploy evidence routing, verification, and optional changelog.
 Note: `/sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help update -> sf-ship`).
 
 ### Professional Bug Loop (concise)
@@ -121,6 +122,7 @@ Internal role matrix:
 | `skills/sf-design-playground/SKILL.md` | conditionnel | support-de-chantier | Supports design-token work; route only on explicit formalization request. |
 | `skills/sf-docs/SKILL.md` | conditionnel | support-de-chantier | Supports docs coherence; not a source unless the user asks to frame a spec. |
 | `skills/sf-end/SKILL.md` | obligatoire | lifecycle | Closes an existing chantier; not a source. |
+| `skills/sf-deploy/SKILL.md` | obligatoire | lifecycle | Orchestrates the release confidence loop through checks, ship, deploy truth, post-deploy evidence, verification, and changelog routing. |
 | `skills/sf-enrich/SKILL.md` | conditionnel | support-de-chantier | Supports content upgrades; route only when follow-up needs a spec. |
 | `skills/sf-explore/SKILL.md` | non-applicable | helper | Exploration can recommend `/sf-spec` and may write durable `exploration_report` artifacts, but does not write chantier history. |
 | `skills/sf-fix/SKILL.md` | conditionnel | source-de-chantier | Bug triage becomes a chantier when the fix is non-local, risky, or spec-first. |
@@ -406,9 +408,10 @@ Provide explicit arguments and prompts don't appear:
 
 ### Full deploy
 ```bash
-/sf-deploy                   # Check → ship → restart → verify
+/sf-deploy                   # Check → ship → prod → browser/manual proof → verify
 # or
 /sf-deploy skip-check        # Skip checks (use with caution)
+/sf-deploy --preview         # Prefer preview/staging deploy proof
 ```
 
 ### Framework upgrade
@@ -480,7 +483,7 @@ Provide explicit arguments and prompts don't appear:
 
 **End of day?** → `/sf-tasks` then `/sf-review daily`
 
-**Before deploy?** → `/sf-deploy` (runs check + ship + verify automatically)
+**Before deploy?** → `/sf-deploy` (runs check + ship + prod + proof routing + verify)
 
 **Audit everything?** → `/sf-audit global` (all 8 domains)
 

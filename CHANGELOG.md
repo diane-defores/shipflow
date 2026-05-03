@@ -26,6 +26,18 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
 
+## [2026-05-03]
+
+### Added
+- `sf-deploy` release orchestrator skill, public skill page, and runtime visibility links for the `sf-check -> sf-ship -> sf-prod -> proof -> sf-verify -> sf-changelog` flow.
+
+### Changed
+- README, workflow doctrine, help, technical lifecycle docs, and chantier tracking now present `sf-deploy` as the release lifecycle entrypoint while preserving atomic skills for direct expert use.
+- Several skill descriptions were compacted to keep the ShipFlow skill discovery budget under the hard runtime limit after adding `sf-deploy`.
+
+### Fixed
+- Closed the current-user runtime skill visibility bug after the active Codex runtime retest showed newly published ShipFlow skills are discoverable.
+
 ## [2026-05-02]
 
 ### Added

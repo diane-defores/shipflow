@@ -1,6 +1,6 @@
 ---
 name: sf-repurpose
-description: "Source-faithful repurposing into docs, marketing, release notes, FAQs, articles, or site updates."
+description: "Source-faithful repurposing into docs, marketing, FAQs, articles, and site updates."
 argument-hint: [optional focus such as "doc", "marketing", "full", "release notes", "faq", "newsletter", "article", "site", "apply", or a target surface]
 ---
 

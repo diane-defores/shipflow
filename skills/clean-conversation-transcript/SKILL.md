@@ -1,6 +1,6 @@
 ---
 name: clean-conversation-transcript
-description: "Clean exported tmux/Codex transcripts in place with speaker labels, chrome removal, and content-angle comments."
+description: "Clean exported tmux/Codex transcripts with speaker labels and chrome removal."
 argument-hint: <markdown transcript path>
 ---
 

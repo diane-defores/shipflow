@@ -1,6 +1,6 @@
 ---
 name: sf-ready
-description: "Spec readiness gate for completeness, user-story fit, and security-focused execution clarity."
+description: "Spec readiness gate for completeness, user-story fit, and secure execution clarity."
 argument-hint: <spec path or task name>
 ---
 

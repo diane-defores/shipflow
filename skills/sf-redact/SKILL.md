@@ -1,6 +1,6 @@
 ---
 name: sf-redact
-description: "Long-form content drafting for original articles, guides, editorials, brand voice, and audience fit."
+description: "Long-form drafting for articles, guides, editorials, brand voice, and audience fit."
 disable-model-invocation: true
 argument-hint: '<nombre> <format> [sujet] (ex: "3 blog", "1 editorial IA en éducation", "2 informational")'
 ---

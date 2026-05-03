@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.5.1"
+artifact_version: "0.6.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-02"
+updated: "2026-05-03"
 status: draft
 source_skill: sf-docs
 scope: readme
@@ -19,6 +19,7 @@ linked_systems:
   - config.sh
   - install.sh
   - skills
+  - skills/sf-deploy/SKILL.md
   - skills/sf-browser/SKILL.md
   - docs/technical
   - docs/editorial
@@ -26,6 +27,7 @@ depends_on: []
 supersedes: []
 evidence:
   - "Added sf-browser as the generic non-auth browser verification path."
+  - "Added sf-deploy as the release confidence orchestrator."
 next_step: "/sf-docs audit README.md"
 ---
 
@@ -52,6 +54,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - assign and persist project ports
 - expose apps through Caddy and DuckDNS
 - support local access through SSH tunnel tooling
+- run Flutter Web preview sessions in `tmux` with ShipFlow-triggered hot reload
 
 ### Structured AI workflows
 
@@ -193,6 +196,13 @@ project Flox environment (not as a required global SDK). Defaults are
 validation on overrides. The `Advanced > Install SDK` menu stays available as
 an optional global convenience.
 
+Flutter Web can also be launched from `sf` through `Flutter Web - tmux hot
+reload`. This starts `flutter run -d web-server` in a server-side `tmux`
+session, records the port in `SHIPFLOW_FLUTTER_WEB_SESSIONS_FILE`, and lets
+ShipFlow send Flutter's `r` or `R` controls for hot reload or hot restart. This
+is a web preview path for browser testing through SSH tunnels, not native
+Android/iOS rendering.
+
 Per-user configuration includes:
 - `~/.claude/skills/*` and `~/.codex/skills/*` symlinks for every ShipFlow skill
 - aliases in `~/.bashrc` for `shipflow`, `sf`, autonomous `c`/`co`, and safe escape hatches `cask`/`coask`
@@ -226,6 +236,7 @@ shipflow
 Typical CLI actions:
 - dashboard and PM2 status
 - deploy, restart, stop, remove environments
+- Flutter Web tmux sessions with hot reload/hot restart
 - publish apps with public HTTPS URLs
 - health checks and crash loop detection
 
@@ -281,6 +292,14 @@ sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-v
 ```
 
 `sf-build` invocation authorizes bounded delegated sequential execution for the current chantier. It keeps user interaction focused on decisions and progress, asks useful risk questions when needed, and only allows parallel agent execution when a ready spec defines non-overlapping `Execution Batches`.
+
+Recommended release entrypoint after implementation:
+
+```text
+sf-deploy -> sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog
+```
+
+`sf-deploy` is for release confidence, not just pushing code. It keeps technical checks, bounded shipping, deployment truth, post-deploy evidence, final verification, and optional release notes in one visible flow.
 
 For ShipFlow skill maintenance, use the dedicated entrypoint:
 
@@ -601,6 +620,7 @@ shipflow/
 
 - isolated per-project environments with Flox
 - PM2-managed app lifecycle
+- Flutter Web interactive `tmux` preview with hot reload
 - persistent `ecosystem.config.cjs` generation
 - automatic port allocation and collision avoidance
 - public HTTPS publishing through Caddy and DuckDNS

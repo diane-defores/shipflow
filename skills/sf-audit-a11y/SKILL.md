@@ -1,6 +1,6 @@
 ---
 name: sf-audit-a11y
-description: "Accessibility audit for WCAG, ARIA patterns, keyboard flow, focus, live regions, and semantics."
+description: "Accessibility audit for WCAG, ARIA, keyboard flow, focus, live regions, and semantics."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

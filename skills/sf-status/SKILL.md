@@ -1,6 +1,6 @@
 ---
 name: sf-status
-description: "Cross-project git status dashboard for branches, dirty files, sync state, commits, and issues."
+description: "Cross-project git dashboard for branches, dirty files, sync state, and issues."
 disable-model-invocation: true
 argument-hint: [optional: all | issues | dirty]
 ---

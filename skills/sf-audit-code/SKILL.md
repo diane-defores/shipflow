@@ -1,6 +1,6 @@
 ---
 name: sf-audit-code
-description: "Code review for correctness, product fit, security, architecture, reliability, and test risk."
+description: "Code review for correctness, product fit, security, architecture, reliability, and tests."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

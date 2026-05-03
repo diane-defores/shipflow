@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-02"
+updated: "2026-05-03"
 status: reviewed
 source_skill: sf-start
 scope: skill-runtime-and-lifecycle
@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - skills/
   - skills/references/
+  - skills/sf-deploy/SKILL.md
   - skills/sf-skill-build/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-init/SKILL.md
@@ -42,6 +43,7 @@ evidence:
   - "Governance corpus lifecycle added: sf-init bootstraps, sf-docs maintains, sf-build consumes."
   - "sf-browser added as the generic non-auth Playwright MCP browser evidence skill."
   - "sf-skill-build added as the dedicated master lifecycle for ShipFlow skill maintenance."
+  - "sf-deploy added as the dedicated release confidence orchestrator."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -74,6 +76,7 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 - `sf-docs editorial`: editorial governance scaffolding and audit for public-content drift, claim register, page intent, and runtime content schema preservation.
 - `sf-browser`: generic non-auth browser verification through Playwright MCP for URLs, page-level assertions, screenshots, console summaries, and network summaries.
 - `sf-build`: user-facing orchestrator that consumes the governance corpus gate before implementation, closure, and ship.
+- `sf-deploy`: release confidence orchestrator (`sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog`).
 - `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
 - `tools/shipflow_sync_skills.sh --check|--repair`: reusable local helper for current-user Claude/Codex skill visibility and install-time selected-user linking.
 - `sf-ship` and `sf-prod`: shipping and deployed verification.
@@ -95,6 +98,19 @@ source skill
   -> sf-end / sf-ship
 ```
 
+Release confidence flow:
+
+```text
+sf-deploy
+  -> scope and risk gate
+  -> sf-check
+  -> sf-ship
+  -> sf-prod
+  -> sf-browser / sf-auth-debug / sf-test
+  -> sf-verify
+  -> sf-changelog when useful
+```
+
 ## Invariants
 
 - Lifecycle skills trace into exactly one chantier spec when one is identified.
@@ -113,6 +129,8 @@ source skill
   `skills/references/playwright-mcp-runtime.md` first and refuse stale Linux
   ARM64 Chrome-stable fallback evidence.
 - `sf-browser` owns generic non-auth browser proof. `sf-auth-debug` owns auth, session, callback, provider, tenant, and protected-route browser proof.
+- `sf-deploy` owns release orchestration only; `sf-ship` owns commit/push, `sf-prod` owns deployed truth, and proof skills own observed behavior.
+- A release is not considered verified from push success, provider success, or a bare `200 OK` alone.
 
 ## Failure Modes
 
@@ -143,7 +161,7 @@ bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh
 bash test_skill_runtime_sync.sh
 tools/shipflow_sync_skills.sh --check --all
 python3 tools/shipflow_metadata_lint.py skills/references/technical-docs-corpus.md skills/references/editorial-content-corpus.md skills/references/subagent-roles/editorial-reader.md shipflow-spec-driven-workflow.md AGENT.md
-rg -n "Governance Corpus Gate|sf-init.*bootstrap|sf-docs.*maintain|sf-build.*consume|docs/technical|docs/editorial" skills/sf-init/SKILL.md skills/sf-docs/SKILL.md specs/sf-build-autonomous-master-skill.md shipflow-spec-driven-workflow.md README.md
+rg -n "Governance Corpus Gate|sf-init.*bootstrap|sf-docs.*maintain|sf-build.*consume|sf-deploy|docs/technical|docs/editorial" skills/sf-init/SKILL.md skills/sf-docs/SKILL.md skills/sf-deploy/SKILL.md specs/sf-build-autonomous-master-skill.md shipflow-spec-driven-workflow.md README.md
 ```
 
 Run focused `rg` checks for the affected skill contract and linked references.

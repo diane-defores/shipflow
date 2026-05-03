@@ -4,6 +4,22 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-03 — sf-deploy
+
+**Added:**
+- New release orchestrator skill contract for `sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog`
+- Explicit ownership boundaries so `sf-deploy` does not duplicate `sf-ship`, `sf-prod`, browser proof, manual QA, or verification internals
+- Stop conditions for ambiguous scope, failed checks, blocked ship, failed deploy, missing evidence, failed verification, stale docs, unrelated dirty files, and sensitive evidence
+- Public skill page and internal discoverability updates for the release confidence workflow
+
+**Updated:**
+- None (new skill created)
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow doctrine and existing release skill contracts)
+
 ## 2026-05-02 — sf-skill-build
 
 **Added:**
