@@ -51,7 +51,7 @@ For solo founders, it shortens the learning curve. Instead of memorizing dozens 
 ## Related Skills
 
 - `sf-fix` for bug-first intake
-- `sf-bug` for routing bug dossiers through fix, retest, verify, and ship risk
+- `sf-bug` for routing bug files through fix, retest, verify, and ship risk
 - `sf-browser` for non-auth page, visual, console, screenshot, or network evidence
 - `sf-start` for implementation
 - `sf-audit` for broad project reviews

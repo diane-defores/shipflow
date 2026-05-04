@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.9.0"
+artifact_version: "1.9.1"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-04"
@@ -25,6 +25,7 @@ linked_systems:
   - skills/sf-init/SKILL.md
   - skills/sf-docs/SKILL.md
   - skills/references/reporting-contract.md
+  - skills/references/master-workflow-lifecycle.md
   - specs/sf-build-autonomous-master-skill.md
   - specs/skill-reporting-modes-and-compact-reports.md
   - shipflow-spec-driven-workflow.md
@@ -55,6 +56,9 @@ evidence:
   - "Skill launch cheatsheet added for master and supporting modes."
   - "sf-skill-build exploration gate added before sf-spec for fuzzy skill ideas or placement decisions."
   - "sf-content added as the master content lifecycle for strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing."
+  - "sf-build delegated sequential subagent consent clarified; subagents and parallelism are distinct runtime concepts."
+  - "Master delegation semantics extracted to skills/references/master-delegation-semantics.md and cited by master/orchestrator skills."
+  - "Master workflow lifecycle extracted to skills/references/master-workflow-lifecycle.md; bug work items now use bugs/*.md as source of truth and BUGS.md as optional/generated triage."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -71,6 +75,8 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 | --- | --- | --- |
 | `skills/*/SKILL.md` | Executable skill contracts | Keep descriptions compact; route heavy detail to references |
 | `skills/references/*.md` | Shared doctrine and provider-specific references | Resolve from `${SHIPFLOW_ROOT:-$HOME/shipflow}` |
+| `skills/references/master-delegation-semantics.md` | Shared master/orchestrator delegation, subagent, short-approval, and parallelism doctrine | Load before master skills choose execution topology |
+| `skills/references/master-workflow-lifecycle.md` | Shared master/orchestrator lifecycle skeleton and work item model | Load before master skills resolve intake, readiness, model/topology, validation, verification, closure, or ship/deploy routes |
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
@@ -86,7 +92,7 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 - `sf-docs`: documentation generation, audit, metadata, and technical-docs mode.
 - `sf-docs technical`: technical governance bootstrap, code-docs map creation, and audit.
 - `sf-docs editorial`: editorial governance scaffolding and audit for public-content drift, claim register, page intent, and runtime content schema preservation.
-- `sf-bug`: professional bug loop orchestrator (`sf-test -> bug dossier -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship`).
+- `sf-bug`: professional bug loop orchestrator (`sf-test -> bug file -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship`).
 - `sf-maintain`: master project maintenance lifecycle for bugs, dependencies, docs, checks, audits, migrations, tasks, security posture, delegated remediation, verification, and ship/deploy routing.
 - `sf-browser`: generic non-auth browser verification through Playwright MCP for URLs, page-level assertions, screenshots, console summaries, and network summaries.
 - `sf-build`: user-facing orchestrator that consumes the governance corpus gate before implementation, closure, and ship.
@@ -95,6 +101,8 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 - `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-explore when needed -> sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
 - `tools/shipflow_sync_skills.sh --check|--repair`: reusable local helper for current-user Claude/Codex skill visibility and install-time selected-user linking.
 - `sf-ship` and `sf-prod`: shipping and deployed verification.
+- `skills/references/master-delegation-semantics.md`: shared execution-topology doctrine for master/orchestrator skills.
+- `skills/references/master-workflow-lifecycle.md`: shared lifecycle and work item doctrine for master/orchestrator skills.
 - `skills/references/reporting-contract.md`: shared final-report modes for concise user reports and explicit detailed agent handoffs.
 
 ## Control Flow
@@ -112,6 +120,20 @@ source skill
   -> Documentation Update Plan during end verification
   -> Editorial Update Plan during end verification when public content is impacted
   -> sf-end / sf-ship
+```
+
+Shared master lifecycle:
+
+```text
+intake
+  -> work item resolution
+  -> readiness gate
+  -> model/topology routing
+  -> delegated or owner-skill execution
+  -> targeted validation and evidence routing
+  -> verification
+  -> post-verify closure
+  -> bounded ship/deploy/release routing
 ```
 
 Release confidence flow:
@@ -174,6 +196,10 @@ sf-content
 - The Reader diagnoses docs impact; the executor or integrator applies docs updates.
 - The Technical Reader diagnoses code-docs impact; the Editorial Reader diagnoses public-content and claim impact.
 - Shared files are sequential by default.
+- Master/orchestrator skills load `skills/references/master-delegation-semantics.md` before choosing execution topology. Delegated sequential subagents are the default for file, validation, closure, and ship work when subagents are available; parallelism means simultaneous subagents and requires ready `Execution Batches`.
+- Master/orchestrator skills load `skills/references/master-workflow-lifecycle.md` before resolving lifecycle flow. The shared skeleton is intake, work item resolution, readiness, model/topology routing, owner-skill execution, validation/evidence, verification, post-verify closure, and bounded ship/deploy/release routing.
+- Bug work uses one Markdown bug file under `bugs/*.md` as the durable source of truth. `BUGS.md`, when present, is an optional compact/generated/triage view and must not override the bug file.
+- Short natural-language confirmations after diagnosis or proposal continue the current chantier in delegated sequential mode by intent rather than exact keyword, not parallel fan-out.
 - Fresh context is preferred for non-trivial spec-first execution when available.
 - ShipFlow-owned references resolve from `$SHIPFLOW_ROOT`, not the project repo.
 - A newly created or renamed ShipFlow skill is not runtime-visible until current-user `~/.claude/skills/<name>` and `~/.codex/skills/<name>` symlink to `$SHIPFLOW_ROOT/skills/<name>` and expose `SKILL.md`.
@@ -201,6 +227,8 @@ sf-content
 - If mapped docs are missing from a `Documentation Update Plan`, the docs gate fails.
 - If public content, README, FAQ, pricing, public docs, skill pages, or claims are affected but missing from an `Editorial Update Plan`, the editorial gate fails.
 - If `sf-build` prepares implementation with missing or stale `docs/technical/code-docs-map.md`, applicable `docs/editorial/`, or `CONTENT_MAP.md`, it must route to `sf-docs` or record explicit no-impact/no-surface status before proceeding.
+- If a master skill patches in the master conversation merely because a file change is small while subagents are available, treat that as workflow drift. Small scope may use a mini-contract, but the execution mode remains delegated sequential for file work.
+- If a short natural-language confirmation is treated as consent for parallel subagents without ready `Execution Batches`, treat that as workflow drift.
 - If future projects are told to rerun ShipFlow's shipped governance specs instead of using `sf-init` and `sf-docs`, treat that as workflow drift.
 - If a new skill exists under `skills/<name>/SKILL.md` but is missing from current-user Claude or Codex skill directories, treat the skill lifecycle as incomplete until the runtime symlinks are repaired.
 - If filesystem runtime links are correct but the current agent still does not list a skill, treat it as a process reload/session-cache issue before changing source contracts.
@@ -223,8 +251,8 @@ python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh
 bash test_skill_runtime_sync.sh
 tools/shipflow_sync_skills.sh --check --all
-python3 tools/shipflow_metadata_lint.py skills/references/technical-docs-corpus.md skills/references/editorial-content-corpus.md skills/references/subagent-roles/editorial-reader.md shipflow-spec-driven-workflow.md AGENT.md
-rg -n "Governance Corpus Gate|sf-init.*bootstrap|sf-docs.*maintain|sf-build.*consume|sf-deploy|sf-maintain|sf-content|reporting-contract|report=user|docs/technical|docs/editorial" skills/sf-init/SKILL.md skills/sf-docs/SKILL.md skills/sf-deploy/SKILL.md skills/sf-maintain/SKILL.md skills/sf-content/SKILL.md specs/sf-build-autonomous-master-skill.md shipflow-spec-driven-workflow.md README.md skills/references/reporting-contract.md
+python3 tools/shipflow_metadata_lint.py skills/references/master-delegation-semantics.md skills/references/master-workflow-lifecycle.md skills/references/technical-docs-corpus.md skills/references/editorial-content-corpus.md skills/references/subagent-roles/editorial-reader.md shipflow-spec-driven-workflow.md AGENT.md
+rg -n "Governance Corpus Gate|sf-init.*bootstrap|sf-docs.*maintain|sf-build.*consume|sf-deploy|sf-maintain|sf-content|master-delegation-semantics|master-workflow-lifecycle|bug file|delegated sequential|subagent|parallelism|short natural-language|Execution Batches|reporting-contract|report=user|docs/technical|docs/editorial" skills/sf-init/SKILL.md skills/sf-docs/SKILL.md skills/sf-deploy/SKILL.md skills/sf-maintain/SKILL.md skills/sf-content/SKILL.md specs/sf-build-autonomous-master-skill.md shipflow-spec-driven-workflow.md README.md skills/references/reporting-contract.md skills/references/master-delegation-semantics.md skills/references/master-workflow-lifecycle.md
 ```
 
 Run focused `rg` checks for the affected skill contract and linked references.

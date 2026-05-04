@@ -23,6 +23,18 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, outcome-first, and using the compact chantier block. The detailed report template below is for `report=agent`, blocked runs, or explicit handoff.
 
+## Master Delegation
+
+Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
+
+This skill follows that reference; local nuances below only narrow or route it. Skill contract edits, refresh, validation, docs/help updates, public skill-page coherence, and ship preparation default to delegated sequential when subagents are available; parallel skill work requires ready `Execution Batches`.
+
+## Master Workflow Lifecycle
+
+Before resolving skill-maintenance phases, load `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
+
+Use the shared skeleton for intake, skill-maintenance work item resolution, readiness, model/topology routing, owner-skill execution, validation, verification, and post-verify docs/help plus ship routing. Local sections below define skill placement, runtime visibility, and public-surface gates only.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -98,6 +110,8 @@ Create a new master skill only when it orchestrates multiple existing skills or 
 If placement remains ambiguous, ask one targeted question before writing files when the answer is likely to settle the decision. If the ambiguity is broader than one decision, reroute to `/sf-explore <idea>` before `/sf-spec`. Recommend integration into an existing skill first unless the evidence clearly justifies a new entrypoint. Record the placement decision in the chantier spec.
 
 ## Spec-First Contract
+
+Apply the shared readiness rules from `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
 
 For non-trivial work, spec-first is mandatory.
 
@@ -300,6 +314,7 @@ Verdict sf-skill-build:
 
 - Implement the lifecycle, not only the markdown edit.
 - Do not commit or push.
+- Follow the shared master delegation reference for delegated sequential defaults and spec/batch-gated parallelism.
 - Ask only targeted questions when the answer changes behavior, security, naming, scope, or public promise.
 - Route to `sf-explore` before `sf-spec` when skill intent or placement is too fuzzy for one targeted question to settle.
 - Prefer `blocked` over guessing when ambiguity changes contract semantics.

@@ -23,6 +23,18 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, lifecycle-result first, and using the compact chantier block. Use `report=agent`, `handoff`, `verbose`, or `full-report` for detailed evidence matrices or downstream handoff.
 
+## Master Delegation
+
+Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
+
+This skill follows that reference; local nuances below only narrow or route it. Maintenance defaults to delegated sequential for triage, repair, docs, checks, validation, integration, and ship preparation when subagents are available; parallel maintenance remains gated by ready `Execution Batches`.
+
+## Master Workflow Lifecycle
+
+Before resolving maintenance phases, load `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
+
+Use the shared skeleton for intake, work item resolution, readiness, model/topology routing, owner-skill execution, validation, verification, and post-verify ship/deploy routing. Local sections below define maintenance lanes and owner routes only.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -32,7 +44,8 @@ Default to `report=user`: concise, lifecycle-result first, and using the compact
 - ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Package manager signals: !`ls -1 package.json package-lock.json yarn.lock pnpm-lock.yaml requirements.txt Pipfile.lock pyproject.toml 2>/dev/null || echo "none"`
 - Package scripts: !`node -e "const p=require('./package.json'); console.log(JSON.stringify(p.scripts||{}, null, 2))" 2>/dev/null || echo "no package.json scripts"`
-- Bug index: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`
+- Bug files: !`find bugs -maxdepth 1 -type f -name "BUG-*.md" 2>/dev/null | sort | tail -40 || echo "No bugs directory"`
+- Optional bug triage view: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`
 - Recent tests: !`tail -60 TEST_LOG.md 2>/dev/null || echo "No TEST_LOG.md"`
 - Local tasks: !`head -80 TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Audit log: !`tail -80 AUDIT_LOG.md 2>/dev/null || tail -80 ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md 2>/dev/null || echo "No AUDIT_LOG.md"`
@@ -55,7 +68,7 @@ The goal is not another report. `sf-maintain` should keep the operator out of co
 
 Orchestrate existing skills; do not duplicate their internals.
 
-- `sf-bug` owns bug lifecycle routing, dossiers, retests, verification, and ship risk.
+- `sf-bug` owns bug lifecycle routing, bug files, retests, verification, and ship risk.
 - `sf-deps` owns dependency health, vulnerabilities, supply chain, licenses, drift, and config.
 - `sf-docs` owns documentation update/audit, metadata, technical corpus, editorial corpus, and stale-doc repair.
 - `sf-check` owns local typecheck, lint, build, tests, and quick dependency checks.
@@ -76,7 +89,7 @@ Use only for pure conversation, explicit `quick` read-only triage, or a `global`
 
 ### `delegated sequential` (default)
 
-`/sf-maintain` or `$sf-maintain` is explicit bounded maintenance delegation consent for the current project. Use one bounded subagent at a time for triage, focused repair, docs updates, checks, validation, integration, or ship preparation.
+`/sf-maintain` or `$sf-maintain` is explicit bounded maintenance delegation consent for the current project. Apply the shared master delegation semantics for short approvals, mini-contracts, degradation, and subagent boundaries.
 
 Load these role contracts from `$SHIPFLOW_ROOT/skills/references/subagent-roles/` when delegating:
 
@@ -120,7 +133,7 @@ If the user asks to fix, migrate, deploy, or build a specific thing, keep `sf-ma
 `quick` mode is intentionally small and read-only:
 
 1. Read bug, task, audit, docs, dependency, and development-mode state.
-2. Identify open high/critical bugs, stale bug statuses, or missing bug dossiers.
+2. Identify open high/critical bugs, stale bug statuses, missing bug files, or stale optional bug indexes.
 3. Identify dependency signals: lockfile age if visible, package manager, high/critical audit command availability, outdated major-upgrade hints when cheap.
 4. Identify docs/governance signals: missing `CLAUDE.md`/`SHIPFLOW.md` development mode, missing technical/editorial corpus when relevant, stale frontmatter next steps, missing `SECURITY.md` when the project has public/auth/payment surfaces.
 5. Identify check coverage gaps: no typecheck, lint, tests, build, or meaningful runtime validation scripts.
@@ -188,7 +201,7 @@ ShipFlow does not need a separate `sf-audit-security` yet. Security maintenance 
 
 `sf-maintain security` should:
 
-1. Check `BUGS.md` for open high/critical security, auth, permissions, data, webhook, or secret issues.
+1. Check `bugs/*.md` first, then optional `BUGS.md` if present, for open high/critical security, auth, permissions, data, webhook, or secret issues.
 2. Check whether the project has auth, payments, webhooks, public APIs, multi-tenant data, admin actions, or production secrets.
 3. Run or route to `/sf-deps` for dependency/security posture and remediation proposals.
 4. Run or route to `/sf-audit-code report=agent` when code-level security review is needed.
@@ -271,7 +284,7 @@ Agent mode may add:
 
 - Maintenance is not complete until it is verified, shipped, ship-ready with `no-ship`, or blocked at a named gate.
 - Prefer "needs review" over "safe" when security evidence is partial.
-- Do not invent audit freshness. Use `AUDIT_LOG.md`, `BUGS.md`, `TEST_LOG.md`, specs, and command output.
+- Do not invent audit freshness. Use `AUDIT_LOG.md`, `bugs/*.md`, optional `BUGS.md`, `TEST_LOG.md`, specs, and command output.
 - Do not conflate `sf-migrate` and `sf-deps`: deps finds risk and drift; migrate executes breaking-change upgrade work.
 - Do not treat missing `SECURITY.md` as a blocker for small local tools, but report it for public, auth, payments, webhook, or multi-user products.
 - When maintenance reveals implementation work, execute it through bounded owner skills/subagents after the appropriate spec/readiness gate.

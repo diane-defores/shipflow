@@ -58,7 +58,7 @@ La documentation est une surface produit active :
 - ne pas documenter des capacités non prouvées par le code ou les specs
 - distinguer `implemented`, `verified`, `assumed`, `deprecated` et `removed`
 - signaler les docs stale comme risque produit quand elles touchent sécurité, paiement, permissions, API publique, migration, données sensibles ou actions destructives
-- quand le scope touche les bugs, vérifier le modèle professionnel: `TEST_LOG.md` compact, `BUGS.md` compact, bug dossier dans `bugs/BUG-ID.md`, preuves redigées dans `test-evidence/BUG-ID/`
+- quand le scope touche les bugs, vérifier le modèle professionnel: `TEST_LOG.md` compact, bug file source de vérité dans `bugs/BUG-ID.md`, `BUGS.md` optionnel/généré comme vue de triage compacte, preuves redigées dans `test-evidence/BUG-ID/`
 
 En mode `update` ou `audit`, prioriser les docs qui peuvent faire échouer un utilisateur réel : installation, configuration, auth, billing, migration, API, onboarding, troubleshooting.
 
@@ -142,9 +142,9 @@ Technical module context files are ShipFlow artifacts too. `docs/technical/*.md`
 
 Bug workflow distinction:
 - `TEST_LOG.md` and `BUGS.md` are tracker files (no required frontmatter).
-- `bugs/BUG-ID.md` is a bug dossier artifact (`artifact: bug_record`) and must stay detailed.
+- `bugs/BUG-ID.md` is the bug file artifact (`artifact: bug_record`) and must stay detailed.
 - `test-evidence/BUG-ID/` holds optional redacted heavy evidence and should be referenced by path, not pasted inline in trackers.
-- Docs must not present `BUGS.md` as the full bug dossier location.
+- Docs must not present `BUGS.md` as the full bug source-of-truth location.
 
 Location rule:
 - `shipflow_data` hosts tracking and registry files, not the canonical copy of per-project decision documents.
@@ -447,8 +447,8 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
    - **Feature behavior** : les docs décrivent-elles encore le comportement actuel des features, permissions, limites, erreurs, pricing et intégrations ?
    - **Public promises** : les pages/docs promettent-elles sécurité, conformité, IA, automatisation, disponibilité ou gains sans preuve dans le produit ?
    - **Conversation persistence** : une conversation récente a-t-elle établi une preuve produit, une règle workflow durable, ou une FAQ utile qui n'existe pas encore dans README, docs, site, FAQ, skill pages, `CONTENT_MAP.md`, ou docs techniques ?
-   - **Professional bug loop** : la doc décrit-elle correctement les rôles `TEST_LOG.md` (tracker compact), `BUGS.md` (index compact), bug dossier `bugs/BUG-ID.md`, et `test-evidence/BUG-ID/` (preuves redigées) ?
-   - **Bug tracker vs artifact** : une doc confond-elle `BUGS.md` avec le bug dossier ?
+   - **Professional bug loop** : la doc décrit-elle correctement les rôles `TEST_LOG.md` (tracker compact), `bugs/BUG-ID.md` (bug file source de vérité), `BUGS.md` (vue optionnelle/générée de triage), et `test-evidence/BUG-ID/` (preuves redigées) ?
+   - **Bug tracker vs artifact** : une doc confond-elle `BUGS.md` avec le bug file source de vérité ?
    - **ShipFlow metadata** : les artefacts internes ShipFlow ont-ils le frontmatter obligatoire (`artifact`, `project`, `created`, `updated`, `status`, `scope`, `source_skill`) ?
    - **Skill budget compliance** : uniquement si la demande ou les fichiers touchent `skills/`, `skills/*/SKILL.md`, `agents/openai.yaml`, les descriptions/discovery de skills, ou la conformité Codex/Claude Code; lire `$SHIPFLOW_ROOT/skills/references/skill-context-budget.md`, puis lancer `$SHIPFLOW_ROOT/tools/skill_budget_audit.py --skills-root "$SHIPFLOW_ROOT/skills" --format markdown` et vérifier `name`, `path`, `description` en une phrase, absence de `Args:`, seuils `120/140/200`, total `name+description+path < 8000`, et corps `SKILL.md > 500` lignes.
    - **Version sync** : les specs, audits et reviews référencent-ils des versions business/techniques encore actuelles dans `depends_on` ?
@@ -511,8 +511,8 @@ Vérifier que la doc existante est cohérente avec le code, à jour, et respecte
 - [ ] `skills/sf-large/SKILL.md` — corps > 500 lignes, extraire les détails vers `references/`
 
 ### PROFESSIONAL BUG MODEL
-- [ ] [README.md] décrit `BUGS.md` comme dossier complet au lieu d'un index compact vers bug dossier
-- [ ] [workflow doc] ne mentionne pas `sf-test --retest BUG-ID` ni `Retest History` du bug dossier
+- [ ] [README.md] décrit `BUGS.md` comme source de vérité au lieu d'une vue de triage optionnelle vers bug file
+- [ ] [workflow doc] ne mentionne pas `sf-test --retest BUG-ID` ni `Retest History` du bug file
 - [ ] [guide QA] colle des logs bruts au lieu de pointer vers `test-evidence/BUG-ID/` redigé
 
 ### CONTEXTE BUSINESS/MARQUE
@@ -564,7 +564,7 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
 
 1a. **Vérifier la cohérence du modèle bug dans la doc** :
    - Les docs QA/ops expliquent `TEST_LOG.md` comme tracker compact.
-   - Les docs QA/ops expliquent `BUGS.md` comme index compact vers bug dossier.
+   - Les docs QA/ops expliquent `bugs/BUG-ID.md` comme source de vérité et `BUGS.md` comme vue de triage optionnelle/générée.
    - Les docs mentionnent `bugs/BUG-ID.md` pour le détail (repro, expected/observed, Fix Attempts, Retest History, statut).
    - Les docs mentionnent `test-evidence/BUG-ID/` pour les preuves volumineuses, avec redaction obligatoire.
    - Les docs ne demandent pas d'ajouter de frontmatter à `TEST_LOG.md`/`BUGS.md` (tracker rule).

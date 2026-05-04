@@ -49,7 +49,7 @@ The skill is not meant to replace automated tests. It covers the human-facing an
 - structured result choices such as pass, error page, infinite loading, wrong redirect, missing data, or custom observation
 - a compact `TEST_LOG.md` entry that records the campaign outcome
 - a compact `BUGS.md` entry when the reported result fails
-- a detailed `bugs/BUG-ID.md` dossier for the failing case
+- a detailed `bugs/BUG-ID.md` bug file for the failing case
 - a redacted `test-evidence/BUG-ID/` location when evidence is too large or sensitive for inline storage
 - a clean route into `sf-fix` when the bug is actionable
 
@@ -103,14 +103,14 @@ That gives future agents the reproduction steps, expected behavior, environment,
 
 ## Bug File Roles
 
-ShipFlow uses a three-layer bug model:
+ShipFlow uses a bug-file-first model:
 
 - `TEST_LOG.md` is the compact campaign log. It answers what was tested, when, and whether the run passed or failed.
-- `BUGS.md` is the compact bug index. It lists the actionable bug, its current status, severity, owner, and a pointer to the dossier.
-- `bugs/BUG-ID.md` is the detailed dossier. It holds reproduction steps, expected and observed behavior, diagnosis notes, fix attempts, retest history, and closure criteria.
+- `bugs/BUG-ID.md` is the detailed Markdown source of truth. It holds reproduction steps, expected and observed behavior, diagnosis notes, fix attempts, retest history, and closure criteria.
+- `BUGS.md`, when present, is an optional compact/generated triage index. It lists actionable bugs, status, severity, owner, and pointers to bug files.
 - `test-evidence/BUG-ID/` stores redacted screenshots, logs, HAR, dumps, or other supporting material when the evidence is too large to keep inline.
 
-The split is deliberate: the index stays scannable, and the dossier holds the durable detail.
+The split is deliberate: the bug file holds durable detail, while the optional index stays scannable.
 
 `TEST_LOG.md` should record campaigns and scenario outcomes:
 
@@ -128,10 +128,10 @@ The split is deliberate: the index stays scannable, and the dossier holds the du
 `BUGS.md` should record actionable defects as a compact index:
 
 ```markdown
-- BUG-2026-04-26-001 | open | high | Infinite loading after Google callback | last-tested: 2026-04-26 | dossier: bugs/BUG-2026-04-26-001.md
+- BUG-2026-04-26-001 | open | high | Infinite loading after Google callback | last-tested: 2026-04-26 | bug-file: bugs/BUG-2026-04-26-001.md
 ```
 
-The matching dossier lives in `bugs/BUG-2026-04-26-001.md`, and any redacted evidence lives under `test-evidence/BUG-2026-04-26-001/`.
+The matching bug file lives in `bugs/BUG-2026-04-26-001.md`, and any redacted evidence lives under `test-evidence/BUG-2026-04-26-001/`.
 
 ## Status Lifecycle
 
@@ -151,8 +151,8 @@ The canonical bug states are:
 Practical flow:
 
 - `sf-bug` can read the bug state and route the next lifecycle command.
-- `sf-test` opens or updates the dossier when a scenario fails.
-- `sf-fix` reads the dossier and appends diagnosis and fix attempts.
+- `sf-test` opens or updates the bug file when a scenario fails.
+- `sf-fix` reads the bug file and appends diagnosis and fix attempts.
 - `sf-test --retest BUG-ID` appends retest history and moves the bug toward verification or closure.
 - `sf-verify` checks whether the bug state still blocks the wider release decision.
 - `sf-ship` uses the bug state to decide whether shipping is clean or partial-risk.
@@ -161,7 +161,7 @@ Evidence rules:
 
 - keep screenshots, HAR, stack traces, logs, and dumps redacted before persistence
 - store larger evidence under `test-evidence/BUG-ID/`
-- never inline raw secrets, cookies, tokens, private data, or production PII in `TEST_LOG.md`, `BUGS.md`, or the dossier
+- never inline raw secrets, cookies, tokens, private data, or production PII in `TEST_LOG.md`, optional `BUGS.md`, or the bug file
 
 ## Typical Examples
 

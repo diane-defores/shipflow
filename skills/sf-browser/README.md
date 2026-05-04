@@ -50,7 +50,7 @@ Use it when you need to know what the browser actually saw without opening a ful
 
 - It is read-only by default.
 - It does not diagnose login, OAuth, cookies, sessions, callbacks, tenants, providers, or protected routes; use `sf-auth-debug`.
-- It does not replace guided manual QA, retests, `TEST_LOG.md`, `BUGS.md`, or bug dossiers; use `sf-test`.
+- It does not replace guided manual QA, retests, `TEST_LOG.md`, bug files, or optional `BUGS.md` triage views; use `sf-test`.
 - It does not discover deployment URLs, inspect Vercel status, or read runtime logs; use `sf-prod`.
 - It does not click destructive or production-mutating actions without explicit approval.
 

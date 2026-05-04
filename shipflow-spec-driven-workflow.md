@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.14.0"
+artifact_version: "0.14.1"
 project: ShipFlow
 created: "2026-04-22"
 updated: "2026-05-04"
@@ -26,6 +26,7 @@ linked_systems:
   - docs/editorial/
   - skills/references/editorial-content-corpus.md
   - skills/references/reporting-contract.md
+  - skills/references/master-workflow-lifecycle.md
 depends_on: []
 supersedes: []
 evidence:
@@ -46,6 +47,9 @@ evidence:
   - "Updated on 2026-05-04 to add a skill launch cheatsheet for master and supporting modes."
   - "Updated on 2026-05-04 to route fuzzy skill-maintenance ideas through sf-explore before sf-spec."
   - "Updated on 2026-05-04 to add sf-content as the master content lifecycle entrypoint."
+  - "Updated on 2026-05-04 to clarify sf-build delegated sequential subagent consent and separate subagents from parallelism."
+  - "Updated on 2026-05-04 to extract shared master delegation semantics to skills/references/master-delegation-semantics.md."
+  - "Updated on 2026-05-04 to extract the shared master workflow lifecycle and clarify that bugs/*.md files are bug source of truth while BUGS.md is optional/generated triage."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -94,7 +98,7 @@ Skill launch cheatsheet:
 Bug loop entrypoint:
 
 ```text
-sf-bug -> sf-test -> bug dossier -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
+sf-bug -> sf-test -> bug file -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
 ```
 
 Use `sf-bug` when the operator wants one bug lifecycle router for a new report, a `BUG-ID`, a retest, a closure question, or a ship-risk question. It routes to the existing owner skill rather than mutating bug records or code itself.
@@ -125,7 +129,7 @@ Recommended end-user entrypoint for non-trivial work:
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
 ```
 
-`sf-build` keeps the user conversation focused on decisions and status while delegating file work in bounded sequential mode by default. Parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`.
+`sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: delegated sequential is the default for file and validation work, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`.
 
 Recommended release entrypoint after implementation:
 
@@ -243,6 +247,8 @@ Technical governance applies to code projects by default. Editorial governance a
 - `sf-spec` produces an implementation contract, not loose notes.
 - `sf-ready` enforces a real Definition of Ready before non-trivial execution.
 - `sf-build` is the master orchestrator for end users and should prefer bounded delegated sequential execution over manual command chaining.
+- Master/orchestrator skills must load `skills/references/master-workflow-lifecycle.md` for the shared skeleton: intake, work item resolution, readiness, model/topology routing, owner execution, validation, verification, post-verify closure, and ship/deploy routing.
+- Master/orchestrator skills must load `skills/references/master-delegation-semantics.md` before choosing execution topology. The reference defines delegation, subagents, short approvals, degradation, and spec/batch-gated parallelism.
 - `sf-build` planning questions should be decision briefs for business operators: explain the root problem, business stakes, practical options, and the best-practice recommendation before asking for the decision.
 - `sf-maintain` is the master orchestrator for recurring project maintenance and should prefer bounded delegated sequential execution over command recommendations.
 - `sf-content` is the master orchestrator for content management and should route to specialist content, docs, audit, research, validation, and ship skills rather than duplicating their internals.
@@ -670,29 +676,29 @@ This lets existing work become traceable without pretending it was originally pr
 
 ## Professional Bug Management
 
-ShipFlow uses a three-layer bug record so tests, triage, and evidence stay readable across sessions:
+ShipFlow uses a bug-file-first record model so tests, triage, and evidence stay readable across sessions:
 
 - `TEST_LOG.md` is the compact campaign log.
-- `BUGS.md` is the compact bug index.
-- `bugs/BUG-ID.md` is the detailed dossier for one bug.
+- `bugs/BUG-ID.md` is the detailed Markdown source of truth for one bug work item.
+- `BUGS.md`, when present, is only a compact optional/generated triage index that points to bug files.
 - `test-evidence/BUG-ID/` stores redacted supporting evidence when material is too large or too sensitive for inline markdown.
 
 The standard bug loop is:
 
 ```text
-sf-bug -> sf-test -> bug dossier -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
+sf-bug -> sf-test -> bug file -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
 ```
 
 Each stage has a narrow job:
 
 - `sf-bug` reads bug state and routes the next command without bypassing lifecycle gates.
-- `sf-test` captures the failure, opens or updates the dossier, and links to the compact index.
-- `sf-fix` reads the dossier and appends diagnosis and fix attempts.
+- `sf-test` captures the failure, opens or updates the bug file, and may refresh the optional compact index.
+- `sf-fix` reads the bug file and appends diagnosis and fix attempts.
 - `sf-test --retest BUG-ID` appends the retest history and updates the bug state.
 - `sf-verify` checks whether the remaining bug state still blocks release.
 - `sf-ship` consumes the final bug state when deciding whether the ship is clean, partial-risk, or blocked.
 
-The direct-fix path does not bypass this memory layer. If `sf-fix` is the first skill to touch an actionable bug, it should create or reuse a `BUG-ID`, add the compact `BUGS.md` pointer, and create `bugs/BUG-ID.md` before ending the run. The only normal exceptions are narrow copy-only, cosmetic-only, or duplicate cases, and the final report should name the exception explicitly.
+The direct-fix path does not bypass this memory layer. If `sf-fix` is the first skill to touch an actionable bug, it should create or reuse a `BUG-ID` and create `bugs/BUG-ID.md` before ending the run. It may also update `BUGS.md` when that optional index exists or is generated for triage. The only normal exceptions are narrow copy-only, cosmetic-only, or duplicate cases, and the final report should name the exception explicitly.
 
 Canonical bug states stay explicit:
 
@@ -716,7 +722,7 @@ Closure rules are conservative:
 
 Evidence rules are strict:
 
-- keep `TEST_LOG.md` and `BUGS.md` compact
+- keep `TEST_LOG.md` and optional `BUGS.md` compact
 - keep large logs, HAR, screenshots, dumps, and traces out of the index files
 - redact secrets, cookies, tokens, private emails, request headers, and production PII before persisting evidence
 - store larger redacted material under `test-evidence/BUG-ID/`
@@ -736,9 +742,9 @@ Typical routed outcomes:
 - direct: `sf-fix -> sf-verify -> sf-end`
 - spec-first: `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end`
 
-When `sf-test` finds a failure first, the bug should already exist as a compact index entry plus dossier. `sf-fix` should read that dossier instead of rebuilding context from chat history.
+When `sf-test` finds a failure first, the bug should already exist as a bug file under `bugs/`. `sf-fix` should read that bug file instead of rebuilding context from chat history.
 
-When `sf-fix` is the first skill to touch a bug, it should usually create that compact index entry plus dossier itself instead of leaving the correction documented only in chat history or git diff. Only narrow minor exceptions such as copy-only or purely cosmetic fixes may skip dossier creation, and that exception should be stated explicitly in the final report.
+When `sf-fix` is the first skill to touch a bug, it should usually create that bug file itself instead of leaving the correction documented only in chat history or git diff. `BUGS.md` can be updated as an optional triage view. Only narrow minor exceptions such as copy-only or purely cosmetic fixes may skip bug-file creation, and that exception should be stated explicitly in the final report.
 
 When the bug is auth or browser-session related, run `sf-auth-debug` before coding from theory. It consumes the bug report or spec, reproduces with Playwright where possible, and isolates failures across Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, cookies, callbacks, protected routes, and Flutter web auth bridges. Its output should route back into `sf-fix`, `sf-start`, or `sf-verify` with evidence rather than guesses.
 
@@ -833,7 +839,7 @@ Behavior:
 - reads the shared `sf-model` routing reference before coding
 - chooses a primary execution model and reasoning effort before implementation
 - may assign per-group model overrides when the execution is materially non-trivial
-- chooses `single-agent` or `multi-agent` execution before launching work
+- chooses execution topology before launching work, using `skills/references/master-delegation-semantics.md` for master/orchestrator delegation when applicable
 - loads only the execution-relevant files and the linked systems that must be revalidated
 - prefers fresh context for spec-first execution when that reduces residual ambiguity
 - routes non-auth browser proof to `sf-browser` and auth/session/protected-flow proof to `sf-auth-debug`
@@ -842,8 +848,9 @@ The key rule:
 - if the work is ambiguous or multi-file, `sf-start` should not invent the missing intent
 
 Topology rule:
-- use `single-agent` when changes are tightly coupled or converge on the same core files
-- use `multi-agent` only when write ownership is explicit and the integration cost is justified
+- use delegated sequential by default for master/orchestrator file work when subagents are available
+- use master/single-agent degradation only when allowed by `skills/references/master-delegation-semantics.md`
+- use parallel subagents only with ready `Execution Batches`
 
 ### 5. Implementation (inside `sf-start`)
 

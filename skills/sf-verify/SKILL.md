@@ -203,12 +203,13 @@ Si le changement est entièrement local, noter `fresh-docs not needed` avec une 
 
 **Résultat** : liste des tâches complètes vs incomplètes avec preuves
 
-### Step 4.5 — Bug Gate (`BUGS.md` + `bugs/`)
+### Step 4.5 — Bug Gate (`bugs/` + optional `BUGS.md`)
 
 Avant de conclure la complétude, inspecter les bugs liés au scope vérifié:
-- lire `BUGS.md` si présent (index compact)
-- ouvrir les dossiers `bugs/BUG-ID.md` pertinents pour confirmer le statut réel
-- si un dossier attendu manque, le signaler comme gap et dégrader la confiance
+- lire `bugs/*.md` comme source de vérité des bug work items
+- lire `BUGS.md` seulement si présent comme vue de triage compacte
+- ouvrir les bug files `bugs/BUG-ID.md` pertinents pour confirmer le statut réel
+- si un bug file attendu manque, le signaler comme gap et dégrader la confiance
 
 Vérifier explicitement:
 - `open bug` dans le scope
@@ -219,7 +220,7 @@ Vérifier explicitement:
 Règle de verdict:
 - si bug `high` ou `critical` ouvert et lié au scope: verdict de vérification non prêt et mention explicite `blocks ship`
 - si seulement `fixed-pending-verify` ou lien partiel: autoriser un verdict partiel avec risque explicite
-- si aucune source bug exploitable (`BUGS.md` absent, dossiers absents, scope ambigu): marquer `not assessed` au lieu d'assumer la fermeture
+- si aucune source bug exploitable (`bugs/` absent, bug files absents, scope ambigu): marquer `not assessed` au lieu d'assumer la fermeture
 
 **Résultat** : `bug gate clear` / `partial-risk` / `blocks ship` / `not assessed`
 

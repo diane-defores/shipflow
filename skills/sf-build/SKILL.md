@@ -23,6 +23,18 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, outcome-first, and using the compact chantier block. Use `report=agent` only when explicitly requested or when `sf-build` is preparing an internal handoff for another agent. When invoking downstream skills for internal evidence, pass `report=agent` or `handoff` only when detailed evidence is needed; otherwise keep their default concise output.
 
+## Master Delegation
+
+Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
+
+This skill follows that reference; local nuances below only narrow or route it. `sf-build` owns end-to-end lifecycle orchestration through `sf-end` and `sf-ship`, and keeps `main-only`, `delegated sequential`, and `spec-gated parallel` as its explicit reportable execution modes.
+
+## Master Workflow Lifecycle
+
+Before resolving lifecycle gates, load `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
+
+Use the shared skeleton for intake, work item resolution, readiness, model/topology routing, execution through owner skills, validation, verification, and post-verify closure/ship. Local sections below define `sf-build` routes and stop conditions only.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -48,22 +60,15 @@ The objective is not fewer safeguards. The objective is fewer manual commands an
 
 ### `main-only`
 
-Use only for pure conversational output where no file read/edit/validation/ship is needed.
+Use only for pure conversational output where no file read/edit/validation/ship is needed, for explicit planning mode without mutation, or when the user explicitly requests no subagent.
 
 ### `delegated sequential` (default)
 
-`/sf-build <story>` or `$sf-build <story>` is explicit bounded delegation consent for the current chantier. Use one bounded subagent at a time for reading, editing, validation, or integration.
+`/sf-build <story>` or `$sf-build <story>` is explicit bounded delegation consent for the current chantier. Use the shared master delegation semantics for subagent defaults, short approvals, mini-contracts, degradation, and reporting.
 
 ### `spec-gated parallel`
 
-Allowed only when a ready spec defines safe `Execution Batches` with:
-
-- non-overlapping write ownership
-- dependency order
-- per-batch validation
-- integration owner
-
-Without explicit safe batches, parallelism is blocked.
+Allowed only when a ready spec defines safe `Execution Batches` under the shared reference. Without explicit safe batches, parallelism is blocked.
 
 ## Existing Chantier Check
 
@@ -103,6 +108,8 @@ Questions and status updates must use the active user language.
 Internal contracts, section anchors, and stable machine-readable labels stay in English.
 
 ## Spec and Readiness Loop
+
+Apply the shared work item and readiness rules from `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
 
 For non-trivial work:
 
@@ -158,6 +165,8 @@ When visible behavior, public docs, README promises, FAQ, pricing, support copy,
 4. Block closure/ship unless status is `complete`, `no editorial impact`, or `pending final copy` with reason and resolution condition.
 
 ## Model Routing Gate
+
+Apply the shared model/topology routing gate from `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
 
 Before `sf-start`, load `$SHIPFLOW_ROOT/skills/sf-model/references/model-routing.md` and choose model profile based on complexity, ambiguity, failure cost, expected duration, and topology.
 
@@ -327,7 +336,6 @@ Verdict sf-build:
 - Keep user interaction concise and decision-oriented.
 - Preserve user changes and avoid unrelated refactors.
 - Keep technical and editorial coherence gates explicit.
-- Prefer bounded sequential delegation by default.
-- Use parallel subagents only with ready non-overlapping `Execution Batches`.
+- Follow `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md` for delegated sequential defaults, short approval semantics, subagent/parallelism boundaries, and `Execution Batches`.
 - Do not commit or push directly from `sf-build`; delegate closure and ship through `sf-end` and `sf-ship`.
 - Do not make the user manually run `sf-end` or `sf-ship` after successful verification unless a named stop condition blocks automatic orchestration.

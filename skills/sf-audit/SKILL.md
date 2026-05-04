@@ -26,6 +26,17 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, findings-first, and focused on top issues, proof gaps, chantier potential, and the next real action. Use `report=agent`, `handoff`, `verbose`, or `full-report` for the detailed audit matrix, domain checklist output, command evidence, assumptions, confidence limits, and handoff notes.
 
+## Master Delegation
+
+Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
+
+This skill follows that reference; local nuances below only narrow or route it. `sf-audit` may use simultaneous read-only subagents only for an explicit selected audit matrix such as project x domain. Any fix, tracker rewrite, content update, closure, or ship work after audit returns to delegated sequential unless a ready spec defines write-safe `Execution Batches`.
+
+## Master Workflow Lifecycle
+
+Before resolving audit phases, load `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
+
+Use the shared skeleton for audit intake, finding-set work item resolution, readiness/source-de-chantier threshold, model/topology routing, read-only audit execution, validation of evidence, and post-audit routing. Local sections below define audit matrices and domain prompts only.
 
 ## Doctrine
 
@@ -34,7 +45,7 @@ Default to `report=user`: concise, findings-first, and focused on top issues, pr
 - Treat documentation coherence as first-class when feature behavior, public promises, setup, API usage or support expectations changed.
 - Treat ShipFlow business metadata versions as evidence. `BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md` are decision contracts; stale, missing, low-confidence, or unversioned contracts must reduce confidence and appear as proof gaps.
 - Prefer honest reporting over tidy grades. If proof is partial, say so explicitly and keep confidence bounded.
-- Keep orchestration practical: parallelize aggressively, but never invent certainty for skipped or weakly evidenced domains.
+- Keep orchestration practical: read-only audit fan-out is allowed only through the selected audit matrix, and write/fix follow-up must use delegated sequential or ready `Execution Batches`.
 
 ## Context
 

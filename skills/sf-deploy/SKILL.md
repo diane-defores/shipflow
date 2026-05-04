@@ -23,6 +23,18 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, evidence-first, and using the compact chantier block. The detailed report template below is for `report=agent`, blocked runs, or explicit handoff.
 
+## Master Delegation
+
+Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
+
+This skill follows that reference; local nuances below only narrow or route it. Release scope review, checks, ship routing, deployment truth, proof routing, verification, and changelog routing default to delegated sequential when subagents are available. Parallel release work remains blocked unless a ready spec defines safe `Execution Batches`.
+
+## Master Workflow Lifecycle
+
+Before resolving release phases, load `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
+
+Use the shared skeleton for intake, release-scope work item resolution, readiness, model/topology routing, owner-skill execution, validation/evidence routing, verification, and post-verify changelog routing. Local sections below define release confidence gates only.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -33,7 +45,8 @@ Default to `report=user`: concise, evidence-first, and using the compact chantie
 - Git diff stat: !`git diff HEAD --stat 2>/dev/null || echo ""`
 - Latest commit: !`git log --oneline -1 2>/dev/null || echo "no commits"`
 - ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
-- Existing bugs: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`
+- Bug files: !`find bugs -maxdepth 1 -type f -name "BUG-*.md" 2>/dev/null | sort | tail -40 || echo "No bugs directory"`
+- Optional bug triage view: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`
 - Available specs: !`find specs docs -maxdepth 2 -type f -name "*.md" 2>/dev/null | sort | head -80`
 
 ## Mission
@@ -57,7 +70,7 @@ Orchestrate existing skills; do not duplicate their internals.
 - `sf-prod` owns deployment discovery, provider state, build logs, runtime logs, and live health.
 - `sf-browser` owns non-auth page-level browser proof after the deployment URL is known.
 - `sf-auth-debug` owns login, OAuth, cookies, sessions, callbacks, tenants, and protected-route proof.
-- `sf-test` owns guided manual QA, durable `TEST_LOG.md`, `BUGS.md`, and bug dossiers.
+- `sf-test` owns guided manual QA, durable `TEST_LOG.md`, bug files under `bugs/*.md`, and optional `BUGS.md` triage updates.
 - `sf-verify` owns final user-story and coherence verification.
 - `sf-changelog` owns release-note generation.
 
@@ -91,7 +104,7 @@ Identify:
 - target environment: `local`, `preview`, `production`, or `unknown`
 - project development mode from `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` plus `CLAUDE.md` or `SHIPFLOW.md`
 - whether the release touches auth, data, permissions, payments, webhooks, background jobs, migrations, public pages, docs, or external side effects
-- linked open high or critical bugs from `BUGS.md`
+- linked open high or critical bugs from `bugs/*.md`, using optional `BUGS.md` only as triage context when present
 
 Ask one targeted question only when the answer changes staging scope, target environment, skip-check risk, destructive side effects, or release framing.
 
@@ -260,6 +273,7 @@ Verdict sf-deploy:
 
 - Keep release truth evidence-based.
 - Prefer blocking over overstating readiness.
+- Follow the shared master delegation reference for delegated sequential defaults and spec/batch-gated parallelism.
 - Use existing skills for implementation, ship, deploy, and proof internals.
 - Never print secrets, cookies, tokens, private headers, or raw sensitive logs.
 - Never mutate production data, send emails, publish content, charge money, or delete records during deploy proof without explicit approval.

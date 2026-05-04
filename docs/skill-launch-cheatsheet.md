@@ -62,7 +62,7 @@ Use a focused skill directly when you intentionally want one owner lane: checks,
 | Commit and push ready work | `sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |
 | Browser proof | `sf-browser` | Target a non-auth URL, route, preview, or production page. |
 | Auth or session diagnosis | `sf-auth-debug` | Target login, OAuth, cookies, callbacks, tenants, providers, sessions, or protected routes. |
-| Manual QA or retest evidence | `sf-test` | Target a guided scenario, test log, retest, or bug dossier update. |
+| Manual QA or retest evidence | `sf-test` | Target a guided scenario, test log, retest, or bug file update. |
 | Deployment truth | `sf-prod` | Target deployment URL, build logs, runtime logs, preview/prod health, or live readiness. |
 | Technical checks | `sf-check` | Target typecheck, lint, build, tests, dependency checks, or shell validation. |
 | Documentation work | `sf-docs [mode or target]` | `readme`, `api`, `components`, `audit`, `update`, `metadata`, `technical`, `editorial`, or a file path. |

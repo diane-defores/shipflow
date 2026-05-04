@@ -23,6 +23,18 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, outcome-first, and using the compact chantier block. Use `report=agent`, `handoff`, `verbose`, or `full-report` only when another agent needs file lists, validation matrices, source evidence, or unresolved gate state.
 
+## Master Delegation
+
+Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
+
+This skill follows that reference; local nuances below only narrow or route it. Content lifecycle work defaults to delegated sequential when reading, drafting, editing, validating, applying public-content updates, or preparing ship. Parallel content work is allowed only from ready `Execution Batches` with non-overlapping surfaces.
+
+## Master Workflow Lifecycle
+
+Before resolving content phases, load `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
+
+Use the shared skeleton for intake, content work item resolution, readiness, model/topology routing, owner-skill execution, validation, verification, and post-verify ship routing. Local sections below define content surfaces, owner routes, and public-claim gates only.
+
 ## Mission
 
 `sf-content` is the master lifecycle for content management. It decides which content lane should run, applies governance gates, and carries content work toward validation and ship routing.
@@ -97,6 +109,8 @@ changes applied -> verify/ship
 ```
 
 ## Spec Gate
+
+Apply the shared readiness rules from `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
 
 Use spec-first when any of these are true:
 
@@ -251,5 +265,6 @@ Use `report=agent` for handoff details: file list, source evidence, owner-skill 
 - Prefer declared surfaces over invented paths.
 - Ask only targeted questions when the answer changes mode, surface, scope, security, claims, or ship posture.
 - Use spec-first for non-trivial or public-claim-sensitive content work.
+- Follow the shared master delegation reference for delegated sequential defaults and spec/batch-gated parallelism.
 - Preserve runtime schemas.
 - Validate before ship routing.

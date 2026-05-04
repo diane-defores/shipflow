@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.8.0"
+artifact_version: "0.8.1"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-04"
@@ -36,6 +36,9 @@ evidence:
   - "Added docs/skill-launch-cheatsheet.md as the standalone Markdown reference."
   - "Clarified that sf-skill-build routes fuzzy skill-maintenance ideas through sf-explore before sf-spec."
   - "Added sf-content as the master content lifecycle entrypoint."
+  - "Clarified sf-build delegated sequential subagent consent and separated subagents from parallelism."
+  - "Added skills/references/master-delegation-semantics.md as the shared master/orchestrator delegation doctrine."
+  - "Added skills/references/master-workflow-lifecycle.md as the shared lifecycle skeleton and clarified bug files as source of truth."
 next_step: "/sf-docs audit README.md"
 ---
 
@@ -70,7 +73,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - fast current-thread recap when a session becomes hard to follow
 - spec-driven implementation flow
 - verification and remediation loops
-- professional bug management with compact `TEST_LOG.md`, compact `BUGS.md`, detailed `bugs/BUG-ID.md` dossiers, and redacted `test-evidence/BUG-ID/` evidence
+- professional bug management with compact `TEST_LOG.md`, one durable Markdown bug file per bug under `bugs/`, optional/generated `BUGS.md` triage views, and redacted `test-evidence/BUG-ID/` evidence
 - audits across code, design, copy, SEO, GTM, deps, perf, and translation
 - documentation and research workflows
 
@@ -84,6 +87,8 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [docs/technical/README.md](./docs/technical/README.md) — internal technical documentation layer for code-proximate subsystem docs
 - [docs/technical/code-docs-map.md](./docs/technical/code-docs-map.md) — map from code paths to primary docs, validations, and documentation update triggers
 - [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
+- [skills/references/master-delegation-semantics.md](./skills/references/master-delegation-semantics.md) — shared execution-topology doctrine for master/orchestrator skills
+- [skills/references/master-workflow-lifecycle.md](./skills/references/master-workflow-lifecycle.md) — shared lifecycle skeleton and work item model for master/orchestrator skills
 - [BUSINESS.md](./BUSINESS.md) — target audience, value proposition, business assumptions, and market framing
 - [PRODUCT.md](./PRODUCT.md) — product scope, workflows, outcomes, and non-goals
 - [BRANDING.md](./BRANDING.md) — tone, trust posture, vocabulary, and claims boundaries
@@ -277,10 +282,10 @@ Skill launch cheatsheet:
 Bug loop entrypoint:
 
 ```text
-sf-bug -> sf-test -> bug dossier -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
+sf-bug -> sf-test -> bug file -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
 ```
 
-Use `sf-bug` when you want the professional bug loop orchestrated from a `BUG-ID`, a fresh bug report, a retest request, or a ship-risk question. It routes to the narrower owner skill without bypassing the dossier, retest, verification, or ship-risk gates.
+Use `sf-bug` when you want the professional bug loop orchestrated from a `BUG-ID`, a fresh bug report, a retest request, or a ship-risk question. It routes to the narrower owner skill without bypassing the bug file, retest, verification, or ship-risk gates.
 
 Bug-first repair entrypoint:
 
@@ -322,7 +327,7 @@ Recommended end-user entrypoint for non-trivial work:
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
 ```
 
-`sf-build` invocation authorizes bounded delegated sequential execution for the current chantier. It keeps user interaction focused on decisions and progress, frames material questions with the root problem, business stakes, options, and a recommended best-practice answer, and only allows parallel agent execution when a ready spec defines non-overlapping `Execution Batches`.
+`sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invocation authorizes bounded delegated sequential execution for the current chantier, short natural-language confirmations continue that bounded sequential path after diagnosis by intent rather than exact keyword, and parallel agent execution requires ready non-overlapping `Execution Batches`. `sf-build` keeps user interaction focused on decisions and progress and frames material questions with the root problem, business stakes, options, and a recommended best-practice answer.
 
 Recommended release entrypoint after implementation:
 
@@ -357,14 +362,14 @@ sf-content -> CONTENT_MAP + editorial corpus -> owner content skills -> audits/d
 `sf-content` routes content work through the right owner skill: `sf-repurpose` for source-faithful reuse, `sf-redact` for long-form drafting, `sf-enrich` for existing content upgrades, `sf-audit-copy` / `sf-audit-copywriting` / `sf-audit-seo` for review, and `sf-docs` for docs and editorial governance. It blocks undeclared blog/article surfaces with `surface missing: blog` instead of inventing paths.
 
 If the bug is local and clear, `sf-fix` fixes it directly, then verifies.
-That fast path should still attach the bug to durable project memory with a compact `BUGS.md` entry and a `bugs/BUG-ID.md` dossier, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix.
+That fast path should still attach the bug to durable project memory with a `bugs/BUG-ID.md` bug file, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix. `BUGS.md`, when present, is only a compact optional/generated triage view.
 If the bug is ambiguous or non-trivial, `sf-fix` routes to `sf-spec -> sf-ready -> sf-start`.
 
 ShipFlow keeps bug records split on purpose:
 
 - `TEST_LOG.md` stays compact and records what was tested and how it went.
-- `BUGS.md` stays compact and lists the actionable bug index.
-- `bugs/BUG-ID.md` holds the detailed dossier for one bug.
+- `bugs/BUG-ID.md` holds the detailed source of truth for one bug work item.
+- `BUGS.md`, when present, stays compact as an optional/generated triage index that points to bug files.
 - `test-evidence/BUG-ID/` holds redacted evidence when screenshots, logs, or traces are too large or sensitive to inline.
 
 Technical documentation layer:
@@ -610,7 +615,7 @@ For medium and large changes, the contract is explicit:
 - `sf-spec` defines scope, dependencies, invariants, links, consequences, and execution notes
 - `sf-ready` rejects a spec that still depends on hidden assumptions
 - `sf-start` executes from that contract instead of rediscovering intent
-- `sf-start` now also selects a primary execution model and chooses `single-agent` vs `multi-agent` topology before coding
+- `sf-start` now also selects a primary execution model and chooses execution topology before coding; master/orchestrator topology follows `skills/references/master-delegation-semantics.md`
 - `sf-verify` checks the implementation and the linked systems that could regress around it
 
 Success criterion:

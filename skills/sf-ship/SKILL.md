@@ -116,17 +116,18 @@ Check for secrets:
 - if untracked `.env`, credential, or token files are not ignored, stop and warn
 - when using `all-dirty`, inspect the complete dirty file list before staging and explicitly exclude nothing unless it is a secret/safety issue; if a secret/safety issue is present, stop instead of partially staging
 
-## Step 3.5 — Pre-ship bug risk gate (`BUGS.md` + `bugs/`)
+## Step 3.5 — Pre-ship bug risk gate (`bugs/` + optional `BUGS.md`)
 
 Run a lightweight bug gate in both `quick` and `full` mode before checks/staging:
-- read `BUGS.md` if present
+- read `bugs/*.md` as the source of truth for known bug work items
+- read `BUGS.md` only as optional triage context when present
 - when a linked high-impact bug is found, open corresponding `bugs/BUG-ID.md` for confirmation
 - keep this check fast; do not run a heavy audit in quick mode
 
 Classify bug risk outcome for the ship report:
 - `blocked`: at least one linked `high` or `critical` bug is still open (`open`, `needs-info`, `needs-repro`, `in-diagnosis`, `fix-attempted`)
 - `partial-risk`: linked bug exists in uncertain intermediate state (for example `fixed-pending-verify`) or scope linkage is partial
-- `not assessed`: no `BUGS.md`, missing `bugs/` dossiers, or scope too ambiguous for a safe claim
+- `not assessed`: no usable bug files or scope too ambiguous for a safe claim
 
 Rules:
 - do not claim closure when bug risk is `blocked` or `partial-risk`

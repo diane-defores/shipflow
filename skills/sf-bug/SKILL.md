@@ -1,6 +1,6 @@
 ---
 name: sf-bug
-description: "Bug loop orchestrator for intake, dossiers, fixes, retests, verification, and ship risk."
+description: "Bug loop orchestrator for intake, bug files, fixes, retests, verification, and ship risk."
 argument-hint: [optional: BUG-ID | bug summary | --fix BUG-ID | --retest BUG-ID | --verify BUG-ID | --ship BUG-ID]
 ---
 
@@ -21,6 +21,18 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, route-first, and using the compact chantier block. The detailed report template below is for `report=agent`, blocked runs, or explicit handoff.
 
+## Master Delegation
+
+Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
+
+This skill follows that reference; local nuances below only narrow or route it. Bug-loop orchestration defaults to delegated sequential for evidence routing, fix/retest/verify/ship routing, and bug-file/state checks when subagents are available; parallel bug work requires ready `Execution Batches`.
+
+## Master Workflow Lifecycle
+
+Before resolving bug lifecycle state, load `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
+
+Use the shared bug work item model: one Markdown bug file under `bugs/*.md` is the source of truth for one bug work item. `BUGS.md`, when present, is only an optional compact/generated/triage view and must not override the bug file.
+
 ## Chantier Potential Intake
 
 Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the bug reveals non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/sf-spec ...` command, and next step.
@@ -33,9 +45,9 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
 - ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
-- Existing bug index: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`
+- Bug files: !`find bugs -maxdepth 1 -type f -name "BUG-*.md" 2>/dev/null | sort | tail -40 || echo "No bugs directory"`
+- Optional bug triage view: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`
 - Recent test log: !`tail -60 TEST_LOG.md 2>/dev/null || echo "No TEST_LOG.md"`
-- Bug dossiers: !`find bugs -maxdepth 1 -type f -name "BUG-*.md" 2>/dev/null | sort | tail -40 || echo "No bugs directory"`
 
 ## Mission
 
@@ -44,7 +56,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 It routes the lifecycle:
 
 ```text
-intake -> sf-test -> bug dossier -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
+intake -> sf-test -> bug file -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
 ```
 
 The goal is fewer manual decisions, not weaker gates. `sf-bug` must not treat a bug as closed just because code changed, a retest was requested, a deploy succeeded, or the operator wants to move on.
@@ -53,7 +65,7 @@ The goal is fewer manual decisions, not weaker gates. `sf-bug` must not treat a 
 
 Orchestrate existing skills; do not duplicate their internals.
 
-- `sf-test` owns guided manual QA, failed-test capture, `TEST_LOG.md`, `BUGS.md`, bug dossiers, and retests.
+- `sf-test` owns guided manual QA, failed-test capture, `TEST_LOG.md`, bug files under `bugs/*.md`, optional `BUGS.md` triage updates, and retests.
 - `sf-fix` owns bug diagnosis, direct/spec-first repair routing, and fix attempts.
 - `sf-auth-debug` owns auth, OAuth, sessions, callbacks, cookies, tenants, and protected-route browser diagnosis.
 - `sf-browser` owns narrow non-auth browser evidence.
@@ -67,14 +79,14 @@ Route to a narrower skill when the user clearly asks for only that phase.
 
 Parse `$ARGUMENTS`:
 
-- empty -> inspect `BUGS.md` and recent bug dossiers, then recommend the highest-priority next bug command.
-- `BUG-YYYY-MM-DD-NNN` -> read the compact index and dossier, interpret status, and route to the next lifecycle step.
+- empty -> inspect `bugs/*.md` and optional `BUGS.md`, then recommend the highest-priority next bug command.
+- `BUG-YYYY-MM-DD-NNN` -> read the bug file first, use the optional compact index only as secondary context, interpret status, and route to the next lifecycle step.
 - free text -> decide whether this is an observed failure needing `/sf-test [scope]`, a narrow actionable bug needing `/sf-fix [summary]`, or an ambiguous defect needing `/sf-spec [bug title]`.
-- `--fix BUG-ID` -> route to `/sf-fix BUG-ID` after confirming the dossier exists.
+- `--fix BUG-ID` -> route to `/sf-fix BUG-ID` after confirming the bug file exists.
 - `--retest BUG-ID` -> route to `/sf-test --retest BUG-ID`.
 - `--verify BUG-ID` -> route to `/sf-verify BUG-ID`.
 - `--ship BUG-ID` -> verify bug state first; route to `/sf-ship BUG-ID` only when the bug state does not block clean shipping.
-- `--close BUG-ID` -> refuse direct closure unless the dossier contains passing retest evidence or an explicit `closed-without-retest` exception path is chosen.
+- `--close BUG-ID` -> refuse direct closure unless the bug file contains passing retest evidence or an explicit `closed-without-retest` exception path is chosen.
 
 If arguments include multiple bug IDs, ask which one to handle first unless the user explicitly requests a dashboard summary.
 
@@ -82,8 +94,8 @@ If arguments include multiple bug IDs, ask which one to handle first unless the 
 
 When a `BUG-ID` is present:
 
-1. Re-read `BUGS.md` immediately before interpreting status.
-2. Open `bugs/BUG-ID.md`.
+1. Open `bugs/BUG-ID.md` immediately before interpreting status.
+2. Re-read optional `BUGS.md` only if present, as secondary triage context.
 3. Extract:
    - title, status, severity, next step
    - reproduction, expected behavior, observed behavior
@@ -92,19 +104,19 @@ When a `BUG-ID` is present:
    - fix attempts
    - retest history
    - linked spec, task, commit, or release scope when present
-4. If `BUGS.md` and the dossier disagree, prefer the dossier for detailed evidence but report the inconsistency and route to the safest next step.
+4. If `BUGS.md` and the bug file disagree, prefer the bug file for detailed evidence but report the inconsistency and route to the safest next step.
 
-If `BUGS.md` references a missing dossier:
+If optional `BUGS.md` references a missing bug file:
 
-- keep the index row intact
+- keep or report the index row without treating it as durable proof
 - classify state as `needs-info`
 - route to `/sf-test --retest BUG-ID` or `/sf-fix BUG-ID` only if enough context remains to make that safe
 - otherwise ask for recovery context
 
-If a dossier exists without an index row:
+If a bug file exists without an index row:
 
-- report the index gap
-- route to `/sf-test --retest BUG-ID` or `/sf-fix BUG-ID` only after confirming the dossier frontmatter and status are usable
+- report the optional index gap
+- route to `/sf-test --retest BUG-ID` or `/sf-fix BUG-ID` after confirming the bug file frontmatter and status are usable
 
 ## Step 2 — Interpret Status
 
@@ -150,7 +162,7 @@ Read `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` and the proj
 
 For `--ship BUG-ID`:
 
-1. Read the bug dossier and index.
+1. Read the bug file and optional index.
 2. If severity is high/critical and status is not `fixed-pending-verify`, `closed`, `duplicate`, or `wontfix`, block clean shipping.
 3. If status is `fixed-pending-verify`, route to `/sf-verify BUG-ID` first.
 4. If status is `closed`, `duplicate`, or `wontfix`, route to `/sf-ship BUG-ID` only if the code scope is otherwise bounded.
@@ -165,7 +177,7 @@ For `--close BUG-ID`:
 ## Security And Evidence Rules
 
 - Never print or persist raw secrets, tokens, cookies, private keys, raw auth headers, private payloads, production PII, or sensitive screenshots.
-- Keep `TEST_LOG.md` and `BUGS.md` compact.
+- Keep `TEST_LOG.md` and optional `BUGS.md` compact.
 - Keep full detail in `bugs/BUG-ID.md`.
 - Store only redacted large evidence under `test-evidence/BUG-ID/`.
 - Reject evidence paths that escape the repo with `..`.
@@ -176,7 +188,7 @@ For `--close BUG-ID`:
 Stop and report `blocked` when:
 
 - the requested `BUG-ID` is malformed
-- the dossier is missing or too inconsistent for safe routing
+- the bug file is missing or too inconsistent for safe routing
 - the user requests closure without retest evidence or a valid exception
 - the next action could mutate production or destructive data without explicit approval
 - sensitive evidence is unredacted
@@ -189,7 +201,7 @@ Stop and report `blocked` when:
 ## Bug Loop: [BUG-ID or summary]
 
 Mode: [dashboard/intake/fix/retest/verify/ship/close]
-Bug state: [status, severity, dossier path]
+Bug state: [status, severity, bug file path]
 Classification: [needs capture / needs evidence / needs fix / needs retest / needs verify / shippable / blocked]
 Development mode: [local / vercel-preview-push / hybrid / unknown]
 Evidence posture: [sufficient / missing / sensitive-blocked / not needed]
@@ -237,9 +249,10 @@ Verdict sf-bug:
 ## Rules
 
 - Orchestrate the bug loop; do not repair code directly inside `sf-bug`.
-- Do not write bug dossiers directly except to report routing gaps; use `sf-test` or `sf-fix` for durable bug mutations.
+- Do not write bug files directly except to report routing gaps; use `sf-test` or `sf-fix` for durable bug mutations.
 - Do not close bugs from intent, code diff, deployment status, or optimistic wording.
 - Do not route preview/manual/browser retests before `sf-ship -> sf-prod` when project mode requires deployed evidence.
+- Follow the shared master delegation reference for delegated sequential defaults and spec/batch-gated parallelism.
 - Prefer the safest next command over a broad report when a bug is actionable.
 - Ask only when the missing answer changes severity, status, destructive risk, closure, or ship risk.
 - Do not commit or push.

@@ -31,7 +31,7 @@ Use it for one-off browser navigation, visual checks, accessibility snapshots, s
 
 Do not use it as the specialist for auth, manual QA, deployment discovery, production logs, or code fixes:
 - Auth, OAuth, cookies, sessions, callbacks, tenants, and protected-route breaks route to `/sf-auth-debug`.
-- Full manual QA campaigns, retests, `TEST_LOG.md`, `BUGS.md`, and bug dossiers route to `/sf-test`.
+- Full manual QA campaigns, retests, `TEST_LOG.md`, bug files, and optional `BUGS.md` triage views route to `/sf-test`.
 - Deployment URL discovery, Vercel status, build logs, runtime logs, and live deploy readiness route to `/sf-prod`.
 - Actionable code bugs route to `/sf-fix` or `/sf-start`.
 
@@ -61,7 +61,7 @@ If no URL or target can be derived, ask one focused question for the target URL 
 
 Route instead of continuing when:
 - the objective mentions Clerk, Supabase Auth, OAuth, login, callback, cookies, session, tenant, protected route, or auth provider behavior -> `/sf-auth-debug`
-- the user asks for a full manual user-flow test, durable QA log, or bug dossier -> `/sf-test`
+- the user asks for a full manual user-flow test, durable QA log, or bug file -> `/sf-test`
 - the deployment URL is unknown or unconfirmed -> `/sf-prod`
 - preview-push validation is required but the change has not been shipped -> `/sf-ship`, then `/sf-prod`
 - the request is broad, such as "check everything" -> ask for one observable objective or route to `/sf-test`

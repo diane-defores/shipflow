@@ -37,7 +37,7 @@ That matters because a “quick fix” can easily create a worse product problem
 - a reroute to `sf-auth-debug` when the bug needs real browser-auth evidence
 - a reroute to `sf-browser` when the bug needs non-auth browser evidence
 - development-mode-aware retest routing, including `sf-ship` -> `sf-prod` before preview retests on Vercel-preview projects
-- dossier-driven handoff compatibility with `sf-bug` when the operator wants lifecycle routing from a `BUG-ID`
+- bug-file-driven handoff compatibility with `sf-bug` when the operator wants lifecycle routing from a `BUG-ID`
 
 ## Typical Examples
 
