@@ -195,6 +195,28 @@ After verification passes:
 3. Never use `all-dirty`/`ship-all` without explicit user request.
 4. If proof remains partial, ask explicit risk acceptance before shipping.
 
+Successful post-verify runs must continue through closure and ship. Do not end
+the `sf-build` report with `Next step: /sf-end`, `Next step: /sf-ship`,
+`Prochaine etape: /sf-end`, or `Prochaine etape: /sf-ship` merely because those
+skills are next in the lifecycle. Those are internal lifecycle actions that
+`sf-build` owns once verification is good enough.
+
+Only leave `sf-end` or `sf-ship` as a user next step when a named stop condition
+prevents orchestration in the current run. The report must state the concrete
+blocker, for example ambiguous closure mode, missing risk acceptance, unclear
+staging scope, unrelated dirty files that cannot be safely excluded, failed
+checks, missing required manual/browser/prod evidence, or a downstream skill
+failure.
+
+When closure mode is ambiguous, ask the `sf-end` closure decision question
+instead of stopping silently. When shipping intent or staging scope is ambiguous,
+ask the `sf-ship` intent/scope question instead of silently handing the user a
+manual command. When manual, browser, auth, or hosted proof is required, route to
+`sf-browser`, `sf-auth-debug`, `sf-prod`, or `sf-test` and explain what evidence
+is still missing. In `vercel-preview-push` or preview-required `hybrid` mode,
+ship first, then route immediately to `sf-prod`; do not ask for manual preview
+testing before the matching deployment exists.
+
 ## Stop Conditions
 
 Stop and ask or reroute when:
@@ -274,7 +296,7 @@ Risks or gaps:
 - [item or none]
 
 Next step:
-- [/sf-verify ...] or [/sf-ship ...] or [none]
+- [real blocker/remediation action only; do not list /sf-end or /sf-ship after successful verification unless orchestration was blocked]
 
 ## Chantier
 
@@ -308,3 +330,4 @@ Verdict sf-build:
 - Prefer bounded sequential delegation by default.
 - Use parallel subagents only with ready non-overlapping `Execution Batches`.
 - Do not commit or push directly from `sf-build`; delegate closure and ship through `sf-end` and `sf-ship`.
+- Do not make the user manually run `sf-end` or `sf-ship` after successful verification unless a named stop condition blocks automatic orchestration.

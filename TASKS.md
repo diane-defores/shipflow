@@ -50,6 +50,7 @@
 | ✅ | Documenter et propager le mode de développement projet (`local`, `vercel-preview-push`, `hybrid`) dans les skills de validation et de ship | ✅ done |
 | ✅ | Créer `sf-browser` comme skill navigateur généraliste non-auth et l'intégrer aux routes `sf-auth-debug`, `sf-test`, `sf-prod`, `sf-fix`, `sf-start`, `sf-verify`, `sf-check`, aux specs de taxonomie/catalogue, aux README internes et au site public | ✅ done |
 | 🟠 | Construire `sf-build` comme skill maître autonome (orchestrateur spec -> ready -> start -> verify -> end -> ship avec délégation bornée) | ✅ done |
+| ✅ | Empêcher `sf-build` de renvoyer manuellement vers `sf-end`/`sf-ship` après vérification réussie sauf blocage explicite | ✅ done |
 | ✅ | Implémenter `sf-skill-build` comme skill maître de maintenance des skills (`sf-explore si nécessaire -> sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`) et aligner les surfaces publiques/docs | ✅ done |
 | ✅ | Créer `sf-deploy` comme skill maître de release (`sf-check -> sf-ship -> sf-prod -> preuve -> sf-verify -> sf-changelog`) et aligner docs/help/site | ✅ done |
 | ✅ | Promouvoir `sf-maintain` en skill maître de maintenance projet (`triage -> spec/ready -> délégation bornée -> verify -> ship/deploy`) et aligner docs/help/site | ✅ done |

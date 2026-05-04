@@ -46,6 +46,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Public site layout now declares a favicon to avoid the browser `favicon.ico` 404 during checks.
 - Installer alias refresh now removes stale standalone ShipFlow aliases before writing the managed alias block.
 - Install report markdown now escapes the ARM64 Flutter release command example correctly.
+- `sf-build` now continues through `sf-end` and `sf-ship` after successful verification instead of handing those lifecycle steps back as manual next commands, unless a concrete blocker requires user input.
 
 ## [2026-05-03]
 

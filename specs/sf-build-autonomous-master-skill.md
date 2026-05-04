@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.3.1"
 project: ShipFlow
 created: "2026-04-29"
 created_at: "2026-04-29 09:02:11 UTC"
 updated: "2026-05-04"
-updated_at: "2026-05-04 04:58:00 UTC"
+updated_at: "2026-05-04 06:31:06 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -619,14 +619,18 @@ Readiness note: ready after full reconciliation. The behavior contract, language
 | 2026-05-04 04:58:00 UTC | sf-verify | GPT-5 Codex | Verified the question framing contract against sf-build, workflow doctrine, technical lifecycle docs, and user language doctrine. | verified | /sf-end sf-build decision question framing |
 | 2026-05-04 04:58:00 UTC | sf-end | GPT-5 Codex | Updated tracker and changelog bookkeeping for sf-build decision question framing. | closed | /sf-ship "Add business-context sf-build questions" |
 | 2026-05-04 04:58:00 UTC | sf-ship | GPT-5 Codex | Ran scoped checks, committed, and pushed the sf-build decision question framing update. | shipped | None |
+| 2026-05-04 06:30:10 UTC | sf-build | GPT-5 Codex | Hardened end/ship orchestration so successful post-verify runs continue through sf-end and sf-ship or report a concrete blocker. | implemented | /sf-verify sf-build end/ship orchestration |
+| 2026-05-04 06:30:10 UTC | sf-verify | GPT-5 Codex | Verified focused end/ship contract coverage, metadata lint, and skill budget after the orchestration hardening. | verified | /sf-end sf-build end/ship orchestration |
+| 2026-05-04 06:30:10 UTC | sf-end | GPT-5 Codex | Updated chantier trace, local and master task trackers, and changelog for the sf-build end/ship orchestration fix. | closed | /sf-ship "Harden sf-build end/ship orchestration" |
+| 2026-05-04 06:31:06 UTC | sf-ship | GPT-5 Codex | Scoped the sf-build orchestration fix, ran lightweight ship checks, and prepared bounded commit/push without unrelated dirty files. | shipped | None |
 
 ## Current Chantier Flow
 
 - `sf-spec`: done; dependency metadata refreshed against current README.md 0.7.1 and shipflow-spec-driven-workflow.md 0.12.0, governance corpus ownership aligned to `sf-init`/`sf-docs`, browser evidence routing aligned to `sf-browser`, `sf-auth-debug`, `sf-prod`, and `sf-test`, and decision questions reframed for business operators.
 - `sf-ready`: ready after full reconciliation and 2026-05-02 revalidation of dependency metadata, governance/browser evidence gates, language doctrine, adversarial/security risks, and official OpenAI Codex docs freshness.
-- `sf-start`: implemented; created `skills/sf-build/SKILL.md`, added role contracts, aligned workflow/help/docs, and later added business-context decision framing for Plan Mode questions.
-- `sf-verify`: verified; static contract checks, metadata lint, role contract checks, skill budget audit, bug gate review, risk scan, and focused question-framing checks passed for the implemented skill/docs scope.
-- `sf-end`: closed; task trackers and changelog prepared after verification.
-- `sf-ship`: shipped; quick ship after lightweight validation and bounded staging, then reshipped the Plan Mode decision-framing refinement.
+- `sf-start`: implemented; created `skills/sf-build/SKILL.md`, added role contracts, aligned workflow/help/docs, added business-context decision framing for Plan Mode questions, and hardened successful post-verify end/ship orchestration.
+- `sf-verify`: verified; static contract checks, metadata lint, role contract checks, skill budget audit, bug gate review, risk scan, focused question-framing checks, and focused end/ship orchestration checks passed for the implemented skill/docs scope.
+- `sf-end`: closed; task trackers and changelog prepared after verification, including the end/ship orchestration hardening.
+- `sf-ship`: shipped; scoped ship for the end/ship orchestration hardening after lightweight validation and bounded staging.
 
 Next step: None
