@@ -25,12 +25,27 @@ Ask for a tab/window number only when the user wants to capture a different tab 
 
 When a tab number is provided, interpret it as a 1-based ordinal in the tmux window list. In a zero-based tmux session, tab 2 resolves to window index `:1`, matching `tmux capture-pane -t :1 -p -S -`; in a one-based tmux session, tab 2 resolves to `:2`.
 
+## Naming And Destination Rules
+
+Do not accept the tmux window name as the final title when it is generic (`node`, `bash`, `zsh`, `claude`, `codex`, `nvim`, etc.) and transcript content gives a better subject. Infer a human title from the captured conversation first, for example `Conversation sf-build - architecture des skills`, not `Conversation tmux - panneau courant - node`.
+
+When no destination is supplied, prefer the project that the captured conversation is about, not the shell's incidental current directory. Use this priority:
+
+1. User-supplied destination.
+2. Project root inferred from absolute paths visible in the transcript, such as `/home/ubuntu/shipflow/skills/...`.
+3. Git project root of the command working directory.
+4. Current working directory only when no project root can be identified.
+
+For project-root destinations, write under `docs/conversations/` by default. Create that directory if needed. Only write directly under `$HOME` when the transcript has no identifiable project and the command was actually run from `$HOME`.
+
+The confirmation prompt must include the inferred title and full destination. If either looks generic or misplaced, fix it before asking the user to approve.
+
 ## Workflow
 
 1. Extract the tab number from the request when present. If absent, plan to capture the current tmux pane.
 2. Infer missing values:
-   - title: use the user's requested title when present; otherwise infer a concise transcript title from the request, tmux window name, `Conversation tmux - panneau courant`, or `Conversation tmux - onglet N`.
-   - destination: use the user's path when present; otherwise choose a Markdown file in the current working directory, usually `conversation-tmux-YYYYMMDD-HHMMSS.md`, `conversation-onglet-N-YYYYMMDD-HHMMSS.md`, or a title-based slug.
+   - title: use the user's requested title when present; otherwise infer a concise transcript title from captured conversation content, falling back to tmux window metadata only when the content has no usable subject.
+   - destination: use the user's path when present; otherwise infer the project root from transcript paths or the command working directory and write to `docs/conversations/<title-slug>-YYYYMMDD-HHMMSS.md`.
 3. Confirm before writing unless the user already explicitly approved the inferred destination in the current request.
    - Tell the user the chosen title and destination.
    - Ask whether it is OK.

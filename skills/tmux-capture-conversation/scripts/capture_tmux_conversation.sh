@@ -31,6 +31,24 @@ need_cmd() {
   command -v "$1" >/dev/null 2>&1 || fail "required command not found: $1"
 }
 
+trim() {
+  sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//'
+}
+
+shorten_words() {
+  awk -v max="${1:-72}" '
+    {
+      out = ""
+      for (i = 1; i <= NF; i++) {
+        candidate = out == "" ? $i : out " " $i
+        if (length(candidate) > max) break
+        out = candidate
+      }
+      print out
+    }
+  '
+}
+
 slugify() {
   printf '%s' "$1" \
     | tr '[:upper:]' '[:lower:]' \
@@ -91,6 +109,101 @@ neovim_command() {
   output_dir=$(dirname "$output")
   output_file=$(basename "$output")
   printf 'cd %s && nvim %s\n' "$(shell_quote "$output_dir")" "$(shell_quote "$output_file")"
+}
+
+find_project_root_for_path() {
+  local candidate="$1"
+  local dir
+
+  [ -e "$candidate" ] || return 1
+  if [ -f "$candidate" ]; then
+    dir=$(dirname "$candidate")
+  else
+    dir="$candidate"
+  fi
+
+  while [ "$dir" != "/" ] && [ -n "$dir" ]; do
+    if [ -d "$dir/.git" ] || [ -f "$dir/package.json" ] || { [ -d "$dir/skills" ] && [ -f "$dir/README.md" ]; }; then
+      printf '%s\n' "$dir"
+      return 0
+    fi
+    dir=$(dirname "$dir")
+  done
+
+  return 1
+}
+
+infer_project_root_from_raw() {
+  local raw_file="$1"
+  local cwd="$2"
+  local candidate cleaned root
+
+  while IFS= read -r candidate; do
+    cleaned=$(printf '%s' "$candidate" | sed -E 's/[`"'"'"'<>),.;:]+$//')
+    root=$(find_project_root_for_path "$cleaned" 2>/dev/null || true)
+    if [ -n "$root" ]; then
+      printf '%s\n' "$root"
+      return 0
+    fi
+  done < <(grep -Eo '/[^[:space:]`"'"'"'<>),;]+' "$raw_file" | sort -u)
+
+  if grep -Eqi '(^|[^a-z0-9-])(shipflow|sf-[a-z0-9-]+)([^a-z0-9-]|$)' "$raw_file"; then
+    root=$(find_project_root_for_path "$HOME/shipflow" 2>/dev/null || true)
+    if [ -n "$root" ]; then
+      printf '%s\n' "$root"
+      return 0
+    fi
+  fi
+
+  if root=$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null); then
+    printf '%s\n' "$root"
+  else
+    printf '%s\n' "$cwd"
+  fi
+}
+
+infer_title_from_raw() {
+  local raw_file="$1"
+  local fallback="$2"
+  local prompt skill text
+
+  if grep -qi 'sf-build' "$raw_file" && grep -Eqi 'architecture (de|des|of).{0,40}skills?|skills?.{0,40}architecture' "$raw_file"; then
+    printf '%s\n' "Conversation sf-build - architecture des skills"
+    return 0
+  fi
+
+  if grep -Eqi 'doctrine.{0,40}langue|langue.{0,40}doctrine|language.{0,40}doctrine' "$raw_file"; then
+    printf '%s\n' "Conversation ShipFlow - doctrine de langue"
+    return 0
+  fi
+
+  prompt=$(awk '
+    /^› / {
+      line = $0
+      sub(/^›[[:space:]]*/, "", line)
+      print line
+      exit
+    }
+  ' "$raw_file" | trim)
+
+  if [ -n "$prompt" ]; then
+    skill=$(printf '%s' "$prompt" | sed -nE 's#^[$/]([a-z0-9-]+).*#\1#p')
+    text=$(printf '%s' "$prompt" | sed -E 's#^[$/][a-z0-9-]+[[:space:]]*##; s/[[:space:]]+/ /g' | trim | shorten_words 72 | trim)
+    if [ -n "$skill" ] && [ -n "$text" ]; then
+      printf 'Conversation %s - %s\n' "$skill" "$text"
+      return 0
+    fi
+    if [ -n "$text" ]; then
+      printf 'Conversation - %s\n' "$text"
+      return 0
+    fi
+    if [ -n "$skill" ]; then
+      printf 'Conversation %s\n' "$skill"
+      return 0
+    fi
+  fi
+
+  printf '%s\n' "$fallback"
 }
 
 resolve_session() {
@@ -249,6 +362,10 @@ else
 fi
 CAPTURED_AT=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
 
+TMP_RAW=$(mktemp)
+trap 'rm -f "$TMP_RAW"' EXIT
+tmux capture-pane -t "$TARGET" -p -S - > "$TMP_RAW"
+
 if [ -z "$TITLE" ]; then
   if [ -z "$TAB" ] && [ -n "$WINDOW_NAME" ]; then
     TITLE="Conversation tmux - panneau courant - ${WINDOW_NAME}"
@@ -259,6 +376,7 @@ if [ -z "$TITLE" ]; then
   else
     TITLE="Conversation tmux - onglet ${TAB}"
   fi
+  TITLE=$(infer_title_from_raw "$TMP_RAW" "$TITLE")
 fi
 
 if [ -z "$DESTINATION" ]; then
@@ -269,7 +387,14 @@ if [ -z "$DESTINATION" ]; then
   else
     SLUG="${SLUG}-${STAMP}"
   fi
-  DESTINATION="./${SLUG}.md"
+  PROJECT_ROOT=$(infer_project_root_from_raw "$TMP_RAW" "$PWD")
+  if [ -n "$PROJECT_ROOT" ] && [ "$PROJECT_ROOT" != "$PWD" ]; then
+    DESTINATION="${PROJECT_ROOT}/docs/conversations/${SLUG}.md"
+  elif [ -n "$PROJECT_ROOT" ] && [ -d "$PROJECT_ROOT/.git" ]; then
+    DESTINATION="${PROJECT_ROOT}/docs/conversations/${SLUG}.md"
+  else
+    DESTINATION="./${SLUG}.md"
+  fi
 elif [ -d "$(expand_tilde "$DESTINATION")" ] || [[ "$DESTINATION" == */ ]]; then
   SLUG=$(slugify "$TITLE")
   [ -n "$SLUG" ] || SLUG="conversation-onglet-${TAB}"
@@ -317,10 +442,6 @@ if [ "$YES" != "1" ]; then
   esac
 fi
 
-TMP_RAW=$(mktemp)
-trap 'rm -f "$TMP_RAW"' EXIT
-
-tmux capture-pane -t "$TARGET" -p -S - > "$TMP_RAW"
 mkdir -p "$(dirname "$OUTPUT")"
 render_markdown "$TMP_RAW" "$OUTPUT" "$TITLE" "$SESSION" "$SOURCE_LABEL" "$WINDOW_INDEX" "$PANE_INDEX" "$WINDOW_NAME" "$CAPTURED_AT"
 
