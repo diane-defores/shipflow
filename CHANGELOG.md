@@ -47,6 +47,12 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Installer alias refresh now removes stale standalone ShipFlow aliases before writing the managed alias block.
 - Install report markdown now escapes the ARM64 Flutter release command example correctly.
 - `sf-build` now continues through `sf-end` and `sf-ship` after successful verification instead of handing those lifecycle steps back as manual next commands, unless a concrete blocker requires user input.
+- Fallback CLI headers now render ANSI colors with `printf` instead of passing escape codes through `sed`, avoiding visible `33[...m` fragments.
+- One-key menu input now emits a newline immediately after the keypress so the next screen cannot start on the prompt line.
+- Top-level menu shortcut arguments such as `sf u` now dispatch directly to their menu action while preserving action confirmations.
+- CLI Back handling now maps `x`, `Esc`, and Backspace through shared helpers and skips the parent pause when returning from nested menus.
+- Root menu actions now render through a shared screen-isolation helper so command output starts on a clean screen instead of below the full root menu.
+- Shared boxed headers now keep Dashboard, logs, health, and deployment success borders aligned.
 
 ## [2026-05-03]
 

@@ -245,7 +245,12 @@ Unlike Claude Code, Codex does not expose a custom shell-command status line ren
 ```bash
 sf
 shipflow
+sf u   # open Updates directly
 ```
+
+Passing a top-level menu key as the only argument runs that menu action once.
+Action-level confirmations still apply, including before package upgrades.
+Inside menus, `x`, `Esc`, and `Backspace` go back when a Back option exists.
 
 Typical CLI actions:
 - dashboard and PM2 status

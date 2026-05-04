@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.1.1"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-02"
+updated: "2026-05-04"
 status: draft
 source_skill: manual
 scope: "context"
@@ -35,12 +35,16 @@ shipflow.sh
   -> main()
      -> check_prerequisites()
      -> cleanup_orphan_projects()
-     -> run_menu()
+     -> run_menu() OR run_menu_shortcut()
 
 run_menu()
   -> action_* handlers
   -> core environment functions in lib.sh
   -> PM2 / Flox / Caddy / local tooling
+
+run_menu_shortcut()
+  -> resolve_menu_shortcut_action()
+  -> action_* handler
 ```
 
 ## File Roles
@@ -60,7 +64,7 @@ run_menu()
 main
   -> check_prerequisites
   -> cleanup_orphan_projects
-  -> run_menu
+  -> run_menu OR run_menu_shortcut
 ```
 
 ### `config.sh`
@@ -139,11 +143,24 @@ bootstrap / safety
 
 UI helpers
   -> ui_choose
+  -> ui_read_choice
+  -> ui_run_menu_action
   -> ui_input
   -> ui_confirm
+  -> ui_box_header
   -> ui_header
   -> ui_spinner
   -> ui_pause
+  -> ui_skip_next_pause
+  -> ui_return_back
+  -> ui_should_skip_next_pause
+  -> ui_is_back_choice
+  -> ui_is_back_selection
+
+menu shortcuts
+  -> print_menu_shortcut_usage
+  -> resolve_menu_shortcut_action
+  -> run_menu_shortcut
 
 system health
   -> disk_free_bytes

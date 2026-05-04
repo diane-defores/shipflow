@@ -120,9 +120,17 @@ _ui_normalize_choice() {
     local choice="${1:-}"
 
     choice="${choice//$'\r'/}"
+    case "$choice" in
+        $'\e'|$'\177'|$'\b') printf 'x'; return 0 ;;
+    esac
+
     choice="${choice#"${choice%%[![:space:]]*}"}"
     choice="${choice%"${choice##*[![:space:]]}"}"
     choice=$(printf '%s' "$choice" | tr '[:upper:]' '[:lower:]')
+
+    case "$choice" in
+        esc|escape|backspace) choice="x" ;;
+    esac
 
     if [[ "$choice" =~ ^([a-z]+)\).*$ ]]; then
         choice="${BASH_REMATCH[1]}"
@@ -133,6 +141,61 @@ _ui_normalize_choice() {
     printf '%s' "$choice"
 }
 
+SHIPFLOW_SKIP_NEXT_PAUSE=false
+if [ -z "${SHIPFLOW_SKIP_NEXT_PAUSE_FILE:-}" ]; then
+    SHIPFLOW_SKIP_NEXT_PAUSE_FILE=$(mktemp "${TMPDIR:-/tmp}/shipflow-skip-pause.XXXXXX" 2>/dev/null || printf '%s/shipflow-skip-pause-%s' "${TMPDIR:-/tmp}" "$$")
+    rm -f "$SHIPFLOW_SKIP_NEXT_PAUSE_FILE" 2>/dev/null || true
+fi
+
+ui_skip_next_pause() {
+    SHIPFLOW_SKIP_NEXT_PAUSE=true
+    if [ -n "${SHIPFLOW_SKIP_NEXT_PAUSE_FILE:-}" ]; then
+        : > "$SHIPFLOW_SKIP_NEXT_PAUSE_FILE" 2>/dev/null || true
+    fi
+}
+
+ui_return_back() {
+    ui_skip_next_pause
+    return 0
+}
+
+ui_should_skip_next_pause() {
+    if [ "${SHIPFLOW_SKIP_NEXT_PAUSE:-false}" = "true" ] || { [ -n "${SHIPFLOW_SKIP_NEXT_PAUSE_FILE:-}" ] && [ -f "$SHIPFLOW_SKIP_NEXT_PAUSE_FILE" ]; }; then
+        SHIPFLOW_SKIP_NEXT_PAUSE=false
+        [ -n "${SHIPFLOW_SKIP_NEXT_PAUSE_FILE:-}" ] && rm -f "$SHIPFLOW_SKIP_NEXT_PAUSE_FILE" 2>/dev/null || true
+        return 0
+    fi
+    return 1
+}
+
+ui_is_back_choice() {
+    local choice
+    choice=$(_ui_normalize_choice "${1:-}")
+    case "$choice" in
+        x|q) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+ui_is_back_selection() {
+    local selection="${1:-}"
+    case "$selection" in
+        ""|"Cancel"|"Back"|"Back to menu"|*" Back"|*"Back "*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+_ui_back_label_from_options() {
+    local item
+    for item in "$@"; do
+        if [ -n "$item" ] && ui_is_back_selection "$item"; then
+            printf '%s' "$item"
+            return 0
+        fi
+    done
+    printf 'Cancel'
+}
+
 ui_read_key() {
     local __target_var="$1"
     local __value=""
@@ -140,11 +203,66 @@ ui_read_key() {
     if [ -r /dev/tty ] && { : < /dev/tty; } 2>/dev/null; then
         read -rsn1 __value < /dev/tty
         while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
+        printf '\r\n' >&2
     else
         read -r __value
     fi
 
     printf -v "$__target_var" '%s' "$__value"
+}
+
+ui_box_header() {
+    local title="$1"
+    local border_color="${2:-$CYAN}"
+    local title_color="${3:-$YELLOW}"
+    local content_width="${4:-50}"
+
+    if [ ${#title} -gt "$content_width" ]; then
+        title="${title:0:$content_width}"
+    fi
+
+    local rule=""
+    local i
+    for ((i=0; i<content_width; i++)); do
+        rule+="═"
+    done
+    local left_pad=$(( (content_width - ${#title}) / 2 ))
+    local right_pad=$(( content_width - ${#title} - left_pad ))
+
+    printf "%b╔%s╗%b\n" "$border_color" "$rule" "$NC"
+    printf "%b║%b%*s%s%*s%b║%b\n" "$border_color" "$title_color" "$left_pad" "" "$title" "$right_pad" "" "$border_color" "$NC"
+    printf "%b╚%s╝%b\n" "$border_color" "$rule" "$NC"
+}
+
+ui_read_choice() {
+    local __target_var="$1"
+    local __raw_choice=""
+
+    ui_read_key __raw_choice
+    __raw_choice=$(_ui_normalize_choice "$__raw_choice")
+
+    printf -v "$__target_var" '%s' "$__raw_choice"
+}
+
+ui_run_menu_action() {
+    local _label="${1:-}"
+    local action="${2:-}"
+    local display_mode="${3:-screen}"
+
+    [ -z "$action" ] && return 1
+
+    case "$display_mode" in
+        screen|clear)
+            clear
+            ;;
+        inline|"")
+            ;;
+        *)
+            clear
+            ;;
+    esac
+
+    "$action"
 }
 
 ui_read_line() {
@@ -178,18 +296,32 @@ ui_filter_choose() {
     fi
 
     if [ "$HAS_GUM" = true ] && command -v gum >/dev/null 2>&1; then
-        printf '%s\n' "${items[@]}" | gum filter --header "$prompt" --placeholder "Type to search..."
-        return $?
+        local selected
+        selected=$(printf '%s\n' "${items[@]}" | gum filter --header "$prompt" --placeholder "Type to search...")
+        local rc=$?
+        if [ $rc -ne 0 ]; then
+            ui_skip_next_pause
+            return $rc
+        fi
+        printf '%s\n' "$selected"
+        return 0
     fi
 
     if command -v fzf >/dev/null 2>&1; then
-        printf '%s\n' "${items[@]}" | fzf \
+        local selected
+        selected=$(printf '%s\n' "${items[@]}" | fzf \
             --prompt "$prompt > " \
             --height "${SHIPFLOW_FZF_HEIGHT:-70%}" \
             --layout reverse \
             --border \
-            --cycle
-        return $?
+            --cycle)
+        local rc=$?
+        if [ $rc -ne 0 ]; then
+            ui_skip_next_pause
+            return $rc
+        fi
+        printf '%s\n' "$selected"
+        return 0
     fi
 
     local query=""
@@ -236,9 +368,9 @@ ui_filter_choose() {
         echo -e "${YELLOW}Choose:${NC} \c" >&2
 
         local choice
-        ui_read_key choice
-        choice=$(_ui_normalize_choice "$choice")
-        if [ "$choice" = "x" ] || [ -z "$choice" ]; then
+        ui_read_choice choice
+        if ui_is_back_choice "$choice" || [ -z "$choice" ]; then
+            ui_skip_next_pause
             return 1
         fi
         for ((i=0; i<${#keys[@]}; i++)); do
@@ -268,11 +400,13 @@ ui_choose() {
 
         if [ ${#items[@]} -le 5 ]; then
             local filtered_items=()
-            local has_cancel_item=false
+            local has_back_item=false
+            local back_label
+            back_label=$(_ui_back_label_from_options "${items[@]}")
             local item
             for item in "${items[@]}"; do
-                if [ "$item" = "Cancel" ]; then
-                    has_cancel_item=true
+                if [ -n "$item" ] && ui_is_back_selection "$item"; then
+                    has_back_item=true
                     continue
                 fi
                 filtered_items+=("$item")
@@ -290,17 +424,17 @@ ui_choose() {
                 ((i++))
             done
             echo "" >&2
-            printf '  %s Cancel\n' "$(gum style --foreground 212 "x)")" >&2
+            printf '  %s %s\n' "$(gum style --foreground 212 "x)")" "$back_label" >&2
             echo "" >&2
             printf '%s' "$(gum style --foreground 11 "Choose: ")" >&2
 
             local choice
-            ui_read_key choice
-            choice=$(_ui_normalize_choice "$choice")
+            ui_read_choice choice
 
-            if [[ "$choice" == "x" ]] || [ -z "$choice" ]; then
-                if [ "$has_cancel_item" = true ]; then
-                    echo "Cancel"
+            if ui_is_back_choice "$choice" || [ -z "$choice" ]; then
+                ui_skip_next_pause
+                if [ "$has_back_item" = true ]; then
+                    echo "$back_label"
                     return 0
                 fi
                 return 1
@@ -316,7 +450,15 @@ ui_choose() {
             echo -e "${RED}Invalid choice${NC}" >&2
             return 1
         else
-            ui_filter_choose "$prompt" "${items[@]}"
+            local selected
+            selected=$(ui_filter_choose "$prompt" "${items[@]}")
+            local rc=$?
+            [ $rc -ne 0 ] && return $rc
+            if ui_is_back_selection "$selected"; then
+                ui_skip_next_pause
+            fi
+            printf '%s\n' "$selected"
+            return 0
         fi
     else
         # Lettered list fallback
@@ -329,12 +471,26 @@ ui_choose() {
             done
         fi
 
+        if [ ${#options[@]} -gt 5 ]; then
+            local selected
+            selected=$(ui_filter_choose "$prompt" "${options[@]}")
+            local rc=$?
+            [ $rc -ne 0 ] && return $rc
+            if ui_is_back_selection "$selected"; then
+                ui_skip_next_pause
+            fi
+            printf '%s\n' "$selected"
+            return 0
+        fi
+
         local filtered_options=()
-        local has_cancel_option=false
+        local has_back_option=false
+        local back_label
+        back_label=$(_ui_back_label_from_options "${options[@]}")
         local opt
         for opt in "${options[@]}"; do
-            if [ "$opt" = "Cancel" ]; then
-                has_cancel_option=true
+            if [ -n "$opt" ] && ui_is_back_selection "$opt"; then
+                has_back_option=true
                 continue
             fi
             filtered_options+=("$opt")
@@ -343,11 +499,6 @@ ui_choose() {
 
         if [ ${#options[@]} -eq 0 ]; then
             return 1
-        fi
-
-        if [ ${#options[@]} -gt 5 ]; then
-            ui_filter_choose "$prompt" "${options[@]}"
-            return $?
         fi
 
         echo -e "${BLUE}$prompt${NC}" >&2
@@ -362,15 +513,15 @@ ui_choose() {
             ((i++))
         done
         echo "" >&2
-        echo -e "  ${CYAN}x)${NC} Cancel" >&2
+        echo -e "  ${CYAN}x)${NC} $back_label" >&2
         echo "" >&2
         echo -e "${YELLOW}Choose:${NC} \c" >&2
-        ui_read_key choice
-        choice=$(_ui_normalize_choice "$choice")
+        ui_read_choice choice
 
-        if [[ "$choice" == "x" ]] || [ -z "$choice" ]; then
-            if [ "$has_cancel_option" = true ]; then
-                echo "Cancel"
+        if ui_is_back_choice "$choice" || [ -z "$choice" ]; then
+            ui_skip_next_pause
+            if [ "$has_back_option" = true ]; then
+                echo "$back_label"
                 return 0
             fi
             return 1
@@ -445,9 +596,7 @@ ui_confirm() {
         echo -e "${YELLOW}${prompt} (y/o/N):${NC} \c" >&2
     fi
 
-    ui_read_key answer
-    answer=$(_ui_normalize_choice "$answer")
-    echo "" >&2
+    ui_read_choice answer
 
     case "$answer" in
         y|yes|o|oui) return 0 ;;
@@ -524,9 +673,9 @@ ui_header() {
             echo -e " ${GREEN}${status_line}${NC}"
             echo -e "${CYAN}--------------------------------------------------${NC}"
         fi
-        printf " %s\n" "$(center_line "$title")" | sed "s/^/${YELLOW}/;s/\$/${NC}/"
+        printf " %b%s%b\n" "$YELLOW" "$(center_line "$title")" "$NC"
         if [ -n "$subtitle" ]; then
-            printf " %s\n" "$(center_line "$subtitle")" | sed "s/^/${BLUE}/;s/\$/${NC}/"
+            printf " %b%s%b\n" "$BLUE" "$(center_line "$subtitle")" "$NC"
         fi
         echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
     fi
@@ -653,8 +802,8 @@ disk_cleanup_menu() {
         "Aggressive (includes npm + pnpm caches)" \
         "Cancel" | ui_choose "Cleanup level:")
 
-    if [ -z "$choice" ] || [ "$choice" = "Cancel" ]; then
-        echo -e "${BLUE}Cancelled${NC}"
+    if ui_is_back_selection "$choice"; then
+        ui_return_back
         return 0
     fi
 
@@ -1161,6 +1310,8 @@ refresh_menu_status_cache_async_if_stale() {
 }
 
 updates_menu() {
+    echo -e "${BLUE}Checking package updates...${NC}"
+    echo ""
     updates_refresh_cache
 
     echo -e "${GREEN}⬆️  Updates Summary${NC}"
@@ -1178,8 +1329,7 @@ updates_menu() {
     echo -e "  ${CYAN}x)${NC} Back"
     echo ""
     echo -e "${YELLOW}Your choice:${NC} \c"
-    ui_read_key update_choice
-    update_choice=$(_ui_normalize_choice "$update_choice")
+    ui_read_choice update_choice
 
     case $update_choice in
         u)
@@ -1219,6 +1369,7 @@ updates_menu() {
             updates_refresh_cache
             ;;
         x|q)
+            ui_return_back
             return 0
             ;;
         *)
@@ -1625,8 +1776,7 @@ install_sdk_menu() {
     echo -e "  ${CYAN}x)${NC} Back"
     echo ""
     echo -e "${YELLOW}Your choice:${NC} \c"
-    ui_read_key sdk_choice
-    sdk_choice=$(_ui_normalize_choice "$sdk_choice")
+    ui_read_choice sdk_choice
 
     case $sdk_choice in
         f)
@@ -1690,6 +1840,7 @@ install_sdk_menu() {
             fi
             ;;
         x|q)
+            ui_return_back
             return 0
             ;;
         *)
@@ -4995,9 +5146,7 @@ batch_restart_all() {
 #   show_dashboard
 # -----------------------------------------------------------------------------
 show_dashboard() {
-    echo -e "${CYAN}╔══════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║${NC}            ${YELLOW}Environment Dashboard${NC}             ${CYAN}║${NC}"
-    echo -e "${CYAN}╚══════════════════════════════════════════════════╝${NC}"
+    ui_box_header "Environment Dashboard" "$CYAN" "$YELLOW"
     echo ""
 
     # Get all environments
@@ -5320,9 +5469,7 @@ view_environment_logs() {
         return 1
     fi
 
-    echo -e "${CYAN}╔══════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║${NC}  ${YELLOW}Logs: $env_name${NC} (last $lines lines)         ${CYAN}║${NC}"
-    echo -e "${CYAN}╚══════════════════════════════════════════════════╝${NC}"
+    ui_box_header "Logs: $env_name (last $lines lines)" "$CYAN" "$YELLOW"
     echo ""
 
     # Display logs
@@ -5757,9 +5904,7 @@ deploy_github_project() {
     local port=$(get_port_from_pm2 "$project_name")
 
     echo ""
-    echo -e "${GREEN}╔══════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║            ✅ Deployment Successful!             ║${NC}"
-    echo -e "${GREEN}╚══════════════════════════════════════════════════╝${NC}"
+    ui_box_header "✅ Deployment Successful!" "$GREEN" "$GREEN"
     echo ""
     echo -e "${BLUE}📊 Project Information:${NC}"
     echo -e "  • Name: $project_name"
@@ -5864,7 +6009,15 @@ action_deploy() {
         "🔍 Auto-detect project in $PROJECTS_DIR" \
         "📁 Custom local path" \
         "🚀 Deploy from GitHub" \
-        "Cancel" | ui_choose "Choose source:")
+        "Cancel" | ui_choose "Choose source:") || {
+        ui_return_back
+        return 0
+    }
+
+    if ui_is_back_selection "$deploy_choice"; then
+        ui_return_back
+        return 0
+    fi
 
     case "$deploy_choice" in
         *Auto-detect*)
@@ -5945,7 +6098,10 @@ action_deploy() {
                 deploy_github_project "$SELECTED_REPO"
             fi
             ;;
-        *) echo -e "${BLUE}Cancelled${NC}" ;;
+        *)
+            ui_return_back
+            return 0
+            ;;
     esac
 }
 
@@ -6033,7 +6189,15 @@ action_flutter_web() {
         "Attach terminal" \
         "Stop session" \
         "Show sessions" \
-        "Back" | ui_choose "Flutter Web Dev:") || return 0
+        "Back" | ui_choose "Flutter Web Dev:") || {
+        ui_return_back
+        return 0
+    }
+
+    if ui_is_back_selection "$choice"; then
+        ui_return_back
+        return 0
+    fi
 
     case "$choice" in
         "Start session")
@@ -6057,15 +6221,14 @@ action_flutter_web() {
             show_flutter_web_sessions
             ;;
         *)
+            ui_return_back
             return 0
             ;;
     esac
 }
 
 action_health() {
-    echo -e "${CYAN}╔══════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║${NC}              ${YELLOW}Health Check${NC}                      ${CYAN}║${NC}"
-    echo -e "${CYAN}╚══════════════════════════════════════════════════╝${NC}"
+    ui_box_header "Health Check" "$CYAN" "$YELLOW"
     echo ""
     system_monitor_menu
     echo ""
@@ -6073,7 +6236,14 @@ action_health() {
     health_check_all verbose
     echo ""
     local fix_choice
-    fix_choice=$(printf '%s\n' "Auto-fix known issues" "Back to menu" | ui_choose "Options:")
+    fix_choice=$(printf '%s\n' "Auto-fix known issues" "Back to menu" | ui_choose "Options:") || {
+        ui_return_back
+        return 0
+    }
+    if ui_is_back_selection "$fix_choice"; then
+        ui_return_back
+        return 0
+    fi
     if [ "$fix_choice" = "Auto-fix known issues" ]; then
         echo ""
         auto_fix_known_issues
@@ -6155,7 +6325,14 @@ action_session() {
     get_session_info
     echo ""
     local session_choice
-    session_choice=$(printf '%s\n' "Reset Session Identity" "Back" | ui_choose "Options:")
+    session_choice=$(printf '%s\n' "Reset Session Identity" "Back" | ui_choose "Options:") || {
+        ui_return_back
+        return 0
+    }
+    if ui_is_back_selection "$session_choice"; then
+        ui_return_back
+        return 0
+    fi
     if [ "$session_choice" = "Reset Session Identity" ]; then
         reset_session
         echo ""
@@ -6308,8 +6485,26 @@ EOF
 }
 
 action_adv_help() { show_help; }
-action_cleanup() { disk_cleanup_menu; refresh_menu_status_cache_sync >/dev/null 2>&1 || true; }
-action_updates() { updates_menu; refresh_menu_status_cache_sync >/dev/null 2>&1 || true; }
+action_cleanup() {
+    local rc=0
+    disk_cleanup_menu || rc=$?
+    if ui_should_skip_next_pause; then
+        ui_skip_next_pause
+        return "$rc"
+    fi
+    refresh_menu_status_cache_sync >/dev/null 2>&1 || true
+    return "$rc"
+}
+action_updates() {
+    local rc=0
+    updates_menu || rc=$?
+    if ui_should_skip_next_pause; then
+        ui_skip_next_pause
+        return "$rc"
+    fi
+    refresh_menu_status_cache_sync >/dev/null 2>&1 || true
+    return "$rc"
+}
 action_tools() { show_tools_status; }
 action_install_sdk() { install_sdk_menu; }
 
@@ -6354,6 +6549,67 @@ MAIN_MENU_ITEMS=(
 ADVANCED_MENU_ITEMS=(
     "x|← Back to Main Menu|__EXIT__"
 )
+
+print_menu_shortcut_usage() {
+    echo -e "${BLUE}Usage:${NC} sf [menu shortcut]" >&2
+    echo -e "${BLUE}Example:${NC} sf u" >&2
+    echo "" >&2
+    echo -e "${BLUE}Available shortcuts:${NC}" >&2
+
+    local item key label action
+    for item in "${MAIN_MENU_ITEMS[@]}"; do
+        IFS='|' read -r key label action <<< "$item"
+        [ "$key" = "---" ] && continue
+        [ -z "$action" ] && continue
+        echo -e "  ${CYAN}${key})${NC} ${label}" >&2
+    done
+}
+
+resolve_menu_shortcut_action() {
+    local raw_choice="${1:-}"
+    local choice
+    choice=$(_ui_normalize_choice "$raw_choice")
+
+    [ -n "$choice" ] || return 1
+
+    local item key label action label_choice
+    for item in "${MAIN_MENU_ITEMS[@]}"; do
+        IFS='|' read -r key label action <<< "$item"
+        [ "$key" = "---" ] && continue
+        [ -z "$action" ] && continue
+
+        if [ "$choice" = "$(_ui_normalize_choice "$key")" ]; then
+            printf '%s\n' "$action"
+            return 0
+        fi
+
+        label_choice=$(_ui_normalize_choice "$label")
+        if [ "$choice" = "$label_choice" ]; then
+            printf '%s\n' "$action"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+run_menu_shortcut() {
+    if [ "$#" -ne 1 ]; then
+        error "Expected exactly one menu shortcut argument."
+        print_menu_shortcut_usage
+        return 2
+    fi
+
+    local action
+    if ! action=$(resolve_menu_shortcut_action "$1"); then
+        error "Unknown ShipFlow menu shortcut: $1"
+        print_menu_shortcut_usage
+        return 2
+    fi
+
+    log INFO "Menu shortcut: $1 -> $action"
+    "$action"
+}
 
 # action_advanced needs to be defined after ADVANCED_MENU_ITEMS
 # Each menu file (menu_gum.sh / menu_bash.sh) provides its own implementation
@@ -6439,8 +6695,7 @@ PROJECTS_EOF
         echo -e "  ${CYAN}x)${NC} ← Back"
         echo ""
         echo -e "${YELLOW}Your choice:${NC} \c"
-        ui_read_key sf_choice
-        sf_choice=$(_ui_normalize_choice "$sf_choice")
+        ui_read_choice sf_choice
 
         case $sf_choice in
             t)
@@ -6495,6 +6750,7 @@ PROJECTS_EOF
                 fi
                 ;;
             x|q)
+                ui_return_back
                 return 0
                 ;;
             *)
@@ -6654,8 +6910,7 @@ show_help() {
         echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
         echo ""
         echo -e "${YELLOW}[$page/$total_pages]:${NC} \c"
-        ui_read_key help_choice
-        help_choice=$(_ui_normalize_choice "$help_choice")
+        ui_read_choice help_choice
 
         case $help_choice in
             ""|n)
@@ -6669,6 +6924,7 @@ show_help() {
                 fi
                 ;;
             x|q)
+                ui_return_back
                 return
                 ;;
             a) page=1 ;;
@@ -6784,8 +7040,7 @@ show_mobile_guide() {
     echo -e "  ${GREEN}Projet: $selected_project${NC}"
     echo ""
     echo -e "  ${YELLOW}Lancer le build Android? (o/y/N):${NC} \c"
-    ui_read_key build_confirm
-    build_confirm=$(_ui_normalize_choice "$build_confirm")
+    ui_read_choice build_confirm
     echo ""
 
     if [[ "$build_confirm" =~ ^(o|oui|y|yes)$ ]]; then

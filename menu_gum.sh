@@ -8,19 +8,25 @@
 
 # Flush any buffered stdin (leftover keypresses from previous actions)
 _flush_stdin() {
-    while read -rsn1 -t 0.05 2>/dev/null; do :; done
+    if [ -r /dev/tty ]; then
+        while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
+    else
+        while read -rsn1 -t 0.05 2>/dev/null; do :; done
+    fi
 }
 
 # Display menu items with gum styling, read single keypress, dispatch
 _gum_run_menu() {
     local title="$1"
     local subtitle="$2"
-    shift 2
+    local action_display_mode="${3:-inline}"
+    shift 3
 
     local items=("$@")
 
     # Parse items
     local keys=()
+    local labels=()
     local actions=()
     local display_lines=()
     local first_section=true
@@ -40,6 +46,7 @@ _gum_run_menu() {
         else
             display_lines+=("$(gum style --foreground 212 "${key})")  ${label}")
             keys+=("$key")
+            labels+=("$label")
             actions+=("$action")
         fi
     done
@@ -57,17 +64,17 @@ _gum_run_menu() {
     # Flush leftover input, then read single keypress
     _flush_stdin
     local choice
-    read -rsn1 choice
-    choice=$(echo "$choice" | tr '[:upper:]' '[:lower:]')
+    ui_read_choice choice
 
     # Match and dispatch
     for ((j=0; j<${#keys[@]}; j++)); do
         local k
         k=$(echo "${keys[$j]}" | tr '[:upper:]' '[:lower:]')
         if [ "$choice" = "$k" ]; then
+            local label="${labels[$j]}"
             local act="${actions[$j]}"
             [ "$act" = "__EXIT__" ] && return 1
-            "$act"
+            ui_run_menu_action "$label" "$act" "$action_display_mode"
             return 0
         fi
     done
@@ -81,7 +88,8 @@ _gum_pause() {
     echo ""
     gum style --foreground 240 "  Appuie sur une touche pour continuer..."
     _flush_stdin
-    read -rsn1
+    local pause_key
+    ui_read_key pause_key
 }
 
 # Advanced menu — loop with gum style
@@ -92,10 +100,15 @@ action_advanced() {
             --align center --width 50 --margin "1 2" --padding "1 2" \
             "Advanced Options"
 
-        _gum_run_menu "Advanced Options" "" "${ADVANCED_MENU_ITEMS[@]}"
+        _gum_run_menu "Advanced Options" "" "inline" "${ADVANCED_MENU_ITEMS[@]}"
         local rc=$?
         [ $rc -eq 1 ] && break
-        [ $rc -eq 0 ] && _gum_pause
+        if [ $rc -eq 0 ]; then
+            if ui_should_skip_next_pause; then
+                continue
+            fi
+            _gum_pause
+        fi
     done
 }
 
@@ -105,8 +118,13 @@ run_menu() {
         clear
         print_header
 
-        _gum_run_menu "Shipflow DevServer" "" "${MAIN_MENU_ITEMS[@]}"
+        _gum_run_menu "Shipflow DevServer" "" "screen" "${MAIN_MENU_ITEMS[@]}"
         local rc=$?
-        [ $rc -eq 0 ] && _gum_pause
+        if [ $rc -eq 0 ]; then
+            if ui_should_skip_next_pause; then
+                continue
+            fi
+            _gum_pause
+        fi
     done
 }

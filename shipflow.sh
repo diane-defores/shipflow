@@ -42,7 +42,14 @@ main() {
     fi
 
     cleanup_orphan_projects
-    run_menu
+
+    if [ "$#" -gt 0 ]; then
+        local shortcut_status=0
+        run_menu_shortcut "$@" || shortcut_status=$?
+        exit "$shortcut_status"
+    else
+        run_menu
+    fi
 }
 
-main
+main "$@"

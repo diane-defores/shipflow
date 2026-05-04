@@ -10,9 +10,12 @@ _bash_flush_stdin() {
 
 # Display menu items from array with sections and read choice
 _bash_run_menu() {
+    local action_display_mode="${1:-inline}"
+    shift || true
     local items=("$@")
 
     local keys=()
+    local labels=()
     local actions=()
     local item_count=0
 
@@ -28,6 +31,7 @@ _bash_run_menu() {
         else
             echo -e "  ${CYAN}${key})${NC} ${label}"
             keys+=("$key")
+            labels+=("$label")
             actions+=("$action")
             ((item_count++))
         fi
@@ -36,21 +40,16 @@ _bash_run_menu() {
     echo -e "${YELLOW}Your choice:${NC} \c"
 
     local choice
-    if [ -r /dev/tty ]; then
-        read -rsn1 choice < /dev/tty
-        _bash_flush_stdin
-    else
-        read -r choice
-    fi
-    choice=$(_ui_normalize_choice "$choice")
+    ui_read_choice choice
 
     for ((j=0; j<${#keys[@]}; j++)); do
         local k
         k=$(echo "${keys[$j]}" | tr '[:upper:]' '[:lower:]')
         if [ "$choice" = "$k" ]; then
+            local label="${labels[$j]}"
             local act="${actions[$j]}"
             [ "$act" = "__EXIT__" ] && return 1
-            "$act"
+            ui_run_menu_action "$label" "$act" "$action_display_mode"
             return 0
         fi
     done
@@ -70,10 +69,13 @@ action_advanced() {
         echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
         echo ""
 
-        _bash_run_menu "${ADVANCED_MENU_ITEMS[@]}"
+        _bash_run_menu "inline" "${ADVANCED_MENU_ITEMS[@]}"
         local rc=$?
         [ $rc -eq 1 ] && break
         if [ $rc -eq 0 ]; then
+            if ui_should_skip_next_pause; then
+                continue
+            fi
             ui_pause "Appuie sur une touche pour continuer..."
         fi
     done
@@ -85,9 +87,12 @@ run_menu() {
         clear
         print_header
 
-        _bash_run_menu "${MAIN_MENU_ITEMS[@]}"
+        _bash_run_menu "screen" "${MAIN_MENU_ITEMS[@]}"
         local rc=$?
         if [ $rc -eq 0 ]; then
+            if ui_should_skip_next_pause; then
+                continue
+            fi
             ui_pause "Appuie sur une touche pour continuer..."
         fi
     done
