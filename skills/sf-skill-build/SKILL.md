@@ -15,7 +15,7 @@ Process role: `lifecycle`.
 
 Before executing from a spec-first chantier, load `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md`, read the spec's `Skill Run History` and `Current Chantier Flow`, append a current `sf-skill-build` row with result `implemented`, `partial`, `blocked`, or `rerouted`, update `Current Chantier Flow`, and end with the compact `Chantier` block from `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
 
-If no unique spec is identified, do not write to any spec and route to `/sf-spec`.
+If no unique spec is identified, do not write to any spec. Route to `/sf-explore <idea>` when the skill idea is too fuzzy to frame a ready spec; otherwise route to `/sf-spec <title>`.
 
 ## Report Modes
 
@@ -39,7 +39,7 @@ Default to `report=user`: concise, outcome-first, and using the compact chantier
 
 It must orchestrate this sequence for one target skill:
 
-`sf-spec -> edit/create SKILL.md -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship`
+`sf-explore when needed -> sf-spec -> edit/create SKILL.md -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship`
 
 The goal is not writing a skill body fast. The goal is shipping a coherent skill contract that remains discoverable, validated, and aligned across internal and public surfaces.
 
@@ -63,6 +63,19 @@ If the target overlaps existing skill responsibilities, stop and ask for explici
 3. Search existing skills for overlap (`sf-build`, `sf-skills-refresh`, `skill-creator`, and close neighbors).
 4. If overlap is material, ask one targeted question before proceeding.
 
+## Exploration Gate
+
+Before routing to `sf-spec`, decide whether the input is clear enough to produce a durable skill-maintenance contract.
+
+Route to `/sf-explore <idea>` before `/sf-spec` when any of these remain true after a quick overlap scan and, if useful, one targeted question:
+
+- the requested skill behavior is still fuzzy, aspirational, or missing a concrete operator trigger
+- placement could reasonably be an existing skill mode, a new domain skill, or a new master skill and the evidence does not decide it
+- the change would introduce or alter a public skill promise, lifecycle doctrine, or governance policy that is not yet understood
+- there are multiple viable designs whose tradeoffs affect validation gates, docs/public-surface impact, or runtime discoverability
+
+`sf-explore` is read-only for chantier specs. If it writes an `exploration_report`, treat that report as primary intake context for the later `sf-spec`. Do not edit `SKILL.md` until exploration has either resolved the ambiguity or explicitly recommended stopping.
+
 ## Skill Placement Gate
 
 Before creating a new skill, decide whether the requested behavior belongs in an existing skill, a new domain skill, or a new master skill.
@@ -82,16 +95,17 @@ Create a new domain skill only when it has:
 
 Create a new master skill only when it orchestrates multiple existing skills or lifecycle phases, owns a durable sequence of gates, and should become a recommended entrypoint. A master skill must route to atomic skills instead of duplicating their internals.
 
-If placement remains ambiguous, stop and ask one targeted question before writing files. Recommend integration into an existing skill first unless the evidence clearly justifies a new entrypoint. Record the placement decision in the chantier spec.
+If placement remains ambiguous, ask one targeted question before writing files when the answer is likely to settle the decision. If the ambiguity is broader than one decision, reroute to `/sf-explore <idea>` before `/sf-spec`. Recommend integration into an existing skill first unless the evidence clearly justifies a new entrypoint. Record the placement decision in the chantier spec.
 
 ## Spec-First Contract
 
 For non-trivial work, spec-first is mandatory.
 
-1. If no matching chantier spec exists, route to `/sf-spec <title>`.
-2. Run `/sf-ready <spec>` and block until status is `ready`.
-3. Do not edit `SKILL.md` while readiness is `draft`, `reviewed`, or `not ready`.
-4. Use one unique spec only; if multiple specs match, stop and ask the user to select one.
+1. If the request is too fuzzy for a spec, route to `/sf-explore <idea>` first.
+2. If no matching chantier spec exists and exploration is not needed, route to `/sf-spec <title>`.
+3. Run `/sf-ready <spec>` and block until status is `ready`.
+4. Do not edit `SKILL.md` while readiness is `draft`, `reviewed`, or `not ready`.
+5. Use one unique spec only; if multiple specs match, stop and ask the user to select one.
 
 ## Implementation Flow
 
@@ -108,6 +122,7 @@ For non-trivial work, spec-first is mandatory.
 
 The skill body must enforce:
 
+- `sf-explore` before `sf-spec` when skill intent, placement, or public promise is too ambiguous for a durable spec
 - `sf-spec` and `sf-ready` before non-trivial edits
 - `sf-skills-refresh <name>` after material skill changes
 - `tools/skill_budget_audit.py --skills-root skills --format markdown` after add/rename/expansion
@@ -213,6 +228,7 @@ Stop and report `blocked` when:
 - readiness is not `ready`
 - skill name is invalid
 - target spec is ambiguous
+- exploration is required but the user asks to skip ambiguity reduction
 - budget audit fails hard or unresolved warnings are policy-blocking
 - metadata lint fails on changed artifacts
 - required site build fails for changed public content
@@ -230,6 +246,7 @@ Spec: [path]
 Result: [implemented / partial / blocked / rerouted]
 
 Lifecycle gates:
+- sf-explore -> [not needed/rerouted/completed]
 - sf-spec -> [status]
 - sf-ready -> [status]
 - SKILL.md edit/create -> [status]
@@ -284,4 +301,5 @@ Verdict sf-skill-build:
 - Implement the lifecycle, not only the markdown edit.
 - Do not commit or push.
 - Ask only targeted questions when the answer changes behavior, security, naming, scope, or public promise.
+- Route to `sf-explore` before `sf-spec` when skill intent or placement is too fuzzy for one targeted question to settle.
 - Prefer `blocked` over guessing when ambiguity changes contract semantics.

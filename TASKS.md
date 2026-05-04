@@ -50,12 +50,13 @@
 | ✅ | Documenter et propager le mode de développement projet (`local`, `vercel-preview-push`, `hybrid`) dans les skills de validation et de ship | ✅ done |
 | ✅ | Créer `sf-browser` comme skill navigateur généraliste non-auth et l'intégrer aux routes `sf-auth-debug`, `sf-test`, `sf-prod`, `sf-fix`, `sf-start`, `sf-verify`, `sf-check`, aux specs de taxonomie/catalogue, aux README internes et au site public | ✅ done |
 | 🟠 | Construire `sf-build` comme skill maître autonome (orchestrateur spec -> ready -> start -> verify -> end -> ship avec délégation bornée) | ✅ done |
-| ✅ | Implémenter `sf-skill-build` comme skill maître de maintenance des skills (`sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`) et aligner les surfaces publiques/docs | ✅ done |
+| ✅ | Implémenter `sf-skill-build` comme skill maître de maintenance des skills (`sf-explore si nécessaire -> sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`) et aligner les surfaces publiques/docs | ✅ done |
 | ✅ | Créer `sf-deploy` comme skill maître de release (`sf-check -> sf-ship -> sf-prod -> preuve -> sf-verify -> sf-changelog`) et aligner docs/help/site | ✅ done |
 | ✅ | Promouvoir `sf-maintain` en skill maître de maintenance projet (`triage -> spec/ready -> délégation bornée -> verify -> ship/deploy`) et aligner docs/help/site | ✅ done |
 | ✅ | Ajouter un helper partagé de synchronisation des skills Claude/Codex (`tools/shipflow_sync_skills.sh`) et l'intégrer à l'installateur, `sf-skill-build`, `sf-check`, `sf-verify` et `sf-ship` | ✅ done |
 | ✅ | Ajouter un contrat partagé de rapports compacts pour les skills (`report=user` par défaut, `report=agent` explicite) et le propager aux skills lifecycle, bug et audit | ✅ done |
 | ✅ | Renforcer les questions `sf-build` en mode plan avec contexte, racine du problème, enjeu business, options et recommandation best practice | ✅ done |
+| ✅ | Ajouter une cheatsheet publique et Markdown repo des master skills, supporting skills et modes d'arguments, avec page publique `sf-build` | ✅ done |
 
 ---
 

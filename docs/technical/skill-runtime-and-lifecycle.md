@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.7.0"
+artifact_version: "1.8.1"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-04"
@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - skills/
   - skills/references/
+  - skills/sf-build/SKILL.md
   - skills/sf-deploy/SKILL.md
   - skills/sf-maintain/SKILL.md
   - skills/sf-skill-build/SKILL.md
@@ -31,7 +32,7 @@ linked_systems:
   - docs/editorial/
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.12.0"
+    artifact_version: "0.13.1"
     required_status: draft
   - artifact: "skills/references/technical-docs-corpus.md"
     artifact_version: "1.1.0"
@@ -49,6 +50,8 @@ evidence:
   - "sf-deploy added as the dedicated release confidence orchestrator."
   - "sf-maintain promoted to a master maintenance lifecycle from triage through delegated execution, verification, and ship/deploy routing."
   - "Shared reporting contract added: concise user reports by default, explicit agent handoff reports when requested."
+  - "Skill launch cheatsheet added for master and supporting modes."
+  - "sf-skill-build exploration gate added before sf-spec for fuzzy skill ideas or placement decisions."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -85,7 +88,7 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 - `sf-browser`: generic non-auth browser verification through Playwright MCP for URLs, page-level assertions, screenshots, console summaries, and network summaries.
 - `sf-build`: user-facing orchestrator that consumes the governance corpus gate before implementation, closure, and ship.
 - `sf-deploy`: release confidence orchestrator (`sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog`).
-- `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
+- `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-explore when needed -> sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
 - `tools/shipflow_sync_skills.sh --check|--repair`: reusable local helper for current-user Claude/Codex skill visibility and install-time selected-user linking.
 - `sf-ship` and `sf-prod`: shipping and deployed verification.
 - `skills/references/reporting-contract.md`: shared final-report modes for concise user reports and explicit detailed agent handoffs.
@@ -166,6 +169,7 @@ sf-maintain
 - `sf-deploy` owns release orchestration only; `sf-ship` owns commit/push, `sf-prod` owns deployed truth, and proof skills own observed behavior.
 - `sf-bug` owns bug lifecycle orchestration only; phase skills still own bug record mutation, diagnosis, retest evidence, verification, and shipping.
 - `sf-maintain` owns the maintenance lifecycle; bugs, dependencies, docs, checks, audits, migrations, tasks, security review, repair, verification, and ship still run through their specialist owner skills and gates.
+- `sf-skill-build` owns skill-maintenance orchestration and must route to `sf-explore` before `sf-spec` when skill intent, placement, public promise, or governance policy is too fuzzy for one targeted question to settle.
 - A release is not considered verified from push success, provider success, or a bare `200 OK` alone.
 - User-facing final reports default to `report=user`: concise, outcome-first, compact chantier block, and no empty `Reste a faire` / `Prochaine etape` boilerplate. Detailed `report=agent` handoff must be explicit; skills do not infer caller identity.
 - `sf-build` planning questions are business decision briefs, not bare technical prompts: they name the problem root, business stakes, practical options, and recommended best-practice answer before asking for a decision.

@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.12.0"
+artifact_version: "0.13.1"
 project: ShipFlow
 created: "2026-04-22"
 updated: "2026-05-04"
@@ -41,6 +41,8 @@ evidence:
   - "Updated on 2026-05-03 to add sf-maintain as the recurring project maintenance orchestrator."
   - "Updated on 2026-05-03 to add shared report modes: concise user reports by default and explicit detailed agent handoff reports."
   - "Updated on 2026-05-04 to require business-context decision questions for sf-build planning."
+  - "Updated on 2026-05-04 to add a skill launch cheatsheet for master and supporting modes."
+  - "Updated on 2026-05-04 to route fuzzy skill-maintenance ideas through sf-explore before sf-spec."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -71,6 +73,19 @@ Default operating stance:
 - make the contract implementable by a fresh agent
 - avoid “prompt and correct” loops as the normal path
 - treat late clarification as a bounded exception, not the workflow itself
+
+Skill launch cheatsheet:
+
+| Need | Launch | Useful modes |
+| --- | --- | --- |
+| Non-trivial product, code, site, or docs work | `sf-build <story, bug, or goal>` | Plain task text is the story; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
+| Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
+| Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
+| Bug-loop routing | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
+| Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
+| Manual expert lifecycle | `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end` | Use when you intentionally want to drive each gate instead of using `sf-build`. |
+| Commit and push ready work | `sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |
+| Browser, auth, manual QA, or live deployment proof | `sf-browser`, `sf-auth-debug`, `sf-test`, `sf-prod` | Pick by proof type: non-auth browser evidence, auth/session diagnosis, durable manual QA, or deployment truth. |
 
 Bug loop entrypoint:
 
@@ -127,10 +142,10 @@ sf-maintain -> triage -> sf-spec/sf-ready when needed -> delegated maintenance l
 Recommended entrypoint for ShipFlow skill maintenance:
 
 ```text
-sf-skill-build -> sf-spec -> skill contract edit/create -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship
+sf-skill-build -> sf-explore when needed -> sf-spec -> skill contract edit/create -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship
 ```
 
-`sf-skill-build` is scoped to skill lifecycle work and enforces public-surface, docs/help, and validation gates before ship routing.
+`sf-skill-build` is scoped to skill lifecycle work and enforces ambiguity reduction, public-surface, docs/help, and validation gates before ship routing. When the skill idea or placement is too fuzzy for one targeted question to settle, it routes to `sf-explore` before creating the durable `sf-spec` contract.
 
 For expert manual control, the default non-trivial flow remains:
 
@@ -218,7 +233,7 @@ Technical governance applies to code projects by default. Editorial governance a
 - `sf-build` is the master orchestrator for end users and should prefer bounded delegated sequential execution over manual command chaining.
 - `sf-build` planning questions should be decision briefs for business operators: explain the root problem, business stakes, practical options, and the best-practice recommendation before asking for the decision.
 - `sf-maintain` is the master orchestrator for recurring project maintenance and should prefer bounded delegated sequential execution over command recommendations.
-- `sf-skill-build` is the master orchestrator for ShipFlow skill maintenance and should keep skill contract, refresh, budget, docs/help, and public skill surfaces coherent.
+- `sf-skill-build` is the master orchestrator for ShipFlow skill maintenance and should route fuzzy ideas through `sf-explore` before `sf-spec`, then keep skill contract, refresh, budget, docs/help, and public skill surfaces coherent.
 - `sf-start` begins execution from a ready contract instead of rediscovering intent, and now decides both model routing and execution topology before coding.
 - `sf-verify` checks against the spec first, then quality and risks, and can now remediate limited gaps.
 - `sf-end` closes the task against the delivered scope, not only against the diff.

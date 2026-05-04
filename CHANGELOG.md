@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.3.4"
+artifact_version: "0.3.7"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-04"
@@ -30,13 +30,19 @@ next_step: "/sf-docs audit CHANGELOG.md"
 
 ### Added
 - Shared skill reporting contract for concise default user reports (`report=user`) and explicit detailed handoff reports (`report=agent`).
+- Public and repo-level skill launch cheatsheet covering master skills, supporting skill lanes, and documented argument modes.
+- Public `sf-build` skill page so the recommended master build entrypoint appears in the skill catalog.
+- Standalone Markdown skill launch cheatsheet under `docs/skill-launch-cheatsheet.md`.
 
 ### Changed
 - Lifecycle, bug, deploy, skill-build, and audit skills now load the shared reporting contract and use compact chantier/report guidance by default.
 - Selected OpenAI skill metadata now uses exact invocation keys as display names so the skill picker matches typed skill commands.
 - `sf-build` Plan Mode questions now frame the root problem, business stakes, options, and best-practice recommendation before asking a business decision.
+- `sf-skill-build` now routes fuzzy skill ideas or placement uncertainty through `sf-explore` before creating a durable `sf-spec` contract.
+- Docs overview, skills hub, FAQ, content map, workflow doctrine, and editorial maps now route skill-mode questions to the launch cheatsheet instead of a narrow argument tutorial.
 
 ### Fixed
+- Public site layout now declares a favicon to avoid the browser `favicon.ico` 404 during checks.
 - Installer alias refresh now removes stale standalone ShipFlow aliases before writing the managed alias block.
 - Install report markdown now escapes the ARM64 Flutter release command example correctly.
 
@@ -98,7 +104,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Local MCP OAuth helper with guided server IP and optional SSH key configuration for local tunnels and remote Codex MCP login
 - Durable `exploration_report` artifacts for `sf-explore`, including the reusable template and default `docs/explorations/` report location
 - Skill discovery budget audit for ShipFlow skills, with strict checks for one-sentence descriptions, name/path metadata, listing budgets, and separate long-body risks
-- `sf-skill-build` master skill orchestrating skill lifecycle work (`sf-spec` → SKILL.md → `sf-skills-refresh` → budget audit → `sf-verify` → `sf-docs/help` → `sf-ship`) and public catalog coherence updates
+- `sf-skill-build` master skill orchestrating skill lifecycle work (`sf-explore` when needed → `sf-spec` → SKILL.md → `sf-skills-refresh` → budget audit → `sf-verify` → `sf-docs/help` → `sf-ship`) and public catalog coherence updates
 
 ### Changed
 - Local SSH setup now resolves bare identity filenames from the menu launch directory, `~/.ssh/`, then the user's home directory, and saves the absolute path for later `ssh -i` / `autossh -i` use.

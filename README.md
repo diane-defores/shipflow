@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.7.1"
+artifact_version: "0.7.4"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-04"
@@ -31,6 +31,9 @@ evidence:
   - "Added sf-deploy as the release confidence orchestrator."
   - "Added sf-maintain as the recurring project maintenance orchestrator."
   - "Clarified sf-build business-context decision questions."
+  - "Added a public and repo-level skill launch cheatsheet for master skill modes."
+  - "Added docs/skill-launch-cheatsheet.md as the standalone Markdown reference."
+  - "Clarified that sf-skill-build routes fuzzy skill-maintenance ideas through sf-explore before sf-spec."
 next_step: "/sf-docs audit README.md"
 ---
 
@@ -78,6 +81,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [docs/editorial/README.md](./docs/editorial/README.md) — content governance layer for public content, claims, page intent, and Astro content schema boundaries
 - [docs/technical/README.md](./docs/technical/README.md) — internal technical documentation layer for code-proximate subsystem docs
 - [docs/technical/code-docs-map.md](./docs/technical/code-docs-map.md) — map from code paths to primary docs, validations, and documentation update triggers
+- [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
 - [BUSINESS.md](./BUSINESS.md) — target audience, value proposition, business assumptions, and market framing
 - [PRODUCT.md](./PRODUCT.md) — product scope, workflows, outcomes, and non-goals
 - [BRANDING.md](./BRANDING.md) — tone, trust posture, vocabulary, and claims boundaries
@@ -254,6 +258,19 @@ That means:
 - if a fresh context is needed and cannot be created automatically, the skill must ask the user to open a new thread
 - “prompt and correct” is a fallback for bounded drift, not the normal operating mode
 
+Skill launch cheatsheet:
+
+| Need | Launch | Useful modes |
+| --- | --- | --- |
+| Non-trivial product, code, site, or docs work | `sf-build <story, bug, or goal>` | Plain task text is the story; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
+| Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
+| Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
+| Bug-loop routing | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
+| Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
+| Manual expert lifecycle | `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end` | Use when you intentionally want to drive each gate instead of using `sf-build`. |
+| Commit and push ready work | `sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |
+| Browser, auth, manual QA, or live deployment proof | `sf-browser`, `sf-auth-debug`, `sf-test`, `sf-prod` | Pick by proof type: non-auth browser evidence, auth/session diagnosis, durable manual QA, or deployment truth. |
+
 Bug loop entrypoint:
 
 ```text
@@ -323,10 +340,10 @@ sf-maintain -> triage -> sf-spec/sf-ready when needed -> delegated maintenance l
 For ShipFlow skill maintenance, use the dedicated entrypoint:
 
 ```text
-sf-skill-build -> sf-spec -> skill contract edit/create -> runtime skill sync -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship
+sf-skill-build -> sf-explore when needed -> sf-spec -> skill contract edit/create -> runtime skill sync -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship
 ```
 
-`sf-skill-build` is scoped to creating or modifying `skills/*/SKILL.md` with explicit public-surface, documentation, and validation gates.
+`sf-skill-build` is scoped to creating or modifying `skills/*/SKILL.md` with explicit ambiguity-reduction, public-surface, documentation, and validation gates. If the skill idea or placement is too fuzzy for one targeted question to settle, it routes to `sf-explore` before creating the durable `sf-spec` contract.
 
 If the bug is local and clear, `sf-fix` fixes it directly, then verifies.
 That fast path should still attach the bug to durable project memory with a compact `BUGS.md` entry and a `bugs/BUG-ID.md` dossier, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix.

@@ -1,25 +1,86 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Footer from "../components/Footer.astro";
 import NavBar from "../components/NavBar.astro";
+
+const masterSkillCheatsheet = [
+  {
+    command: "sf-build <story, bug, or goal>",
+    when: "Default entrypoint for non-trivial product, code, docs, or site work.",
+    modes:
+      "Use the task text as the story. Add report=agent, handoff, verbose, or full-report only when a detailed agent handoff is needed."
+  },
+  {
+    command: "sf-maintain [mode]",
+    when: "Recurring project upkeep across bugs, docs, dependencies, checks, audits, fixes, and ship routing.",
+    modes:
+      "no argument/full runs the lifecycle; quick is read-only triage; security, deps, docs, and audits focus a lane; no-ship stops before release; global starts from the workspace dashboard."
+  },
+  {
+    command: "sf-deploy [target or mode]",
+    when: "Release confidence after implementation when checks, push, deployment truth, browser proof, and verification must stay connected.",
+    modes:
+      "no argument runs the bounded release loop; skip-check skips only the pre-ship check phase; --preview and --prod bias the environment; no-changelog skips release notes."
+  },
+  {
+    command: "sf-bug [BUG-ID, summary, or mode]",
+    when: "Bug-loop routing from observed failure to dossier, fix, retest, verification, and ship risk.",
+    modes:
+      "no argument opens bug dashboard routing; BUG-ID reads the dossier; --fix, --retest, --verify, --ship, and --close select a specific lifecycle phase."
+  },
+  {
+    command: "sf-skill-build <idea or path>",
+    when: "Creation or maintenance of ShipFlow skills themselves.",
+    modes:
+      "A fuzzy skill idea routes through sf-explore before spec work; an existing skill path routes to improvement, validation, public page, and lifecycle documentation updates."
+  }
+];
+
+const supportSkillCheatsheet = [
+  {
+    command: "sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end",
+    when: "Use the manual lifecycle when you want explicit control over each gate instead of the sf-build master flow."
+  },
+  {
+    command: "sf-ship [mode]",
+    when: "Use after work is already ready locally. Modes include skip-check, end la tache/end/fin/close task, and all-dirty/ship-all/tout-dirty."
+  },
+  {
+    command: "sf-browser / sf-auth-debug / sf-test / sf-prod",
+    when: "Choose by proof type: non-auth browser evidence, auth/session diagnosis, guided manual QA, or live deployment truth."
+  },
+  {
+    command: "sf-check / sf-docs / sf-audit* / sf-deps / sf-migrate",
+    when: "Use focused owner skills when you need one lane: checks, docs, audit, dependency posture, or framework migration."
+  },
+  {
+    command: "sf-status / sf-help / sf-model / sf-resume",
+    when: "Use support skills for orientation, command choice, model routing, and clean context transfer."
+  }
+];
+
+const skillsWithModes = (await getCollection("skills"))
+  .filter((skill) => skill.data.argument_modes.length > 0)
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout
-  title="Skill Modes | How ShipFlow arguments change behavior"
-  description="A practical tutorial explaining how ShipFlow skills use arguments as mode switches, structured inputs, or free-form task descriptions."
+  title="Skill Modes | ShipFlow launch cheatsheet"
+  description="A practical ShipFlow cheatsheet for master skills, supporting skills, and the argument modes that change workflow behavior."
 >
   <main class="page-shell">
     <NavBar />
 
     <section class="section">
       <div class="section-heading">
-        <p class="eyebrow">Tutorial</p>
-        <h1 class="page-title">Some skill arguments describe the task. Others switch the workflow entirely.</h1>
+        <p class="eyebrow">Skill Launch Cheatsheet</p>
+        <h1 class="page-title">Skill launch cheatsheet.</h1>
         <p>
-          ShipFlow skills are not all simple free-text commands. Many of them
-          inspect the argument you pass and choose a different execution path
-          from it. If you understand that mechanism, the skills stop feeling
-          magical and start feeling predictable.
+          ShipFlow skills are not all simple free-text commands. Some arguments
+          describe the work, some switch modes, and some select a structured
+          target. Start with a master skill when you want the whole loop, then
+          use focused owner skills when you need one specific gate.
         </p>
       </div>
     </section>
@@ -28,22 +89,94 @@ import NavBar from "../components/NavBar.astro";
       <div class="pricing-grid">
         <article class="price-card">
           <p class="eyebrow">The Short Version</p>
-          <h2>A skill argument can be one of three things.</h2>
+          <h2>Use <code>sf-build</code> for normal work.</h2>
           <p>
-            It can be a mode keyword, a structured input such as a package
-            target, or a plain-text task description. The skill decides which
-            one it is by reading its own mode-detection rules.
+            Master skills orchestrate several gates. Focused skills own one
+            phase, such as docs, browser proof, checks, bug retest, or shipping.
+            The right launch point is the one that matches the amount of
+            lifecycle you want handled.
           </p>
         </article>
 
         <article class="price-card accent-card">
           <p class="eyebrow">Why It Matters</p>
-          <h2>You get more reliable behavior when you call the right mode on purpose.</h2>
+          <h2>Call modes on purpose.</h2>
           <p>
             The point is not to memorize syntax. The point is to recognize when
             a skill exposes distinct workflows behind one command name.
           </p>
         </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Master Skills</p>
+        <h2>Launch these when you want ShipFlow to carry the work across multiple gates.</h2>
+      </div>
+
+      <div class="role-list">
+        {
+          masterSkillCheatsheet.map((item) => (
+            <div class="role-row">
+              <code>{item.command}</code>
+              <span>
+                <strong>{item.when}</strong>
+                <br />
+                {item.modes}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Supporting Skills</p>
+        <h2>Use these when you want one specific owner skill instead of a master lifecycle.</h2>
+      </div>
+
+      <div class="role-list">
+        {
+          supportSkillCheatsheet.map((item) => (
+            <div class="role-row">
+              <code>{item.command}</code>
+              <span>{item.when}</span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Documented Mode Switches</p>
+        <h2>These public skill pages expose explicit argument modes.</h2>
+        <p>
+          If a skill is not listed here, treat its argument as a target or task
+          description unless the skill file says otherwise.
+        </p>
+      </div>
+
+      <div class="argument-grid">
+        {
+          skillsWithModes.map((skill) => (
+            <article class="argument-card">
+              <h3>
+                <code>{skill.data.title}</code>
+              </h3>
+              <p>{skill.data.summary}</p>
+              <div class="argument-consequence">
+                <span>Modes</span>
+                <p>{skill.data.argument_modes.map((mode) => mode.argument).join(" / ")}</p>
+              </div>
+              <a class="doc-action" href={`/skills/${skill.slug}`}>
+                Open skill page
+              </a>
+            </article>
+          ))
+        }
       </div>
     </section>
 
@@ -197,6 +330,7 @@ import NavBar from "../components/NavBar.astro";
         </p>
         <div class="hero-actions">
           <a class="button button-primary" href="/skills">Browse public skill pages</a>
+          <a class="button button-secondary" href="https://github.com/dianedef/ShipFlow/blob/main/docs/skill-launch-cheatsheet.md">Open Markdown reference</a>
           <a class="button button-secondary" href="/faq">Open the FAQ</a>
         </div>
       </div>

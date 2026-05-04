@@ -30,7 +30,7 @@ Quick reference for the skill system, modes, and workflows.
 | Skill | Purpose | Arguments |
 |-------|---------|-----------|
 | `/sf-build` | Master user-facing orchestrator from story to spec, implementation, verification, closure, and ship | `<story, bug, or goal>` |
-| `/sf-skill-build` | Master skill-maintenance orchestrator for creating or modifying ShipFlow skills with lifecycle gates | `<new skill idea | existing skill path>` |
+| `/sf-skill-build` | Master skill-maintenance orchestrator for creating or modifying ShipFlow skills with optional exploration and lifecycle gates | `<new skill idea | existing skill path>` |
 | `/sf-maintain` | Master maintenance lifecycle from triage through delegated fixes, verification, and ship | `quick`, `full`, `security`, `global`, `no-ship` |
 | `/sf-bug` | Professional bug loop orchestrator for intake, dossiers, fixes, retests, verification, and ship risk | `BUG-ID`, `--retest BUG-ID`, `--ship BUG-ID` |
 | `/sf-fix` | Bug-first intake and routing (direct fix vs spec-first) | `<bug description>` |
@@ -77,7 +77,7 @@ Note: `/sf-spec` → `/sf-ready` → `/sf-start` → `/sf-verify` now share a `U
 Note: `/sf-build` is the recommended end-user entrypoint for non-trivial work; invocation authorizes bounded delegated sequential execution for the current chantier, while parallel execution requires ready non-overlapping `Execution Batches`.
 Note: `/sf-deploy` is the recommended release entrypoint when the operator wants the whole confidence loop after implementation: checks, bounded ship, deployment truth, post-deploy evidence routing, verification, and optional changelog.
 Note: `/sf-maintain` is the recommended recurring maintenance entrypoint for existing projects; by default it carries maintenance through spec/readiness when needed, bounded delegated execution, verification, and ship/deploy routing. Use `/sf-maintain quick` for read-only triage.
-Note: `/sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help update -> sf-ship`).
+Note: `/sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`sf-explore when needed -> sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help update -> sf-ship`).
 
 ### Professional Bug Loop (concise)
 
@@ -232,6 +232,7 @@ Run any skill from `~/` (no project markers) and it asks **"Which project(s)?"**
 | `/sf-status` | No view mode argument | Issues only / Dirty only / All projects |
 | `/sf-context` | Context priming completed | Proceed now / Add 1 key file / Refine target |
 | `/sf-spec` | Small/local change | Spec light / Spec full / Auto by risk |
+| `/sf-skill-build` | Skill idea or placement is too fuzzy | Ask one targeted question / Route to `/sf-explore` / Continue to `/sf-spec` |
 | `/sf-verify` | Verdict is not ready | Fix now / Return to spec / Stop and resume later |
 
 ### Clarification prompts (important)
