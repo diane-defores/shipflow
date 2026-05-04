@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.8.1"
+artifact_version: "0.8.2"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-04"
@@ -23,6 +23,8 @@ linked_systems:
   - skills/sf-maintain/SKILL.md
   - skills/sf-content/SKILL.md
   - skills/sf-browser/SKILL.md
+  - skills/shipflow/SKILL.md
+  - site/src/content/skills/shipflow.md
   - docs/technical
   - docs/editorial
 depends_on: []
@@ -39,6 +41,7 @@ evidence:
   - "Clarified sf-build delegated sequential subagent consent and separated subagents from parallelism."
   - "Added skills/references/master-delegation-semantics.md as the shared master/orchestrator delegation doctrine."
   - "Added skills/references/master-workflow-lifecycle.md as the shared lifecycle skeleton and clarified bug files as source of truth."
+  - "Documented shipflow <instruction> as the recommended non-technical router before direct sf-* expert entrypoints."
 next_step: "/sf-docs audit README.md"
 ---
 
@@ -261,6 +264,14 @@ Typical CLI actions:
 
 ## Skill Workflow
 
+Recommended non-technical entrypoint in a skill-aware agent session:
+
+```text
+shipflow <instruction>
+```
+
+Use `shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `sf-build`, upkeep to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
+
 ShipFlow is now optimized for **one-pass execution**.
 
 That means:
@@ -274,6 +285,7 @@ Skill launch cheatsheet:
 
 | Need | Launch | Useful modes |
 | --- | --- | --- |
+| Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes real work to the right master or specialist skill; asks one numbered question when ambiguous. |
 | Non-trivial product, code, site, or docs work | `sf-build <story, bug, or goal>` | Plain task text is the story; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
@@ -327,13 +339,13 @@ Optional model-selection step:
 sf-model -> choose model / reasoning / fallbacks before execution
 ```
 
-Recommended end-user entrypoint for non-trivial work:
+Direct build entrypoint for non-trivial feature/code/docs work:
 
 ```text
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
 ```
 
-`sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invocation authorizes bounded delegated sequential execution for the current chantier, short natural-language confirmations continue that bounded sequential path after diagnosis by intent rather than exact keyword, and parallel agent execution requires ready non-overlapping `Execution Batches`. `sf-build` keeps user interaction focused on decisions and progress and frames material questions with the root problem, business stakes, options, and a recommended best-practice answer.
+`sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invocation authorizes bounded delegated sequential execution for the current chantier, short natural-language confirmations continue that bounded sequential path after diagnosis by intent rather than exact keyword, and parallel agent execution requires ready non-overlapping `Execution Batches`. `sf-build` keeps user interaction focused on decisions and progress; material questions are framed as business decision briefs with the root problem, business stakes, options, and a recommended best-practice answer.
 
 Recommended release entrypoint after implementation:
 

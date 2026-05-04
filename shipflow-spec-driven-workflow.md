@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.14.1"
+artifact_version: "0.14.2"
 project: ShipFlow
 created: "2026-04-22"
 updated: "2026-05-04"
@@ -15,10 +15,12 @@ security_impact: unknown
 docs_impact: yes
 linked_systems:
   - skills/
+  - skills/shipflow/SKILL.md
   - skills/sf-deploy/SKILL.md
   - skills/sf-maintain/SKILL.md
   - skills/sf-content/SKILL.md
   - skills/sf-browser/SKILL.md
+  - skills/references/entrypoint-routing.md
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
   - skills/references/canonical-paths.md
@@ -50,6 +52,7 @@ evidence:
   - "Updated on 2026-05-04 to clarify sf-build delegated sequential subagent consent and separate subagents from parallelism."
   - "Updated on 2026-05-04 to extract shared master delegation semantics to skills/references/master-delegation-semantics.md."
   - "Updated on 2026-05-04 to extract the shared master workflow lifecycle and clarify that bugs/*.md files are bug source of truth while BUGS.md is optional/generated triage."
+  - "Updated on 2026-05-04 to document shipflow <instruction> as the primary non-technical router with direct main-thread handoff to selected skills."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -85,6 +88,7 @@ Skill launch cheatsheet:
 
 | Need | Launch | Useful modes |
 | --- | --- | --- |
+| Non-technical first command | `shipflow <instruction>` | Routes pure conversational answers directly; routes real work to the right master or specialist skill; asks one numbered question when ambiguous. |
 | Non-trivial product, code, site, or docs work | `sf-build <story, bug, or goal>` | Plain task text is the story; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
@@ -124,7 +128,17 @@ Optional model-selection entrypoint before execution:
 sf-model -> choose model / reasoning / fallbacks before sf-start
 ```
 
-Recommended end-user entrypoint for non-trivial work:
+Primary non-technical router entrypoint:
+
+```text
+shipflow <instruction> -> direct answer or direct handoff to selected skill
+```
+
+`shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `sf-build`; maintenance to `sf-maintain`; bug-loop work to `sf-bug`; release, deploy, or production proof to `sf-deploy`; content work to `sf-content`; skill maintenance to `sf-skill-build`; and obvious specialist audits to `sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
+
+The router uses direct main-thread handoff to the selected skill. It does not run a master skill inside a subagent, and it does not duplicate the selected skill's lifecycle. Once selected, each master owns its own delegated sequential execution and proof gates.
+
+Direct build entrypoint for non-trivial work:
 
 ```text
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
@@ -247,6 +261,7 @@ Technical governance applies to code projects by default. Editorial governance a
 - `sf-explore` may write an `exploration_report` durable artifact when exploration is substantial or explicitly requested, but it does not write chantier spec history.
 - `sf-spec` produces an implementation contract, not loose notes.
 - `sf-ready` enforces a real Definition of Ready before non-trivial execution.
+- `shipflow <instruction>` is the primary non-technical router; it hands off directly in the main thread to the selected skill and asks one numbered question when the route is ambiguous.
 - `sf-build` is the master orchestrator for end users and should prefer bounded delegated sequential execution over manual command chaining.
 - Master/orchestrator skills must load `skills/references/master-workflow-lifecycle.md` for the shared skeleton: intake, work item resolution, readiness, model/topology routing, owner execution, validation, verification, post-verify closure, and ship/deploy routing.
 - Master/orchestrator skills must load `skills/references/master-delegation-semantics.md` before choosing execution topology. The reference defines delegation, subagents, short approvals, degradation, and spec/batch-gated parallelism.
@@ -283,7 +298,7 @@ Skill application categories:
 
 - `obligatoire`: `sf-spec`, `sf-ready`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` trace their current run when exactly one chantier spec is in scope.
 - `conditionnel`: audits, docs, checks, fixes, deps, perf, migrations, scaffold, content, research, test, prod, backlog, priorities, tasks, changelog, review, and veille skills trace only when the run is explicitly attached to one unique chantier spec.
-- `non-applicable`: help, context, model selection, exploration, status, resume, and session naming do not write to specs; if invoked inside a chantier flow, they report `Chantier: non applicable` or `Chantier: non trace` when useful.
+- `non-applicable`: help, context, model selection, exploration, status, resume, session naming, and the `shipflow <instruction>` router do not write to specs; if invoked inside a chantier flow, they report `Chantier: non applicable` or `Chantier: non trace` when useful. The selected lifecycle skill owns any chantier trace after handoff.
 
 That trace category is separate from the internal process role:
 

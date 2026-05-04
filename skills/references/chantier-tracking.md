@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - specs/
   - skills/*/SKILL.md
+  - skills/shipflow/SKILL.md
   - skills/sf-deploy/SKILL.md
   - skills/sf-maintain/SKILL.md
   - skills/references/reporting-contract.md
@@ -27,6 +28,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Spec specs-as-chantier-registry.md defines specs/ as the global chantier registry."
+  - "shipflow added as the primary helper router; selected owner skills own durable state and chantier tracing."
   - "sf-deploy added as a lifecycle release orchestrator."
   - "sf-maintain promoted from recurring maintenance source-de-chantier to lifecycle master skill."
   - "Compact user-facing reporting contract added with explicit agent handoff mode."
@@ -107,7 +109,7 @@ This block coexists with the compact `Chantier` block. If the source skill is al
 | `sf-market-study`, `sf-veille`, `sf-research` | `conditionnel` | `source-de-chantier` | Strategic or research output that requires a product, content, architecture, or implementation decision. |
 | `sf-docs`, `sf-enrich`, `sf-redact`, `sf-repurpose`, `sf-scaffold`, `sf-changelog`, `sf-design-playground`, `sf-skills-refresh`, `sf-init` | `conditionnel` | `support-de-chantier` | Route to a source or `/sf-spec` only when the user explicitly asks to formalize follow-up work. |
 | `sf-tasks`, `sf-backlog`, `sf-priorities`, `sf-review`, `continue` | `conditionnel` | `pilotage` | Do not create a chantier from every note; route only when the user or evidence requires a durable spec. |
-| `sf-context`, `sf-model`, `sf-help`, `sf-status`, `sf-resume`, `sf-explore`, `name` | `non-applicable` | `helper` | Not a source; can recommend the lifecycle next step when useful. `sf-explore` may write `exploration_report` artifacts but still must not write chantier spec history. |
+| `shipflow`, `sf-context`, `sf-model`, `sf-help`, `sf-status`, `sf-resume`, `sf-explore`, `name` | `non-applicable` | `helper` | Not a source; can recommend or directly hand off to the lifecycle next step when useful. `shipflow` routes only; selected owner skills own durable state and chantier tracing. `sf-explore` may write `exploration_report` artifacts but still must not write chantier spec history. |
 
 ## Spec Write Rules
 

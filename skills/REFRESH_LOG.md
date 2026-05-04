@@ -4,6 +4,23 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-04 — shipflow
+
+**Added:**
+- Primary router contract with direct-answer, direct handoff, ambiguity-question, and no nested master-skill subagent rules
+- Shared entrypoint routing reference for feature, maintenance, bug, release, content, skill-maintenance, and audit routes
+
+**Updated:**
+- Skill description shortened to keep aggregate discovery budget under 8000
+- Help, workflow, technical docs, launch cheatsheet, and public skill content now present `shipflow` as the non-technical first command
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local skill-routing and delegation doctrine audit)
+
+---
+
 ## 2026-05-04 — sf-scaffold
 
 **Added:**

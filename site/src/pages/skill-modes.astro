@@ -6,8 +6,14 @@ import NavBar from "../components/NavBar.astro";
 
 const masterSkillCheatsheet = [
   {
+    command: "shipflow <instruction>",
+    when: "Recommended non-technical first command when you want ShipFlow to choose the route.",
+    modes:
+      "Answers pure conversation directly; routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*. Asks one numbered question when ambiguous."
+  },
+  {
     command: "sf-build <story, bug, or goal>",
-    when: "Default entrypoint for non-trivial product, code, docs, or site work.",
+    when: "Direct entrypoint for non-trivial product, code, docs, or site work.",
     modes:
       "Use the task text as the story. Add report=agent, handoff, verbose, or full-report only when a detailed agent handoff is needed."
   },
@@ -85,8 +91,9 @@ const skillsWithModes = (await getCollection("skills"))
         <p>
           ShipFlow skills are not all simple free-text commands. Some arguments
           describe the work, some switch modes, and some select a structured
-          target. Start with a master skill when you want the whole loop, then
-          use focused owner skills when you need one specific gate.
+          target. Start with <code>shipflow &lt;instruction&gt;</code> when you
+          want routing handled, then use direct master or owner skills when you
+          already know the lane.
         </p>
       </div>
     </section>
@@ -95,12 +102,11 @@ const skillsWithModes = (await getCollection("skills"))
       <div class="pricing-grid">
         <article class="price-card">
           <p class="eyebrow">The Short Version</p>
-          <h2>Use <code>sf-build</code> for normal work.</h2>
+          <h2>Use <code>shipflow &lt;instruction&gt;</code> when you are not choosing manually.</h2>
           <p>
-            Master skills orchestrate several gates. Focused skills own one
-            phase, such as docs, browser proof, checks, bug retest, or shipping.
-            The right launch point is the one that matches the amount of
-            lifecycle you want handled.
+            The router answers pure questions directly or hands the main thread
+            to the selected skill. Direct master skills still matter when you
+            already know the exact lifecycle you want handled.
           </p>
         </article>
 
@@ -117,7 +123,7 @@ const skillsWithModes = (await getCollection("skills"))
 
     <section class="section">
       <div class="section-heading">
-        <p class="eyebrow">Master Skills</p>
+        <p class="eyebrow">Primary And Master Skills</p>
         <h2>Launch these when you want ShipFlow to carry the work across multiple gates.</h2>
       </div>
 
@@ -212,6 +218,7 @@ const skillsWithModes = (await getCollection("skills"))
             usually treated as the actual work description or content focus.
           </p>
         </article>
+
       </div>
     </section>
 

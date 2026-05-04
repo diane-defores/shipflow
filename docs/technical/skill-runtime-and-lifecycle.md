@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.9.1"
+artifact_version: "1.10.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-04"
@@ -16,6 +16,8 @@ docs_impact: yes
 linked_systems:
   - skills/
   - skills/references/
+  - skills/shipflow/SKILL.md
+  - skills/references/entrypoint-routing.md
   - skills/sf-build/SKILL.md
   - skills/sf-deploy/SKILL.md
   - skills/sf-maintain/SKILL.md
@@ -34,7 +36,7 @@ linked_systems:
   - docs/editorial/
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.14.0"
+    artifact_version: "0.14.2"
     required_status: draft
   - artifact: "skills/references/technical-docs-corpus.md"
     artifact_version: "1.1.0"
@@ -59,6 +61,7 @@ evidence:
   - "sf-build delegated sequential subagent consent clarified; subagents and parallelism are distinct runtime concepts."
   - "Master delegation semantics extracted to skills/references/master-delegation-semantics.md and cited by master/orchestrator skills."
   - "Master workflow lifecycle extracted to skills/references/master-workflow-lifecycle.md; bug work items now use bugs/*.md as source of truth and BUGS.md as optional/generated triage."
+  - "shipflow <instruction> documented as the primary non-technical router with direct main-thread handoff to selected skills."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -86,6 +89,7 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 
 ## Entrypoints
 
+- `shipflow <instruction>`: recommended non-technical first command; answers pure conversation directly or hands the main thread to the selected `sf-*` master/specialist skill.
 - `sf-explore -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end`: normal non-trivial flow.
 - `sf-fix`: bug-first entrypoint that may route direct or spec-first.
 - `sf-init`: project bootstrap that reports or creates baseline technical and editorial governance corpus state.
@@ -107,6 +111,17 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 - `skills/references/reporting-contract.md`: shared final-report modes for concise user reports and explicit detailed agent handoffs.
 
 ## Control Flow
+
+Primary router flow:
+
+```text
+shipflow <instruction>
+  -> direct conversational answer
+  -> or direct main-thread handoff to sf-build / sf-maintain / sf-bug / sf-deploy / sf-content / sf-skill-build / sf-audit-*
+  -> one numbered question when the route is ambiguous
+```
+
+The selected master then owns its own delegated sequential execution. The router must not run a master skill inside a subagent or reimplement the selected skill's lifecycle gates.
 
 ```text
 source skill
@@ -193,12 +208,14 @@ sf-content
 ## Invariants
 
 - Lifecycle skills trace into exactly one chantier spec when one is identified.
+- `shipflow <instruction>` is a router, not a hidden master runner: it answers pure conversation directly, asks one numbered question when ambiguous, and otherwise hands the main thread to the selected skill.
 - `sf-start` implements from the ready contract; it should not rediscover product intent while coding.
 - The Reader diagnoses docs impact; the executor or integrator applies docs updates.
 - The Technical Reader diagnoses code-docs impact; the Editorial Reader diagnoses public-content and claim impact.
 - Shared files are sequential by default.
 - Master/orchestrator skills load `skills/references/master-delegation-semantics.md` before choosing execution topology. Delegated sequential subagents are the default for file, validation, closure, and ship work when subagents are available; parallelism means simultaneous subagents and requires ready `Execution Batches`.
 - Master/orchestrator skills load `skills/references/master-workflow-lifecycle.md` before resolving lifecycle flow. The shared skeleton is intake, work item resolution, readiness, model/topology routing, owner-skill execution, validation/evidence, verification, post-verify closure, and bounded ship/deploy/release routing.
+- Skills should ask user-facing questions only when the answer changes route, scope, risk, validation, closure, or ship posture; otherwise they proceed by the best-practice default and state important assumptions.
 - Bug work uses one Markdown bug file under `bugs/*.md` as the durable source of truth. `BUGS.md`, when present, is an optional compact/generated/triage view and must not override the bug file.
 - Short natural-language confirmations after diagnosis or proposal continue the current chantier in delegated sequential mode by intent rather than exact keyword, not parallel fan-out.
 - Fresh context is preferred for non-trivial spec-first execution when available.
@@ -230,6 +247,7 @@ sf-content
 - If public content, README, FAQ, pricing, public docs, skill pages, or claims are affected but missing from an `Editorial Update Plan`, the editorial gate fails.
 - If `sf-build` prepares implementation with missing or stale `docs/technical/code-docs-map.md`, applicable `docs/editorial/`, or `CONTENT_MAP.md`, it must route to `sf-docs` or record explicit no-impact/no-surface status before proceeding.
 - If a master skill patches in the master conversation merely because a file change is small while subagents are available, treat that as workflow drift. Small scope may use a mini-contract, but the execution mode remains delegated sequential for file work.
+- If the `shipflow <instruction>` router nests `sf-build`, `sf-maintain`, `sf-bug`, `sf-deploy`, `sf-content`, or `sf-skill-build` inside a subagent instead of handing off the main thread, treat that as workflow drift.
 - If a short natural-language confirmation is treated as consent for parallel subagents without ready `Execution Batches`, treat that as workflow drift.
 - If future projects are told to rerun ShipFlow's shipped governance specs instead of using `sf-init` and `sf-docs`, treat that as workflow drift.
 - If a new skill exists under `skills/<name>/SKILL.md` but is missing from current-user Claude or Codex skill directories, treat the skill lifecycle as incomplete until the runtime symlinks are repaired.

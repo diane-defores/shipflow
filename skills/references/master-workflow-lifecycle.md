@@ -28,7 +28,7 @@ linked_systems:
   - README.md
 depends_on:
   - artifact: "skills/references/master-delegation-semantics.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: active
   - artifact: "skills/references/chantier-tracking.md"
     artifact_version: "0.4.1"

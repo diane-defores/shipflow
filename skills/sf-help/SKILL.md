@@ -29,6 +29,7 @@ Quick reference for the skill system, modes, and workflows.
 
 | Skill | Purpose | Arguments |
 |-------|---------|-----------|
+| `/shipflow` | Primary natural-language router to the right ShipFlow skill or direct answer | `<instruction>` |
 | `/sf-build` | Master user-facing orchestrator from story to spec, implementation, verification, closure, and ship | `<story, bug, or goal>` |
 | `/sf-skill-build` | Master skill-maintenance orchestrator for creating or modifying ShipFlow skills with optional exploration and lifecycle gates | `<new skill idea | existing skill path>` |
 | `/sf-maintain` | Master maintenance lifecycle from triage through delegated fixes, verification, and ship | `quick`, `full`, `security`, `global`, `no-ship` |
@@ -76,6 +77,7 @@ Note: `/sf-test` sits after verification and before shipping when a human needs 
 Note: `/sf-bug` is the recommended entrypoint when you want the whole professional bug loop routed from a `BUG-ID`, retest, closure question, or ship-risk question.
 Note: `/sf-start` now reuses the `sf-model` routing matrix and can choose `single-agent` vs `multi-agent` execution with explicit file ownership and per-group model overrides.
 Note: `/sf-spec` → `/sf-ready` → `/sf-start` → `/sf-verify` now share a `User Story` contract and should ask targeted user questions whenever behavior, scope, or security is still ambiguous.
+Note: `/shipflow` is the recommended first command for non-technical operators. It answers directly when no file work is needed, otherwise it hands off in the main conversation to the right owner skill; selected master skills own their own delegated sequential execution.
 Note: `/sf-build` is the recommended end-user entrypoint for non-trivial work; invocation authorizes bounded delegated sequential execution for the current chantier, while parallel execution requires ready non-overlapping `Execution Batches`.
 Note: `/sf-deploy` is the recommended release entrypoint when the operator wants the whole confidence loop after implementation: checks, bounded ship, deployment truth, post-deploy evidence routing, verification, and optional changelog.
 Note: `/sf-maintain` is the recommended recurring maintenance entrypoint for existing projects; by default it carries maintenance through spec/readiness when needed, bounded delegated execution, verification, and ship/deploy routing. Use `/sf-maintain quick` for read-only triage.
@@ -107,6 +109,7 @@ Internal role matrix:
 
 | Skill file | Trace category | Process role | Source threshold |
 |------------|----------------|--------------|------------------|
+| `skills/shipflow/SKILL.md` | non-applicable | helper | Primary router only; selected owner skill owns durable state and chantier tracing. |
 | `skills/name/SKILL.md` | non-applicable | helper | Never writes to specs; report non-applicable when useful. |
 | `skills/continue/SKILL.md` | conditionnel | pilotage | Route to `/sf-spec` only when continuation clearly needs a durable chantier. |
 | `skills/sf-audit-a11y/SKILL.md` | conditionnel | source-de-chantier | Accessibility findings become a chantier when severity, scope, remediation sequencing, or validation need exceeds a direct fix. |
@@ -231,6 +234,7 @@ Run any skill from `~/` (no project markers) and it asks **"Which project(s)?"**
 ### Guided decision prompts (new)
 | Skill | When it prompts | Choices |
 |-------|------------------|---------|
+| `/shipflow` | Route is ambiguous between material owner skills | Ask one numbered routing question / direct handoff to selected owner / direct answer |
 | `/sf-fix` | Bug scope is borderline | Direct fix / Spec-first / Diagnostic only |
 | `/sf-start` | Scope triage is ambiguous | Execute direct / Spec-first / Clarify first (`/sf-explore`) |
 | `/sf-end` | Completion is unclear | Full close / Partial close / Summary only |

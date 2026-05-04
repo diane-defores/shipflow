@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-04"
 updated: "2026-05-04"
@@ -22,7 +22,7 @@ linked_systems:
   - CONTENT_MAP.md
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.13.1"
+    artifact_version: "0.14.2"
     required_status: draft
 supersedes: []
 evidence:
@@ -30,6 +30,7 @@ evidence:
   - "Public launch cheatsheet in site/src/pages/skill-modes.astro."
   - "sf-skill-build routes fuzzy skill ideas through sf-explore before sf-spec."
   - "sf-content added as the master content lifecycle entrypoint."
+  - "shipflow <instruction> documented as the primary non-technical router with direct handoff to selected skills."
 next_step: "/sf-docs audit docs/skill-launch-cheatsheet.md"
 ---
 
@@ -39,7 +40,9 @@ Use this page when you need to choose which ShipFlow skill to launch and which m
 
 ## Default Rule
 
-Start with `sf-build` when the request is a real workstream: product, code, site, docs, bug, or feature work that may need spec, readiness, implementation, verification, docs alignment, closeout, and ship routing.
+Start with `shipflow <instruction>` when you want a non-technical first command. It answers pure conversational requests directly and routes real work to the right master or specialist skill.
+
+Start with `sf-build` directly when you already know the request is a feature, code, site, or docs workstream that needs the build lifecycle.
 
 Use a focused skill directly when you intentionally want one owner lane: checks, docs, browser proof, auth diagnosis, manual QA, production truth, audit, dependency posture, migration, or final ship.
 
@@ -47,6 +50,7 @@ Use a focused skill directly when you intentionally want one owner lane: checks,
 
 | Need | Launch | Useful modes |
 | --- | --- | --- |
+| Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes feature/code/docs to `sf-build`, maintenance to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. Asks one numbered question when ambiguous. |
 | Non-trivial product, code, site, or docs work | `sf-build <story, bug, or goal>` | Plain task text is the story. Use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
@@ -76,6 +80,7 @@ Use a focused skill directly when you intentionally want one owner lane: checks,
 
 | Skill | Explicit modes currently documented |
 | --- | --- |
+| `shipflow` | `<instruction>`; pure conversation direct answer; direct main-thread handoff to selected `sf-*` skill; one numbered clarification question when ambiguous |
 | `sf-build` | `<story, bug, or goal>`; `report=agent`; `handoff`; `verbose`; `full-report` |
 | `sf-maintain` | no argument/`full`; `quick`; `security`; `deps`; `docs`; `audits`; `no-ship`; `global`; detailed report modes |
 | `sf-deploy` | no argument; `skip-check`; `--preview`; `--prod`; `no-changelog` |
