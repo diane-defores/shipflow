@@ -3,6 +3,31 @@
 Use this template as the default shape of the response. Expand or compress sections depending on signal strength.
 
 ```md
+## Best Next Actions
+
+- Action:
+  Asset:
+  Target surface:
+  Source proof:
+  Next step:
+
+## Article Name Ideas
+
+- Working name:
+  Angle:
+  Source proof:
+  Target surface:
+  Recommended next step:
+
+## Titles For This Conversation
+
+- Title:
+  Article promise:
+  Why this conversation supports it:
+  Best destination:
+
+## Source Pack
+
 ## Build Summary
 
 - Problem:
@@ -75,6 +100,10 @@ Use this template as the default shape of the response. Expand or compress secti
 
 Guidance:
 
+- `Best Next Actions` must come first and stay short enough to act on without reading the full pack.
+- `Article Name Ideas` should give durable article concepts tied to existing product, docs, skill pages, FAQ, semantic clusters, or the current chantier. Default to 5 to 8 strong ideas.
+- `Titles For This Conversation` is mandatory in workstream mode and should give title candidates that can directly repurpose the current conversation. Default to 5 to 8 strong titles.
+- If no blog or article surface is declared, keep the ideas and titles but mark destination as `surface missing: blog`; do not invent paths.
 - `Build Summary` should read like the truth source for all other sections.
 - For external text sources, `Source Analysis` becomes the anchor section and `Build Summary` can be shortened or adapted.
 - `Best reusable wording` should capture clear conversational phrases that can be reused verbatim or near-verbatim in docs, articles, or FAQ entries.
@@ -92,4 +121,5 @@ Compression rules:
 - If the work is tiny, collapse `Internal Change Narrative` into 2-3 bullets.
 - If the user asked for one surface only, keep the other sections brief but do not remove the evidence ledger.
 - If the source is a third-party paragraph or article, favor `Source Analysis`, `Marketing Claims`, and `Content Angles` over build-specific sections.
+- If the user asks for ideas, names, titles, articles, blog, or outlines, expand `Best Next Actions`, `Article Name Ideas`, and `Titles For This Conversation` before any detailed source analysis.
 - If the skill is in apply mode, keep this pack internal and summarize only the files changed, concepts placed, validations, and deferred surfaces in the final answer.

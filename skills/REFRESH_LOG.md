@@ -4,6 +4,22 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-04 — sf-repurpose
+
+**Added:**
+- Action-first repurposing report contract with `Best Next Actions`, `Article Name Ideas`, and `Titles For This Conversation` before the detailed source pack
+- Mandatory article name and conversation-title fields for source proof, target surface, and next step
+- Missing blog/article handling that keeps useful ideas but marks destination as `surface missing: blog` instead of inventing paths
+
+**Updated:**
+- Public skill page now promises article ideas, conversation-specific titles, and compact next actions
+- Output pack reference now prioritizes actionable article ideas before audit-style source analysis
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local user feedback, current `sf-repurpose` contract, and existing content governance)
+
 ## 2026-05-04 — sf-content
 
 **Added:**

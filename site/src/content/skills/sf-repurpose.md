@@ -8,7 +8,7 @@ audience:
   - "Founders who want product work to become useful content while the context is still fresh"
   - "Builders who collect good ideas and need a disciplined way to turn them into publishable angles"
 problem: "Good product and content ideas often disappear inside chat history, implementation notes, or saved excerpts before they become docs, copy, or distribution assets."
-outcome: "You get a structured source pack that separates documentation value from marketing value and keeps claims anchored to the original work or source text."
+outcome: "You get an action-first repurposing pack with article name ideas, conversation-specific title candidates, next actions, and a compact evidence ledger."
 founder_angle: "This skill matters because the best marketing and documentation often come from the moment the product is being built, not from reconstructing the story weeks later."
 when_to_use:
   - "When a feature, fix, or build conversation should become docs, release notes, or content angles"
@@ -19,12 +19,16 @@ what_you_give:
   - "An optional target such as doc, marketing, release notes, FAQ, newsletter, landing, or article"
   - "A project with CONTENT_MAP.md when surface routing should be persistent"
 what_you_get:
-  - "A source analysis or build summary"
+  - "A short list of best next actions"
+  - "Article name ideas linked to the product, docs, skill pages, FAQ, or current chantier"
+  - "Title candidates for repurposing the current conversation directly"
+  - "A source analysis or build summary when it helps justify the recommendations"
   - "Documentation notes and marketing-safe claims kept separate"
-  - "Content angles routed through the project's content map when available"
+  - "Content angles routed through the project's content map when available, with missing blog surfaces called out instead of guessed"
   - "An evidence ledger that marks what is confirmed, inferred, or not safe to publish"
 example_prompts:
   - "/sf-repurpose this build conversation into docs and marketing angles"
+  - "/sf-repurpose article titles for this conversation"
   - "/sf-repurpose faq: [paste paragraph]"
   - "/sf-repurpose newsletter: [paste idea]"
   - "/sf-repurpose landing: summarize what changed in this feature"

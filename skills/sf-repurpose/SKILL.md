@@ -52,6 +52,7 @@ When the output is public content or changes public claims, load `$SHIPFLOW_ROOT
 Primary outcome:
 - extract the real product/technical signal from the work in progress
 - separate documentation output from marketing output
+- produce action-first article ideas and titles the operator can use immediately
 - keep every public claim inside the bounds of what the work actually supports
 - keep every public claim inside the claim register and evidence boundaries when `docs/editorial/` exists
 - convert justified recommendations into actual repository edits when the user asks to apply them
@@ -94,6 +95,41 @@ If the skill recommends a dedicated article, it must also decide one of:
 - create the article/page now because the user asked to apply the recommendations
 - defer it explicitly because the repo has no declared surface or the user asked for strategy only
 - ask one concise question if creating the surface would require a risky product/SEO decision that cannot be inferred
+
+## Actionability Contract
+
+The default user-facing output must be immediately usable. Avoid opening with a long audit-style report unless the user explicitly asks for `report=agent`, `handoff`, or detailed evidence.
+
+In pack mode, lead with these sections in this order:
+
+1. `Best Next Actions`
+2. `Article Name Ideas`
+3. `Titles For This Conversation`
+4. `Source Pack`
+5. `Evidence Ledger`
+
+`Best Next Actions` must contain 3 to 5 concrete actions. Each action should name the content asset, target surface, source proof, and next command or owner skill.
+
+`Article Name Ideas` is a list of durable article concepts linked to the project's existing content, product doctrine, public pages, skill pages, docs, FAQ, semantic clusters, or current chantier. Each item must include:
+
+- working name
+- angle
+- source proof
+- target surface or `surface missing: blog`
+- recommended next step
+
+`Titles For This Conversation` is mandatory in workstream mode. It must give title candidates for repurposing the current conversation directly. Each title must include:
+
+- title
+- article promise
+- why this conversation supports it
+- best destination or `surface missing: blog`
+
+Keep both article lists short and ranked. Default to 5 to 8 strong items per list. If the source is too thin, give fewer strong items and say why instead of padding.
+
+Do not mix article names, titles, docs notes, marketing claims, and evidence into one long undifferentiated section. The operator should be able to pick an article idea or title without rereading the whole report.
+
+If no blog or article surface is declared, still provide article names and titles when the source supports them, but mark destination as `surface missing: blog` and do not invent a path.
 
 ## Conversation reuse doctrine
 
@@ -280,14 +316,21 @@ If `docs/editorial/` exists, check the claim register, page intent map, Astro co
 
 Use the standard pack from [references/output-pack.md](references/output-pack.md).
 
-Default sections:
+Default user-facing sections:
+- `Best Next Actions`
+- `Article Name Ideas`
+- `Titles For This Conversation`
+- `Source Pack`
+- `Evidence Ledger`
+
+Detailed source-pack subsections:
 - `Build Summary`
 - `Source Analysis`
 - `Product Documentation Notes`
 - `Internal Change Narrative`
 - `Marketing Claims`
 - `Content Angles`
-- `Evidence Ledger`
+- `Diffusion Map`
 
 Adapt the pack to the request:
 - for `doc`, expand doc notes and compress marketing
@@ -295,6 +338,7 @@ Adapt the pack to the request:
 - for `release notes` or `changelog`, emphasize externally understandable change narrative
 - for `faq` or `landing`, convert proven facts into reusable answer blocks or copy hooks
 - for supplied text, replace build-specific sections with source-specific reframing where needed
+- for `article`, `blog`, or `outline`, expand `Article Name Ideas` and `Titles For This Conversation` first, then keep the source pack compact
 
 In `apply mode`, the pack is an intermediate planning artifact, not the final deliverable. Use it to guide edits, then write the content into the repository. The final response should summarize the applied pack; it should not include a long unused content plan.
 
@@ -318,6 +362,7 @@ In `apply mode`, also verify that every recommended `must write` and `should wri
 The output must be directly reusable. Prefer short blocks over essay-style prose.
 
 Required behavior:
+- lead with article names, conversation titles, and next actions when the user asks for repurposing ideas
 - clearly separate documentation material from marketing material
 - make uncertainty explicit
 - keep language specific and concrete
@@ -376,5 +421,6 @@ When this skill finishes:
 - if the user wants polished docs, route the best doc sections into `sf-docs`
 - if the user wants public copy or long-form content, route the proven marketing sections into `sf-redact`
 - if the user wants current stats, market context, or external validation, route into `sf-enrich`
+- if the user chooses one article name or title, route to `sf-redact` with the selected promise, source proof, and surface status
 
 The key output of this skill is the source pack those downstream tasks can trust.
