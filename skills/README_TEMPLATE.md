@@ -58,6 +58,10 @@ Describe the output in concrete terms:
 - updated documentation
 - next-step recommendations
 
+Every skill that produces a final report should load the shared reporting
+contract from `skills/references/reporting-contract.md`; the final verdict
+timestamp lives there as a shared brick, not as duplicated per-skill copy.
+
 ## Typical Examples
 
 ```bash

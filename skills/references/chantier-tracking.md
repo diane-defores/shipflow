@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.4.1"
+artifact_version: "0.4.2"
 project: ShipFlow
 created: "2026-04-27"
-updated: "2026-05-04"
+updated: "2026-05-05"
 status: draft
 source_skill: sf-start
 scope: chantier-tracking
@@ -20,6 +20,7 @@ linked_systems:
   - skills/sf-deploy/SKILL.md
   - skills/sf-maintain/SKILL.md
   - skills/references/reporting-contract.md
+  - skills/references/final-report-timestamp.md
   - skills/references/master-workflow-lifecycle.md
 depends_on:
   - artifact: "specs/specs-as-chantier-registry.md"
@@ -33,6 +34,7 @@ evidence:
   - "sf-maintain promoted from recurring maintenance source-de-chantier to lifecycle master skill."
   - "Compact user-facing reporting contract added with explicit agent handoff mode."
   - "Master workflow lifecycle reference added: bug work items use bugs/*.md as source of truth; BUGS.md is optional/generated/triage view."
+  - "Final report timestamp moved into a shared reporting brick loaded through reporting-contract.md."
 next_review: "2026-05-27"
 next_step: "/sf-verify Specs as chantier registry"
 ---
@@ -130,7 +132,7 @@ This block coexists with the compact `Chantier` block. If the source skill is al
 
 ## Final Report Block
 
-Load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` before producing final output. Use the compact block in `report=user` and the fuller metadata block only in `report=agent`, blocked runs, or handoffs that need trace state.
+Load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` before producing final output. That contract also loads the shared final-report timestamp brick. Use the compact block in `report=user` and the fuller metadata block only in `report=agent`, blocked runs, or handoffs that need trace state.
 
 Compact user-mode block:
 
@@ -168,4 +170,5 @@ Prochaine etape:
 
 Verdict <skill>:
 - <verdict>
+Horodatage du verdict: YYYY-MM-DD HH:mm Paris time
 ```

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-03"
-updated: "2026-05-04"
+updated: "2026-05-05"
 status: active
 source_skill: sf-build
 scope: skill-reporting-contract
@@ -16,15 +16,20 @@ docs_impact: yes
 linked_systems:
   - skills/*/SKILL.md
   - skills/references/chantier-tracking.md
+  - skills/references/final-report-timestamp.md
   - specs/
 depends_on:
   - artifact: "specs/skill-reporting-modes-and-compact-reports.md"
     artifact_version: "1.1.0"
     required_status: ready
+  - artifact: "skills/references/final-report-timestamp.md"
+    artifact_version: "1.0.0"
+    required_status: active
 supersedes: []
 evidence:
   - "User decision 2026-05-03: concise user reports by default, detailed agent reports by explicit mode."
   - "User decision 2026-05-04: user reports should organize ship status as outcome, evidence, then limits, match the user's active language, and allow a few sober status emojis."
+  - "User decision 2026-05-05: final reports need a visible Paris-time verdict timestamp as a shared reporting brick, not duplicated per skill."
 next_review: "2026-06-04"
 next_step: "/sf-verify skill reporting modes"
 ---
@@ -36,6 +41,8 @@ next_step: "/sf-verify skill reporting modes"
 This reference defines the default final-report shape for ShipFlow skills.
 
 The goal is to reduce user-facing noise without weakening traceability. Successful runs should be short. Failed, blocked, partial, or security-sensitive runs should include enough detail to act safely.
+
+Before applying this contract, load `$SHIPFLOW_ROOT/skills/references/final-report-timestamp.md`. Its verdict timestamp rule is part of this reporting contract and applies to both `report=user` and `report=agent`.
 
 ## Report Modes
 
@@ -168,3 +175,13 @@ Concise does not mean vague. If a run is blocked, partial, or risky, include:
 - the concrete evidence
 - the safest next action
 - whether the current work can or cannot ship
+
+## Final Timestamp
+
+End every final report with a verdict or final status immediately followed by:
+
+```text
+Horodatage du verdict: YYYY-MM-DD HH:mm Paris time
+```
+
+Follow the exact placement and exception rules in `$SHIPFLOW_ROOT/skills/references/final-report-timestamp.md`. Nothing comes after the timestamp.

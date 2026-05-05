@@ -129,7 +129,7 @@ For non-trivial work, spec-first is mandatory.
 - Keep internal contracts in English.
 - Keep `description` to one concise sentence and keep arguments in `argument-hint`.
 - Encode explicit lifecycle gates, stop conditions, and validation commands.
-- For any skill that produces a final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` and support concise `report=user` by default plus explicit `report=agent`/`handoff` detail mode.
+- For any skill that produces a final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` and support concise `report=user` by default plus explicit `report=agent`/`handoff` detail mode. Do not duplicate shared reporting bricks such as the verdict timestamp inside individual skills.
 - Do not duplicate full internals of `sf-spec`, `sf-skills-refresh`, `sf-verify`, `sf-docs`, `sf-help`, or `sf-ship`; orchestrate them.
 
 ### Step 2 — Enforce lifecycle gates in the skill body
