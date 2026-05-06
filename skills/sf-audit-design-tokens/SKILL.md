@@ -265,6 +265,7 @@ HIGH SEVERITY (🟠)
 PRIORITY IMPROVEMENTS (⚡)
   file:line — description — Why: [principle]
   ⚡ (if no playground detected) Run /sf-design-playground to scaffold a live token preview page.
+  ⚡ (if tokens exist but pages/components still use hardcoded values) Run /sf-design "migrer le site pour consommer les tokens design centralises sans changement visuel volontaire".
 
 Fixed: 0 (this audit is read-only)
 Tasks created: X in TASKS.md

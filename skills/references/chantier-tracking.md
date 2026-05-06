@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.4.2"
+artifact_version: "0.4.3"
 project: ShipFlow
 created: "2026-04-27"
-updated: "2026-05-05"
+updated: "2026-05-06"
 status: draft
 source_skill: sf-start
 scope: chantier-tracking
@@ -19,6 +19,7 @@ linked_systems:
   - skills/shipflow/SKILL.md
   - skills/sf-deploy/SKILL.md
   - skills/sf-maintain/SKILL.md
+  - skills/sf-design/SKILL.md
   - skills/references/reporting-contract.md
   - skills/references/final-report-timestamp.md
   - skills/references/master-workflow-lifecycle.md
@@ -35,6 +36,7 @@ evidence:
   - "Compact user-facing reporting contract added with explicit agent handoff mode."
   - "Master workflow lifecycle reference added: bug work items use bugs/*.md as source of truth; BUGS.md is optional/generated/triage view."
   - "Final report timestamp moved into a shared reporting brick loaded through reporting-contract.md."
+  - "sf-design added as an obligatoire lifecycle master skill."
 next_review: "2026-05-27"
 next_step: "/sf-verify Specs as chantier registry"
 ---
@@ -105,7 +107,7 @@ This block coexists with the compact `Chantier` block. If the source skill is al
 
 | Skill group | Trace category | Process role | Source threshold |
 |-------------|----------------|--------------|------------------|
-| `sf-spec`, `sf-ready`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship` | `obligatoire` | `lifecycle` | Not a source; continue or create the owned chantier through the lifecycle gates. |
+| `sf-spec`, `sf-ready`, `sf-build`, `sf-maintain`, `sf-design`, `sf-deploy`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship` | `obligatoire` | `lifecycle` | Not a source; continue or create the owned chantier through the lifecycle gates. |
 | `sf-audit*`, `sf-deps`, `sf-perf` | `conditionnel` | `source-de-chantier` | Major audit findings, P0/P1, cross-domain P2 clusters, or fixes needing a spec. |
 | `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-test`, `sf-migrate`, `sf-fix`, `sf-bug` | `conditionnel` | `source-de-chantier` | Incidents, failing flows, migration risk, bug files, bug lifecycle routing, or validation failures beyond a direct fix. |
 | `sf-market-study`, `sf-veille`, `sf-research` | `conditionnel` | `source-de-chantier` | Strategic or research output that requires a product, content, architecture, or implementation decision. |

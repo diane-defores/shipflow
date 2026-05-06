@@ -8,12 +8,12 @@ audience:
   - "Founders who do not want to memorize every sf-* command"
   - "Operators who know the outcome but not the right workflow route"
   - "Teams that want routing decisions kept visible in the main thread"
-problem: "A user can lose momentum before work starts by having to choose between build, bug, maintenance, content, deploy, skill, and audit workflows."
+problem: "A user can lose momentum before work starts by having to choose between build, bug, maintenance, content, design, deploy, skill, and audit workflows."
 outcome: "You get one first command that either answers directly, routes the current thread to the right ShipFlow skill, or asks one numbered clarification question when no context-safe route exists."
-founder_angle: "The router keeps the first move simple. You describe the business or product need, and ShipFlow chooses whether the work is conversation, build, maintenance, bug, release, content, skill maintenance, or audit."
+founder_angle: "The router keeps the first move simple. You describe the business or product need, and ShipFlow chooses whether the work is conversation, build, maintenance, bug, release, content, design, skill maintenance, or audit."
 when_to_use:
   - "When you want the recommended first command and do not know which skill to launch"
-  - "When the request might be a feature, bug, maintenance run, content task, deploy proof, skill change, audit, or simple question"
+  - "When the request might be a feature, bug, maintenance run, content task, design task, deploy proof, skill change, audit, or simple question"
   - "When you want the selected master skill to own its normal lifecycle after routing"
 what_you_give:
   - "A plain-language instruction"
@@ -30,7 +30,7 @@ example_prompts:
 argument_modes:
   - argument: "<instruction>"
     effect: "Classifies the request and either answers directly or hands the main thread to the selected ShipFlow skill."
-    consequence: "Routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*."
+    consequence: "Routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, design to sf-design, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*."
 limits:
   - "It does not replace the selected skill's lifecycle gates"
   - "It uses context-safe defaults only when they are clear, low-risk, reversible, and verifiable"
@@ -42,6 +42,7 @@ related_skills:
   - "sf-bug"
   - "sf-deploy"
   - "sf-content"
+  - "sf-design"
   - "sf-skill-build"
   - "sf-audit"
 featured: true
@@ -52,7 +53,7 @@ order: 5
 
 Use `shipflow <instruction>` when you want ShipFlow to choose the route. It is
 for the first moment of a request, before you know whether the work is a build,
-bug loop, maintenance run, release proof, content task, skill change, audit, or
+bug loop, maintenance run, release proof, content task, design task, skill change, audit, or
 just a question.
 
 The router keeps the handoff visible. If it selects a master skill, that skill

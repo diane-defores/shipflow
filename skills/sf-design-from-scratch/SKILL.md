@@ -1,6 +1,6 @@
 ---
 name: sf-design-from-scratch
-description: "Professional design-system creation from existing UI."
+description: "Design-system creation from existing UI."
 argument-hint: '[project | page | route | "tokens-only" | "with-playground"]'
 ---
 
@@ -187,6 +187,7 @@ After tokens exist:
 
 - run or route to `sf-design-playground` when the user wants visual editing/preview
 - run or route to `sf-audit-design-tokens` for deep token coherence
+- route to `sf-design` when the token source exists but the remaining work is a site-wide page/component migration or visual non-regression proof
 - route to `sf-audit-components` if component variants drift after tokenization
 - route to `sf-audit-a11y` if contrast, focus, motion, or target-size risks appear
 
@@ -234,6 +235,7 @@ After creation, run or recommend:
 ```bash
 /sf-audit-design-tokens
 /sf-design-playground
+/sf-design "migrer le site pour consommer les tokens design centralises sans changement visuel volontaire"
 ```
 
 ## Security And Safety
@@ -274,7 +276,8 @@ Token source: [file or none]
 Design system: [fonts/colors/type/spacing/radius/motion/theme summary]
 Migration: [files changed or none]
 Checks: [passed / failed / skipped with reason]
-Follow-up: [sf-design-playground / sf-audit-design-tokens / none]
+Token implementation: [complete / partial / unknown]
+Follow-up: [sf-design-playground / sf-audit-design-tokens / sf-design token migration / none]
 
 ## Chantier
 

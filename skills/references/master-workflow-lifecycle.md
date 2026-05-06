@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-04"
+updated: "2026-05-06"
 status: active
 source_skill: sf-skill-build
 scope: master-workflow-lifecycle
@@ -17,6 +17,7 @@ linked_systems:
   - skills/sf-build/SKILL.md
   - skills/sf-maintain/SKILL.md
   - skills/sf-content/SKILL.md
+  - skills/sf-design/SKILL.md
   - skills/sf-skill-build/SKILL.md
   - skills/sf-deploy/SKILL.md
   - skills/sf-bug/SKILL.md
@@ -29,19 +30,20 @@ linked_systems:
   - README.md
 depends_on:
   - artifact: "skills/references/master-delegation-semantics.md"
-    artifact_version: "1.1.0"
+    artifact_version: "1.2.0"
     required_status: active
   - artifact: "skills/references/question-contract.md"
     artifact_version: "1.0.0"
     required_status: active
   - artifact: "skills/references/chantier-tracking.md"
-    artifact_version: "0.4.1"
+    artifact_version: "0.4.3"
     required_status: draft
 supersedes: []
 evidence:
   - "User decision 2026-05-04: master skills should share the same workflow skeleton instead of duplicating lifecycle doctrine."
   - "User decision 2026-05-04: bug work uses one Markdown bug file per bug under bugs/*.md; BUGS.md is optional/generated/triage view, not the source of truth."
   - "User decision 2026-05-04: user-facing questions should share a numbered, context-aware question/default contract."
+  - "User decision 2026-05-06: sf-design joins the master lifecycle set."
 next_review: "2026-06-04"
 next_step: "/sf-verify master workflow lifecycle reference"
 ---
@@ -56,7 +58,7 @@ It does not redefine delegation, subagent, short-confirmation, or parallelism se
 
 ## Applies To
 
-Use this reference from master and orchestrator skills that pilot more than one phase or owner skill, including `sf-build`, `sf-maintain`, `sf-content`, `sf-skill-build`, `sf-deploy`, `sf-bug`, and `sf-audit`.
+Use this reference from master and orchestrator skills that pilot more than one phase or owner skill, including `sf-build`, `sf-maintain`, `sf-content`, `sf-design`, `sf-skill-build`, `sf-deploy`, `sf-bug`, and `sf-audit`.
 
 Atomic owner skills may cite this reference only when they need to align their own handoff language with the master lifecycle.
 

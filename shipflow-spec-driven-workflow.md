@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.14.3"
+artifact_version: "0.15.0"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-05-04"
+updated: "2026-05-06"
 status: draft
 source_skill: sf-docs
 scope: spec-driven-workflow
@@ -19,6 +19,7 @@ linked_systems:
   - skills/sf-deploy/SKILL.md
   - skills/sf-maintain/SKILL.md
   - skills/sf-content/SKILL.md
+  - skills/sf-design/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/references/entrypoint-routing.md
   - templates/artifacts/
@@ -55,6 +56,7 @@ evidence:
   - "Updated on 2026-05-04 to extract the shared master workflow lifecycle and clarify that bugs/*.md files are bug source of truth while BUGS.md is optional/generated triage."
   - "Updated on 2026-05-04 to document shipflow <instruction> as the primary non-technical router with direct main-thread handoff to selected skills."
   - "Updated on 2026-05-05 to document shared question/default doctrine across skills."
+  - "Updated on 2026-05-06 to add sf-design as the master design lifecycle entrypoint."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -97,6 +99,7 @@ Skill launch cheatsheet:
 | Bug-loop routing | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
+| Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
 | Design system creation | `sf-design-from-scratch [target or mode]` | Build a complete professional token system from an existing UI; use `tokens-only` or `with-playground`. |
 | Manual expert lifecycle | `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end` | Use when you intentionally want to drive each gate instead of using `sf-build`. |
 | Commit and push ready work | `sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |
@@ -958,7 +961,8 @@ Use this rule of thumb:
 - bug lifecycle orchestration -> `sf-bug`
 - recurring project maintenance -> `sf-maintain`
 - content management -> `sf-content`
-- design system from scattered UI values -> `sf-design-from-scratch`
+- general design request, UI/UX work, redesign, token migration, or visual proof -> `sf-design`
+- design system from scattered UI values when the operator already knows that exact target -> `sf-design-from-scratch`
 - bug repair intake -> `sf-fix`
 - unclear problem -> `sf-explore`
 - non-trivial scoped work -> `sf-spec`

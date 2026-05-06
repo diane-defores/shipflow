@@ -88,6 +88,7 @@ En **deep mode**, le report est étendu avec les 3 sous-scores globaux (Design T
 ## Dépendances
 
 - **En amont** : `sf-audit` (top-level) peut appeler `sf-audit-design` en mode standard sur plusieurs projets en parallèle.
+- **Orchestrée par** : `sf-design` quand la demande utilisateur est un objectif design plutôt qu'un audit explicitement choisi.
 - **En aval (deep mode)** : spawn 3 agents via Agent tool sur `sf-audit-design-tokens`, `sf-audit-components`, `sf-audit-a11y`.
 - **Associée (non appelée)** : `sf-design-playground` — générateur de page de preview des design tokens. L'audit recommande de la lancer si aucune playground n'est détectée.
 

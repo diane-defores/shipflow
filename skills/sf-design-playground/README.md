@@ -107,6 +107,7 @@ La skill génère :
 
 - **Associée à** : `sf-audit-design-tokens` — l'audit recommande cette skill comme amélioration prioritaire si aucune page de preview n'est détectée dans le projet.
 - **En aval de** : `sf-design-from-scratch` — si aucun système de tokens n'existe, créer d'abord la fondation centralisée avec cette skill, puis générer le playground.
+- **Orchestrée par** : `sf-design` — si les tokens sont centralisés mais pas encore consommés par tout le site, router vers un chantier de migration + preuve visuelle.
 - **Indépendante** : scaffold-and-forget. Une fois générée, la page vit sa vie dans le projet.
 
 ## Exemple

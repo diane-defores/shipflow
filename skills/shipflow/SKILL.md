@@ -79,6 +79,7 @@ Choose exactly one route unless the user explicitly asks for a dashboard or comp
 | Bug report, `BUG-ID`, retest, closure, fix state, or bug ship-risk question | `sf-bug <instruction>` |
 | Release confidence, preview/prod deploy, deployed truth, runtime logs, production health, post-deploy proof | `sf-deploy <instruction>` |
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, apply/publish content | `sf-content <instruction>` |
+| Design request, UI/UX work, redesign, design tokens, playground, accessibility design, component design, visual proof, or token migration | `sf-design <instruction>` |
 | Create, modify, rename, document, refresh, or validate ShipFlow skills | `sf-skill-build <instruction>` |
 | One obvious audit domain only | relevant `sf-audit-* <instruction>` or `sf-audit <instruction>` |
 | One obvious owner lane only, such as checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, or final ship | focused owner skill |

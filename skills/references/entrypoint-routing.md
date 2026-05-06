@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-04"
+updated: "2026-05-06"
 status: active
 source_skill: sf-skill-build
 scope: entrypoint-routing
@@ -20,6 +20,7 @@ linked_systems:
   - skills/sf-bug/SKILL.md
   - skills/sf-deploy/SKILL.md
   - skills/sf-content/SKILL.md
+  - skills/sf-design/SKILL.md
   - skills/sf-skill-build/SKILL.md
   - skills/sf-audit/SKILL.md
   - skills/references/master-delegation-semantics.md
@@ -29,19 +30,20 @@ linked_systems:
   - shipflow-spec-driven-workflow.md
 depends_on:
   - artifact: "skills/references/master-delegation-semantics.md"
-    artifact_version: "1.1.0"
+    artifact_version: "1.2.0"
     required_status: active
   - artifact: "skills/references/question-contract.md"
     artifact_version: "1.0.0"
     required_status: active
   - artifact: "skills/references/master-workflow-lifecycle.md"
-    artifact_version: "1.1.0"
+    artifact_version: "1.2.0"
     required_status: active
 supersedes: []
 evidence:
   - "User decision 2026-05-04: create `shipflow` as the primary non-technical router across the existing skill taxonomy."
   - "User decision 2026-05-04: `shipflow` should use direct main-thread handoff to selected master skills instead of nested master-skill subagents."
   - "User decision 2026-05-04: ambiguous routing questions should be numbered decision briefs with a responsible recommendation."
+  - "User decision 2026-05-06: design-related requests should route to a master `sf-design` lifecycle entrypoint."
 next_review: "2026-06-04"
 next_step: "/sf-verify specs/shipflow-primary-router-skill.md"
 ---
@@ -80,6 +82,7 @@ A read-only routing scout is allowed only for cheap classification evidence and 
 | Observed defect, `BUG-ID`, retest, bug closure, bug fix state, bug ship risk | `sf-bug` |
 | Release confidence, preview/prod deployment, deployed truth, runtime logs, production health, post-deploy proof | `sf-deploy` |
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, content apply/publish | `sf-content` |
+| Design request, UI/UX work, redesign, design tokens, design playground, accessibility design, component design, visual proof, or token migration | `sf-design` |
 | New skill, skill modification, skill runtime visibility, skill public page, skill docs/help coherence | `sf-skill-build` |
 | One obvious audit domain only | relevant `sf-audit-*` or `sf-audit` |
 | One obvious focused lane: checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, final ship | focused owner skill |

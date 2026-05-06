@@ -9,7 +9,7 @@ const masterSkillCheatsheet = [
     command: "shipflow <instruction>",
     when: "Recommended non-technical first command when you want ShipFlow to choose the route.",
     modes:
-      "Answers pure conversation directly; routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*. Asks one numbered question when ambiguous."
+      "Answers pure conversation directly; routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, design to sf-design, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*. Asks one numbered question when ambiguous."
   },
   {
     command: "sf-build <story, bug, or goal>",
@@ -40,6 +40,12 @@ const masterSkillCheatsheet = [
     when: "Content management across strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing.",
     modes:
       "plan, repurpose, draft, enrich, audit, seo, editorial, apply, and ship select the content lifecycle lane while content map and editorial gates keep public surfaces safe."
+  },
+  {
+    command: "sf-design <design question or goal>",
+    when: "Design lifecycle across UI/UX, tokens, playgrounds, component and accessibility audits, implementation, browser proof, and ship routing.",
+    modes:
+      "tokens, audit, playground, page or route targets, redesign goals, token migration, visual proof, and natural-language design requests all route through the safest owner skills."
   },
   {
     command: "sf-skill-build <idea or path>",

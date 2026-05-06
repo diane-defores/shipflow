@@ -797,6 +797,8 @@ PRIORITY IMPROVEMENTS (high impact, bounded effort)
   ... (max 5, ordered by impact)
   ⚡ Run /sf-design-playground to scaffold a live design token preview page
      (auto-included if no design playground detected and project has any design token system)
+  ⚡ Run /sf-design "<design remediation goal>" when the next step spans tokens, components, accessibility, browser proof, and implementation.
+     Why: broad design work needs a master lifecycle instead of a single specialist audit.
 
 Fixed: X issues across Y files
 Needs decision: Z items (listed below)

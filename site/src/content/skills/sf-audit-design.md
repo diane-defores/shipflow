@@ -29,6 +29,7 @@ limits:
   - "It reviews the current system; it does not redesign the product on its own"
   - "Deep fixes may span design, content, and code together"
 related_skills:
+  - "sf-design"
   - "sf-audit-a11y"
   - "sf-audit-components"
   - "sf-audit-design-tokens"

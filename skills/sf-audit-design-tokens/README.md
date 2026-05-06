@@ -95,6 +95,7 @@ PRIORITY IMPROVEMENTS
 
 - **Appelée par** : `sf-audit-design` en deep mode (Agent tool, en parallèle avec `sf-audit-components` et `sf-audit-a11y`).
 - **Recommande** : `sf-design-playground` comme amélioration prioritaire si aucune page de preview des design tokens n'est détectée.
+- **Orchestrée par** : `sf-design` quand l'audit déclenche une migration multi-pages, une centralisation appliquée à tout le site, ou une preuve visuelle de non-régression.
 
 ## Exemple
 

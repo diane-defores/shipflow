@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.8.3"
+artifact_version: "0.9.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-04"
+updated: "2026-05-06"
 status: draft
 source_skill: sf-docs
 scope: readme
@@ -22,6 +22,7 @@ linked_systems:
   - skills/sf-deploy/SKILL.md
   - skills/sf-maintain/SKILL.md
   - skills/sf-content/SKILL.md
+  - skills/sf-design/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/shipflow/SKILL.md
   - skills/references/question-contract.md
@@ -44,6 +45,7 @@ evidence:
   - "Added skills/references/master-workflow-lifecycle.md as the shared lifecycle skeleton and clarified bug files as source of truth."
   - "Documented shipflow <instruction> as the recommended non-technical router before direct sf-* expert entrypoints."
   - "Documented the shared question/default contract for numbered questions and context-safe defaults."
+  - "Added sf-design as the master design lifecycle entrypoint."
 next_step: "/sf-docs audit README.md"
 ---
 
@@ -320,6 +322,7 @@ Skill launch cheatsheet:
 | Bug-loop routing | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
+| Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
 | Design system creation | `sf-design-from-scratch [target or mode]` | Build a complete professional token system from an existing UI; use `tokens-only` or `with-playground`. |
 | Manual expert lifecycle | `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end` | Use when you intentionally want to drive each gate instead of using `sf-build`. |
 | Commit and push ready work | `sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |

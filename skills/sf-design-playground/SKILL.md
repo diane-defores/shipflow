@@ -275,8 +275,24 @@ NEXT STEPS
   2. Edit tokens live, watch the page update
   3. Use Copy / Save / Export when you're happy
   4. Before deploying: set DESIGN_SYSTEM_PASSWORD env (if no auth)
+  5. If tokens were centralized but pages/components still use hardcoded values:
+     run /sf-design "migrer le site pour consommer les tokens design centralises sans changement visuel volontaire"
 ═══════════════════════════════════════
 ```
+
+## Token Implementation Handoff
+
+The playground makes tokens visible and editable. It does not prove that the whole site consumes the centralized token source.
+
+When the playground is created after a token centralization pass, the report must state whether a migration sweep is still needed:
+
+```text
+Token implementation: [complete / partial / unknown]
+Next design route: /sf-design "migrer le site pour consommer les tokens design centralises sans changement visuel volontaire"
+Expected proof: sf-audit-design-tokens -> sf-check -> sf-browser -> sf-verify
+```
+
+If hardcoded design values remain across pages, layouts, or components, do not present the playground as the end of the design-system chantier. Route to `sf-design` or `sf-build` for the site-wide implementation pass.
 
 ---
 

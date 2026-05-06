@@ -21,7 +21,7 @@ what_you_get:
   - "A complete token system across color, typography, spacing, radius, theme, and motion"
   - "A modular typography scale, optionally fluid with clamp()"
   - "A bounded migration from hardcoded values to variables"
-  - "A route toward sf-design-playground and sf-audit-design-tokens"
+  - "A route toward sf-design, sf-design-playground, and sf-audit-design-tokens"
 example_prompts:
   - "/sf-design-from-scratch"
   - "/sf-design-from-scratch src/pages/index.astro"
@@ -36,7 +36,9 @@ argument_modes:
 limits:
   - "It creates the design-system source of truth; it does not replace broader design audit, component audit, or accessibility audit."
   - "Large multi-page migrations should still use a ready spec before sweeping the whole app."
+  - "Token centralization is not finished until pages and components consume the centralized source and visual proof passes."
 related_skills:
+  - "sf-design"
   - "sf-design-playground"
   - "sf-audit-design-tokens"
   - "sf-audit-design"

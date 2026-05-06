@@ -34,6 +34,7 @@ Quick reference for the skill system, modes, and workflows.
 | `/sf-skill-build` | Master skill-maintenance orchestrator for creating or modifying ShipFlow skills with optional exploration and lifecycle gates | `<new skill idea | existing skill path>` |
 | `/sf-maintain` | Master maintenance lifecycle from triage through delegated fixes, verification, and ship | `quick`, `full`, `security`, `global`, `no-ship` |
 | `/sf-content` | Master content lifecycle for strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship` |
+| `/sf-design` | Master design lifecycle for UI/UX, tokens, playgrounds, a11y, implementation, proof, and ship routing | `tokens`, `audit`, `playground`, page/route, or natural-language design goal |
 | `/sf-bug` | Professional bug loop orchestrator for intake, bug files, fixes, retests, verification, and ship risk | `BUG-ID`, `--retest BUG-ID`, `--ship BUG-ID` |
 | `/sf-fix` | Bug-first intake and routing (direct fix vs spec-first) | `<bug description>` |
 | `/sf-auth-debug` | Browser-auth diagnosis for Clerk, Supabase Auth, OAuth, Google/YouTube, Convex, sessions, callbacks | `<bug/URL/flow>` |
@@ -131,6 +132,7 @@ Internal role matrix:
 | `skills/sf-check/SKILL.md` | conditionnel | source-de-chantier | Failed checks become a chantier when failures span domains, block release, or need staged remediation. |
 | `skills/sf-context/SKILL.md` | non-applicable | helper | Context discovery is read-only; not a chantier source. |
 | `skills/sf-deps/SKILL.md` | conditionnel | source-de-chantier | Dependency findings become a chantier for critical/high risk, supply-chain trust, migration, or automation gaps. |
+| `skills/sf-design/SKILL.md` | obligatoire | lifecycle | Master design lifecycle for routing design requests through specialist owner skills, spec-first implementation, proof, verification, and ship. |
 | `skills/sf-design-from-scratch/SKILL.md` | conditionnel | source-de-chantier | Design-system creation becomes a chantier when tokenization or migration spans multiple surfaces. |
 | `skills/sf-design-playground/SKILL.md` | conditionnel | support-de-chantier | Supports design-token work; route only on explicit formalization request. |
 | `skills/sf-docs/SKILL.md` | conditionnel | support-de-chantier | Supports docs coherence; not a source unless the user asks to frame a spec. |

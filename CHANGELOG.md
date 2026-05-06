@@ -26,6 +26,16 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
 
+## [2026-05-06]
+
+### Added
+- `sf-design` master design lifecycle skill for routing UI/UX, design-token, playground, component, accessibility, browser-proof, implementation, verification, and ship workflows from one design entrypoint.
+- Public `sf-design` skill page and launch-cheatsheet routing so design-related requests are discoverable from the site and repo docs.
+
+### Changed
+- `shipflow` routing now sends design-related operator requests to `sf-design`.
+- Design playground and design-system creation guidance now call out the follow-up migration needed when centralized tokens are not yet consumed across pages and components.
+
 ## [2026-05-04]
 
 ### Added

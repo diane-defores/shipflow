@@ -20,7 +20,7 @@ what_you_give:
 what_you_get:
   - "A token-architecture review"
   - "Findings across color, type, spacing, and motion systems"
-  - "A stronger basis for system cleanup or preview tooling"
+  - "A stronger basis for system cleanup, token migration, or preview tooling"
 example_prompts:
   - "/sf-audit-design-tokens"
   - "/sf-audit-design-tokens src/styles"
@@ -29,6 +29,7 @@ limits:
   - "It audits token architecture; it does not generate a finished design system by itself"
   - "Fixing token drift usually requires coordinated CSS and component changes"
 related_skills:
+  - "sf-design"
   - "sf-audit-design"
   - "sf-design-playground"
   - "sf-audit-components"
