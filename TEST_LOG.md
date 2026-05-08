@@ -1,5 +1,18 @@
 # Test Log
 
+## 2026-05-08 - ShipFlow menu startup and Health cleanup guard retest
+
+- Scope: BUG-2026-05-08-001, BUG-2026-05-08-002
+- Environment: local
+- Tester: Codex tooling
+- Source: sf-test
+- Status: pass
+- Confidence: high
+- Result summary: Top-level menu startup completed in 0.495s and isolated Gum render in 0.246s; Health blank input stayed on process/options view and explicit `g` was required for Aggressive Cleanup.
+- Bug pointer: BUG-2026-05-08-001 -> bugs/BUG-2026-05-08-001.md; BUG-2026-05-08-002 -> bugs/BUG-2026-05-08-002.md
+- Evidence pointer: `/tmp/sf-test-shipflow-start.out`, `/tmp/sf-test-menu-gum.out`, `/tmp/sf-test-health-blank.out`, `/tmp/sf-test-health-g.out`
+- Follow-up: none; both bugs closed by this retest.
+
 ## 2026-05-08 - PM2 orphan stop and crash-loop guard retest
 
 - Scope: BUG-2026-05-06-001

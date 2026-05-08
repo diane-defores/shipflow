@@ -505,6 +505,15 @@ else
     fi
 fi
 
+if command -v caddy >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; then
+    info "Désactivation du service Caddy système par défaut..."
+    if systemctl disable --now caddy >/dev/null 2>&1; then
+        success "Caddy système désactivé; ShipFlow lancera Caddy en mode utilisateur quand nécessaire"
+    else
+        warning "Impossible de désactiver automatiquement caddy.service; le menu Health peut l'arrêter si aucune app PM2 n'est en ligne"
+    fi
+fi
+
 echo ""
 
 # 10. Créer le répertoire de configuration
@@ -1058,7 +1067,7 @@ configure_codex_rmcp() {
     rm -f "$cleaned_file"
 }
 
-# Context7 MCP for Codex — stdio transport, enabled by default.
+# Context7 MCP for Codex — stdio transport, registered disabled by default.
 configure_codex_context7_mcp() {
     local target_home="$1"
     local codex_dir="$target_home/.codex"
@@ -1082,14 +1091,14 @@ configure_codex_context7_mcp() {
         printf '[mcp_servers.context7]\n'
         printf 'command = "npx"\n'
         printf 'args = ["-y", "@upstash/context7-mcp@latest"]\n'
-        printf 'enabled = true\n'
+        printf 'enabled = false\n'
         printf '# <<< shipflow codex context7 mcp <<<\n'
     } >> "$tmp_file"
 
     mv "$tmp_file" "$config_file"
 }
 
-# Vercel MCP for Codex — remote HTTP transport, enabled by default.
+# Vercel MCP for Codex — remote HTTP transport, registered disabled by default.
 configure_codex_vercel_mcp() {
     local target_home="$1"
     local codex_dir="$target_home/.codex"
@@ -1112,14 +1121,14 @@ configure_codex_vercel_mcp() {
         printf '# >>> shipflow codex vercel mcp >>>\n'
         printf '[mcp_servers.vercel]\n'
         printf 'url = "https://mcp.vercel.com"\n'
-        printf 'enabled = true\n'
+        printf 'enabled = false\n'
         printf '# <<< shipflow codex vercel mcp <<<\n'
     } >> "$tmp_file"
 
     mv "$tmp_file" "$config_file"
 }
 
-# Convex MCP for Codex — stdio transport, enabled by default.
+# Convex MCP for Codex — stdio transport, registered disabled by default.
 configure_codex_convex_mcp() {
     local target_home="$1"
     local codex_dir="$target_home/.codex"
@@ -1143,14 +1152,14 @@ configure_codex_convex_mcp() {
         printf '[mcp_servers.convex]\n'
         printf 'command = "npx"\n'
         printf 'args = ["-y", "convex@latest", "mcp", "start"]\n'
-        printf 'enabled = true\n'
+        printf 'enabled = false\n'
         printf '# <<< shipflow codex convex mcp <<<\n'
     } >> "$tmp_file"
 
     mv "$tmp_file" "$config_file"
 }
 
-# Clerk MCP for Codex — remote HTTP transport, enabled by default.
+# Clerk MCP for Codex — remote HTTP transport, registered disabled by default.
 configure_codex_clerk_mcp() {
     local target_home="$1"
     local codex_dir="$target_home/.codex"
@@ -1173,14 +1182,14 @@ configure_codex_clerk_mcp() {
         printf '# >>> shipflow codex clerk mcp >>>\n'
         printf '[mcp_servers.clerk]\n'
         printf 'url = "https://mcp.clerk.com/mcp"\n'
-        printf 'enabled = true\n'
+        printf 'enabled = false\n'
         printf '# <<< shipflow codex clerk mcp <<<\n'
     } >> "$tmp_file"
 
     mv "$tmp_file" "$config_file"
 }
 
-# Supabase MCP for Codex — remote HTTP transport, enabled by default.
+# Supabase MCP for Codex — remote HTTP transport, registered disabled by default.
 configure_codex_supabase_mcp() {
     local target_home="$1"
     local codex_dir="$target_home/.codex"
@@ -1203,7 +1212,7 @@ configure_codex_supabase_mcp() {
         printf '# >>> shipflow codex supabase mcp >>>\n'
         printf '[mcp_servers.supabase]\n'
         printf 'url = "https://mcp.supabase.com/mcp"\n'
-        printf 'enabled = true\n'
+        printf 'enabled = false\n'
         printf '# <<< shipflow codex supabase mcp <<<\n'
     } >> "$tmp_file"
 
@@ -1256,7 +1265,7 @@ configure_codex_dataforseo_mcp() {
     mv "$tmp_file" "$config_file"
 }
 
-# Playwright MCP for Codex — stdio transport, enabled by default.
+# Playwright MCP for Codex — stdio transport, registered disabled by default.
 configure_codex_playwright_mcp() {
     local target_home="$1"
     local codex_dir="$target_home/.codex"
@@ -1282,7 +1291,7 @@ configure_codex_playwright_mcp() {
         printf '[mcp_servers.playwright]\n'
         printf 'command = "npx"\n'
         printf 'args = %s\n' "$args_json"
-        printf 'enabled = true\n'
+        printf 'enabled = false\n'
         printf '\n'
         printf '[mcp_servers.playwright.tools]\n'
         printf 'browser_snapshot = {}\n'
@@ -1385,16 +1394,19 @@ configure_aliases() {
     local bashrc="$1/.bashrc"
     [ -f "$bashrc" ] || touch "$bashrc"
     sed -i '/^# >>> ShipFlow AI aliases >>>$/,/^# <<< ShipFlow AI aliases <<<$/{d}' "$bashrc"
-    sed -i '/^alias \(shipflow\|sf\|c\|co\|cask\|coask\)=/d' "$bashrc"
+    sed -i '/^alias \(shipflow\|sf\|s\|c\|co\|cask\|coask\|re\|reload\)=/d' "$bashrc"
     cat >> "$bashrc" << ALIASES
 
 # >>> ShipFlow AI aliases >>>
 alias shipflow='$SHIPFLOW_DIR/shipflow.sh'
 alias sf='$SHIPFLOW_DIR/shipflow.sh'
+alias s='$SHIPFLOW_DIR/shipflow.sh'
 alias c='claude --dangerously-skip-permissions --permission-mode bypassPermissions'
 alias co='codex'
 alias cask='claude --permission-mode default'
 alias coask='codex --ask-for-approval on-request --sandbox danger-full-access'
+alias re='source ~/.bashrc && echo "✓ Shell reloaded"'
+alias reload='source ~/.bashrc && echo "✓ Shell reloaded"'
 # <<< ShipFlow AI aliases <<<
 ALIASES
 }

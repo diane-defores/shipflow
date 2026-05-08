@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.3"
+artifact_version: "0.1.4"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-04"
+updated: "2026-05-08"
 status: draft
 source_skill: manual
 scope: "context"
@@ -16,7 +16,7 @@ docs_impact: "yes"
 linked_systems: ["shipflow.sh", "lib.sh", "config.sh", "install.sh", "local/local.sh", "local/dev-tunnel.sh"]
 depends_on: []
 supersedes: []
-evidence: ["Function extraction from shipflow.sh, lib.sh, config.sh, install.sh, local/local.sh, local/dev-tunnel.sh", "Blacksmith setup menu helpers added to lib.sh", "Blacksmith OAuth callback tunnel added to local tooling"]
+evidence: ["Function extraction from shipflow.sh, lib.sh, config.sh, install.sh, local/local.sh, local/dev-tunnel.sh", "Blacksmith setup menu helpers added to lib.sh", "Blacksmith OAuth callback tunnel added to local tooling", "Codex MCP on-demand launcher added to lib.sh"]
 next_step: "/sf-docs update CONTEXT-FUNCTION-TREE.md"
 ---
 
@@ -33,6 +33,7 @@ shipflow.sh
   -> source lib.sh
   -> source menu_gum.sh or menu_bash.sh
   -> main()
+     -> run_menu_shortcut() for early codex/co launch
      -> check_prerequisites()
      -> cleanup_orphan_projects()
      -> run_menu() OR run_menu_shortcut()
@@ -40,9 +41,10 @@ shipflow.sh
 run_menu()
   -> action_* handlers
   -> core environment functions in lib.sh
-  -> PM2 / Flox / Caddy / local tooling
+  -> PM2 / Flox / user Caddy / local tooling
 
 run_menu_shortcut()
+  -> action_codex_launcher() for codex/co
   -> resolve_menu_shortcut_action()
   -> action_* handler
 ```
@@ -86,6 +88,8 @@ logging
 codex / shell setup
   -> configure_statusline
   -> configure_codex_tui
+  -> configure_codex_rmcp
+  -> configure_codex_*_mcp
   -> ensure_skill_link
   -> configure_skills
   -> configure_aliases
@@ -168,6 +172,14 @@ menu shortcuts
   -> resolve_menu_shortcut_action
   -> run_menu_shortcut
 
+Codex launcher
+  -> action_mcp_menu
+  -> action_codex_launcher
+  -> codex_select_workspace
+  -> codex_select_mcp_preset
+  -> codex_select_custom_mcps
+  -> codex_launch_with_mcps
+
 system health
   -> disk_free_bytes
   -> disk_free_human
@@ -249,6 +261,13 @@ PM2 / ports
   -> find_available_port
   -> get_pm2_status
   -> get_port_from_pm2
+
+user Caddy lifecycle
+  -> refresh_user_caddy_from_pm2
+  -> sync_caddy_after_pm2_change
+  -> stop_user_caddy
+  -> stop_caddy_if_no_pm2_apps
+  -> aggressive_cleanup_menu
 
 Flutter Web interactive dev
   -> flutter_web_sessions_file
@@ -341,6 +360,7 @@ CLI action wrappers
   -> action_restart_all
   -> action_mobile
   -> action_health
+  -> action_reboot_vm
   -> action_exit
   -> action_view_logs
   -> action_navigate
@@ -353,6 +373,8 @@ CLI action wrappers
   -> action_updates
   -> action_tools
   -> action_install_sdk
+  -> action_mcp_menu
+  -> action_codex_launcher
   -> action_blacksmith_setup
 
 menu / docs surfaces
@@ -384,7 +406,7 @@ Si tu dois modifier l'installation :
 
 ## Hotspots
 
-- `env_start`: plus gros noeud fonctionnel pour lancement, detection, port, PM2, Flox.
+- `env_start`: plus gros noeud fonctionnel pour lancement, detection, port, PM2, Flox et refresh Caddy utilisateur.
 - `show_dashboard`: vue centrale d'etat et aggregation PM2.
 - `deploy_github_project`: flux de deploy distant depuis GitHub.
 - `action_publish`: publication Caddy + DuckDNS.

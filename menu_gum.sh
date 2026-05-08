@@ -8,10 +8,8 @@
 
 # Flush any buffered stdin (leftover keypresses from previous actions)
 _flush_stdin() {
-    if [ -r /dev/tty ]; then
+    if [ -r /dev/tty ] && { : < /dev/tty; } 2>/dev/null; then
         while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
-    else
-        while read -rsn1 -t 0.05 2>/dev/null; do :; done
     fi
 }
 
@@ -29,33 +27,85 @@ _gum_run_menu() {
     local labels=()
     local actions=()
     local display_lines=()
+    local left_lines=()
+    local right_lines=()
     local first_section=true
+    local left_first_section=true
+    local right_first_section=true
+    local section_count=0
+    local side="left"
+    local key_color=$'\033[38;5;212m'
+    local color_reset=$'\033[0m'
     for item in "${items[@]}"; do
         local key label action
-        key=$(echo "$item" | cut -d'|' -f1)
-        label=$(echo "$item" | cut -d'|' -f2)
-        action=$(echo "$item" | cut -d'|' -f3)
+        IFS='|' read -r key label action <<< "$item"
 
         if [ "$key" = "---" ]; then
+            section_count=$((section_count + 1))
+            if [ "$action_display_mode" = "screen" ] && [ "$section_count" -gt 3 ]; then
+                side="right"
+            else
+                side="left"
+            fi
+
             if [ "$first_section" = true ]; then
                 first_section=false
             else
                 display_lines+=("")
             fi
             display_lines+=("${label}")
+
+            if [ "$side" = "left" ]; then
+                if [ "$left_first_section" = true ]; then
+                    left_first_section=false
+                else
+                    left_lines+=("")
+                fi
+                left_lines+=("${label}")
+            else
+                if [ "$right_first_section" = true ]; then
+                    right_first_section=false
+                else
+                    right_lines+=("")
+                fi
+                right_lines+=("${label}")
+            fi
         else
-            display_lines+=("$(gum style --foreground 212 "${key})")  ${label}")
+            display_lines+=("${key_color}${key})${color_reset}  ${label}")
+            if [ "$side" = "left" ]; then
+                left_lines+=("${key}) ${label}")
+            else
+                right_lines+=("${key}) ${label}")
+            fi
             keys+=("$key")
             labels+=("$label")
             actions+=("$action")
         fi
     done
 
+    local render_lines=("${display_lines[@]}")
+    local term_cols="${COLUMNS:-}"
+    if ! [[ "$term_cols" =~ ^[0-9]+$ ]]; then
+        term_cols=$(tput cols 2>/dev/null || printf '80')
+    fi
+    if [ "$action_display_mode" = "screen" ] && [ "${term_cols:-80}" -ge 96 ] && [ ${#right_lines[@]} -gt 0 ]; then
+        render_lines=()
+        local left_width=50
+        local max_rows=${#left_lines[@]}
+        [ ${#right_lines[@]} -gt "$max_rows" ] && max_rows=${#right_lines[@]}
+        local i left right
+        for ((i=0; i<max_rows; i++)); do
+            left="${left_lines[$i]:-}"
+            right="${right_lines[$i]:-}"
+            render_lines+=("$(printf "%-${left_width}s  %s" "$left" "$right")")
+        done
+    fi
+
     # Render items with gum style (box around the menu)
     # Padding "0 3" ensures uniform left indent — piped content's
     # leading whitespace can be stripped by gum on the first line,
     # so we let --padding handle all indentation instead.
-    printf '%s\n' "${display_lines[@]}" | gum style \
+    printf '%s\n' "${render_lines[@]}" | gum style \
         --border rounded --border-foreground 240 \
         --padding "0 3" --margin "0 2"
 
@@ -69,7 +119,7 @@ _gum_run_menu() {
     # Match and dispatch
     for ((j=0; j<${#keys[@]}; j++)); do
         local k
-        k=$(echo "${keys[$j]}" | tr '[:upper:]' '[:lower:]')
+        k="${keys[$j],,}"
         if [ "$choice" = "$k" ]; then
             local label="${labels[$j]}"
             local act="${actions[$j]}"

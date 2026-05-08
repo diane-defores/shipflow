@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.3"
+artifact_version: "1.0.4"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-04"
+updated: "2026-05-08"
 status: reviewed
 source_skill: sf-start
 scope: runtime-cli
@@ -54,9 +54,17 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
 - `shipflow` / `sf`: installed wrappers that call `shipflow.sh`.
 - `shipflow.sh::main`: checks prerequisites, cleans orphan state, then starts
   the menu or runs a one-shot top-level menu shortcut.
+- `sf codex` / `sf co`: early Codex launcher shortcut that bypasses
+  environment cleanup, asks for a workspace/MCP preset when needed, then
+  replaces the ShipFlow process with `codex`.
 - `lib.sh::run_menu`: dispatches interactive menu choices to `action_*` handlers.
 - `lib.sh::run_menu_shortcut`: dispatches a single CLI shortcut argument such
   as `sf u` to the same top-level action while preserving action confirmations.
+- `menu_gum.sh` / `menu_bash.sh`: render the top-level menu from
+  `MAIN_MENU_ITEMS`. Startup rendering should avoid per-item subprocesses; the
+  Gum frontend should batch styling through one boxed render instead of one
+  `gum style` call per item. The top-level menu uses a two-column layout on
+  wide terminals and falls back to one column on narrow terminals.
 - `menu_bash.sh` / `menu_gum.sh`: render the top-level menu and use shared
   key input helpers so `x`, `Esc`, and `Backspace` act consistently for Back.
 - `lib.sh` UI helpers: `ui_read_choice`, `ui_run_menu_action`,
@@ -80,6 +88,26 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   and Testbox init commands. It prints required terminal commands instead of
   running interactive install/auth/project mutation steps automatically, and
   routes remote Blacksmith auth through the local tunnel menu.
+- `lib.sh::action_codex_launcher`: interactive Codex launcher for choosing a
+  workspace and enabling selected MCP providers for the new Codex session only.
+- `lib.sh::action_mcp_menu`: grouped MCP/Codex menu that routes to the Codex
+  launcher or the local OAuth tunnel instructions.
+- `lib.sh::action_reboot_vm`: explicit confirmed VM reboot action from the
+  system menu. It supports `SHIPFLOW_REBOOT_DRY_RUN=1` for smoke checks.
+- `lib.sh::mcp_cleanup_menu`: health-menu cleanup for local MCP process
+  groups. It lists provider/RAM/uptime/parent Codex evidence and stops only a
+  confirmed process group.
+- `lib.sh::action_health`: renders the system monitor and PM2 health first,
+  then uses explicit one-key actions for cleanup commands. It must not route
+  destructive cleanup options through searchable/default-select menus.
+- Command submenus that can start, stop, restart, launch, or clean up runtime
+  state should use explicit one-key choices or confirmations; `ui_filter_choose`
+  is reserved for longer data-selection lists and flushes pending input before
+  opening the filter.
+- `lib.sh::refresh_user_caddy_from_pm2` and
+  `sync_caddy_after_pm2_change`: user-mode Caddy lifecycle helpers. They write
+  runtime config under the operator's `~/.shipflow/runtime/caddy`, refresh
+  routes from online PM2 apps, and stop Caddy when no PM2 app is online.
 - `lib.sh::action_publish`: public exposure through Caddy and DuckDNS.
 
 ## Control Flow
@@ -92,7 +120,7 @@ shipflow.sh
   -> cleanup_orphan_projects
   -> run_menu OR run_menu_shortcut
   -> action_* handler
-  -> PM2 / Flox / Caddy / DuckDNS side effect
+  -> PM2 / Flox / user Caddy / optional DuckDNS side effect
 ```
 
 For projects detected from `pubspec.yaml`, runtime provisioning is explicit:
@@ -118,6 +146,11 @@ Flutter Web has two runtime paths:
 
 - PM2 is the execution state source.
 - `invalidate_pm2_cache` must run after PM2 mutations.
+- User-mode Caddy follows PM2 online state: environment start refreshes routes,
+  environment stop refreshes or stops it, and Stop All stops it when no PM2 app
+  remains online.
+- The system Caddy service is a legacy/public HTTPS path and should not be left
+  running when no PM2 app is online.
 - Stop flows must cover PM2 entries even when their project directories are no
   longer resolvable from disk, then persist the stopped state with PM2.
 - Generated PM2 ecosystem configs for dev servers must bound automatic restart
@@ -136,6 +169,9 @@ Flutter Web has two runtime paths:
   instead of returning like completed actions.
 - Boxed CLI headers should use `ui_box_header` rather than hand-counted spaces.
 - Generated ecosystem/runtime config is not the hand-edited source of truth.
+- Codex MCP providers are off by default; the runtime launcher enables selected
+  providers with session-only config overrides and must not persistently flip
+  `~/.codex/config.toml`.
 - Dart/Flutter runtime provisioning failures must stop startup before PM2 launch.
 - Flutter Web `tmux` preview sessions are interactive developer sessions, not
   PM2-managed production-like processes.
@@ -153,6 +189,8 @@ Flutter Web has two runtime paths:
   union project-discovered environments with PM2 app names.
 - Unbounded PM2 autorestart can turn a missing directory, missing dependency, or
   failing dev command into a restart storm and log growth incident.
+- User-mode Caddy startup failures must not block PM2 app startup, but they must
+  be visible with the runtime log path.
 - Caddy/DuckDNS publishing failures must not be reported as successful public exposure.
 - Broad shell parsing can misread structured state; use `jq`, Node, or existing structured helpers where available.
 - Invalid Dart/Flutter package overrides (paths, shell fragments, option-like tokens) must be rejected before invoking `flox install`.
@@ -161,6 +199,11 @@ Flutter Web has two runtime paths:
 - Missing Blacksmith CLI or auth should be shown as a setup status, not as a
   runtime failure; the menu must print the official next command when an
   interactive Blacksmith step is required.
+- The Codex launcher should fail before `exec` when Codex is absent, a selected
+  workspace is invalid, or an MCP name is malformed; it must not kill existing
+  Codex conversations or MCP processes.
+- MCP cleanup should target only local MCP server process groups, ask for
+  confirmation, and refuse any process group that contains a `codex` process.
 
 ## Security Notes
 
@@ -177,6 +220,10 @@ bash -n shipflow.sh lib.sh config.sh
 test_flox_runtime_provisioning.sh
 rg -n "invalidate_pm2_cache" lib.sh
 printf 'x\n' | env SHIPFLOW_PROJECTS_DIR=/tmp/shipflow-empty ./shipflow.sh u
+SHIPFLOW_CODEX_DRY_RUN=1 ./shipflow.sh codex --dir "$PWD" supabase playwright
+SHIPFLOW_MCP_CLEANUP_DRY_RUN=1 bash -lc 'source ./lib.sh; mcp_cleanup_menu'
+SHIPFLOW_USER_CADDY_DRY_RUN=1 bash -lc 'source ./lib.sh; refresh_user_caddy_from_pm2'
+printf 'o\n' | SHIPFLOW_REBOOT_DRY_RUN=1 bash -lc 'source ./lib.sh; action_reboot_vm'
 ```
 
 Run a focused runtime smoke for the touched behavior when practical, for example dashboard/status for read-only changes or a non-production test project for lifecycle changes.

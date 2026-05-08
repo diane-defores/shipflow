@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.1"
+artifact_version: "1.0.2"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-06"
+updated: "2026-05-08"
 status: reviewed
 source_skill: sf-start
 scope: installer-and-user-scope
@@ -52,7 +52,9 @@ This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read
 
 - `sudo ./install.sh`: server installer.
 - `setup_user`: per-user configuration for eligible users.
-- `configure_*_mcp`: Claude/Codex MCP provider setup.
+- `configure_*_mcp`: Claude/Codex MCP provider setup. Codex MCP entries
+  are registered disabled by default and enabled per session by the ShipFlow
+  launcher.
 - `configure_skills`: delegates skill symlink check/repair to `tools/shipflow_sync_skills.sh`.
 - `configure_aliases`, `configure_data`: user workflow setup.
 
@@ -76,9 +78,15 @@ sudo ./install.sh
 - The installer installs the PM2 binary but must not configure PM2 boot
   autostart by default; environments should start explicitly under the
   operator user.
+- The installer installs the Caddy binary for ShipFlow use, but disables the
+  default system `caddy.service`; normal environment proxying is launched later
+  by ShipFlow in user mode and tied to PM2 app lifecycle.
 - Existing user config must be preserved outside ShipFlow-managed blocks.
 - Symlinks and aliases should be idempotent and updated consistently.
 - ShipFlow skill runtime entries under `~/.claude/skills` and `~/.codex/skills` are symlinks to `$SHIPFLOW_ROOT/skills/<name>`.
+- Codex MCP registrations should default to `enabled = false`; normal Codex
+  sessions stay lightweight, and ShipFlow launches MCP-enabled sessions with
+  temporary `-c mcp_servers.<name>.enabled=true` overrides.
 - Runtime skill link repair blocks on non-symlink targets by default; installer compatibility may pass `--backup-existing` to move collisions aside explicitly.
 - Installer errors should stop before partial or misleading success.
 - `install.sh` provides Flox/system tooling; Flutter/Dart runtimes are provisioned per project Flox environment unless the operator explicitly uses optional global SDK install.
@@ -88,8 +96,9 @@ sudo ./install.sh
 - Live downloads or package installers can fail partially; messages must identify the failing step.
 - `--only` or component-scoped install paths can leave stale aliases or symlinks if final synchronization is skipped.
 - Missing runtime tools should produce direct diagnostics, not secondary shell errors.
-- Missing Playwright Chromium runtime libraries should be installed by the
-  server bootstrap because Playwright MCP is configured by default.
+- Missing Playwright Chromium runtime libraries can still break a
+  Playwright-enabled Codex launch; the installer records the local Chromium
+  path while keeping Playwright MCP disabled until explicitly requested.
 - Incorrect user targeting can install private workflow config for the wrong account.
 
 ## Security Notes
@@ -116,7 +125,8 @@ For behavioral changes, prefer a disposable host/container or a narrowly scoped 
 - Alias/symlink behavior changed -> check local and server install docs, plus `tools/shipflow_sync_skills.sh --check --all`.
 - MCP config changed -> check provider docs references and remote login docs.
 - Playwright MCP config changed -> confirm Linux ARM64 keeps using the local
-  Playwright Chromium executable instead of a Google Chrome stable channel.
+  Playwright Chromium executable instead of a Google Chrome stable channel, and
+  that Codex still writes the provider as disabled by default.
 - User targeting changed -> check installer ownership specs.
 
 ## Maintenance Rule

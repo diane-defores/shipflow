@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.3.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-01"
+updated: "2026-05-08"
 status: draft
 source_skill: manual
 scope: "context"
@@ -36,6 +36,8 @@ ShipFlow combine deux couches :
 ## Entry Points
 
 - `shipflow.sh`: point d'entree du CLI.
+- `sf codex` / `sf co`: raccourci de lancement Codex qui court-circuite le
+  cleanup des environnements et ouvre une session avec MCP choisis pour ce run.
 - `lib.sh`: coeur des actions, validations, integrations systeme et menus.
 - `config.sh`: configuration centralisee et validation.
 - `install.sh`: bootstrap serveur et configuration de l'environnement utilisateur.
@@ -83,6 +85,7 @@ project path
   -> find_available_port
   -> PM2 start/update
   -> invalidate_pm2_cache
+  -> refresh user-mode Caddy routes from online PM2 apps
   -> dashboard / health / publish
 ```
 
@@ -119,9 +122,25 @@ Fast paths existent aussi :
 - `sf-start` pour tache petite et claire
 - `sf-docs metadata` pour migration frontmatter
 
+### 6. Codex MCP Launcher Flow
+
+```text
+sf codex OR menu MCP / Codex launcher
+  -> choose workspace
+  -> choose MCP preset or custom MCPs
+  -> exec codex -C <workspace> -c mcp_servers.<name>.enabled=true
+```
+
+Les MCP Codex restent desactives par defaut dans `~/.codex/config.toml`; le
+launcher active uniquement les MCP demandes pour la nouvelle session.
+
 ## Technical Decisions
 
 - PM2 est la source d'etat d'execution. Le cache PM2 doit etre invalide apres mutation.
+- Caddy local est gere par ShipFlow en mode utilisateur et suit l'etat PM2:
+  start rafraichit les routes, stop/stop-all l'arrete quand aucune app PM2
+  n'est online. Le service systeme Caddy est legacy/public et ne doit pas rester
+  actif sans app PM2.
 - L'allocation de port doit eviter collisions runtime et collisions PM2 cachees.
 - Les operations destructives doivent rester idempotentes.
 - Les paths projet doivent etre absolus et valides.
@@ -154,6 +173,7 @@ Fast paths existent aussi :
 
 - Changer le comportement de lancement d'app : `lib.sh` autour de `env_start`, `detect_project_type`, `detect_dev_command`, `fix_port_config`.
 - Changer le dashboard ou la sante : `lib.sh` autour de `show_dashboard`, `health_check_all`, `diagnose_app_errors`.
+- Changer le launcher Codex ou les presets MCP : `lib.sh` autour de `action_codex_launcher`, puis `install.sh` si les defaults Codex changent.
 - Changer la publication web : `lib.sh` autour de `action_publish`.
 - Changer les tunnels locaux : `local/local.sh` et `local/dev-tunnel.sh`.
 - Changer le mode Flutter Web interactif : `lib.sh` autour de `action_flutter_web`, puis `local/remote-helpers.sh` si le tunnel doit découvrir de nouveaux ports.

@@ -168,6 +168,12 @@ ui_should_skip_next_pause() {
     return 1
 }
 
+ui_flush_pending_input() {
+    if [ -r /dev/tty ] && { : < /dev/tty; } 2>/dev/null; then
+        while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
+    fi
+}
+
 ui_is_back_choice() {
     local choice
     choice=$(_ui_normalize_choice "${1:-}")
@@ -294,6 +300,8 @@ ui_filter_choose() {
     if [ ${#items[@]} -eq 0 ]; then
         return 1
     fi
+
+    ui_flush_pending_input
 
     if [ "$HAS_GUM" = true ] && command -v gum >/dev/null 2>&1; then
         local selected
@@ -735,6 +743,17 @@ disk_free_human() {
     df -h --output=avail / 2>/dev/null | tail -n 1 | tr -d ' '
 }
 
+header_storage_human() {
+    local value="$1"
+    case "$value" in
+        *[0-9]K) printf '%sKB' "${value%K}" ;;
+        *[0-9]M) printf '%sMB' "${value%M}" ;;
+        *[0-9]G) printf '%sGB' "${value%G}" ;;
+        *[0-9]T) printf '%sTB' "${value%T}" ;;
+        *) printf '%s' "$value" ;;
+    esac
+}
+
 disk_used_pct() {
     df -P / 2>/dev/null | awk 'NR == 2 { gsub("%", "", $5); print $5 }'
 }
@@ -1061,6 +1080,653 @@ mem_long_running_processes() {
     done
 }
 
+mcp_process_matches() {
+    local args="$1"
+    case "$args" in
+        *"convex@latest mcp start"*|*"convex mcp start"*|*"@playwright/mcp"*|*"playwright-mcp"*|*"@upstash/context7-mcp"*|*"dataforseo-mcp-server"*)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+mcp_process_provider() {
+    local args="$1"
+    case "$args" in
+        *"convex@latest mcp start"*|*"convex mcp start"*) printf 'convex' ;;
+        *"@playwright/mcp"*|*"playwright-mcp"*) printf 'playwright' ;;
+        *"@upstash/context7-mcp"*) printf 'context7' ;;
+        *"dataforseo-mcp-server"*) printf 'dataforseo' ;;
+        *) printf 'unknown' ;;
+    esac
+}
+
+process_codex_ancestor() {
+    local pid="$1"
+    local depth=0
+    local ppid comm args
+
+    while [ -n "$pid" ] && [ "$pid" -gt 1 ] 2>/dev/null && [ "$depth" -lt 25 ]; do
+        comm=$(ps -o comm= -p "$pid" 2>/dev/null | awk '{print $1}' || true)
+        args=$(ps -o args= -p "$pid" 2>/dev/null || true)
+        if [ "$comm" = "codex" ] || [[ "$args" == *"/codex"* ]] || [[ "$args" == *"/bin/codex"* ]]; then
+            printf '%s' "$pid"
+            return 0
+        fi
+        ppid=$(ps -o ppid= -p "$pid" 2>/dev/null | awk '{print $1}' || true)
+        [ -n "$ppid" ] || break
+        pid="$ppid"
+        depth=$((depth + 1))
+    done
+
+    return 1
+}
+
+mcp_process_groups() {
+    local raw=""
+    local line pid ppid pgid tty etimes rss pcpu comm args provider ancestor
+
+    while read -r pid ppid pgid tty etimes rss pcpu comm args; do
+        [ -n "$pid" ] || continue
+        if ! mcp_process_matches "$args"; then
+            continue
+        fi
+        provider=$(mcp_process_provider "$args")
+        ancestor=$(process_codex_ancestor "$pid" || true)
+        raw+="${pgid}|${pid}|${ppid}|${tty}|${etimes}|${rss}|${pcpu}|${provider}|${ancestor:-none}|${comm}|${args}"$'\n'
+    done < <(ps -eo pid=,ppid=,pgid=,tty=,etimes=,rss=,pcpu=,comm=,args= --no-headers 2>/dev/null)
+
+    [ -n "$raw" ] || return 0
+
+    printf '%s' "$raw" | awk -F'|' '
+        NF >= 11 {
+            pgid=$1
+            count[pgid]++
+            rss[pgid]+=$6
+            if ($5 > etime[pgid]) etime[pgid]=$5
+            if (providers[pgid] == "") providers[pgid]=$8
+            else if (providers[pgid] !~ "(^|,)" $8 "(,|$)") providers[pgid]=providers[pgid] "," $8
+            if (ancestors[pgid] == "") ancestors[pgid]=$9
+            else if (ancestors[pgid] !~ "(^|,)" $9 "(,|$)") ancestors[pgid]=ancestors[pgid] "," $9
+            if (pids[pgid] == "") pids[pgid]=$2
+            else pids[pgid]=pids[pgid] "," $2
+            tty[pgid]=$4
+            if (cmd[pgid] == "") cmd[pgid]=$11
+        }
+        END {
+            for (pgid in count) {
+                print pgid "|" count[pgid] "|" rss[pgid] "|" etime[pgid] "|" providers[pgid] "|" ancestors[pgid] "|" pids[pgid] "|" tty[pgid] "|" cmd[pgid]
+            }
+        }
+    ' | sort -t'|' -k4,4nr
+}
+
+mcp_format_elapsed() {
+    local etimes="${1:-0}"
+    if [ "$etimes" -ge 86400 ]; then
+        printf '%sd%sh' "$((etimes / 86400))" "$(((etimes % 86400) / 3600))"
+    elif [ "$etimes" -ge 3600 ]; then
+        printf '%sh%sm' "$((etimes / 3600))" "$(((etimes % 3600) / 60))"
+    elif [ "$etimes" -ge 60 ]; then
+        printf '%sm%ss' "$((etimes / 60))" "$((etimes % 60))"
+    else
+        printf '%ss' "$etimes"
+    fi
+}
+
+mcp_format_rss() {
+    local rss="${1:-0}"
+    if [ "$rss" -ge 1048576 ]; then
+        printf '%sG' "$((rss / 1048576))"
+    elif [ "$rss" -ge 1024 ]; then
+        printf '%sM' "$((rss / 1024))"
+    else
+        printf '%sK' "$rss"
+    fi
+}
+
+pgid_contains_codex() {
+    local pgid="$1"
+    ps -o comm=,args= -g "$pgid" 2>/dev/null | grep -Eq '(^|[[:space:]])codex([[:space:]]|$)|/codex'
+}
+
+show_mcp_process_groups() {
+    local groups
+    groups=$(mcp_process_groups)
+    if [ -z "$groups" ]; then
+        echo -e "${GREEN}No local MCP server process groups detected.${NC}"
+        return 0
+    fi
+
+    echo -e "${BLUE}━━━ Local MCP Process Groups ━━━${NC}"
+    printf "  ${CYAN}%-8s %-5s %-8s %-8s %-18s %-14s %-s${NC}\n" "PGID" "PROCS" "RSS" "UPTIME" "PROVIDER" "CODEX_PARENT" "PIDS"
+    while IFS='|' read -r pgid count rss etime providers ancestors pids tty cmd; do
+        printf "  ${YELLOW}%-8s %-5s %-8s %-8s %-18s %-14s${NC} %-s\n" \
+            "$pgid" "$count" "$(mcp_format_rss "$rss")" "$(mcp_format_elapsed "$etime")" "$providers" "$ancestors" "$pids"
+    done <<< "$groups"
+}
+
+stop_mcp_process_group() {
+    local pgid="$1"
+    local label="$2"
+
+    if ! [[ "$pgid" =~ ^[0-9]+$ ]]; then
+        echo -e "${RED}❌ Invalid process group:${NC} $pgid"
+        return 1
+    fi
+
+    if pgid_contains_codex "$pgid"; then
+        echo -e "${RED}❌ Refusing to stop PGID $pgid because it contains a Codex process.${NC}"
+        return 1
+    fi
+
+    echo -e "${YELLOW}Stopping MCP process group:${NC} $label"
+    if [ "${SHIPFLOW_MCP_CLEANUP_DRY_RUN:-0}" = "1" ]; then
+        echo "kill -TERM -$pgid"
+        return 0
+    fi
+
+    kill -TERM "-$pgid" 2>/dev/null || true
+    sleep 1
+    if ps -o pid= -g "$pgid" 2>/dev/null | grep -q '[0-9]'; then
+        if ui_confirm "Process group $pgid is still running. Force kill it?"; then
+            kill -KILL "-$pgid" 2>/dev/null || true
+        fi
+    fi
+}
+
+mcp_cleanup_menu() {
+    local groups
+    groups=$(mcp_process_groups)
+    if [ -z "$groups" ]; then
+        echo -e "${GREEN}✅ No local MCP server process groups detected.${NC}"
+        return 0
+    fi
+
+    show_mcp_process_groups
+    echo ""
+    echo -e "${YELLOW}This only targets local MCP server groups. It does not kill Codex conversations.${NC}"
+    echo ""
+
+    local options=()
+    local labels=()
+    local row pgid count rss etime providers ancestors pids tty cmd label
+    while IFS='|' read -r pgid count rss etime providers ancestors pids tty cmd; do
+        label="PGID $pgid · $providers · $(mcp_format_rss "$rss") · $(mcp_format_elapsed "$etime") · Codex parent: $ancestors"
+        options+=("$label")
+        labels+=("$pgid|$label")
+    done <<< "$groups"
+    options+=("Back")
+
+    local selected
+    selected=$(printf '%s\n' "${options[@]}" | ui_choose "Stop which MCP group?") || {
+        ui_return_back
+        return 0
+    }
+    if ui_is_back_selection "$selected"; then
+        ui_return_back
+        return 0
+    fi
+
+    for row in "${labels[@]}"; do
+        pgid="${row%%|*}"
+        label="${row#*|}"
+        if [ "$selected" = "$label" ]; then
+            if ui_confirm "Stop $label ?"; then
+                stop_mcp_process_group "$pgid" "$label"
+            else
+                echo -e "${BLUE}Cancelled - no process stopped.${NC}"
+            fi
+            return 0
+        fi
+    done
+}
+
+clean_all_safe_targets() {
+    local groups pm2_pid target_count=0
+    groups=$(mcp_process_groups)
+    pm2_pid=$(pm2_daemon_pid)
+
+    echo -e "${BLUE}━━━ Clean All Safe Targets ━━━${NC}"
+    echo -e "${YELLOW}Scope:${NC} local MCP server groups, empty PM2 daemon, and Caddy when no PM2 app is online."
+    echo -e "${YELLOW}Protected:${NC} Codex conversations, terminals, ssh, tmux, and root/system services other than Caddy."
+    echo ""
+
+    if [ -n "$groups" ]; then
+        show_mcp_process_groups
+        while IFS='|' read -r pgid count rss etime providers ancestors pids tty cmd; do
+            [ -n "$pgid" ] || continue
+            if pgid_contains_codex "$pgid"; then
+                continue
+            fi
+            target_count=$((target_count + 1))
+        done <<< "$groups"
+    else
+        echo -e "${GREEN}No local MCP server process groups detected.${NC}"
+    fi
+
+    if [ -n "$pm2_pid" ] && ! pm2_has_running_apps; then
+        echo -e "${YELLOW}Empty PM2 daemon:${NC} PID $pm2_pid"
+        target_count=$((target_count + 1))
+    elif [ -n "$pm2_pid" ]; then
+        echo -e "${YELLOW}PM2 daemon has registered apps; skipping PM2.${NC}"
+    fi
+
+    if user_caddy_is_running && ! pm2_has_running_apps; then
+        echo -e "${YELLOW}User Caddy:${NC} PID $(user_caddy_pid)"
+        target_count=$((target_count + 1))
+    fi
+
+    if caddy_service_active && ! pm2_has_running_apps; then
+        echo -e "${YELLOW}Legacy system Caddy:${NC} active, no PM2 apps online"
+        target_count=$((target_count + 1))
+    fi
+
+    if [ "$target_count" -eq 0 ]; then
+        echo -e "${GREEN}No safe cleanup targets found.${NC}"
+        return 0
+    fi
+
+    echo ""
+    if ! ui_confirm "Clean all $target_count safe target(s) now?"; then
+        echo -e "${BLUE}Cancelled - no process stopped.${NC}"
+        return 0
+    fi
+
+    if [ -n "$groups" ]; then
+        while IFS='|' read -r pgid count rss etime providers ancestors pids tty cmd; do
+            [ -n "$pgid" ] || continue
+            if pgid_contains_codex "$pgid"; then
+                echo -e "${YELLOW}Skipping PGID $pgid because it contains a Codex process.${NC}"
+                continue
+            fi
+            stop_mcp_process_group "$pgid" "PGID $pgid · $providers · $(mcp_format_rss "$rss") · $(mcp_format_elapsed "$etime")"
+        done <<< "$groups"
+    fi
+
+    if [ -n "$pm2_pid" ] && ! pm2_has_running_apps; then
+        if [ "${SHIPFLOW_MCP_CLEANUP_DRY_RUN:-0}" = "1" ]; then
+            echo "pm2 kill"
+        else
+            pm2 kill >/dev/null 2>&1 || true
+            invalidate_pm2_cache
+            echo -e "${GREEN}Stopped empty PM2 daemon.${NC}"
+        fi
+    fi
+
+    if ! pm2_has_running_apps; then
+        stop_user_caddy || true
+        stop_caddy_if_no_pm2_apps || true
+    fi
+}
+
+user_caddy_enabled() {
+    [ "${SHIPFLOW_USER_CADDY_ENABLED:-true}" = "true" ] && command -v caddy >/dev/null 2>&1
+}
+
+ensure_user_caddy_dir() {
+    mkdir -p "$SHIPFLOW_USER_CADDY_DIR" "$SHIPFLOW_USER_CADDY_STORAGE_DIR" 2>/dev/null || return 1
+    chmod 700 "$SHIPFLOW_USER_CADDY_DIR" "$SHIPFLOW_USER_CADDY_STORAGE_DIR" 2>/dev/null || true
+}
+
+user_caddy_pid() {
+    local pid=""
+    if [ -f "$SHIPFLOW_USER_CADDY_PID_FILE" ]; then
+        pid=$(sed -n '1p' "$SHIPFLOW_USER_CADDY_PID_FILE" 2>/dev/null)
+        if [[ "$pid" =~ ^[0-9]+$ ]] && ps -p "$pid" -o args= 2>/dev/null | grep -Fq "$SHIPFLOW_USER_CADDYFILE"; then
+            printf '%s' "$pid"
+            return 0
+        fi
+    fi
+    return 1
+}
+
+user_caddy_is_running() {
+    user_caddy_pid >/dev/null
+}
+
+stop_user_caddy() {
+    local pid
+    pid=$(user_caddy_pid || true)
+
+    if [ -z "$pid" ]; then
+        rm -f "$SHIPFLOW_USER_CADDY_PID_FILE" 2>/dev/null || true
+        echo -e "${GREEN}User Caddy is not running.${NC}"
+        return 0
+    fi
+
+    echo -e "${YELLOW}Stopping user Caddy:${NC} PID $pid"
+    if [ "${SHIPFLOW_USER_CADDY_DRY_RUN:-0}" = "1" ] || [ "${SHIPFLOW_AGGRESSIVE_CLEANUP_DRY_RUN:-0}" = "1" ]; then
+        echo "kill -TERM $pid"
+        return 0
+    fi
+
+    kill -TERM "$pid" 2>/dev/null || true
+    sleep 1
+    if ps -p "$pid" >/dev/null 2>&1; then
+        kill -KILL "$pid" 2>/dev/null || true
+    fi
+    rm -f "$SHIPFLOW_USER_CADDY_PID_FILE" 2>/dev/null || true
+    echo -e "${GREEN}Stopped user Caddy.${NC}"
+}
+
+user_caddy_routes_from_pm2() {
+    get_pm2_data_cached 2>/dev/null | awk -F'|' '
+        ($2 == "online" || $2 == "launching") && $3 ~ /^[0-9]+$/ && $1 ~ /^[A-Za-z0-9._-]+$/ {
+            print $1 "|" $3
+        }
+    '
+}
+
+write_user_caddyfile() {
+    local routes="$1"
+    local route_lines=""
+    local name port
+
+    while IFS='|' read -r name port; do
+        [ -n "$name" ] || continue
+        route_lines="${route_lines}    handle /${name}* {"$'\n'
+        route_lines="${route_lines}        reverse_proxy 127.0.0.1:${port}"$'\n'
+        route_lines="${route_lines}    }"$'\n'
+    done <<< "$routes"
+
+    ensure_user_caddy_dir || return 1
+
+    cat > "$SHIPFLOW_USER_CADDYFILE" << EOF
+{
+    admin off
+    storage file_system $SHIPFLOW_USER_CADDY_STORAGE_DIR
+}
+
+http://$SHIPFLOW_USER_CADDY_BIND:$SHIPFLOW_USER_CADDY_PORT {
+    log {
+        output file $SHIPFLOW_USER_CADDY_LOG_FILE {
+            roll_size 5mb
+            roll_keep 3
+            roll_keep_for 168h
+        }
+    }
+    encode gzip
+${route_lines}    respond "ShipFlow user Caddy: no matching PM2 route" 404
+}
+EOF
+    caddy fmt --overwrite "$SHIPFLOW_USER_CADDYFILE" >/dev/null 2>&1 || true
+}
+
+start_user_caddy() {
+    if ! user_caddy_enabled; then
+        return 0
+    fi
+
+    ensure_user_caddy_dir || {
+        warning "Impossible de créer le runtime Caddy utilisateur: $SHIPFLOW_USER_CADDY_DIR"
+        return 1
+    }
+
+    if [ "${SHIPFLOW_USER_CADDY_DRY_RUN:-0}" = "1" ]; then
+        echo "caddy run --config $SHIPFLOW_USER_CADDYFILE --adapter caddyfile"
+        return 0
+    fi
+
+    stop_user_caddy >/dev/null 2>&1 || true
+
+    if is_port_in_use "$SHIPFLOW_USER_CADDY_PORT"; then
+        warning "Port user Caddy déjà occupé: $SHIPFLOW_USER_CADDY_PORT"
+        return 1
+    fi
+
+    if ! caddy validate --config "$SHIPFLOW_USER_CADDYFILE" --adapter caddyfile >/dev/null 2>&1; then
+        warning "Caddyfile utilisateur invalide: $SHIPFLOW_USER_CADDYFILE"
+        return 1
+    fi
+
+    nohup caddy run --config "$SHIPFLOW_USER_CADDYFILE" --adapter caddyfile >> "$SHIPFLOW_USER_CADDY_STDOUT_FILE" 2>&1 &
+    printf '%s\n' "$!" > "$SHIPFLOW_USER_CADDY_PID_FILE"
+    sleep 0.5
+
+    if user_caddy_is_running; then
+        echo -e "${GREEN}User Caddy running:${NC} http://$SHIPFLOW_USER_CADDY_BIND:$SHIPFLOW_USER_CADDY_PORT"
+        return 0
+    fi
+
+    warning "User Caddy did not stay running; see $SHIPFLOW_USER_CADDY_STDOUT_FILE"
+    return 1
+}
+
+refresh_user_caddy_from_pm2() {
+    if [ "${SHIPFLOW_USER_CADDY_ENABLED:-true}" != "true" ]; then
+        return 0
+    fi
+
+    if ! command -v caddy >/dev/null 2>&1; then
+        warning "Caddy non installé; proxy utilisateur ignoré."
+        return 0
+    fi
+
+    local routes
+    routes=$(user_caddy_routes_from_pm2)
+    if [ -z "$routes" ]; then
+        stop_user_caddy
+        return 0
+    fi
+
+    if [ "${SHIPFLOW_USER_CADDY_DRY_RUN:-0}" = "1" ]; then
+        echo "User Caddy routes:"
+        printf '%s\n' "$routes"
+        echo "write $SHIPFLOW_USER_CADDYFILE"
+        echo "listen http://$SHIPFLOW_USER_CADDY_BIND:$SHIPFLOW_USER_CADDY_PORT"
+        return 0
+    fi
+
+    write_user_caddyfile "$routes" || {
+        warning "Impossible d'écrire le Caddyfile utilisateur."
+        return 1
+    }
+    start_user_caddy
+}
+
+sync_caddy_after_pm2_change() {
+    if pm2_has_running_apps; then
+        refresh_user_caddy_from_pm2 || true
+    else
+        stop_user_caddy || true
+        stop_caddy_if_no_pm2_apps || true
+    fi
+}
+
+stop_all_caddy_if_no_pm2_apps() {
+    if pm2_has_running_apps; then
+        echo -e "${YELLOW}PM2 apps are running; skipping Caddy stop.${NC}"
+        return 1
+    fi
+
+    stop_user_caddy || true
+    stop_caddy_if_no_pm2_apps || true
+}
+
+caddy_service_active() {
+    systemctl is-active --quiet caddy 2>/dev/null
+}
+
+stop_caddy_if_no_pm2_apps() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        return 0
+    fi
+
+    if ! caddy_service_active; then
+        echo -e "${GREEN}Caddy is not running.${NC}"
+        return 0
+    fi
+
+    if pm2_has_running_apps; then
+        echo -e "${YELLOW}PM2 apps are running; skipping Caddy stop.${NC}"
+        return 1
+    fi
+
+    echo -e "${YELLOW}Caddy is running while no PM2 apps are online.${NC}"
+    if [ "${SHIPFLOW_AGGRESSIVE_CLEANUP_DRY_RUN:-0}" = "1" ]; then
+        echo "sudo systemctl stop caddy"
+        return 0
+    fi
+
+    if sudo systemctl stop caddy; then
+        echo -e "${GREEN}Stopped Caddy.${NC}"
+    else
+        echo -e "${RED}Failed to stop Caddy.${NC}"
+        return 1
+    fi
+}
+
+aggressive_user_process_groups() {
+    ps -eo pid=,ppid=,pgid=,user=,etimes=,rss=,comm=,args= --no-headers 2>/dev/null | awk -v user="$(id -un)" '
+        $4 == user {
+            pid=$1; pgid=$3; etime=$5; rss=$6; comm=$7
+            args=""
+            for (i=8; i<=NF; i++) args=args (args == "" ? "" : " ") $i
+            kind=""
+            if (comm == "codex" || (comm == "node" && args ~ /\/codex( |$)/)) kind="codex"
+            else if (comm == "ranger" || args ~ /\/ranger( |$)/) kind="ranger"
+            if (kind != "") {
+                count[pgid]++
+                rss_sum[pgid]+=rss
+                if (etime > etime_max[pgid]) etime_max[pgid]=etime
+                if (kinds[pgid] == "") kinds[pgid]=kind
+                else if (kinds[pgid] !~ "(^|,)" kind "(,|$)") kinds[pgid]=kinds[pgid] "," kind
+                if (pids[pgid] == "") pids[pgid]=pid
+                else pids[pgid]=pids[pgid] "," pid
+                if (cmd[pgid] == "") cmd[pgid]=comm " " args
+            }
+        }
+        END {
+            for (pgid in count) {
+                print pgid "|" count[pgid] "|" rss_sum[pgid] "|" etime_max[pgid] "|" kinds[pgid] "|" pids[pgid] "|" cmd[pgid]
+            }
+        }
+    ' | sort -t'|' -k4,4nr
+}
+
+show_aggressive_user_process_groups() {
+    local groups
+    groups=$(aggressive_user_process_groups)
+    if [ -z "$groups" ]; then
+        echo -e "${GREEN}No Codex/node-wrapper/ranger process groups detected.${NC}"
+        return 0
+    fi
+
+    echo -e "${BLUE}━━━ Aggressive User Process Groups ━━━${NC}"
+    printf "  ${CYAN}%-8s %-5s %-8s %-8s %-14s %-s${NC}\n" "PGID" "PROCS" "RSS" "UPTIME" "KIND" "PIDS"
+    while IFS='|' read -r pgid count rss etime kinds pids cmd; do
+        printf "  ${YELLOW}%-8s %-5s %-8s %-8s %-14s${NC} %-s\n" \
+            "$pgid" "$count" "$(mcp_format_rss "$rss")" "$(mcp_format_elapsed "$etime")" "$kinds" "$pids"
+    done <<< "$groups"
+}
+
+stop_process_group_term_then_optional_kill() {
+    local pgid="$1"
+    local label="$2"
+
+    if ! [[ "$pgid" =~ ^[0-9]+$ ]]; then
+        echo -e "${RED}Invalid process group:${NC} $pgid"
+        return 1
+    fi
+
+    echo -e "${YELLOW}Stopping:${NC} $label"
+    if [ "${SHIPFLOW_AGGRESSIVE_CLEANUP_DRY_RUN:-0}" = "1" ]; then
+        echo "kill -TERM -$pgid"
+        return 0
+    fi
+
+    kill -TERM "-$pgid" 2>/dev/null || true
+    sleep 1
+    if ps -o pid= -g "$pgid" 2>/dev/null | grep -q '[0-9]'; then
+        if ui_confirm "Process group $pgid is still running. Force kill it?"; then
+            kill -KILL "-$pgid" 2>/dev/null || true
+        fi
+    fi
+}
+
+aggressive_cleanup_menu() {
+    local groups mcp_groups pm2_pid caddy_running target_count=0
+    groups=$(aggressive_user_process_groups)
+    mcp_groups=$(mcp_process_groups)
+    pm2_pid=$(pm2_daemon_pid)
+
+    echo -e "${BLUE}━━━ Aggressive Cleanup ━━━${NC}"
+    echo -e "${YELLOW}Targets:${NC} Codex conversations, Codex node wrappers, ranger, MCP servers, empty PM2 daemon, and Caddy when no PM2 app is online."
+    echo -e "${YELLOW}Protected:${NC} ssh, tmux server, shell sessions, systemd, root services except Caddy."
+    echo ""
+
+    if [ -n "$groups" ]; then
+        show_aggressive_user_process_groups
+        target_count=$((target_count + $(printf '%s\n' "$groups" | sed '/^[[:space:]]*$/d' | wc -l)))
+    else
+        echo -e "${GREEN}No Codex/node-wrapper/ranger process groups detected.${NC}"
+    fi
+
+    if [ -n "$mcp_groups" ]; then
+        echo ""
+        show_mcp_process_groups
+        target_count=$((target_count + $(printf '%s\n' "$mcp_groups" | sed '/^[[:space:]]*$/d' | wc -l)))
+    fi
+
+    if [ -n "$pm2_pid" ] && ! pm2_has_running_apps; then
+        echo -e "${YELLOW}Empty PM2 daemon:${NC} PID $pm2_pid"
+        target_count=$((target_count + 1))
+    fi
+
+    if user_caddy_is_running && ! pm2_has_running_apps; then
+        echo -e "${YELLOW}User Caddy:${NC} PID $(user_caddy_pid)"
+        target_count=$((target_count + 1))
+    fi
+
+    if caddy_service_active && ! pm2_has_running_apps; then
+        echo -e "${YELLOW}Legacy system Caddy:${NC} active, no PM2 apps online"
+        target_count=$((target_count + 1))
+    fi
+
+    if [ "$target_count" -eq 0 ]; then
+        echo -e "${GREEN}No aggressive cleanup targets found.${NC}"
+        return 0
+    fi
+
+    echo ""
+    if ! ui_confirm "Aggressively stop $target_count target(s) now? This can close Codex conversations."; then
+        echo -e "${BLUE}Cancelled - no process stopped.${NC}"
+        return 0
+    fi
+
+    if [ -n "$groups" ]; then
+        while IFS='|' read -r pgid count rss etime kinds pids cmd; do
+            [ -n "$pgid" ] || continue
+            stop_process_group_term_then_optional_kill "$pgid" "PGID $pgid · $kinds · $(mcp_format_rss "$rss") · $(mcp_format_elapsed "$etime")"
+        done <<< "$groups"
+    fi
+
+    if [ -n "$mcp_groups" ]; then
+        while IFS='|' read -r pgid count rss etime providers ancestors pids tty cmd; do
+            [ -n "$pgid" ] || continue
+            stop_process_group_term_then_optional_kill "$pgid" "MCP PGID $pgid · $providers · $(mcp_format_rss "$rss") · $(mcp_format_elapsed "$etime")"
+        done <<< "$mcp_groups"
+    fi
+
+    if [ -n "$pm2_pid" ] && ! pm2_has_running_apps; then
+        if [ "${SHIPFLOW_AGGRESSIVE_CLEANUP_DRY_RUN:-0}" = "1" ]; then
+            echo "pm2 kill"
+        else
+            pm2 kill >/dev/null 2>&1 || true
+            invalidate_pm2_cache
+            echo -e "${GREEN}Stopped empty PM2 daemon.${NC}"
+        fi
+    fi
+
+    if ! pm2_has_running_apps; then
+        stop_user_caddy || true
+        stop_caddy_if_no_pm2_apps || true
+    fi
+}
+
 # mem_alerts - Generate alerts for concerning memory situations
 # Output: one alert per line (severity|message)
 mem_alerts() {
@@ -1082,6 +1748,14 @@ mem_alerts() {
         local count
         count=$(echo "$long_running" | wc -l)
         alerts+=("warning|${count} process(es) running ${SHIPFLOW_PROCESS_LONG_RUNNING_HOURS:-24}h+ with >100MB RAM")
+    fi
+
+    local mcp_groups
+    mcp_groups=$(mcp_process_groups)
+    if [ -n "$mcp_groups" ]; then
+        local mcp_count
+        mcp_count=$(printf '%s\n' "$mcp_groups" | wc -l)
+        alerts+=("info|${mcp_count} local MCP process group(s) detected; use Health Check -> MCP process cleanup if they are no longer needed")
     fi
 
     # Check if any single process uses > 25% of total RAM
@@ -1186,6 +1860,14 @@ system_monitor_menu() {
         done <<< "$top_procs"
     fi
     echo ""
+
+    # --- MCP groups ---
+    local mcp_groups
+    mcp_groups=$(mcp_process_groups)
+    if [ -n "$mcp_groups" ]; then
+        show_mcp_process_groups
+        echo ""
+    fi
 
     # --- Swap ---
     local swap_total swap_used
@@ -2371,6 +3053,43 @@ pm2_app_exists_by_name() {
     [ -z "$app_name" ] && return 1
 
     list_pm2_app_names | awk -v name="$app_name" '$0 == name {found=1} END {exit found ? 0 : 1}'
+}
+
+pm2_daemon_pid() {
+    pgrep -u "$(id -u)" -f 'PM2 v[0-9.]+: God Daemon' 2>/dev/null | head -n 1
+}
+
+pm2_has_apps() {
+    [ -n "$(list_pm2_app_names 2>/dev/null)" ]
+}
+
+pm2_has_running_apps() {
+    get_pm2_data_cached 2>/dev/null | awk -F'|' '$2 == "online" || $2 == "launching" {found=1} END {exit found ? 0 : 1}'
+}
+
+stop_empty_pm2_daemon() {
+    local pid
+    pid=$(pm2_daemon_pid)
+
+    if [ -z "$pid" ]; then
+        echo -e "${GREEN}No PM2 daemon is running for this user.${NC}"
+        return 0
+    fi
+
+    if pm2_has_running_apps; then
+        echo -e "${YELLOW}PM2 apps are running; refusing to stop the PM2 daemon from this cleanup action.${NC}"
+        return 1
+    fi
+
+    echo -e "${YELLOW}PM2 daemon is running with no registered apps.${NC}"
+    if ! ui_confirm "Stop the empty PM2 daemon now?"; then
+        echo -e "${BLUE}Skipped.${NC}"
+        return 0
+    fi
+
+    pm2 kill >/dev/null 2>&1 || true
+    invalidate_pm2_cache
+    echo -e "${GREEN}Stopped empty PM2 daemon.${NC}"
 }
 
 get_pm2_status_by_name() {
@@ -4358,6 +5077,7 @@ EOF
     else
         success "Projet $env_name démarré sur le port $port"
         log INFO "Started environment: $env_name on port $port at $project_dir"
+        refresh_user_caddy_from_pm2 || true
     fi
 
     # Initialize ShipFlow tracking on first start or clean up legacy tracker symlinks.
@@ -4422,7 +5142,12 @@ env_stop() {
         return 1
     fi
 
-    pm2_stop_app_by_name "$pm2_app_name"
+    local stop_rc=0
+    pm2_stop_app_by_name "$pm2_app_name" || stop_rc=$?
+    if [ "$stop_rc" -eq 0 ]; then
+        sync_caddy_after_pm2_change
+    fi
+    return "$stop_rc"
 }
 
 # Web Inspector Functions
@@ -5191,8 +5916,8 @@ auto_fix_known_issues() {
     done <<< "$health_data"
 
     if [ "$fixed" -eq 0 ]; then
-        echo -e "${YELLOW}No auto-fixable issues found.${NC}"
-        echo -e "Run ${CYAN}pm2 logs <app> --lines 30${NC} to investigate manually."
+        echo -e "${YELLOW}No PM2 app auto-fixable issues found.${NC}"
+        echo -e "Run ${CYAN}pm2 logs <app> --lines 30${NC} if you expected a PM2 app to be running."
     else
         echo -e "${GREEN}✅ Applied $fixed fix(es). Waiting for apps to stabilize...${NC}"
         sleep 3
@@ -5242,6 +5967,7 @@ batch_stop_all() {
 
     pm2 save --force >/dev/null 2>&1
     invalidate_pm2_cache
+    sync_caddy_after_pm2_change
     echo ""
     echo -e "${GREEN}Summary: $((count - failed))/$total stopped successfully${NC}"
     log INFO "Batch stop complete: $((count - failed))/$total succeeded, $failed failed"
@@ -5528,17 +6254,25 @@ show_dashboard() {
 
         if [ -n "$stop_choice" ] && [ "$stop_choice" != "Skip" ]; then
             if [ "$stop_choice" = "Stop all idle" ]; then
-                for n in "${idle_arr[@]}"; do
-                    echo -e "${YELLOW}🛑 Stopping $n...${NC}"
-                    env_stop "$n"
-                    echo -e "${GREEN}✅ $n stopped${NC}"
-                done
-                log INFO "Dashboard: stopped all idle apps: ${idle_names}"
+                if ui_confirm "Stop all idle apps now?"; then
+                    for n in "${idle_arr[@]}"; do
+                        echo -e "${YELLOW}🛑 Stopping $n...${NC}"
+                        env_stop "$n"
+                        echo -e "${GREEN}✅ $n stopped${NC}"
+                    done
+                    log INFO "Dashboard: stopped all idle apps: ${idle_names}"
+                else
+                    echo -e "${BLUE}Skipped idle app stop.${NC}"
+                fi
             else
-                echo -e "${YELLOW}🛑 Stopping $stop_choice...${NC}"
-                env_stop "$stop_choice"
-                echo -e "${GREEN}✅ $stop_choice stopped${NC}"
-                log INFO "Dashboard: stopped idle app $stop_choice"
+                if ui_confirm "Stop idle app '$stop_choice' now?"; then
+                    echo -e "${YELLOW}🛑 Stopping $stop_choice...${NC}"
+                    env_stop "$stop_choice"
+                    echo -e "${GREEN}✅ $stop_choice stopped${NC}"
+                    log INFO "Dashboard: stopped idle app $stop_choice"
+                else
+                    echo -e "${BLUE}Skipped idle app stop.${NC}"
+                fi
             fi
         fi
     fi
@@ -6179,11 +6913,10 @@ print_header() {
     read_menu_status_cache >/dev/null 2>&1 || true
     refresh_menu_status_cache_async_if_stale
 
-    local status_left="Disk: ..."
+    local status_left="FREE Disk: ..."
     local status_right="Up: ..."
     local free_human="${MENU_STATUS_FREE_HUMAN:-}"
     local mem_human="${MENU_STATUS_MEM_HUMAN:-}"
-    local mem_total_human="${MENU_STATUS_MEM_TOTAL_HUMAN:-}"
 
     # Disk and RAM probes are cheap, so fall back to live values on first paint
     # instead of showing placeholders while the async cache warms up.
@@ -6193,25 +6926,14 @@ print_header() {
     if [ -z "$mem_human" ]; then
         mem_human=$(mem_available_human 2>/dev/null || true)
     fi
-    if [ -z "$mem_total_human" ]; then
-        mem_total_human=$(mem_total_human 2>/dev/null || true)
-    fi
 
     if [ -n "$free_human" ]; then
-        status_left="Disk: ${free_human} free"
+        status_left="FREE Disk: $(header_storage_human "$free_human")"
         if [ -n "$mem_human" ] && [ "$mem_human" != "?" ]; then
-            if [ -n "$mem_total_human" ] && [ "$mem_total_human" != "?" ]; then
-                status_left="${status_left} | RAM: ${mem_human}/${mem_total_human}"
-            else
-                status_left="${status_left} | RAM avail: $mem_human"
-            fi
+            status_left="${status_left} | FREE RAM: $(header_storage_human "$mem_human")"
         fi
     elif [ -n "$mem_human" ] && [ "$mem_human" != "?" ]; then
-        if [ -n "$mem_total_human" ] && [ "$mem_total_human" != "?" ]; then
-            status_left="RAM: ${mem_human}/${mem_total_human}"
-        else
-            status_left="RAM avail: $mem_human"
-        fi
+        status_left="FREE RAM: $(header_storage_human "$mem_human")"
     fi
     if [ -n "$MENU_STATUS_UPDATES_TOTAL" ]; then
         status_right="Up: $MENU_STATUS_UPDATES_TOTAL"
@@ -6436,47 +7158,46 @@ action_flutter_web() {
     echo -e "${GREEN}🧩 Flutter Web Dev${NC}"
     echo ""
     local choice
-    choice=$(printf '%s\n' \
-        "Start session" \
-        "Hot Reload (r)" \
-        "Hot Restart (R)" \
-        "Attach terminal" \
-        "Stop session" \
-        "Show sessions" \
-        "Back" | ui_choose "Flutter Web Dev:") || {
-        ui_return_back
-        return 0
-    }
+    echo -e "${BLUE}Flutter Web Dev:${NC}"
+    echo -e "  ${CYAN}s)${NC} Start session"
+    echo -e "  ${CYAN}l)${NC} Hot Reload"
+    echo -e "  ${CYAN}r)${NC} Hot Restart"
+    echo -e "  ${CYAN}a)${NC} Attach terminal"
+    echo -e "  ${CYAN}t)${NC} Stop session"
+    echo -e "  ${CYAN}v)${NC} Show sessions"
+    echo -e "  ${CYAN}x)${NC} Back"
+    echo ""
+    echo -e "${YELLOW}Choose:${NC} \c"
+    ui_read_choice choice
 
-    if ui_is_back_selection "$choice"; then
+    if [ -z "$choice" ] || ui_is_back_choice "$choice"; then
         ui_return_back
         return 0
     fi
 
     case "$choice" in
-        "Start session")
+        s)
             local project_dir
             project_dir=$(select_flutter_web_project) || return 1
             start_flutter_web_tmux_session "$project_dir"
             ;;
-        "Hot Reload (r)")
+        l)
             send_flutter_web_key "r" "Hot reload"
             ;;
-        "Hot Restart (R)")
+        r)
             send_flutter_web_key "R" "Hot restart"
             ;;
-        "Attach terminal")
+        a)
             attach_flutter_web_session
             ;;
-        "Stop session")
+        t)
             stop_flutter_web_session
             ;;
-        "Show sessions")
+        v)
             show_flutter_web_sessions
             ;;
         *)
-            ui_return_back
-            return 0
+            echo -e "${RED}Invalid option${NC}"
             ;;
     esac
 }
@@ -6489,22 +7210,93 @@ action_health() {
     echo -e "${BLUE}━━━ App Health (PM2) ━━━${NC}"
     health_check_all verbose
     echo ""
-    local fix_choice
-    fix_choice=$(printf '%s\n' "Auto-fix known issues" "Back to menu" | ui_choose "Options:") || {
-        ui_return_back
-        return 0
-    }
-    if ui_is_back_selection "$fix_choice"; then
+    ui_flush_pending_input
+    echo -e "${BLUE}Options:${NC}"
+    echo -e "  ${CYAN}r)${NC} Refresh current processes"
+    echo -e "  ${CYAN}s)${NC} Clean all safe targets"
+    echo -e "  ${CYAN}m)${NC} MCP process cleanup (local servers)"
+    echo -e "  ${CYAN}p)${NC} Stop empty PM2 daemon"
+    echo -e "  ${CYAN}c)${NC} Stop all Caddy if no PM2 apps"
+    echo -e "  ${CYAN}a)${NC} Auto-fix PM2 app issues"
+    echo -e "  ${CYAN}g)${NC} Aggressive cleanup"
+    echo -e "  ${CYAN}x)${NC} Back to menu"
+    echo ""
+    echo -e "${YELLOW}Choose:${NC} \c"
+
+    local health_choice
+    ui_read_choice health_choice
+
+    if [ -z "$health_choice" ] || ui_is_back_choice "$health_choice"; then
         ui_return_back
         return 0
     fi
-    if [ "$fix_choice" = "Auto-fix known issues" ]; then
-        echo ""
-        auto_fix_known_issues
-        echo ""
-        echo -e "${BLUE}Updated health status:${NC}"
-        echo ""
-        health_check_all verbose
+
+    case "$health_choice" in
+        r)
+            ui_skip_next_pause
+            return 0
+            ;;
+        g)
+            echo ""
+            aggressive_cleanup_menu
+            ;;
+        s)
+            echo ""
+            clean_all_safe_targets
+            ;;
+        m)
+            echo ""
+            mcp_cleanup_menu
+            ;;
+        p)
+            echo ""
+            stop_empty_pm2_daemon
+            ;;
+        c)
+            echo ""
+            stop_all_caddy_if_no_pm2_apps
+            ;;
+        a)
+            echo ""
+            auto_fix_known_issues
+            echo ""
+            echo -e "${BLUE}Updated health status:${NC}"
+            echo ""
+            health_check_all verbose
+            ;;
+        *)
+            echo -e "${RED}Invalid option${NC}"
+            ;;
+    esac
+}
+
+action_reboot_vm() {
+    ui_box_header "Reboot VM" "$RED" "$YELLOW"
+    echo ""
+    echo -e "${YELLOW}Cette action redémarre toute la machine.${NC}"
+    echo -e "${YELLOW}Elle coupera les sessions SSH, tmux, Codex, PM2, Caddy et tous les process utilisateur.${NC}"
+    echo ""
+
+    if ! ui_confirm "Reboot this VM now?"; then
+        echo -e "${BLUE}Cancelled - VM not rebooted.${NC}"
+        return 0
+    fi
+
+    log WARNING "VM reboot requested from ShipFlow menu"
+    if [ "${SHIPFLOW_REBOOT_DRY_RUN:-0}" = "1" ]; then
+        if [ "$(id -u)" -eq 0 ]; then
+            echo "systemctl reboot"
+        else
+            echo "sudo systemctl reboot"
+        fi
+        return 0
+    fi
+
+    echo -e "${RED}Rebooting now...${NC}"
+    if [ "$(id -u)" -eq 0 ]; then
+        systemctl reboot
+    else
+        sudo systemctl reboot
     fi
 }
 
@@ -6653,6 +7445,410 @@ action_mcp_auth_setup() {
     echo -e "   ${GREEN}codex mcp add supabase --url https://mcp.supabase.com/mcp${NC}"
     echo ""
     echo -e "${BLUE}ShipFlow does not read or store OAuth tokens; Codex and the provider own the token exchange.${NC}"
+}
+
+CODEX_MCP_DEFINITIONS=(
+    "openaiDeveloperDocs|OpenAI Docs - official API docs"
+    "context7|Context7 - library docs"
+    "playwright|Playwright - browser"
+    "convex|Convex - backend"
+    "supabase|Supabase - database/auth/storage"
+    "vercel|Vercel - deploys/logs"
+    "vercel-gocharbon|Vercel GoCharbon - project deploys/logs"
+    "clerk|Clerk - auth docs"
+    "dataforseo|DataForSEO - SEO data"
+)
+
+codex_mcp_known_names() {
+    local definition
+    for definition in "${CODEX_MCP_DEFINITIONS[@]}"; do
+        printf '%s\n' "${definition%%|*}"
+    done
+}
+
+codex_mcp_label_for_name() {
+    local name="$1"
+    local definition
+    for definition in "${CODEX_MCP_DEFINITIONS[@]}"; do
+        if [ "${definition%%|*}" = "$name" ]; then
+            printf '%s' "${definition#*|}"
+            return 0
+        fi
+    done
+    printf '%s' "$name"
+}
+
+codex_mcp_name_for_label() {
+    local label="$1"
+    local definition
+    for definition in "${CODEX_MCP_DEFINITIONS[@]}"; do
+        if [ "${definition#*|}" = "$label" ]; then
+            printf '%s' "${definition%%|*}"
+            return 0
+        fi
+    done
+    return 1
+}
+
+codex_mcp_is_valid_name() {
+    [[ "${1:-}" =~ ^[A-Za-z0-9_.-]+$ ]]
+}
+
+codex_mcp_contains() {
+    local needle="$1"
+    shift
+    local item
+    for item in "$@"; do
+        [ "$item" = "$needle" ] && return 0
+    done
+    return 1
+}
+
+codex_configured_mcp_names() {
+    local config_file="${CODEX_HOME:-$HOME/.codex}/config.toml"
+    [ -f "$config_file" ] || return 0
+
+    awk '
+        match($0, /^\[mcp_servers\.([A-Za-z0-9_-]+)\][[:space:]]*$/, m) {
+            print m[1]
+        }
+    ' "$config_file" | sort -u
+}
+
+codex_mcp_selection_summary() {
+    if [ "$#" -eq 0 ]; then
+        printf 'aucun MCP'
+        return 0
+    fi
+
+    local first=true
+    local name
+    for name in "$@"; do
+        if [ "$first" = true ]; then
+            first=false
+        else
+            printf ', '
+        fi
+        printf '%s' "$name"
+    done
+}
+
+codex_select_workspace() {
+    local current_label="Current directory: $PWD"
+    local home_label="Home: $HOME"
+    local choose_label="Choose a project folder"
+    local selected
+
+    selected=$(printf '%s\n' "$current_label" "$choose_label" "$home_label" "Back" | ui_choose "Codex workspace:") || return 1
+    if ui_is_back_selection "$selected"; then
+        ui_return_back
+        return 1
+    fi
+
+    case "$selected" in
+        "$current_label")
+            printf '%s\n' "$PWD"
+            ;;
+        "$home_label")
+            printf '%s\n' "$HOME"
+            ;;
+        "$choose_label")
+            local folders=()
+            local folder
+            while IFS= read -r folder; do
+                folders+=("$folder")
+            done < <(find "$HOME" -maxdepth 1 -type d ! -name ".*" ! -path "$HOME" 2>/dev/null | sort)
+
+            if [ ${#folders[@]} -eq 0 ]; then
+                echo -e "${RED}❌ No project folders found in $HOME${NC}" >&2
+                return 1
+            fi
+
+            selected=$(printf '%s\n' "${folders[@]}" "Back" | ui_choose "Choose workspace folder:") || return 1
+            if ui_is_back_selection "$selected"; then
+                ui_return_back
+                return 1
+            fi
+            printf '%s\n' "$selected"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+codex_select_custom_mcps() {
+    if [ "$HAS_GUM" = true ] && command -v gum >/dev/null 2>&1; then
+        local labels=()
+        local definition
+        for definition in "${CODEX_MCP_DEFINITIONS[@]}"; do
+            labels+=("${definition#*|}")
+        done
+
+        local selected_labels
+        selected_labels=$(printf '%s\n' "${labels[@]}" | gum choose --no-limit --header "Select MCPs, then Enter")
+        local rc=$?
+        [ $rc -ne 0 ] && return $rc
+
+        local label name
+        while IFS= read -r label; do
+            [ -z "$label" ] && continue
+            name=$(codex_mcp_name_for_label "$label") || continue
+            printf '%s\n' "$name"
+        done <<< "$selected_labels"
+        return 0
+    fi
+
+    local selected=()
+    local keys=()
+    local choice=""
+    local definition key name label mark
+
+    while true; do
+        clear
+        ui_box_header "Codex MCPs" "$CYAN" "$YELLOW"
+        echo ""
+        echo -e "${BLUE}Toggle MCPs. Press Enter to launch.${NC}"
+        echo ""
+
+        keys=()
+        local i=0
+        for definition in "${CODEX_MCP_DEFINITIONS[@]}"; do
+            name="${definition%%|*}"
+            label="${definition#*|}"
+            key=$(_ui_letter_key "$i")
+            keys+=("$key|$name")
+            if codex_mcp_contains "$name" "${selected[@]}"; then
+                mark="[x]"
+            else
+                mark="[ ]"
+            fi
+            echo -e "  ${CYAN}${key})${NC} $mark $label"
+            ((i++))
+        done
+
+        echo ""
+        echo -e "  ${CYAN}Enter)${NC} Launch"
+        echo -e "  ${CYAN}x)${NC} Back"
+        echo ""
+        echo -e "${YELLOW}Choose:${NC} \c"
+        ui_read_choice choice
+
+        if [ -z "$choice" ]; then
+            printf '%s\n' "${selected[@]}"
+            return 0
+        fi
+        if ui_is_back_choice "$choice"; then
+            ui_return_back
+            return 1
+        fi
+
+        local matched_name=""
+        for definition in "${keys[@]}"; do
+            key="${definition%%|*}"
+            name="${definition#*|}"
+            if [ "$choice" = "$key" ]; then
+                matched_name="$name"
+                break
+            fi
+        done
+
+        if [ -z "$matched_name" ]; then
+            echo -e "${RED}Invalid choice${NC}" >&2
+            sleep 1
+            continue
+        fi
+
+        if codex_mcp_contains "$matched_name" "${selected[@]}"; then
+            local next=()
+            for name in "${selected[@]}"; do
+                [ "$name" != "$matched_name" ] && next+=("$name")
+            done
+            selected=("${next[@]}")
+        else
+            selected+=("$matched_name")
+        fi
+    done
+}
+
+codex_select_mcp_preset() {
+    local choice
+    echo -e "${BLUE}Codex MCP preset:${NC}" >&2
+    echo -e "  ${CYAN}f)${NC} Fast - no MCP" >&2
+    echo -e "  ${CYAN}b)${NC} Browser - Playwright" >&2
+    echo -e "  ${CYAN}k)${NC} Backend - Convex + Supabase" >&2
+    echo -e "  ${CYAN}d)${NC} Deploy - Vercel" >&2
+    echo -e "  ${CYAN}a)${NC} Auth - Clerk + Supabase" >&2
+    echo -e "  ${CYAN}o)${NC} Docs - Context7" >&2
+    echo -e "  ${CYAN}c)${NC} Custom selection" >&2
+    echo -e "  ${CYAN}x)${NC} Back" >&2
+    echo "" >&2
+    echo -e "${YELLOW}Choose:${NC} \c" >&2
+    ui_read_choice choice
+
+    if [ -z "$choice" ] || ui_is_back_choice "$choice"; then
+        ui_return_back
+        return 1
+    fi
+
+    case "$choice" in
+        f) ;;
+        b) printf 'playwright\n' ;;
+        k) printf 'convex\nsupabase\n' ;;
+        d) printf 'vercel\n' ;;
+        a) printf 'clerk\nsupabase\n' ;;
+        o) printf 'context7\nopenaiDeveloperDocs\n' ;;
+        c) codex_select_custom_mcps ;;
+        *) return 1 ;;
+    esac
+}
+
+codex_launcher_help() {
+    echo -e "${BLUE}Usage:${NC} sf codex [--dir PATH] [mcp ...]"
+    echo ""
+    echo "Without MCP arguments, ShipFlow opens the interactive launcher."
+    echo ""
+    echo "Known MCP names:"
+    codex_mcp_known_names | sed 's/^/  - /'
+}
+
+codex_launch_with_mcps() {
+    local workspace="$1"
+    shift || true
+
+    if [ -z "$workspace" ] || [ ! -d "$workspace" ]; then
+        echo -e "${RED}❌ Invalid Codex workspace:${NC} ${workspace:-<empty>}" >&2
+        return 1
+    fi
+
+    if ! command -v codex >/dev/null 2>&1; then
+        echo -e "${RED}❌ Codex CLI not found in PATH.${NC}" >&2
+        echo -e "${YELLOW}Run the ShipFlow installer or install @openai/codex for this user.${NC}" >&2
+        return 1
+    fi
+
+    local args=("-C" "$workspace")
+    local configured_names=()
+    local configured_name
+    while IFS= read -r configured_name; do
+        [ -n "$configured_name" ] && configured_names+=("$configured_name")
+    done < <(codex_configured_mcp_names)
+
+    for configured_name in "${configured_names[@]}"; do
+        if codex_mcp_is_valid_name "$configured_name"; then
+            args+=("-c" "mcp_servers.${configured_name}.enabled=false")
+        fi
+    done
+
+    local name
+    for name in "$@"; do
+        if ! codex_mcp_is_valid_name "$name"; then
+            echo -e "${RED}❌ Invalid MCP name:${NC} $name" >&2
+            return 1
+        fi
+        if ! codex_mcp_contains "$name" "${configured_names[@]}"; then
+            echo -e "${RED}❌ MCP not registered in Codex config:${NC} $name" >&2
+            echo -e "${YELLOW}Run the ShipFlow installer or add this MCP before launching it.${NC}" >&2
+            return 1
+        fi
+        args+=("-c" "mcp_servers.${name}.enabled=true")
+    done
+
+    echo -e "${GREEN}Launching Codex${NC}"
+    echo -e "  ${BLUE}Workspace:${NC} $workspace"
+    echo -e "  ${BLUE}MCP:${NC} $(codex_mcp_selection_summary "$@")"
+    echo ""
+
+    if [ "${SHIPFLOW_CODEX_DRY_RUN:-0}" = "1" ]; then
+        printf 'codex'
+        printf ' %q' "${args[@]}"
+        printf '\n'
+        return 0
+    fi
+
+    exec codex "${args[@]}"
+}
+
+action_codex_launcher() {
+    local workspace="$PWD"
+    local selected_mcps=()
+
+    if [ "$#" -gt 0 ]; then
+        while [ "$#" -gt 0 ]; do
+            case "$1" in
+                -h|--help)
+                    codex_launcher_help
+                    return 0
+                    ;;
+                -C|--dir|--cd)
+                    if [ -z "${2:-}" ]; then
+                        echo -e "${RED}❌ Missing path after $1${NC}" >&2
+                        return 2
+                    fi
+                    workspace="$2"
+                    shift 2
+                    ;;
+                --all|all)
+                    while IFS= read -r name; do
+                        selected_mcps+=("$name")
+                    done < <(codex_mcp_known_names)
+                    shift
+                    ;;
+                --none|none|fast)
+                    selected_mcps=()
+                    shift
+                    ;;
+                *)
+                    local raw="$1"
+                    local parts=()
+                    local part
+                    IFS=',' read -ra parts <<< "$raw"
+                    for part in "${parts[@]}"; do
+                        [ -n "$part" ] && selected_mcps+=("$part")
+                    done
+                    shift
+                    ;;
+            esac
+        done
+    else
+        clear
+        ui_box_header "Codex Launcher" "$CYAN" "$YELLOW"
+        echo ""
+        echo -e "${BLUE}MCPs stay disabled globally. This launch enables only what you choose.${NC}"
+        echo ""
+
+        workspace=$(codex_select_workspace) || return 0
+        local preset_output=""
+        preset_output=$(codex_select_mcp_preset) || return 0
+        while IFS= read -r name; do
+            [ -n "$name" ] && selected_mcps+=("$name")
+        done <<< "$preset_output"
+    fi
+
+    codex_launch_with_mcps "$workspace" "${selected_mcps[@]}"
+}
+
+action_mcp_menu() {
+    local choice
+    choice=$(printf '%s\n' \
+        "Launch Codex with selected MCPs" \
+        "MCP Auth Setup - Local OAuth login tunnel" \
+        "Back" | ui_choose "MCP / Codex:") || {
+        ui_return_back
+        return 0
+    }
+
+    case "$choice" in
+        "Launch Codex with selected MCPs")
+            action_codex_launcher
+            ;;
+        "MCP Auth Setup - Local OAuth login tunnel")
+            action_mcp_auth_setup
+            ;;
+        *)
+            ui_return_back
+            ;;
+    esac
 }
 
 blacksmith_cli_path() {
@@ -6967,7 +8163,8 @@ ${ROUTES}    encode gzip
 EOF
     log INFO "Caddyfile generated for $DOMAIN with routes for all online environments"
     echo -e "${GREEN}✅ Caddyfile generated with all routes${NC}"
-    echo -e "${BLUE}🔄 Reloading Caddy...${NC}"
+    echo -e "${BLUE}🔄 Starting/reloading system Caddy for explicit HTTPS publish...${NC}"
+    sudo systemctl start caddy 2>/dev/null || true
     if sudo systemctl reload caddy; then
         log INFO "Caddy reloaded successfully for $DOMAIN"
         echo -e "${GREEN}✅ Caddy reloaded${NC}"
@@ -7047,10 +8244,11 @@ MAIN_MENU_ITEMS=(
     "k|Cleanup - Free disk space (light/aggressive)|action_cleanup"
     "f|Install SDK - Flutter, Dart...|action_install_sdk"
     "v|Tools Status - Voir les outils installés|action_tools"
+    "0|Reboot VM - Restart this server|action_reboot_vm"
     "z|Blacksmith - CI runners and Testbox setup|action_blacksmith_setup"
     "j|Session Identity - View or reset session|action_session"
     "c|Local Setup - Show server address for tunnels|action_local_connection_info"
-    "q|MCP Auth Setup - Local OAuth login tunnel|action_mcp_auth_setup"
+    "q|MCP / Codex - Auth and launcher|action_mcp_menu"
     "?|Help - How ShipFlow works|action_adv_help"
     "x|Exit|action_exit"
 )
@@ -7063,6 +8261,7 @@ ADVANCED_MENU_ITEMS=(
 print_menu_shortcut_usage() {
     echo -e "${BLUE}Usage:${NC} sf [menu shortcut]" >&2
     echo -e "${BLUE}Example:${NC} sf u" >&2
+    echo -e "${BLUE}Codex launcher:${NC} sf codex [mcp ...]" >&2
     echo "" >&2
     echo -e "${BLUE}Available shortcuts:${NC}" >&2
 
@@ -7104,6 +8303,12 @@ resolve_menu_shortcut_action() {
 }
 
 run_menu_shortcut() {
+    if [ "${1:-}" = "codex" ] || [ "${1:-}" = "co" ]; then
+        shift
+        action_codex_launcher "$@"
+        return $?
+    fi
+
     if [ "$#" -ne 1 ]; then
         error "Expected exactly one menu shortcut argument."
         print_menu_shortcut_usage

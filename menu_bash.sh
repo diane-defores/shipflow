@@ -3,7 +3,7 @@
 # Sourced by shipflow.sh when gum is NOT available
 
 _bash_flush_stdin() {
-    if [ -r /dev/tty ]; then
+    if [ -r /dev/tty ] && { : < /dev/tty; } 2>/dev/null; then
         while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
     fi
 }
@@ -18,24 +18,91 @@ _bash_run_menu() {
     local labels=()
     local actions=()
     local item_count=0
+    local display_lines=()
+    local left_lines=()
+    local right_lines=()
+    local first_section=true
+    local left_first_section=true
+    local right_first_section=true
+    local section_count=0
+    local side="left"
 
     for item in "${items[@]}"; do
         local key label action
-        key=$(echo "$item" | cut -d'|' -f1)
-        label=$(echo "$item" | cut -d'|' -f2)
-        action=$(echo "$item" | cut -d'|' -f3)
+        IFS='|' read -r key label action <<< "$item"
 
         if [ "$key" = "---" ]; then
-            [ "$item_count" -gt 0 ] && echo ""
-            echo -e "${BLUE}${label}${NC}"
+            section_count=$((section_count + 1))
+            if [ "$action_display_mode" = "screen" ] && [ "$section_count" -gt 3 ]; then
+                side="right"
+            else
+                side="left"
+            fi
+
+            if [ "$first_section" = true ]; then
+                first_section=false
+            else
+                display_lines+=("")
+            fi
+            display_lines+=("${label}")
+
+            if [ "$side" = "left" ]; then
+                if [ "$left_first_section" = true ]; then
+                    left_first_section=false
+                else
+                    left_lines+=("")
+                fi
+                left_lines+=("${label}")
+            else
+                if [ "$right_first_section" = true ]; then
+                    right_first_section=false
+                else
+                    right_lines+=("")
+                fi
+                right_lines+=("${label}")
+            fi
         else
-            echo -e "  ${CYAN}${key})${NC} ${label}"
+            display_lines+=("  ${key}) ${label}")
+            if [ "$side" = "left" ]; then
+                left_lines+=("  ${key}) ${label}")
+            else
+                right_lines+=("  ${key}) ${label}")
+            fi
             keys+=("$key")
             labels+=("$label")
             actions+=("$action")
             ((item_count++))
         fi
     done
+
+    local term_cols="${COLUMNS:-}"
+    if ! [[ "$term_cols" =~ ^[0-9]+$ ]]; then
+        term_cols=$(tput cols 2>/dev/null || printf '80')
+    fi
+    if [ "$action_display_mode" = "screen" ] && [ "${term_cols:-80}" -ge 96 ] && [ ${#right_lines[@]} -gt 0 ]; then
+        local left_width=52
+        local max_rows=${#left_lines[@]}
+        [ ${#right_lines[@]} -gt "$max_rows" ] && max_rows=${#right_lines[@]}
+        local i left right
+        for ((i=0; i<max_rows; i++)); do
+            left="${left_lines[$i]:-}"
+            right="${right_lines[$i]:-}"
+            printf "%-${left_width}s  %s\n" "$left" "$right"
+        done
+    else
+        local line
+        for line in "${display_lines[@]}"; do
+            if [ -z "$line" ]; then
+                echo ""
+            elif [[ "$line" == ---* ]]; then
+                echo -e "${BLUE}${line}${NC}"
+            elif [[ "$line" == *OVERVIEW* || "$line" == *MANAGE* || "$line" == *BATCH* || "$line" == *TOOLS* || "$line" == *SYSTEM* ]]; then
+                echo -e "${BLUE}${line}${NC}"
+            else
+                echo "$line"
+            fi
+        done
+    fi
     echo ""
     echo -e "${YELLOW}Your choice:${NC} \c"
 
@@ -44,7 +111,7 @@ _bash_run_menu() {
 
     for ((j=0; j<${#keys[@]}; j++)); do
         local k
-        k=$(echo "${keys[$j]}" | tr '[:upper:]' '[:lower:]')
+        k="${keys[$j],,}"
         if [ "$choice" = "$k" ]; then
             local label="${labels[$j]}"
             local act="${actions[$j]}"

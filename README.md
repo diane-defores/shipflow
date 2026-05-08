@@ -131,6 +131,8 @@ ShipFlow's installer is intentionally a root-level installer. It must be run wit
 - system packages and tools such as Node.js, PM2, Flox, Caddy, GitHub CLI, `jq`, `fuser`, and `ss`
 - global CLI binaries under `/usr/local`
 - PM2 binary installation only; ShipFlow does not configure PM2 boot autostart by default
+- Caddy binary installation only; ShipFlow disables the default system service
+  and starts a user-mode Caddy proxy only while PM2 apps are online
 - `/etc/dokploy/compose`
 - ShipFlow user configuration for root and detected regular users
 
@@ -142,6 +144,8 @@ The recommended server shape is:
 - use a regular non-root account such as `ubuntu`, `opc`, `debian`, `ec2-user`, or a manually created user for daily work
 - keep user-level config, credentials, project files, Claude/Codex settings, and ShipFlow data scoped to the operational user
 - start ShipFlow environments explicitly when needed instead of relying on PM2 resurrection at boot
+- let ShipFlow manage the local Caddy proxy with the environment lifecycle
+  instead of keeping a global root Caddy service running
 
 `dotfiles` may prepare generic user tooling in `~/.local/bin`, `~/.npm-global`, and `~/.config`. ShipFlow owns the AI/code workflow layer: skills, Claude/Codex settings, MCP registrations, ShipFlow aliases, and `~/shipflow_data`.
 
@@ -171,7 +175,10 @@ The install is idempotent, preserves existing user custom settings, and keeps
 ShipFlow-managed config wrapped in its own markers so user edits outside those
 blocks remain unchanged.
 
-It also provisions the default MCP set used by ShipFlow:
+It also registers the default MCP set used by ShipFlow. For Codex, these MCP
+entries are written with `enabled = false` by default so a plain `codex`
+launch stays lightweight:
+
 - `context7` in `~/.claude/settings.json` and `~/.codex/config.toml`
 - `vercel` in `~/.claude/settings.json` and `~/.codex/config.toml`
 - `convex` in `~/.claude/settings.json` and `~/.codex/config.toml`
@@ -179,6 +186,19 @@ It also provisions the default MCP set used by ShipFlow:
 - `supabase` in `~/.claude/settings.json` and `~/.codex/config.toml`
 - `playwright` in `~/.claude/settings.json` and `~/.codex/config.toml`
 - `dataforseo` in `~/.claude/settings.json` and `~/.codex/config.toml`
+
+Use the ShipFlow Codex launcher when a session needs MCPs:
+
+```bash
+sf codex
+```
+
+Or open the interactive menu and choose
+`MCP / Codex - Auth and launcher` -> `Launch Codex with selected MCPs`.
+ShipFlow asks for the workspace and MCP preset, then launches Codex directly in
+the current terminal with session-only overrides such as
+`mcp_servers.supabase.enabled=true`. It does not persistently enable MCPs and
+does not close existing Codex conversations.
 
 For remote Codex usage, ShipFlow local tooling also supports OAuth login flows for hosted MCP providers through an ephemeral local SSH callback tunnel:
 
@@ -279,6 +299,7 @@ Unlike Claude Code, Codex does not expose a custom shell-command status line ren
 sf
 shipflow
 sf u   # open Updates directly
+sf codex   # open the Codex MCP launcher
 ```
 
 Passing a top-level menu key as the only argument runs that menu action once.
@@ -289,6 +310,8 @@ Typical CLI actions:
 - dashboard and PM2 status
 - deploy, restart, stop, remove environments
 - Flutter Web tmux sessions with hot reload/hot restart
+- launch Codex with selected MCPs for this session only
+- inspect local MCP process groups and stop a selected group after confirmation
 - publish apps with public HTTPS URLs
 - guided Blacksmith runner/Testbox setup for project CI
 - health checks and crash loop detection
@@ -727,6 +750,7 @@ shipflow/
 - Flutter Web interactive `tmux` preview with hot reload
 - persistent `ecosystem.config.cjs` generation
 - automatic port allocation and collision avoidance
+- user-mode Caddy proxy lifecycle tied to PM2 apps
 - public HTTPS publishing through Caddy and DuckDNS
 - local tunnel workflows
 - spec-driven AI-assisted development workflows

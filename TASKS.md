@@ -83,6 +83,7 @@
 | 🟢 | Ajouter un handoff contenu à `sf-research` et `sf-market-study` quand leurs rapports recommandent des contenus publics, avec sources, claims et route vers `sf-content` | 💤 deferred |
 | 🟢 | Renforcer `sf-audit` master pour charger explicitement les corpus éditorial/technique quand l'audit touche des surfaces publiques, claims ou docs mappées | 💤 deferred |
 | 🟢 | Ajouter une micro-intégration `technical-docs-corpus` à `sf-content`/`sf-repurpose` quand les opportunités ou handoffs touchent des docs techniques internes | 💤 deferred |
+| 🟢 | Idée à cadrer : créer une brique partagée de journaux opérationnels append-only (`OPERATIONS_LOG.md` / `DEPENDENCY_LOG.md`) pour tracer les runs importants sans remplacer `specs/`, `bugs/`, `TASKS.md` ni `CHANGELOG.md` | 💤 deferred |
 
 ---
 
@@ -110,6 +111,7 @@
 | 🟡 | Fix `test_priority3.sh` so the PM2 jq parsing fixture passes or is explicitly skipped with an accurate reason | 📋 todo |
 | ✅ | Validate DuckDNS publish inputs, encode DuckDNS update requests, harden secret writes, and remove the default public ImgBB upload key | ✅ done |
 | ✅ | Restore the Astro docs page build by moving dynamic GitHub URLs into frontmatter and escaping shell-style `${...}` text | ✅ done |
+| ✅ | Corriger la latence du menu ShipFlow et bloquer les auto-sélections dangereuses dans Health/cleanup (`BUG-2026-05-08-001`, `BUG-2026-05-08-002`) | ✅ done |
 
 ### Audit: Perf (2026-04-29) — Score: B
 

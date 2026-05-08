@@ -29,10 +29,23 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-05-08]
 
 ### Changed
+- The ShipFlow top-level menu now avoids per-item Gum subprocesses and uses a
+  two-column layout on wide terminals, with a one-column fallback for narrow
+  terminals.
+- Codex MCP providers are registered disabled by default and can be launched
+  per session from the ShipFlow Codex launcher.
+- ShipFlow now manages the local Caddy proxy in user mode with the PM2 app
+  lifecycle instead of leaving the system Caddy service as the normal runtime
+  path.
 - `sf-bug` now presents itself as a bug lifecycle executor that continues through owner skills and bounded subagents when safe, instead of a simple next-command router.
 - Repo docs, help text, launch cheatsheet, technical lifecycle docs, and public skill pages now use the same `sf-bug` lifecycle wording.
 
 ### Fixed
+- Health, Flutter Web, and Codex submenus now use explicit one-key actions for
+  sensitive commands, preventing residual Enter/input from opening cleanup or
+  launch actions accidentally.
+- Closed `BUG-2026-05-08-001` and `BUG-2026-05-08-002` after focused `sf-test`
+  retests for menu startup and Health cleanup routing.
 - Cleared stale Astro content cache and confirmed the public site builds without the duplicate `sf-bug` content id warning.
 
 ## [2026-05-06]

@@ -20,6 +20,11 @@ fi
 
 # Main entry point
 main() {
+    if [ "${1:-}" = "codex" ] || [ "${1:-}" = "co" ]; then
+        run_menu_shortcut "$@"
+        exit $?
+    fi
+
     local marker="$HOME/.shipflow_setup_done"
 
     if [ ! -f "$marker" ]; then

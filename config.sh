@@ -179,6 +179,20 @@ export SHIPFLOW_DANGEROUS_CHARS_REGEX='[\;\&\|\$\`]'
 # Caddyfile location
 export SHIPFLOW_CADDYFILE="${SHIPFLOW_CADDYFILE:-/etc/caddy/Caddyfile}"
 
+# ShipFlow-managed user-mode Caddy runtime. This is the default runtime proxy
+# path for development environments; the system Caddy service remains a legacy
+# public HTTPS path only.
+export SHIPFLOW_RUNTIME_DIR="${SHIPFLOW_RUNTIME_DIR:-$SHIPFLOW_SECRETS_DIR/runtime}"
+export SHIPFLOW_USER_CADDY_ENABLED="${SHIPFLOW_USER_CADDY_ENABLED:-true}"
+export SHIPFLOW_USER_CADDY_BIND="${SHIPFLOW_USER_CADDY_BIND:-127.0.0.1}"
+export SHIPFLOW_USER_CADDY_PORT="${SHIPFLOW_USER_CADDY_PORT:-8080}"
+export SHIPFLOW_USER_CADDY_DIR="${SHIPFLOW_USER_CADDY_DIR:-$SHIPFLOW_RUNTIME_DIR/caddy}"
+export SHIPFLOW_USER_CADDYFILE="${SHIPFLOW_USER_CADDYFILE:-$SHIPFLOW_USER_CADDY_DIR/Caddyfile}"
+export SHIPFLOW_USER_CADDY_PID_FILE="${SHIPFLOW_USER_CADDY_PID_FILE:-$SHIPFLOW_USER_CADDY_DIR/caddy.pid}"
+export SHIPFLOW_USER_CADDY_LOG_FILE="${SHIPFLOW_USER_CADDY_LOG_FILE:-$SHIPFLOW_USER_CADDY_DIR/caddy.log}"
+export SHIPFLOW_USER_CADDY_STDOUT_FILE="${SHIPFLOW_USER_CADDY_STDOUT_FILE:-$SHIPFLOW_USER_CADDY_DIR/stdout.log}"
+export SHIPFLOW_USER_CADDY_STORAGE_DIR="${SHIPFLOW_USER_CADDY_STORAGE_DIR:-$SHIPFLOW_USER_CADDY_DIR/storage}"
+
 # ============================================================================
 # SECRETS / CREDENTIAL CACHE CONFIGURATION
 # ============================================================================
