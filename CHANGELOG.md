@@ -28,7 +28,15 @@ next_step: "/sf-docs audit CHANGELOG.md"
 
 ## [2026-05-09]
 
+### Added
+- The Agents / CI menu now includes a GitHub Login action that checks `gh`
+  authentication, launches `gh auth login` when needed, and configures Git
+  credentials for deploy-oriented workflows.
+
 ### Changed
+- Root, server submenus, nested menus, search selectors, and local tunnel
+  menus now share a padded ShipFlow DevServer header treatment with consistent
+  title colors, borders, and session identity placement.
 - The ShipFlow root menu is now grouped into readable entries (`Dashboard`,
   `Deploy / Start`, `Environments`, `Tools`, `System`,
   `Agents`, `ShipFlow`, `Help`, `Exit`) with icons.

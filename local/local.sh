@@ -14,6 +14,8 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
+LIGHT_BLUE='\033[38;5;117m'
+LIGHT_PURPLE='\033[38;5;141m'
 NC='\033[0m' # No Color
 
 # Configuration file for saved connections
@@ -79,6 +81,66 @@ get_saved_connections() {
 
 prompt_inline() {
     printf "%b" "$1"
+}
+
+local_center_fixed_width() {
+    local text="$1"
+    local width="${2:-46}"
+    local text_len=${#text}
+
+    if [ "$text_len" -ge "$width" ]; then
+        printf "%s" "${text:0:$width}"
+        return
+    fi
+
+    local left_pad=$(( (width - text_len) / 2 ))
+    local right_pad=$(( width - text_len - left_pad ))
+    printf "%*s%s%*s" "$left_pad" "" "$text" "$right_pad" ""
+}
+
+local_screen_header() {
+    local title="$1"
+    local variant="${2:-default}"
+    local border_color="$CYAN"
+    local title_color="$YELLOW"
+    local brand="ShipFlow DevServer"
+    local content_width=50
+    local inner_width=46
+
+    case "$variant" in
+        danger)
+            border_color="$RED"
+            title_color="$YELLOW"
+            ;;
+        success)
+            border_color="$GREEN"
+            title_color="$GREEN"
+            ;;
+    esac
+
+    if [ ${#title} -gt "$inner_width" ]; then
+        title="${title:0:$inner_width}"
+    fi
+
+    local rule=""
+    local i
+    for ((i=0; i<content_width; i++)); do
+        rule+="═"
+    done
+
+    printf "%b╔%s╗%b\n" "$border_color" "$rule" "$NC"
+    printf "%b║%50s║%b\n" "$border_color" "" "$NC"
+    printf "%b║  %b%s%b  ║%b\n" "$border_color" "$YELLOW" "$(local_center_fixed_width "$brand" "$inner_width")" "$border_color" "$NC"
+    printf "%b║  %b%s%b  ║%b\n" "$border_color" "$title_color" "$(local_center_fixed_width "$title" "$inner_width")" "$border_color" "$NC"
+    printf "%b║%50s║%b\n" "$border_color" "" "$NC"
+    printf "%b╚%s╝%b\n" "$border_color" "$rule" "$NC"
+    echo ""
+}
+
+local_menu_line() {
+    local key="$1"
+    local label="$2"
+    echo -e "  ${CYAN}${key})${NC} ${LIGHT_BLUE}${label}${NC}"
 }
 
 trim_input() {
@@ -207,9 +269,7 @@ save_and_activate_connection() {
 }
 
 configure_new_server() {
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "           ${YELLOW}Configurer un nouveau serveur${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    local_screen_header "Configurer un nouveau serveur"
     echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}${REMOTE_HOST:-non configurée}${NC}"
     echo ""
     echo -e "${BLUE}ShipFlow va enregistrer l'adresse SSH du nouveau serveur.${NC}"
@@ -275,9 +335,7 @@ configure_new_server() {
 
 # Menu to select/add connection
 select_connection() {
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "              ${YELLOW}Gestion des connexions${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    local_screen_header "Gestion des connexions"
     echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}${REMOTE_HOST:-non configurée}${NC}"
     echo ""
 
@@ -295,9 +353,9 @@ select_connection() {
             local key
             key=$(menu_letter_key $((i - 1)))
             if [ "$conn" = "$REMOTE_HOST" ]; then
-                echo -e "  ${CYAN}$key)${NC} $conn ${GREEN}(actuel)${NC}"
+                echo -e "  ${CYAN}$key)${NC} ${LIGHT_BLUE}$conn${NC} ${GREEN}(actuel)${NC}"
             else
-                echo -e "  ${CYAN}$key)${NC} $conn"
+                echo -e "  ${CYAN}$key)${NC} ${LIGHT_BLUE}$conn${NC}"
             fi
             options+=("$conn")
             keys+=("$key")
@@ -308,8 +366,8 @@ select_connection() {
     fi
 
     echo ""
-    echo -e "  ${CYAN}n)${NC} ➕ Nouvelle connexion"
-    echo -e "  ${CYAN}x)${NC} ← Retour"
+    local_menu_line "n" "➕ Nouvelle connexion"
+    local_menu_line "x" "← Retour"
     echo ""
     prompt_inline "${YELLOW}Tape la lettre de ton choix ?${NC} "
     read_menu_choice choice true
@@ -567,8 +625,8 @@ display_server_session_banner() {
         local session_code=$(echo "$session_info" | grep "^CODE:" | cut -d: -f2)
         local hash_art=$(echo "$session_info" | sed -n '/---HASH_ART_START---/,/---HASH_ART_END---/p' | grep -v "^---")
 
-        echo -e "             ${MAGENTA}Server Session Identity${NC}"
-        echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
+        echo -e "${LIGHT_PURPLE}$(center_session_banner_text "Server Session Identity")${NC}"
+        echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
 
         # Display hash art
         while IFS= read -r line; do
@@ -576,8 +634,8 @@ display_server_session_banner() {
         done <<< "$hash_art"
 
         echo -e "${GREEN}$(center_session_banner_text "$session_user@$session_host")${NC}"
-        echo -e "${YELLOW}$(center_session_banner_text "$session_code")${NC}"
-        echo -e "${CYAN}──────────────────────────────────────────────────${NC}"
+        echo -e "${LIGHT_BLUE}$(center_session_banner_text "$session_code")${NC}"
+        echo -e "${YELLOW}──────────────────────────────────────────────────${NC}"
     elif echo "$session_info" | grep -q "SESSION_NOT_FOUND"; then
         echo -e "${YELLOW}⚠ Session identity unavailable (ShipFlow not found on server)${NC}"
     elif echo "$session_info" | grep -q "SESSION_NOT_CONFIGURED"; then
@@ -589,10 +647,7 @@ display_server_session_banner() {
 
 # Fonction d'affichage avec couleurs
 print_header() {
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "                 ${YELLOW}ShipFlow - Local${NC}"
-    echo -e "                ${BLUE}SSH Tunnel Manager${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    local_screen_header "SSH Tunnel Manager"
 
     # Display server session identity (includes user@host info)
     display_server_session_banner
@@ -600,38 +655,36 @@ print_header() {
 
 # Fonction d'affichage du menu
 show_menu() {
-    echo -e "${GREEN}Choisissez une option :${NC}"
+    echo -e "${YELLOW}Choisissez une option :${NC}"
     if [ -z "$REMOTE_HOST" ]; then
         echo -e "${YELLOW}Connexion distante non configurée. Choisissez c pour ajouter le nouveau serveur.${NC}"
     fi
     echo ""
-    echo -e "  ${CYAN}t)${NC} 🚇 Démarrer les tunnels SSH"
-    echo -e "  ${CYAN}u)${NC} 📋 Afficher les URLs disponibles"
-    echo -e "  ${CYAN}a)${NC} 🛑 Arrêter les tunnels"
-    echo -e "  ${CYAN}s)${NC} 📊 Statut des tunnels"
-    echo -e "  ${CYAN}r)${NC} 🔄 Redémarrer les tunnels"
-    echo -e "  ${CYAN}c)${NC} 🌐 Configurer nouveau serveur"
-    echo -e "  ${CYAN}m)${NC} 🔐 Login OAuth MCP (distant)"
-    echo -e "  ${CYAN}b)${NC} 🔨 Login Blacksmith (distant)"
+    local_menu_line "t" "🚇 Démarrer les tunnels SSH"
+    local_menu_line "u" "📋 Afficher les URLs disponibles"
+    local_menu_line "a" "🛑 Arrêter les tunnels"
+    local_menu_line "s" "📊 Statut des tunnels"
+    local_menu_line "r" "🔄 Redémarrer les tunnels"
+    local_menu_line "c" "🌐 Configurer nouveau serveur"
+    local_menu_line "m" "🔐 Login OAuth MCP (distant)"
+    local_menu_line "b" "🔨 Login Blacksmith (distant)"
     echo ""
-    echo -e "  ${CYAN}l)${NC} 🔌 Choisir une connexion enregistrée"
-    echo -e "  ${CYAN}x)${NC} ❌ Quitter"
+    local_menu_line "l" "🔌 Choisir une connexion enregistrée"
+    local_menu_line "x" "❌ Quitter"
     echo ""
 }
 
 run_mcp_login_menu() {
     local provider=""
 
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "           ${YELLOW}Login OAuth MCP distant${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    local_screen_header "Login OAuth MCP distant"
     echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
     echo ""
-    echo -e "  ${CYAN}v)${NC} vercel"
-    echo -e "  ${CYAN}s)${NC} supabase"
-    echo -e "  ${CYAN}a)${NC} all"
-    echo -e "  ${CYAN}c)${NC} custom"
-    echo -e "  ${CYAN}x)${NC} retour"
+    local_menu_line "v" "vercel"
+    local_menu_line "s" "supabase"
+    local_menu_line "a" "all"
+    local_menu_line "c" "custom"
+    local_menu_line "x" "retour"
     echo ""
     echo -e "${YELLOW}Blacksmith n'est pas un MCP: retour puis b) Login Blacksmith (distant).${NC}"
     echo ""
@@ -672,9 +725,7 @@ run_mcp_login_menu() {
 }
 
 run_blacksmith_login_menu() {
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "          ${YELLOW}Login Blacksmith distant${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
+    local_screen_header "Login Blacksmith distant"
     echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
     echo ""
     echo -e "${BLUE}Ce flow lance Blacksmith sur le serveur et ouvre le callback OAuth via tunnel SSH local.${NC}"
@@ -760,8 +811,7 @@ verify_tunnels_ready() {
 
 # Fonction pour démarrer les tunnels
 start_tunnels() {
-    echo -e "${BLUE}🚇 Démarrage des tunnels SSH${NC}"
-    echo ""
+    local_screen_header "Démarrage des tunnels SSH"
 
     if [ -z "$REMOTE_HOST" ]; then
         echo -e "${RED}✗ Aucune connexion distante configurée${NC}"
@@ -840,8 +890,7 @@ start_tunnels() {
 
 # Fonction pour afficher les URLs
 show_urls() {
-    echo -e "${BLUE}📋 URLs disponibles${NC}"
-    echo ""
+    local_screen_header "URLs disponibles"
     
     PORTS=$(get_active_ports)
     
@@ -869,8 +918,7 @@ show_urls() {
 
 # Fonction pour arrêter les tunnels
 stop_tunnels() {
-    echo -e "${BLUE}🛑 Arrêt des tunnels SSH${NC}"
-    echo ""
+    local_screen_header "Arrêt des tunnels SSH" danger
     
     # Afficher les processus avant de les tuer
     echo -e "${YELLOW}🔍 Recherche des processus SSH...${NC}"
@@ -921,8 +969,7 @@ stop_tunnels() {
 
 # Fonction pour afficher le statut
 show_status() {
-    echo -e "${BLUE}📊 Statut des tunnels${NC}"
-    echo ""
+    local_screen_header "Statut des tunnels"
     
     # Chercher les processus autossh OU ssh avec le remote host
     PROCESSES=$(get_tunnel_processes)
@@ -1000,8 +1047,7 @@ main() {
                 pause
                 ;;
             r)
-                echo -e "${BLUE}🔄 Redémarrage des tunnels${NC}"
-                echo ""
+                local_screen_header "Redémarrage des tunnels"
                 stop_tunnels || true
                 sleep 2
                 if ! start_tunnels; then
@@ -1038,4 +1084,6 @@ main() {
 }
 
 # Lancer le menu
-main
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main
+fi

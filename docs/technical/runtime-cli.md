@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.10"
+artifact_version: "1.0.13"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-09"
@@ -38,6 +38,9 @@ evidence:
   - "Disk cleanup now includes protected agent-history and agent-cache cleanup choices."
   - "Disk details and PM2 log cleanup/rotation added to explain and cap disk usage."
   - "Main menu session identity now renders inside the top status header."
+  - "Subcommand screen headers now route through a shared modular header helper."
+  - "Nested menus and search selectors now preserve the ShipFlow DevServer title treatment."
+  - "GitHub CLI authentication screen added for deploy-from-GitHub readiness."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit runtime-cli"
 ---
@@ -79,6 +82,9 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   action instead of being nested under agents.
 - `menu_bash.sh` / `menu_gum.sh`: render menus and use shared key input helpers
   so `x`, `Esc`, and `Backspace` act consistently for Back.
+- Nested menus render their screen title through `lib.sh::ui_screen_header` and
+  dispatch actions in `screen` mode so child commands do not stack under the
+  parent menu.
 - `lib.sh` UI helpers: `ui_read_choice`, `ui_run_menu_action`,
   `ui_return_back`, and the skip-next-pause signal define the reusable
   Back/cancel contract for nested menus, including selections made through
@@ -89,6 +95,8 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   `inline` behavior.
 - `lib.sh::ui_header`: prints the main menu status header and can embed the
   session identity block inside the same top frame.
+- `lib.sh::ui_screen_header`: prints consistent subcommand screen headers from
+  one title plus an optional variant such as `danger` or `success`.
 - `lib.sh::ui_box_header`: prints fixed-width boxed CLI headers so left and
   right borders stay aligned across dashboard, logs, health, and success blocks.
 - `lib.sh::env_start`, `env_stop`, `env_restart`, `env_remove`: core environment lifecycle.
@@ -106,6 +114,9 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   workspace and enabling selected MCP providers for the new Codex session only.
 - `lib.sh::action_mcp_menu`: grouped MCP/Codex menu that routes to the Codex
   launcher or the local OAuth tunnel instructions.
+- `lib.sh::action_github_auth`: official GitHub CLI login/status screen for
+  repository listing and deploy-from-GitHub readiness. It delegates token
+  handling to `gh` and must not read or store GitHub tokens.
 - `lib.sh::action_reboot_vm`: explicit confirmed VM reboot action from the
   system menu. It supports `SHIPFLOW_REBOOT_DRY_RUN=1` for smoke checks.
 - `lib.sh::mcp_cleanup_menu`: health-menu cleanup for local MCP process
@@ -192,7 +203,8 @@ Flutter Web has two runtime paths:
   they already own their screen lifecycle.
 - Back/cancel paths should signal parent redraw through the shared UI helpers
   instead of returning like completed actions.
-- Boxed CLI headers should use `ui_box_header` rather than hand-counted spaces.
+- Subcommand screen headers should use `ui_screen_header` rather than
+  hand-counted rules or direct `ui_box_header` calls.
 - Generated ecosystem/runtime config is not the hand-edited source of truth.
 - Codex MCP providers are off by default; the runtime launcher enables selected
   providers with session-only config overrides and must not persistently flip

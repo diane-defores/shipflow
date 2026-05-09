@@ -70,6 +70,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
+LIGHT_BLUE='\033[38;5;117m'
 NC='\033[0m'
 
 # Config (use centralized config values)
@@ -240,6 +241,90 @@ ui_box_header() {
     printf "%b╚%s╝%b\n" "$border_color" "$rule" "$NC"
 }
 
+center_fixed_width() {
+    local text="$1"
+    local width="${2:-46}"
+    local text_len=${#text}
+
+    if [ "$text_len" -ge "$width" ]; then
+        printf "%s" "${text:0:$width}"
+        return
+    fi
+
+    local left_pad=$(( (width - text_len) / 2 ))
+    local right_pad=$(( width - text_len - left_pad ))
+    printf "%*s%s%*s" "$left_pad" "" "$text" "$right_pad" ""
+}
+
+ui_screen_header() {
+    local title="$1"
+    local variant="${2:-default}"
+    local border_color="$CYAN"
+    local title_color="$YELLOW"
+    local gum_border_color="212"
+    local brand="ShipFlow DevServer"
+    local content_width=50
+    local inner_width=46
+
+    case "$variant" in
+        danger)
+            border_color="$RED"
+            title_color="$YELLOW"
+            gum_border_color="196"
+            ;;
+        success)
+            border_color="$GREEN"
+            title_color="$GREEN"
+            gum_border_color="46"
+            ;;
+    esac
+
+    if [ ${#title} -gt "$inner_width" ]; then
+        title="${title:0:$inner_width}"
+    fi
+
+    if [ "$HAS_GUM" = true ] && command -v gum >/dev/null 2>&1; then
+        local brand_line
+        local title_line
+        local colored_brand_line
+        local colored_title_line
+        brand_line="$(center_fixed_width "$brand" "$inner_width")"
+        title_line="$(center_fixed_width "$title" "$inner_width")"
+        printf -v colored_brand_line "%b%s%b" "$YELLOW" "$brand_line" "$NC"
+        printf -v colored_title_line "%b%s%b" "$title_color" "$title_line" "$NC"
+
+        gum style \
+            --foreground 212 --border-foreground "$gum_border_color" --border double \
+            --align left --width 50 --margin "1 2" --padding "1 2" \
+            "$colored_brand_line" "$colored_title_line"
+        echo ""
+        return 0
+    fi
+
+    local rule=""
+    local i
+    for ((i=0; i<content_width; i++)); do
+        rule+="═"
+    done
+
+    local brand_left=$(( (inner_width - ${#brand}) / 2 ))
+    local brand_right=$(( inner_width - ${#brand} - brand_left ))
+    local title_left=$(( (inner_width - ${#title}) / 2 ))
+    local title_right=$(( inner_width - ${#title} - title_left ))
+
+    printf "%b╔%s╗%b\n" "$border_color" "$rule" "$NC"
+    printf "%b║%50s║%b\n" "$border_color" "" "$NC"
+    printf "%b║  %b%*s%s%*s%b  ║%b\n" "$border_color" "$YELLOW" "$brand_left" "" "$brand" "$brand_right" "" "$border_color" "$NC"
+    printf "%b║  %b%*s%s%*s%b  ║%b\n" "$border_color" "$title_color" "$title_left" "" "$title" "$title_right" "" "$border_color" "$NC"
+    printf "%b║%50s║%b\n" "$border_color" "" "$NC"
+    printf "%b╚%s╝%b\n" "$border_color" "$rule" "$NC"
+    echo ""
+}
+
+ui_action_header() {
+    ui_screen_header "$@"
+}
+
 ui_read_choice() {
     local __target_var="$1"
     local __raw_choice=""
@@ -305,7 +390,7 @@ ui_filter_choose() {
 
     if [ "$HAS_GUM" = true ] && command -v gum >/dev/null 2>&1; then
         local selected
-        selected=$(printf '%s\n' "${items[@]}" | gum filter --header "$prompt" --placeholder "Type to search...")
+        selected=$(printf '%s\n' "${items[@]}" | gum filter --header "ShipFlow DevServer · $prompt" --placeholder "Type to search...")
         local rc=$?
         if [ $rc -ne 0 ]; then
             ui_skip_next_pause
@@ -318,7 +403,7 @@ ui_filter_choose() {
     if command -v fzf >/dev/null 2>&1; then
         local selected
         selected=$(printf '%s\n' "${items[@]}" | fzf \
-            --prompt "$prompt > " \
+            --prompt "ShipFlow DevServer · $prompt > " \
             --height "${SHIPFLOW_FZF_HEIGHT:-70%}" \
             --layout reverse \
             --border \
@@ -335,7 +420,7 @@ ui_filter_choose() {
     local query=""
     local matches=()
     while true; do
-        echo -e "${BLUE}$prompt${NC}" >&2
+        echo -e "${YELLOW}ShipFlow DevServer · $prompt${NC}" >&2
         echo -e "${YELLOW}Search:${NC} \c" >&2
         ui_read_line query
 
@@ -420,7 +505,7 @@ ui_choose() {
                 filtered_items+=("$item")
             done
 
-            gum style --foreground 39 "$prompt" >&2
+            gum style --foreground 11 "$prompt" >&2
             echo "" >&2
             local keys=()
             local i=0
@@ -509,7 +594,7 @@ ui_choose() {
             return 1
         fi
 
-        echo -e "${BLUE}$prompt${NC}" >&2
+        echo -e "${YELLOW}$prompt${NC}" >&2
         echo "" >&2
         local keys=()
         local i=0
@@ -1238,8 +1323,7 @@ disk_usage_details_menu() {
     local pm2_home
     pm2_home=$(pm2_home_dir)
 
-    echo -e "${GREEN}📊 Disk Details${NC}"
-    echo ""
+    ui_screen_header "Disk Details"
     echo -e "${BLUE}Filesystem:${NC}"
     df -h / 2>/dev/null | awk 'NR == 1 || NR == 2 {print "  " $0}'
     echo ""
@@ -1253,8 +1337,7 @@ disk_usage_details_menu() {
 }
 
 disk_cleanup_menu() {
-    echo -e "${GREEN}🧹 Disk Cleanup${NC}"
-    echo ""
+    ui_screen_header "Disk Cleanup"
 
     local before_bytes
     before_bytes=$(disk_free_bytes)
@@ -1686,10 +1769,12 @@ mcp_cleanup_menu() {
     local groups
     groups=$(mcp_process_groups)
     if [ -z "$groups" ]; then
+        ui_screen_header "MCP Process Cleanup"
         echo -e "${GREEN}✅ No local MCP server process groups detected.${NC}"
         return 0
     fi
 
+    ui_screen_header "MCP Process Cleanup"
     show_mcp_process_groups
     echo ""
     echo -e "${YELLOW}This only targets local MCP server groups. It does not kill Codex conversations.${NC}"
@@ -1734,7 +1819,7 @@ clean_all_safe_targets() {
     groups=$(mcp_process_groups)
     pm2_pid=$(pm2_daemon_pid)
 
-    echo -e "${BLUE}━━━ Clean All Safe Targets ━━━${NC}"
+    ui_screen_header "Clean All Safe Targets"
     echo -e "${YELLOW}Scope:${NC} local MCP server groups, empty PM2 daemon, and Caddy when no PM2 app is online."
     echo -e "${YELLOW}Protected:${NC} Codex conversations, terminals, ssh, tmux, and root/system services other than Caddy."
     echo ""
@@ -2098,7 +2183,7 @@ aggressive_cleanup_menu() {
     mcp_groups=$(mcp_process_groups)
     pm2_pid=$(pm2_daemon_pid)
 
-    echo -e "${BLUE}━━━ Aggressive Cleanup ━━━${NC}"
+    ui_screen_header "Aggressive Cleanup" danger
     echo -e "${YELLOW}Targets:${NC} Codex conversations, Codex node wrappers, ranger, MCP servers, empty PM2 daemon, and Caddy when no PM2 app is online."
     echo -e "${YELLOW}Protected:${NC} ssh, tmux server, shell sessions, systemd, root services except Caddy."
     echo ""
@@ -2550,12 +2635,11 @@ refresh_menu_status_cache_async_if_stale() {
 }
 
 updates_menu() {
+    ui_screen_header "Updates Summary"
     echo -e "${BLUE}Checking package updates...${NC}"
     echo ""
     updates_refresh_cache
 
-    echo -e "${GREEN}⬆️  Updates Summary${NC}"
-    echo ""
     echo -e "${BLUE}Pending updates:${NC}"
     echo -e "  ${CYAN}•${NC} apt:     ${YELLOW}${UPDATE_CACHE_APT}${NC}"
     echo -e "  ${CYAN}•${NC} npm -g:  ${YELLOW}${UPDATE_CACHE_NPM}${NC}"
@@ -3000,10 +3084,7 @@ check_prerequisites() {
 
 # show_tools_status - Display full tools status (for menu use)
 show_tools_status() {
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "              ${YELLOW}État des outils${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo ""
+    ui_screen_header "État des outils"
     check_prerequisites "verbose"
     echo -e "${BLUE}💡 Pour installer les outils manquants :${NC}"
     echo -e "   ${CYAN}sudo ./install.sh${NC}"
@@ -3022,10 +3103,7 @@ install_sdk_menu() {
     local flutter_install_dir="/opt/flutter"
     local flutter_profile="/etc/profile.d/flutter.sh"
 
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "              ${YELLOW}Install SDK${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo ""
+    ui_screen_header "Install SDK"
 
     # Flutter status
     local flutter_status
@@ -4375,6 +4453,67 @@ validate_repo_name() {
 
 get_github_username() {
     gh api user --jq .login 2>/dev/null
+}
+
+github_auth_is_logged_in() {
+    command -v gh >/dev/null 2>&1 || return 1
+    gh auth status -h github.com >/dev/null 2>&1
+}
+
+action_github_auth() {
+    ui_screen_header "GitHub Login"
+
+    if ! command -v gh >/dev/null 2>&1; then
+        echo -e "${RED}❌ GitHub CLI (gh) is not installed.${NC}"
+        echo -e "${YELLOW}Run the ShipFlow installer or install GitHub CLI, then retry.${NC}"
+        return 1
+    fi
+
+    echo -e "${BLUE}GitHub CLI:${NC} ${GREEN}$(gh --version | head -n1)${NC}"
+    echo ""
+
+    if github_auth_is_logged_in; then
+        local github_user
+        github_user=$(get_github_username)
+        echo -e "${GREEN}✓ GitHub authenticated${NC}"
+        [ -n "$github_user" ] && echo -e "  ${BLUE}Account:${NC} ${GREEN}$github_user${NC}"
+        echo ""
+        echo -e "${BLUE}Current gh auth status:${NC}"
+        gh auth status -h github.com || true
+        echo ""
+        echo -e "${YELLOW}ShipFlow uses this auth for Deploy from GitHub and repo listing.${NC}"
+        return 0
+    fi
+
+    echo -e "${YELLOW}GitHub is not authenticated for this server user.${NC}"
+    echo -e "${BLUE}ShipFlow will use the official GitHub CLI login flow.${NC}"
+    echo -e "${YELLOW}Tokens stay in gh's credential storage; ShipFlow does not read or store them.${NC}"
+    echo ""
+    echo -e "${BLUE}Recommended command:${NC}"
+    echo -e "  ${GREEN}gh auth login --hostname github.com --git-protocol ssh --scopes repo,read:org${NC}"
+    echo ""
+
+    if ! ui_confirm "Start GitHub login now?"; then
+        echo -e "${BLUE}Cancelled${NC}"
+        return 0
+    fi
+
+    if [ "${SHIPFLOW_GITHUB_AUTH_DRY_RUN:-0}" = "1" ]; then
+        echo "gh auth login --hostname github.com --git-protocol ssh --scopes repo,read:org"
+        return 0
+    fi
+
+    gh auth login --hostname github.com --git-protocol ssh --scopes repo,read:org
+    local rc=$?
+    echo ""
+    if [ "$rc" -eq 0 ] && github_auth_is_logged_in; then
+        echo -e "${GREEN}✓ GitHub login complete${NC}"
+        gh auth setup-git >/dev/null 2>&1 || true
+    else
+        echo -e "${RED}❌ GitHub login did not complete.${NC}"
+        echo -e "${YELLOW}You can retry from this menu or run the command manually.${NC}"
+        return "${rc:-1}"
+    fi
 }
 
 # Detect whether a pubspec project is Flutter or plain Dart
@@ -6590,8 +6729,7 @@ batch_restart_all() {
 #   show_dashboard
 # -----------------------------------------------------------------------------
 show_dashboard() {
-    ui_box_header "Environment Dashboard" "$CYAN" "$YELLOW"
-    echo ""
+    ui_screen_header "Environment Dashboard"
 
     # Get all environments
     local all_envs=$(list_all_environments)
@@ -6921,8 +7059,7 @@ view_environment_logs() {
         return 1
     fi
 
-    ui_box_header "Logs: $env_name (last $lines lines)" "$CYAN" "$YELLOW"
-    echo ""
+    ui_screen_header "Logs: $env_name (last $lines lines)"
 
     # Display logs
     pm2 logs "$env_name" --lines "$lines" --nostream
@@ -7360,8 +7497,7 @@ deploy_github_project() {
     local port=$(get_port_from_pm2 "$project_name")
 
     echo ""
-    ui_box_header "✅ Deployment Successful!" "$GREEN" "$GREEN"
-    echo ""
+    ui_screen_header "Deployment Successful!" success
     echo -e "${BLUE}📊 Project Information:${NC}"
     echo -e "  • Name: $project_name"
     echo -e "  • Directory: $project_dir"
@@ -7467,8 +7603,7 @@ action_dashboard() { show_dashboard; }
 action_shipflow_overview() { show_shipflow_menu; }
 
 action_deploy() {
-    echo -e "${GREEN}🚀 Deploy Environment${NC}"
-    echo ""
+    ui_screen_header "Deploy Environment"
 
     local deploy_choice
     deploy_choice=$(printf '%s\n' \
@@ -7540,8 +7675,7 @@ action_deploy() {
             fi
             ;;
         *GitHub*)
-            echo -e "${GREEN}🚀 Deploy from GitHub${NC}"
-            echo ""
+            ui_screen_header "Deploy from GitHub"
             echo -e "${BLUE}🔍 Fetching your GitHub repos...${NC}"
             echo ""
             GITHUB_REPOS=$(list_github_repos)
@@ -7572,7 +7706,7 @@ action_deploy() {
 }
 
 action_restart() {
-    echo -e "${GREEN}🔄 Restart Environment${NC}"
+    ui_screen_header "Restart Environment"
     ENV_NAME=$(select_environment "Select environment to restart")
     if [ -n "$ENV_NAME" ]; then
         log INFO "Menu: restarting $ENV_NAME"
@@ -7581,7 +7715,7 @@ action_restart() {
 }
 
 action_stop() {
-    echo -e "${GREEN}🛑 Stop Environment${NC}"
+    ui_screen_header "Stop Environment"
     ENV_NAME=$(select_stop_target "Select environment to stop")
     if [ -n "$ENV_NAME" ]; then
         log INFO "Menu: stopping $ENV_NAME"
@@ -7592,8 +7726,7 @@ action_stop() {
 }
 
 action_remove() {
-    echo -e "${GREEN}🗑️  Remove Environment${NC}"
-    echo ""
+    ui_screen_header "Remove Environment" danger
     echo -e "${YELLOW}⚠️  WARNING: This will permanently delete the project!${NC}"
     echo ""
     ENV_NAME=$(select_environment "Select environment to remove")
@@ -7615,8 +7748,7 @@ action_remove() {
 }
 
 action_rename() {
-    echo -e "${GREEN}✏️  Rename Environment${NC}"
-    echo ""
+    ui_screen_header "Rename Environment"
     ENV_NAME=$(select_environment "Select environment to rename")
     if [ -n "$ENV_NAME" ]; then
         PROJECT_DIR=$(resolve_project_path "$ENV_NAME")
@@ -7639,16 +7771,14 @@ action_rename() {
     fi
 }
 
-action_start_all() { echo -e "${GREEN}🚀 Start All Environments${NC}"; batch_start_all; }
-action_stop_all() { echo -e "${GREEN}🛑 Stop All Environments${NC}"; batch_stop_all; }
-action_restart_all() { echo -e "${GREEN}🔄 Restart All Environments${NC}"; batch_restart_all; }
+action_start_all() { ui_screen_header "Start All Environments"; batch_start_all; }
+action_stop_all() { ui_screen_header "Stop All Environments"; batch_stop_all; }
+action_restart_all() { ui_screen_header "Restart All Environments"; batch_restart_all; }
 action_mobile() { show_mobile_guide; }
 
 action_flutter_web() {
-    echo -e "${GREEN}🧩 Flutter Web Dev${NC}"
-    echo ""
+    ui_screen_header "Flutter Web Dev"
     local choice
-    echo -e "${BLUE}Flutter Web Dev:${NC}"
     echo -e "  ${CYAN}s)${NC} Start session"
     echo -e "  ${CYAN}l)${NC} Hot Reload"
     echo -e "  ${CYAN}r)${NC} Hot Restart"
@@ -7694,8 +7824,7 @@ action_flutter_web() {
 }
 
 action_health() {
-    ui_box_header "Health Check" "$CYAN" "$YELLOW"
-    echo ""
+    ui_screen_header "Health Check"
     system_monitor_menu
     echo ""
     echo -e "${BLUE}━━━ App Health (PM2) ━━━${NC}"
@@ -7731,36 +7860,39 @@ action_health() {
             return 0
             ;;
         v)
-            echo ""
+            clear
             disk_usage_details_menu
             ;;
         g)
-            echo ""
+            clear
             aggressive_cleanup_menu
             ;;
         d)
-            echo ""
+            clear
             disk_cleanup_menu
             refresh_menu_status_cache_sync >/dev/null 2>&1 || true
             ;;
         s)
-            echo ""
+            clear
             clean_all_safe_targets
             ;;
         m)
-            echo ""
+            clear
             mcp_cleanup_menu
             ;;
         p)
-            echo ""
+            clear
+            ui_screen_header "Stop Empty PM2 Daemon"
             stop_empty_pm2_daemon
             ;;
         c)
-            echo ""
+            clear
+            ui_screen_header "Stop Caddy"
             stop_all_caddy_if_no_pm2_apps
             ;;
         a)
-            echo ""
+            clear
+            ui_screen_header "Auto-fix PM2 App Issues"
             auto_fix_known_issues
             echo ""
             echo -e "${BLUE}Updated health status:${NC}"
@@ -7774,8 +7906,7 @@ action_health() {
 }
 
 action_reboot_vm() {
-    ui_box_header "Reboot VM" "$RED" "$YELLOW"
-    echo ""
+    ui_screen_header "Reboot VM" danger
     echo -e "${YELLOW}Cette action redémarre toute la machine.${NC}"
     echo -e "${YELLOW}Elle coupera les sessions SSH, tmux, Codex, PM2, Caddy et tous les process utilisateur.${NC}"
     echo ""
@@ -7810,13 +7941,13 @@ action_exit() { echo -e "${GREEN}👋 Goodbye!${NC}"; exit 0; }
 # ============================================================================
 
 action_view_logs() {
-    echo -e "${GREEN}📝 View Application Logs${NC}"
+    ui_screen_header "View Application Logs"
     ENV_NAME=$(select_environment "Select environment to view logs")
     if [ -n "$ENV_NAME" ]; then view_environment_logs "$ENV_NAME"; fi
 }
 
 action_navigate() {
-    echo -e "${GREEN}📁 Navigate Projects${NC}"
+    ui_screen_header "Navigate Projects"
     local HOME_DIR
     HOME_DIR=$(eval echo "~")
     local FOLDERS
@@ -7834,7 +7965,7 @@ action_navigate() {
 }
 
 action_open_code() {
-    echo -e "${GREEN}📂 Open Code Directory${NC}"
+    ui_screen_header "Open Code Directory"
     local HOME_DIR
     HOME_DIR=$(eval echo "~")
     local FOLDERS
@@ -7852,7 +7983,7 @@ action_open_code() {
 }
 
 action_inspector() {
-    echo -e "${GREEN}🔍 Toggle Web Inspector${NC}"
+    ui_screen_header "Toggle Web Inspector"
     ENV_NAME=$(select_environment "Select environment for web inspector")
     if [ -n "$ENV_NAME" ]; then
         PROJECT_DIR=$(resolve_project_path "$ENV_NAME")
@@ -7867,8 +7998,7 @@ action_inspector() {
 }
 
 action_session() {
-    echo -e "${GREEN}🔐 Session Identity Management${NC}"
-    echo ""
+    ui_screen_header "Session Identity Management"
     display_session_banner
     echo ""
     get_session_info
@@ -7891,8 +8021,7 @@ action_session() {
 }
 
 action_local_connection_info() {
-    echo -e "${GREEN}🌐 Local Connection Setup${NC}"
-    echo ""
+    ui_screen_header "Local Connection Setup"
     echo -e "${BLUE}This screen gives the address to enter in the local ShipFlow menu.${NC}"
     echo -e "${YELLOW}On your local machine: open 'urls', press 'c', then enter this server address.${NC}"
     echo ""
@@ -7913,8 +8042,7 @@ action_local_connection_info() {
 }
 
 action_mcp_auth_setup() {
-    echo -e "${GREEN}🔐 MCP Auth Setup${NC}"
-    echo ""
+    ui_screen_header "MCP Auth Setup"
     echo -e "${BLUE}Run MCP OAuth from your local machine, not from this remote server.${NC}"
     echo -e "${YELLOW}Your browser receives a localhost callback, so the local ShipFlow helper must create the temporary SSH tunnel.${NC}"
     echo ""
@@ -8089,7 +8217,7 @@ codex_select_custom_mcps() {
         done
 
         local selected_labels
-        selected_labels=$(printf '%s\n' "${labels[@]}" | gum choose --no-limit --header "Select MCPs, then Enter")
+        selected_labels=$(printf '%s\n' "${labels[@]}" | gum choose --no-limit --header "ShipFlow DevServer · Select MCPs, then Enter")
         local rc=$?
         [ $rc -ne 0 ] && return $rc
 
@@ -8109,8 +8237,7 @@ codex_select_custom_mcps() {
 
     while true; do
         clear
-        ui_box_header "Codex MCPs" "$CYAN" "$YELLOW"
-        echo ""
+        ui_screen_header "Codex MCPs"
         echo -e "${BLUE}Toggle MCPs. Press Enter to launch.${NC}"
         echo ""
 
@@ -8316,8 +8443,7 @@ action_codex_launcher() {
         done
     else
         clear
-        ui_box_header "Codex Launcher" "$CYAN" "$YELLOW"
-        echo ""
+        ui_screen_header "Codex Launcher"
         echo -e "${BLUE}MCPs stay disabled globally. This launch enables only what you choose.${NC}"
         echo ""
 
@@ -8333,6 +8459,8 @@ action_codex_launcher() {
 }
 
 action_mcp_menu() {
+    ui_screen_header "MCP / Codex"
+
     local choice
     choice=$(printf '%s\n' \
         "Launch Codex with selected MCPs" \
@@ -8401,8 +8529,7 @@ blacksmith_print_status() {
 }
 
 blacksmith_show_setup_checklist() {
-    ui_box_header "Blacksmith Setup" "$CYAN" "$YELLOW"
-    echo ""
+    ui_screen_header "Blacksmith Setup"
     blacksmith_print_status
     echo ""
     echo -e "${CYAN}Checklist officielle-first${NC}"
@@ -8456,8 +8583,7 @@ blacksmith_select_project_path() {
 }
 
 blacksmith_show_testbox_project_guide() {
-    ui_box_header "Blacksmith Testbox" "$CYAN" "$YELLOW"
-    echo ""
+    ui_screen_header "Blacksmith Testbox"
     blacksmith_print_status
     echo ""
 
@@ -8491,8 +8617,7 @@ blacksmith_show_testbox_project_guide() {
 }
 
 blacksmith_show_runner_tags() {
-    ui_box_header "Blacksmith Runners" "$CYAN" "$YELLOW"
-    echo ""
+    ui_screen_header "Blacksmith Runners"
     blacksmith_print_status
     echo ""
     echo -e "${CYAN}Tags courants${NC}"
@@ -8510,8 +8635,7 @@ blacksmith_show_runner_tags() {
 }
 
 blacksmith_show_security_note() {
-    ui_box_header "Blacksmith Security" "$CYAN" "$YELLOW"
-    echo ""
+    ui_screen_header "Blacksmith Security"
     echo -e "${CYAN}Politique ShipFlow${NC}"
     echo -e "  ${GREEN}✓${NC} Utiliser l'intégration officielle Blacksmith: GitHub App, runners, CLI Testbox."
     echo -e "  ${GREEN}✓${NC} Laisser Blacksmith et GitHub gérer l'auth."
@@ -8526,8 +8650,7 @@ blacksmith_show_security_note() {
 action_blacksmith_setup() {
     while true; do
         clear
-        ui_box_header "Blacksmith" "$CYAN" "$YELLOW"
-        echo ""
+        ui_screen_header "Blacksmith"
         blacksmith_print_status
         echo ""
 
@@ -8572,8 +8695,7 @@ action_blacksmith_setup() {
 }
 
 action_publish() {
-    echo -e "${GREEN}🌐 Publish to Web (HTTPS via Caddy + DuckDNS)${NC}"
-    echo ""
+    ui_screen_header "Publish to Web"
     if ! command -v caddy >/dev/null 2>&1; then
         echo -e "${RED}❌ Caddy not installed${NC}"
         echo -e "${YELLOW}Install with: sudo apt install caddy${NC}"
@@ -8767,6 +8889,7 @@ SYSTEM_MENU_ITEMS=(
 )
 
 AGENTS_CI_MENU_ITEMS=(
+    "g|🐙 GitHub Login - gh auth for deploys|action_github_auth"
     "q|🧠 MCP / Codex - Auth and launcher|action_mcp_menu"
     "z|🏗️ Blacksmith - CI runners and Testbox setup|action_blacksmith_setup"
     "x|↩️ Back|__EXIT__"
@@ -8906,10 +9029,7 @@ PROJECTS_EOF
 
     while true; do
         clear
-        echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-        echo -e "               ${YELLOW}⚡ ShipFlow Overview${NC}"
-        echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-        echo ""
+        ui_screen_header "ShipFlow Overview"
 
         # Mini dashboard: show project table from TASKS.md
         if [ -f "$TASKS_FILE" ]; then
@@ -8943,10 +9063,7 @@ PROJECTS_EOF
             p)
                 if [ -f "$TASKS_FILE" ]; then
                     clear
-                    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-                    echo -e "       ${RED}🔴 P0 Blockers${NC}  &  ${YELLOW}🟠 P1 High Priority${NC}"
-                    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-                    echo ""
+                    ui_screen_header "P0 Blockers & P1 High Priority" danger
                     local current_project=""
                     while IFS= read -r line; do
                         if echo "$line" | grep -qE "^## [0-9]+\."; then
@@ -9002,10 +9119,7 @@ show_help() {
 
     while true; do
         clear
-        echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-        echo -e "              ${YELLOW}ShipFlow Help${NC} (Page $page/$total_pages)"
-        echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-        echo ""
+        ui_screen_header "ShipFlow Help (Page $page/$total_pages)"
 
         case $page in
             1)
@@ -9169,10 +9283,7 @@ show_help() {
 }
 show_mobile_guide() {
     clear
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "          ${YELLOW}📱 Guide Mobile — Expo + Android${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo ""
+    ui_screen_header "Guide Mobile — Expo + Android"
     echo -e "Ce guide configure ton téléphone Android pour le dev en live."
     echo -e "Suis les étapes dans l'ordre. Ce qui est déjà fait sera ignoré."
     echo ""
@@ -9180,10 +9291,7 @@ show_mobile_guide() {
 
     # ── ÉTAPE 1 : EAS CLI ──────────────────────────────────────────────────
     clear
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "  ${YELLOW}ÉTAPE 1/4${NC} — Installation de EAS CLI"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo ""
+    ui_screen_header "ÉTAPE 1/4 — Installation de EAS CLI"
     if command -v eas >/dev/null 2>&1; then
         local eas_ver
         eas_ver=$(eas --version 2>/dev/null | head -1)
@@ -9206,10 +9314,7 @@ show_mobile_guide() {
 
     # ── ÉTAPE 2 : Connexion EAS ────────────────────────────────────────────
     clear
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "  ${YELLOW}ÉTAPE 2/4${NC} — Connexion à ton compte Expo"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo ""
+    ui_screen_header "ÉTAPE 2/4 — Connexion Expo"
     local eas_user
     eas_user=$(eas whoami 2>/dev/null)
     if [ -n "$eas_user" ] && [[ "$eas_user" != *"Not logged"* ]]; then
@@ -9233,10 +9338,7 @@ show_mobile_guide() {
 
     # ── ÉTAPE 3 : Build APK ────────────────────────────────────────────────
     clear
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "  ${YELLOW}ÉTAPE 3/4${NC} — Build de l'APK de développement"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo ""
+    ui_screen_header "ÉTAPE 3/4 — Build APK développement"
     echo -e "  ${BLUE}ℹ️  C'est la seule étape longue (10-15 min).${NC}"
     echo -e "  ${BLUE}   Le build tourne sur les serveurs Expo, pas sur ce serveur.${NC}"
     echo -e "  ${BLUE}   Tu fais ça UNE SEULE FOIS. Ensuite, l'APK reste sur ton tel.${NC}"
@@ -9292,10 +9394,7 @@ show_mobile_guide() {
 
     # ── ÉTAPE 4 : Démarrer le serveur Metro ───────────────────────────────
     clear
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "  ${YELLOW}ÉTAPE 4/4${NC} — Démarrer le serveur de développement"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo ""
+    ui_screen_header "ÉTAPE 4/4 — Serveur développement"
     echo -e "  ${BLUE}Démarrage de $selected_project avec tunnel Expo...${NC}"
     echo ""
     env_start "$selected_project"
@@ -9312,10 +9411,7 @@ show_mobile_guide() {
         | tail -1)
 
     echo ""
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo -e "  ${GREEN}✅ Tout est prêt !${NC}"
-    echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-    echo ""
+    ui_screen_header "Tout est prêt !" success
     if [ -n "$tunnel_url" ]; then
         echo -e "  ${YELLOW}URL du tunnel:${NC}"
         echo -e "  ${CYAN}$tunnel_url${NC}"

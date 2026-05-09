@@ -13,6 +13,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m'
 
 CONFIG_DIR="$HOME/.shipflow"
@@ -45,7 +46,14 @@ EOF
 }
 
 print_header() {
-    echo -e "${BLUE}🔐 ShipFlow MCP OAuth Login${NC}"
+    local brand="ShipFlow DevServer"
+    local title="MCP OAuth Login"
+    echo -e "${CYAN}╔══════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                                                  ║${NC}"
+    echo -e "${CYAN}║  ${YELLOW}              ${brand}              ${CYAN}  ║${NC}"
+    echo -e "${CYAN}║  ${YELLOW}                ${title}                 ${CYAN}  ║${NC}"
+    echo -e "${CYAN}║                                                  ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════╝${NC}"
     echo ""
 }
 

@@ -35,6 +35,7 @@ _gum_run_menu() {
     local section_count=0
     local side="left"
     local key_color=$'\033[38;5;212m'
+    local label_color=$'\033[38;5;117m'
     local color_reset=$'\033[0m'
     for item in "${items[@]}"; do
         local key label action
@@ -79,7 +80,7 @@ _gum_run_menu() {
                     right_lines+=("")
                 fi
             fi
-            display_lines+=("${key_color}${key})${color_reset}  ${label}")
+            display_lines+=("${key_color}${key})${color_reset}  ${label_color}${label}${color_reset}")
             if [ "$side" = "left" ]; then
                 left_lines+=("${key}) ${label}")
             else
@@ -114,7 +115,7 @@ _gum_run_menu() {
     # leading whitespace can be stripped by gum on the first line,
     # so we let --padding handle all indentation instead.
     printf '%s\n' "${render_lines[@]}" | gum style \
-        --border rounded --border-foreground 240 \
+        --foreground 117 --border rounded --border-foreground 240 \
         --padding "0 3" --margin "0 2"
 
     echo ""
@@ -157,12 +158,9 @@ _gum_run_nested_menu() {
 
     while true; do
         clear
-        gum style --foreground 212 --border-foreground 212 --border double \
-            --align center --width 50 --margin "1 2" --padding "1 2" \
-            "$header"
-        echo ""
+        ui_screen_header "$header"
 
-        _gum_run_menu "$header" "" "inline" "${items[@]}"
+        _gum_run_menu "$header" "" "screen" "${items[@]}"
         local rc=$?
         if [ $rc -eq 1 ]; then
             ui_return_back
@@ -177,10 +175,10 @@ _gum_run_nested_menu() {
     done
 }
 
-action_environments_menu() { _gum_run_nested_menu "🧭 Environments" "${ENVIRONMENT_MENU_ITEMS[@]}"; }
-action_tools_web_menu() { _gum_run_nested_menu "🧰 Tools" "${TOOLS_WEB_MENU_ITEMS[@]}"; }
-action_system_menu() { _gum_run_nested_menu "⚙️ System" "${SYSTEM_MENU_ITEMS[@]}"; }
-action_agents_ci_menu() { _gum_run_nested_menu "🤖 Agents" "${AGENTS_CI_MENU_ITEMS[@]}"; }
+action_environments_menu() { _gum_run_nested_menu "Environments" "${ENVIRONMENT_MENU_ITEMS[@]}"; }
+action_tools_web_menu() { _gum_run_nested_menu "Tools" "${TOOLS_WEB_MENU_ITEMS[@]}"; }
+action_system_menu() { _gum_run_nested_menu "System" "${SYSTEM_MENU_ITEMS[@]}"; }
+action_agents_ci_menu() { _gum_run_nested_menu "Agents" "${AGENTS_CI_MENU_ITEMS[@]}"; }
 
 # Legacy advanced menu entry point
 action_advanced() { _gum_run_nested_menu "Advanced Options" "${ADVANCED_MENU_ITEMS[@]}"; }

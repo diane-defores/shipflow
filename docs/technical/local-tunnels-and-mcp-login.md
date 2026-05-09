@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.2"
+artifact_version: "1.0.3"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-05"
@@ -26,6 +26,7 @@ evidence:
   - "local/README.md and function inventory for local scripts."
   - "Blacksmith OAuth callback tunnel added for remote CLI auth."
   - "Managed tunnel detection accepts SSH targets before or after -L in process args."
+  - "Local menu headers refreshed to match server ShipFlow DevServer treatment."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit local"
 ---
@@ -104,6 +105,8 @@ shipflow-blacksmith-login
 - Saved connection state is shared by app tunnels, MCP login, and Blacksmith login.
 - Remote SSH helper calls run in batch mode so menu scans fail visibly instead of blocking on hidden SSH prompts.
 - The startup session scan is operator feedback only; set `SHIPFLOW_NO_ANIMATION=1` to disable the animated TTY loader.
+- Local menu screens should use the shared local header treatment:
+  `ShipFlow DevServer` in yellow, padded boxed header, then the screen title.
 
 ## Failure Modes
 

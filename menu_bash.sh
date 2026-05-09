@@ -70,7 +70,7 @@ _bash_run_menu() {
                     right_lines+=("")
                 fi
             fi
-            display_lines+=("  ${key}) ${label}")
+            display_lines+=("  ${CYAN}${key})${NC} ${LIGHT_BLUE}${label}${NC}")
             if [ "$side" = "left" ]; then
                 left_lines+=("  ${key}) ${label}")
             else
@@ -107,7 +107,7 @@ _bash_run_menu() {
             elif [[ "$line" != "  "* && ( "$line" == *ENVIRONMENT* || "$line" == *BATCH* || "$line" == *INSPECT* || "$line" == *WEB* || "$line" == *SDKS* || "$line" == *SYSTEM* || "$line" == *ACCESS* || "$line" == *AGENTS* || "$line" == *CI* ) ]]; then
                 echo -e "${BLUE}${line}${NC}"
             else
-                echo "$line"
+                echo -e "$line"
             fi
         done
     fi
@@ -142,12 +142,9 @@ _bash_run_nested_menu() {
 
     while true; do
         clear
-        echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-        printf "                 ${YELLOW}%s${NC}\n" "$header"
-        echo -e "${CYAN}══════════════════════════════════════════════════${NC}"
-        echo ""
+        ui_screen_header "$header"
 
-        _bash_run_menu "inline" "${items[@]}"
+        _bash_run_menu "screen" "${items[@]}"
         local rc=$?
         if [ $rc -eq 1 ]; then
             ui_return_back
@@ -162,10 +159,10 @@ _bash_run_nested_menu() {
     done
 }
 
-action_environments_menu() { _bash_run_nested_menu "🧭 Environments" "${ENVIRONMENT_MENU_ITEMS[@]}"; }
-action_tools_web_menu() { _bash_run_nested_menu "🧰 Tools" "${TOOLS_WEB_MENU_ITEMS[@]}"; }
-action_system_menu() { _bash_run_nested_menu "⚙️ System" "${SYSTEM_MENU_ITEMS[@]}"; }
-action_agents_ci_menu() { _bash_run_nested_menu "🤖 Agents" "${AGENTS_CI_MENU_ITEMS[@]}"; }
+action_environments_menu() { _bash_run_nested_menu "Environments" "${ENVIRONMENT_MENU_ITEMS[@]}"; }
+action_tools_web_menu() { _bash_run_nested_menu "Tools" "${TOOLS_WEB_MENU_ITEMS[@]}"; }
+action_system_menu() { _bash_run_nested_menu "System" "${SYSTEM_MENU_ITEMS[@]}"; }
+action_agents_ci_menu() { _bash_run_nested_menu "Agents" "${AGENTS_CI_MENU_ITEMS[@]}"; }
 
 # Legacy advanced menu entry point
 action_advanced() { _bash_run_nested_menu "Advanced Options" "${ADVANCED_MENU_ITEMS[@]}"; }
