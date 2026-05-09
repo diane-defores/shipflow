@@ -181,6 +181,18 @@ normalize_menu_choice() {
     printf '%s' "$choice"
 }
 
+print_remote_app_warmup_hint() {
+    local port="$1"
+    local name="$2"
+
+    echo -e "    ${YELLOW}Le tunnel peut être créé avant que l'app distante écoute vraiment.${NC}"
+    echo -e "    ${YELLOW}Si ${name} reconstruit Flutter Web, attendez dans les logs PM2 :${NC}"
+    echo -e "      ${CYAN}pm2 logs ${name} --lines 50${NC}"
+    echo -e "      ${GREEN}✓ Built build/web${NC}"
+    echo -e "      ${GREEN}... serving on http://localhost:${port}${NC}"
+    echo -e "    ${YELLOW}Puis relancez urls/tunnel.${NC}"
+}
+
 menu_letter_key() {
     local index="$1"
     local alphabet="abcdefghijklmopqrstuvwyz"
@@ -885,6 +897,7 @@ start_tunnels() {
             port=$(echo "$line" | cut -d':' -f1)
             name=$(echo "$line" | cut -d':' -f2)
             echo -e "  ${RED}✗${NC} localhost:${port} ${YELLOW}(${name})${NC}"
+            print_remote_app_warmup_hint "$port" "$name"
         done <<< "$FAILED_TUNNELS"
         return 1
     fi

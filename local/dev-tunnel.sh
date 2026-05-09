@@ -74,6 +74,29 @@ center_session_banner_text() {
     printf "%*s%s" "$pad" "" "$text"
 }
 
+print_remote_app_warmup_hint() {
+    local port="$1"
+    local name="$2"
+
+    echo -e "    ${YELLOW}Le tunnel peut être créé avant que l'app distante écoute vraiment.${NC}"
+    echo -e "    ${YELLOW}Si ${name} reconstruit Flutter Web, attendez dans les logs PM2 :${NC}"
+    echo -e "      ${CYAN}pm2 logs ${name} --lines 50${NC}"
+    echo -e "      ${GREEN}✓ Built build/web${NC}"
+    echo -e "      ${GREEN}... serving on http://localhost:${port}${NC}"
+    echo -e "    ${YELLOW}Puis relancez urls/tunnel.${NC}"
+}
+
+is_local_tunnel_ready() {
+    local port="$1"
+
+    if command -v nc >/dev/null 2>&1; then
+        nc -z localhost "$port" >/dev/null 2>&1
+        return
+    fi
+
+    curl -s --connect-timeout 1 "http://localhost:${port}" >/dev/null 2>&1
+}
+
 # Load saved connection or use default
 if [ -f "$CURRENT_CONNECTION_FILE" ]; then
     REMOTE_HOST=$(cat "$CURRENT_CONNECTION_FILE")
@@ -289,6 +312,26 @@ if [ "${#FAILED_TUNNELS[@]}" -gt 0 ]; then
     echo ""
     echo -e "${RED}✗ Certains tunnels n'ont pas pu être créés.${NC}"
     echo -e "${YELLOW}  Vérifiez les ports locaux occupés et la configuration SSH, puis relancez.${NC}"
+    exit 1
+fi
+
+NOT_READY_TUNNELS=()
+sleep 1
+for port_info in "${PORT_ARRAY[@]}"; do
+    IFS=':' read -r port name <<< "$port_info"
+    if ! is_local_tunnel_ready "$port"; then
+        NOT_READY_TUNNELS+=("${port}:${name}")
+    fi
+done
+
+if [ "${#NOT_READY_TUNNELS[@]}" -gt 0 ]; then
+    echo ""
+    echo -e "${YELLOW}⚠ Tunnels créés, mais certaines apps ne répondent pas encore :${NC}"
+    for port_info in "${NOT_READY_TUNNELS[@]}"; do
+        IFS=':' read -r port name <<< "$port_info"
+        echo -e "  ${RED}✗${NC} http://localhost:${port} ${YELLOW}(${name})${NC} ${RED}[app distante pas prête]${NC}"
+        print_remote_app_warmup_hint "$port" "$name"
+    done
     exit 1
 fi
 

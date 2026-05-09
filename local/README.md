@@ -221,6 +221,25 @@ Vérifiez la configuration SSH :
 ssh "$(cat ~/.shipflow/current_connection)" "echo Connection OK"
 ```
 
+Si le tunnel est créé mais que `localhost:<port>` ne répond pas, l'app distante
+peut encore être en build. C'est fréquent avec un wrapper PM2 Flutter Web qui
+fait `flutter pub get`, `flutter build web --release`, puis seulement ensuite
+lance le serveur Node. PM2 affiche alors le process `online` avant que le port
+applicatif soit prêt.
+
+Attendez les marqueurs de fin dans les logs PM2, puis relancez les tunnels :
+
+```bash
+pm2 logs contentflow_app --lines 50
+```
+
+Marqueurs typiques :
+
+```text
+✓ Built build/web
+... serving on http://localhost:3050
+```
+
 Si le menu indique qu'aucun tunnel actif n'a été trouvé et que vous voulez voir
 les processus SSH bruts pour diagnostiquer, relancez-le en mode debug :
 
