@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.0.0"
 project: "shipflow"
 created: "2026-04-26"
-updated: "2026-04-26"
+updated: "2026-05-10"
 status: reviewed
 source_skill: manual
 scope: architecture
@@ -36,12 +36,12 @@ evidence:
   - "Core files and function tree extracted from the repo"
   - "CLAUDE.md documents PM2 caching, port allocation, idempotence, and validation rules"
 depends_on:
-  - artifact: "GUIDELINES.md"
+  - artifact: "shipflow_data/technical/guidelines.md"
     artifact_version: "1.0.0"
     required_status: "reviewed"
 supersedes: []
 next_review: "2026-05-26"
-next_step: "/sf-docs audit ARCHITECTURE.md"
+next_step: "/sf-docs audit shipflow_data/technical/architecture.md"
 ---
 
 # Architecture Context
@@ -104,6 +104,26 @@ The repo is not split into small services. It is centered around shell-based orc
 - Unsafe project paths are rejected rather than normalized optimistically.
 - Generated or runtime-managed config should not be hand-edited as source of truth.
 - Workflow docs are treated as contracts; trackers are not.
+
+## Documentation Architecture
+
+- ShipFlow documentation is split into stable layers to keep runtime work and public/user-facing messaging independent:
+
+  - `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, `shipflow_data/technical/context.md`, `AGENT.md`: global doctrine and topology contracts.
+  - `shipflow_data/technical/` and `shipflow_data/workflow/specs/`: subsystem technical contracts and durable workflow contracts.
+  - Editorial/public pages under `shipflow_data/editorial/` and `site/`: public messaging, onboarding surfaces, and operator guides.
+
+- Internal contracts remain in English by default (`SKILL.md`, metadata schema fields, stable headings, checks, and acceptance criteria). User-facing interaction (status updates, prompts, final responses, help copy) follows the operator’s active language.
+
+- `Documentation Update Plan` applies to any behavior-changing wave that modifies behavior or documented contracts. The plan must:
+  - identify impacted docs with owners from `shipflow_data/technical/code-docs-map.md`,
+  - update the owning artifact before final verification,
+  - keep doc roles exclusive (architecture, technical module, workflow, editorial).
+
+- Non-compliance triggers are:
+  - touching architecture/technical doctrine without updating owning doctrine files,
+  - adding claims that affect trust/safety/legal/security/business outcomes without claim-register evidence,
+  - mixing internal English contracts with user-facing French in the same artifact.
 
 ## Hotspots
 

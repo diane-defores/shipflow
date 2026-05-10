@@ -31,7 +31,7 @@ Default to `report=user`: concise, findings-first, and focused on top issues, pr
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -60 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Brand voice: !`head -40 BRANDING.md 2>/dev/null || echo "no BRANDING.md"`
+- Brand voice: !`if [ -f shipflow_data/business/branding.md ]; then head -40 shipflow_data/business/branding.md; else head -40 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md)"; fi`
 - Tailwind config: !`cat tailwind.config.* 2>/dev/null | head -100 || echo "no tailwind config"`
 - Global styles: !`cat src/styles/global.css src/styles/globals.css src/assets/styles/global.css 2>/dev/null | head -150 || echo "no global styles"`
 - Token files detected: !`find . -type f \( -name "tokens*" -o -name "theme*" -o -name "*Theme*" -o -name "design-tokens*" -o -name "palette*" -o -name "_variables*" \) 2>/dev/null | grep -v node_modules | head -20 || echo "none"`

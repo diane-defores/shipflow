@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.13"
+artifact_version: "1.0.14"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-09"
+updated: "2026-05-10"
 status: reviewed
 source_skill: sf-start
 scope: runtime-cli
@@ -32,6 +32,7 @@ evidence:
   - "Function inventory from shipflow.sh, lib.sh, config.sh, and CONTEXT-FUNCTION-TREE.md."
   - "Blacksmith setup menu added for official CLI/Testbox guidance without token handling."
   - "Remote Blacksmith auth now routes to local SSH callback tunnel instead of direct server login."
+  - "Blacksmith setup menu now includes SSH Access runner-debug guidance."
   - "Main menu shortened with grouped submenus."
   - "Root menu labels simplified to visible user actions without abstract section headers."
   - "Health Check system monitor now shows disk capacity alongside memory."
@@ -107,9 +108,10 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   with hot reload/hot restart control.
 - `lib.sh::action_blacksmith_setup`: guided official-first Blacksmith setup
   screen for CLI presence, local auth status, GitHub App guidance, runner tags,
-  and Testbox init commands. It prints required terminal commands instead of
-  running interactive install/auth/project mutation steps automatically, and
-  routes remote Blacksmith auth through the local tunnel menu.
+  SSH Access debugging guidance, and Testbox init commands. It prints required
+  terminal commands instead of running interactive install/auth/project mutation
+  steps automatically, and routes remote Blacksmith auth through the local
+  tunnel menu.
 - `lib.sh::action_codex_launcher`: interactive Codex launcher for choosing a
   workspace and enabling selected MCP providers for the new Codex session only.
 - `lib.sh::action_mcp_menu`: grouped MCP/Codex menu that routes to the Codex
@@ -236,6 +238,10 @@ Flutter Web has two runtime paths:
 - Missing Blacksmith CLI or auth should be shown as a setup status, not as a
   runtime failure; the menu must print the official next command when an
   interactive Blacksmith step is required.
+- Blacksmith SSH Access is an organization/GitHub user capability, not a
+  ShipFlow server install step. The runtime menu should explain where to find
+  the `Setup runner` SSH command and should not attempt to write local
+  workstation SSH config from the server.
 - The Codex launcher should fail before `exec` when Codex is absent, a selected
   workspace is invalid, or an MCP name is malformed; it must not kill existing
   Codex conversations or MCP processes.
@@ -256,6 +262,8 @@ Flutter Web has two runtime paths:
 - Destructive actions must stay idempotent and confirmation-gated where the UX expects it.
 - Blacksmith credentials are detected only by local credentials-file presence;
   the runtime must not read, print, store, or transform token contents.
+- Blacksmith runner SSH diagnostics must not copy raw environment values,
+  tokens, cookies, signing keys, or private headers into reports.
 
 ## Validation
 

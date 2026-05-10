@@ -25,7 +25,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -40 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Business context: !`head -60 BUSINESS.md 2>/dev/null || echo "no BUSINESS.md — run /sf-init to generate"`
+- Business context: !`if [ -f shipflow_data/business/business.md ]; then head -60 shipflow_data/business/business.md; else head -60 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md) — run /sf-init or /sf-docs update"; fi`
 - DataForSEO MCP available: !`echo "dfs-mcp tools available — use mcp__dfs-mcp__* tools"`
 
 ## Pre-check : contexte business

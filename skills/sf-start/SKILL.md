@@ -120,7 +120,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - fresh external docs verdict when the task depends on external documented behavior: dependency/service, local version when available, Context7 or official docs source, and whether the implementation path is supported
   - abuse cases / misuse cases and security constraints when present
   - validation commands and stop conditions
-- For every business or technical contract listed in `depends_on` (`BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, docs API, architecture, pricing, personas, GTM docs, onboarding/support docs):
+- For every business or technical contract listed in `depends_on` (`shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/technical/guidelines.md`, docs API, architecture, pricing, personas, GTM docs, onboarding/support docs; fallback legacy root docs when named in an older spec):
   - preserve the referenced `artifact_version` and `required_status` in the execution context
   - read the current file when it is present and its version/status may affect the implementation
   - stop and route back to `/sf-ready` if the current document is `stale`, has a newer incompatible `artifact_version`, or contradicts the spec
@@ -237,7 +237,7 @@ Implementation constraints:
 - follow existing project conventions
 - keep the change inside the declared task scope
 - preserve the invariants and linked systems named in the execution contract
-- preserve the spec's dependency/version context while coding; do not silently implement against a newer or stale `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, API doc, or architecture doc than the spec names
+- preserve the spec's dependency/version context while coding; do not silently implement against a newer or stale canonical `shipflow_data/` decision contract, legacy root fallback contract, API doc, or architecture doc than the spec names
 - keep documentation coherent with feature behavior: update docs, README, guides, examples, FAQ, onboarding, pricing or support copy when the contract names them
 - preserve abuse-case and security constraints named in the spec
 - preserve fresh external docs constraints from the execution contract; if current docs contradict the intended implementation, stop and reroute instead of coding from memory

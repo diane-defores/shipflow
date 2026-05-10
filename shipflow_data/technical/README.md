@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-05-10"
 status: reviewed
 source_skill: sf-start
 scope: technical-docs-index
@@ -25,6 +25,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Spec defines docs/technical as the internal code-proximate documentation layer."
+  - "Blacksmith technical note added for CI observability and APK build operations."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -64,6 +65,8 @@ This layer complements the existing docs:
 | `public-site-and-content-runtime.md` | `site/`, `CONTENT_MAP.md`, public/private doc boundaries |
 | `installer-and-user-scope.md` | `install.sh`, root/user setup, aliases, skill links, MCP config |
 | `decisions.md` | ADR-style decisions, `decision_record` templates, durable decision routing |
+| `blacksmith.md` | Blacksmith CI runners, APK build observability, logs, SSH debugging, monitors, metrics, cache, Testboxes |
+| `firebase-firestore-oidc-ci-playbook.md` | Firebase/Firestore CI setup with GitHub OIDC/WIF, step-by-step wiring and troubleshooting matrix |
 
 ## Non-Coverage
 

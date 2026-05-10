@@ -4,26 +4,45 @@ import Footer from "../components/Footer.astro";
 import NavBar from "../components/NavBar.astro";
 
 const coreDocs = [
-  ["AGENT.md", "Where a fresh agent should look first depending on the task."],
-  ["CONTEXT.md", "How to orient quickly in the repo, identify hotspots, and route edits."],
-  ["CONTEXT-FUNCTION-TREE.md", "How to navigate large procedural shell files without re-reading everything."],
-  ["CONTENT_MAP.md", "Where content lives: docs, landing pages, semantic clusters, public surfaces, and repurposing destinations."],
-  ["docs/editorial/README.md", "How public content, claims, page intent, and Astro content schema boundaries stay aligned."],
+  ["AGENT.md (compat)", "Where a fresh agent should look first depending on the task."],
+  ["shipflow_data/technical/context.md", "How to orient quickly in the repo, identify hotspots, and route edits."],
+  ["shipflow_data/technical/context-function-tree.md", "How to navigate large procedural shell files without re-reading everything."],
+  ["shipflow_data/editorial/content-map.md", "Where content lives: docs, landing pages, semantic clusters, public surfaces, and repurposing destinations."],
+  ["shipflow_data/editorial/README.md", "How public content, claims, page intent, and Astro content schema boundaries stay aligned."],
   ["docs/skill-launch-cheatsheet.md", "Markdown reference for master skills, supporting skills, and argument modes."],
-  ["README.md", "Public overview, positioning, onboarding, and high-level framework story."],
+  ["README.md (compat)", "Public overview, positioning, onboarding, and high-level framework story."],
   ["shipflow-spec-driven-workflow.md", "The execution doctrine behind sf-spec, sf-ready, sf-start, and sf-verify."]
 ];
 
 const decisionDocs = [
-  ["BUSINESS.md", "For whom the product exists, what value it creates, and what model it may support."],
-  ["PRODUCT.md", "What the product does, which workflows matter, and which non-goals should stay out."],
-  ["BRANDING.md", "How the product should sound, what it can claim, and how trust is earned."],
-  ["GTM.md", "How the product is presented publicly, which objections matter, and what proof supports it."],
-  ["ARCHITECTURE.md", "How the system is organized, where boundaries sit, and which invariants hold."],
-  ["GUIDELINES.md", "How contributors should work inside the repo and which technical rules stay stable."]
+  ["shipflow_data/business/business.md", "For whom the product exists, what value it creates, and what model it may support."],
+  ["shipflow_data/business/product.md", "What the product does, which workflows matter, and which non-goals should stay out."],
+  ["shipflow_data/business/branding.md", "How the product should sound, what it can claim, and how trust is earned."],
+  ["shipflow_data/business/gtm.md", "How the product is presented publicly, which objections matter, and what proof supports it."],
+  ["shipflow_data/technical/context.md", "How the system is organized, where boundaries sit, and which invariants hold."],
+  ["shipflow_data/technical/guidelines.md", "How contributors should work inside the repo and which technical rules stay stable."]
 ];
 
-const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blob/main/${name}`;
+const projectDataPolicy = [
+  [
+    "Project-local corpus",
+    "In adopted project repos, canonical ShipFlow Markdown lives in `shipflow_data/` "
+      + "under categories like `business`, `technical`, `editorial`, `workflow`, and `research`."
+  ],
+  [
+    "Root compatibility",
+    "Compatibility entrypoints remain at repository root: `AGENT.md`, `AGENTS.md` (if used), and `CLAUDE.md`."
+  ],
+  [
+    "Path resolution",
+    "Use `skills/references/canonical-paths.md` for ownership-based resolution before creating or moving project docs."
+  ]
+];
+
+const coreDocsPath = "/docs#artifact-corpus";
+const decisionDocsPath = "/docs#decision-contracts";
+const executionPath = "/docs#execution-logic";
+const editorialPath = "/docs#editorial-governance";
 ---
 
 <BaseLayout
@@ -33,7 +52,7 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
   <main class="page-shell">
     <NavBar />
 
-    <section class="section">
+    <section class="section" id="artifact-corpus">
       <div class="section-heading">
         <p class="eyebrow">Docs Overview</p>
         <h1 class="page-title">The docs are built for fast agent navigation, not for encyclopedic sprawl.</h1>
@@ -45,7 +64,7 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="editorial-governance">
       <div class="cta-panel">
         <p class="eyebrow">Public Skill Pages</p>
         <h2>The docs explain the contracts. The skills hub explains the workflow in public language.</h2>
@@ -91,7 +110,7 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
             checks public content, claims, page intent, and Astro content
             schema boundaries before public copy drifts from delivered behavior.
           </p>
-          <a class="doc-action" href="https://github.com/dianedef/ShipFlow/tree/main/docs/editorial">
+          <a class="doc-action" href={editorialPath}>
             Browse editorial governance
           </a>
         </article>
@@ -103,7 +122,7 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
             history: which lifecycle skills ran, which model was used, what
             result was recorded, and which command should happen next.
           </p>
-          <a class="doc-action" href="https://github.com/dianedef/ShipFlow/blob/main/shipflow-spec-driven-workflow.md">
+          <a class="doc-action" href={executionPath}>
             Read the workflow doctrine
           </a>
         </article>
@@ -134,6 +153,32 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
 
     <section class="section">
       <div class="section-heading">
+        <p class="eyebrow">Location Doctrine</p>
+        <h2>Documentation placement is a live contract.</h2>
+        <p>
+          We avoid doc drift by separating root discovery files from project-owned
+          governance documents. This keeps each repository clean and easier to
+          onboard for both agents and operators.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        {
+          projectDataPolicy.map(([name, body]) => (
+            <article class="doc-card">
+              <h3>{name}</h3>
+              <p>{body}</p>
+              <a class="doc-action" href={coreDocsPath}>
+                Read canonical-path rules
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
         <p class="eyebrow">Core Navigation</p>
         <h2>Start here when you need orientation.</h2>
       </div>
@@ -144,8 +189,8 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
             <article class="doc-card">
               <h3>{name}</h3>
               <p>{body}</p>
-              <a class="doc-action" href={githubDocUrl(name)}>
-                Open on GitHub
+              <a class="doc-action" href={coreDocsPath}>
+                Open in docs policy
               </a>
             </article>
           ))
@@ -153,7 +198,7 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="decision-contracts">
       <div class="section-heading">
         <p class="eyebrow">Decision Contracts</p>
         <h2>Each document has one explicit role.</h2>
@@ -170,8 +215,8 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
             <article class="doc-card">
               <h3>{name}</h3>
               <p>{body}</p>
-              <a class="doc-action" href={githubDocUrl(name)}>
-                Open on GitHub
+              <a class="doc-action" href={decisionDocsPath}>
+                Open in docs policy
               </a>
             </article>
           ))
@@ -179,7 +224,7 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="execution-logic">
       <div class="section-heading">
         <p class="eyebrow">Remote Agent Access</p>
         <h2>OAuth callbacks still need a local path when the agent runs on a server.</h2>
@@ -330,8 +375,8 @@ const githubDocUrl = (name: string) => `https://github.com/dianedef/ShipFlow/blo
           move from ambiguity reduction to verified delivery.
         </p>
         <div class="hero-actions">
-          <a class="button button-primary" href="https://github.com/dianedef/ShipFlow/blob/main/AGENT.md">Start with AGENT.md</a>
-          <a class="button button-secondary" href="https://github.com/dianedef/ShipFlow/blob/main/shipflow-spec-driven-workflow.md">Read the workflow doctrine</a>
+          <a class="button button-primary" href={coreDocsPath}>Start with AGENT.md</a>
+          <a class="button button-secondary" href={executionPath}>Read the workflow doctrine</a>
         </div>
       </div>
     </section>

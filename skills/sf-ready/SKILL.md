@@ -146,7 +146,7 @@ Contrôler :
   - cas limites
 - les prérequis de données, auth, permissions, feature flags, migrations ou config sont explicités si pertinents
 - les non-goals de `Scope Out` bornent bien le travail
-- si la spec touche des artefacts ShipFlow, skills, rapports, docs techniques, prompts utilisateur ou copie visible produit, elle respecte la doctrine de langue ShipFlow issue de `GUIDELINES.md` et `shipflow-spec-driven-workflow.md` :
+- si la spec touche des artefacts ShipFlow, skills, rapports, docs techniques, prompts utilisateur ou copie visible produit, elle respecte la doctrine de langue ShipFlow issue de `shipflow_data/technical/guidelines.md` (fallback legacy `GUIDELINES.md`) et `shipflow-spec-driven-workflow.md` :
   - contrats internes en anglais (`SKILL.md` instructions, workflow rules, YAML/frontmatter keys, stable section headings, acceptance criteria, stop conditions, validation notes, technical decision docs)
   - interaction user-facing dans la langue active de l'utilisateur ou du projet
   - français user-facing naturel et accentué quand la langue active est le français

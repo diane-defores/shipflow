@@ -131,10 +131,10 @@ When execution is `spec-first`, prefer a fresh execution context for delegated i
 
 Before `sf-start`, check project-local governance state:
 
-- `docs/technical/`
-- `docs/technical/code-docs-map.md`
-- `CONTENT_MAP.md`
-- applicable `docs/editorial/`
+- `shipflow_data/technical/` (fallback legacy `docs/technical/`)
+- `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/code-docs-map.md`)
+- `shipflow_data/editorial/content-map.md` (fallback legacy `CONTENT_MAP.md`)
+- applicable `shipflow_data/editorial/` files (fallback legacy `docs/editorial/`)
 - `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md`
 - `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md`
 
@@ -152,7 +152,7 @@ If missing or stale, route to `sf-docs` bootstrap/audit or block. Do not continu
 
 After each large sequential block or each parallel wave:
 
-1. Run a Technical Reader pass against `docs/technical/code-docs-map.md`.
+1. Run a Technical Reader pass against `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/code-docs-map.md`).
 2. Produce or refresh a `Documentation Update Plan`.
 3. Apply impacted technical docs through a write-capable executor or integrator.
 4. Block the next wave unless docs are `complete`, `no impact`, or `pending final integration` with reason and resolution condition.

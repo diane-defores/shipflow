@@ -28,9 +28,9 @@ Default to `report=user`: concise, findings-first, and focused on top issues, pr
 
 ## Governance Corpora And Output Plans
 
-Before scoring public funnel copy, persisting copywriting strategy artifacts, or recommending public content changes, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when `CONTENT_MAP.md` or `docs/editorial/` exists. Follow its load order for content surface routing, public page intent, claim register checks, editorial update gate, Astro runtime schema policy, and blog/article surface policy.
+Before scoring public funnel copy, persisting copywriting strategy artifacts, or recommending public content changes, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when `shipflow_data/editorial/content-map.md`, legacy `CONTENT_MAP.md`, `shipflow_data/editorial/`, or legacy `docs/editorial/` exists. Follow its load order for content surface routing, public page intent, claim register checks, editorial update gate, Astro runtime schema policy, and blog/article surface policy.
 
-Before changing code, runtime content, site files, content schemas, skill contracts, public docs, README guidance, or mapped technical documentation surfaces, load `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` and use `docs/technical/code-docs-map.md` to decide whether a `Documentation Update Plan` is required.
+Before changing code, runtime content, site files, content schemas, skill contracts, public docs, README guidance, or mapped technical documentation surfaces, load `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` and use `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/code-docs-map.md`) to decide whether a `Documentation Update Plan` is required.
 
 The final report must include these governance outcomes when relevant:
 - `Editorial Update Plan`: required for public pages, README/public docs, public skill pages, FAQ, pricing/support copy, runtime public content, blog/article/newsletter requests, or public copywriting strategy changes. Use `no editorial impact` with a reason when there is no public-content consequence.
@@ -41,8 +41,8 @@ The final report must include these governance outcomes when relevant:
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -100 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Business context: !`head -60 BUSINESS.md 2>/dev/null || echo "no BUSINESS.md — run /sf-init to generate"`
-- Brand voice: !`head -60 BRANDING.md 2>/dev/null || echo "no BRANDING.md — run /sf-init to generate"`
+- Business context: !`if [ -f shipflow_data/business/business.md ]; then head -60 shipflow_data/business/business.md; else head -60 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md) — run /sf-init or /sf-docs update"; fi`
+- Brand voice: !`if [ -f shipflow_data/business/branding.md ]; then head -60 shipflow_data/business/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md) — run /sf-init or /sf-docs update"; fi`
 - All pages: !`find src/pages src/app -name "*.astro" -o -name "*.tsx" -o -name "*.vue" 2>/dev/null | grep -v node_modules | sort`
 - Content collections: !`find src/content -type f 2>/dev/null | head -20 || echo "no content dir"`
 - Pricing/checkout pages: !`find src -path "*pric*" -o -path "*checkout*" -o -path "*offre*" -o -path "*tarif*" 2>/dev/null | head -10 || echo "none found"`
@@ -101,7 +101,7 @@ next_review: "[YYYY-MM-DD]"
 
 Avant d'auditer ou de persister les livrables, lire le frontmatter complet de `BUSINESS.md`, `BRANDING.md` et des docs copywriting existantes. Reporter leurs versions dans `depends_on`. Si une version manque, utiliser `artifact_version: "unknown"` et signaler un `metadata gap` dans le rapport.
 
-Si `docs/editorial/` existe, appliquer la section `Governance Corpora And Output Plans` avant de scorer les pages publiques, les claims de funnel, la cohérence docs/FAQ/pricing/support, ou les recommandations de contenu public.
+Si `shipflow_data/editorial/` existe (fallback legacy `docs/editorial/`), appliquer la section `Governance Corpora And Output Plans` avant de scorer les pages publiques, les claims de funnel, la cohérence docs/FAQ/pricing/support, ou les recommandations de contenu public.
 
 ### Bump `artifact_version`
 

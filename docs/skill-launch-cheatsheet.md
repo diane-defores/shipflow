@@ -19,7 +19,7 @@ linked_systems:
   - site/src/content/skills/
   - README.md
   - shipflow-spec-driven-workflow.md
-  - CONTENT_MAP.md
+  - shipflow_data/editorial/content-map.md
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
     artifact_version: "0.15.1"

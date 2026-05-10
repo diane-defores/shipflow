@@ -31,9 +31,9 @@ Default to `report=user`: concise, findings-first, and focused on top issues, pr
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -100 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Brand voice: !`head -60 BRANDING.md 2>/dev/null || echo "no BRANDING.md — run /sf-init to generate"`
-- Business metadata files present: !`ls BUSINESS.md BRANDING.md GUIDELINES.md 2>/dev/null || echo "none found"`
-- Business metadata fields: !`grep -HE '^(metadata_schema_version|artifact_version|status|updated|confidence|next_review):' BUSINESS.md BRANDING.md GUIDELINES.md 2>/dev/null || echo "no metadata fields found"`
+- Brand voice: !`if [ -f shipflow_data/business/branding.md ]; then head -60 shipflow_data/business/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md) — run /sf-init or /sf-docs update"; fi`
+- Business metadata files present: !`for pair in "shipflow_data/business/business.md BUSINESS.md" "shipflow_data/business/branding.md BRANDING.md" "shipflow_data/technical/guidelines.md GUIDELINES.md"; do set -- $pair; if [ -f "$1" ]; then echo "$1"; elif [ -f "$2" ]; then echo "$2"; fi; done | sed -n '1,10p'`
+- Business metadata fields: !`for pair in "shipflow_data/business/business.md BUSINESS.md" "shipflow_data/business/branding.md BRANDING.md" "shipflow_data/technical/guidelines.md GUIDELINES.md"; do set -- $pair; if [ -f "$1" ]; then f="$1"; elif [ -f "$2" ]; then f="$2"; else continue; fi; grep -HE '^(metadata_schema_version|artifact_version|status|updated|confidence|next_review):' "$f"; done 2>/dev/null || echo "no metadata fields found"`
 - Tailwind/CSS config: !`cat tailwind.config.* 2>/dev/null | head -80 || echo "no tailwind config"`
 - Global styles: !`cat src/styles/global.css 2>/dev/null || cat src/assets/styles/*.css 2>/dev/null | head -100 || echo "no global styles found"`
 - All pages: !`find src/pages src/app -name "*.astro" -o -name "*.tsx" -o -name "*.vue" 2>/dev/null | grep -v node_modules | sort`

@@ -45,12 +45,12 @@ If subagents are unavailable, continue with a sequential read scan and report th
 - Recent commits: !`git log --oneline -8 2>/dev/null || echo "no commits"`
 - Changed files: !`git diff --name-only HEAD 2>/dev/null | head -40 || echo "no changed files"`
 - CLAUDE.md: !`head -60 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- BUSINESS.md: !`head -60 BUSINESS.md 2>/dev/null || echo "no BUSINESS.md"`
-- BRANDING.md: !`head -60 BRANDING.md 2>/dev/null || echo "no BRANDING.md"`
-- PRODUCT.md: !`head -60 PRODUCT.md 2>/dev/null || echo "no PRODUCT.md"`
-- GTM.md: !`head -60 GTM.md 2>/dev/null || echo "no GTM.md"`
-- GUIDELINES.md: !`head -60 GUIDELINES.md 2>/dev/null || echo "no GUIDELINES.md"`
-- CONTENT_MAP.md: !`head -120 CONTENT_MAP.md 2>/dev/null || echo "no CONTENT_MAP.md"`
+- Business context: !`if [ -f shipflow_data/business/business.md ]; then head -60 shipflow_data/business/business.md; else head -60 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md)"; fi`
+- Brand context: !`if [ -f shipflow_data/business/branding.md ]; then head -60 shipflow_data/business/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md)"; fi`
+- Product context: !`if [ -f shipflow_data/business/product.md ]; then head -60 shipflow_data/business/product.md; else head -60 PRODUCT.md 2>/dev/null || echo "no shipflow_data/business/product.md (and no legacy PRODUCT.md)"; fi`
+- GTM context: !`if [ -f shipflow_data/business/gtm.md ]; then head -60 shipflow_data/business/gtm.md; else head -60 GTM.md 2>/dev/null || echo "no shipflow_data/business/gtm.md (and no legacy GTM.md)"; fi`
+- Guidelines: !`if [ -f shipflow_data/technical/guidelines.md ]; then head -60 shipflow_data/technical/guidelines.md; else head -60 GUIDELINES.md 2>/dev/null || echo "no shipflow_data/technical/guidelines.md (and no legacy GUIDELINES.md)"; fi`
+- Content map: !`if [ -f shipflow_data/editorial/content-map.md ]; then head -120 shipflow_data/editorial/content-map.md; else head -120 CONTENT_MAP.md 2>/dev/null || echo "no shipflow_data/editorial/content-map.md (and no legacy CONTENT_MAP.md)"; fi`
 - Existing docs/pages: !`find docs src content app -maxdepth 2 -type f \( -name "*.md" -o -name "*.mdx" -o -name "*.tsx" -o -name "*.astro" \) 2>/dev/null | head -40 || echo "no docs/pages found"`
 
 ## Your task
@@ -63,9 +63,9 @@ into a reusable content pack anchored in the source material.
 
 This skill is for repurposing, not inventing. Start from the source the user supplied in the current turn. If no source text was supplied, fall back to the current conversation. Use code, diffs, touched files, and project docs only when the source is a build conversation and only to confirm or sharpen what the conversation already established.
 
-If `CONTENT_MAP.md` exists, use it before recommending target surfaces. Treat it as the project's canonical map for blog paths, docs paths, landing pages, semantic clusters, pillar pages, FAQ/support surfaces, newsletters, and other content destinations. If it is missing, infer surfaces from the repo for this run and recommend creating it from `templates/artifacts/content_map.md`.
+If `shipflow_data/editorial/content-map.md` exists (fallback legacy `CONTENT_MAP.md`), use it before recommending target surfaces. Treat it as the project's canonical map for blog paths, docs paths, landing pages, semantic clusters, pillar pages, FAQ/support surfaces, newsletters, and other content destinations. If both locations are missing, infer surfaces from the repo for this run and recommend creating `shipflow_data/editorial/content-map.md` from `templates/artifacts/content_map.md`.
 
-When the output is public content or changes public claims, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` after `CONTENT_MAP.md` when available. Use `docs/editorial/claim-register.md` for sensitive public claims, `docs/editorial/page-intent-map.md` for public route intent, `docs/editorial/editorial-update-gate.md` for an `Editorial Update Plan` or `Claim Impact Plan`, and `docs/editorial/blog-and-article-surface-policy.md` before recommending article output. If no declared blog surface exists, report `surface missing: blog` instead of inventing a path.
+When the output is public content or changes public claims, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` after `shipflow_data/editorial/content-map.md` (fallback legacy `CONTENT_MAP.md`) when available. Use `shipflow_data/editorial/claim-register.md` (fallback legacy `docs/editorial/claim-register.md`) for sensitive public claims, `shipflow_data/editorial/page-intent-map.md` (fallback legacy `docs/editorial/page-intent-map.md`) for public route intent, `shipflow_data/editorial/editorial-update-gate.md` (fallback legacy `docs/editorial/editorial-update-gate.md`) for an `Editorial Update Plan` or `Claim Impact Plan`, and `shipflow_data/editorial/blog-and-article-surface-policy.md` (fallback legacy `docs/editorial/blog-and-article-surface-policy.md`) before recommending article output. If no declared blog surface exists, report `surface missing: blog` instead of inventing a path.
 
 Primary outcome:
 - extract the real product/technical signal from the work in progress
@@ -73,7 +73,7 @@ Primary outcome:
 - produce action-first article ideas and titles the operator can use immediately
 - analyze existing internal docs and public content to find where source insights should be added
 - keep every public claim inside the bounds of what the work actually supports
-- keep every public claim inside the claim register and evidence boundaries when `docs/editorial/` exists
+- keep every public claim inside the claim register and evidence boundaries when `shipflow_data/editorial/` exists (fallback legacy `docs/editorial/`)
 - convert justified recommendations into owner-skill handoffs when the user asks to apply them
 - distribute important product concepts across multiple relevant site surfaces instead of assuming one page will be read
 
@@ -183,7 +183,7 @@ When the user asks to apply, route every `must write` and `should write` placeme
 
 Some of the best content is created while explaining the work to the user. Do not discard clear conversational explanations just because they appeared in chat first.
 
-If the conversation establishes a durable product proof, workflow rule, recurring customer objection, technical constraint, or positioning clarification, treat that as content debt until it is placed in the right repository surface. The default is not "summarize it in chat"; the default is to preserve it through `CONTENT_MAP.md` and the mapped public or technical surface.
+If the conversation establishes a durable product proof, workflow rule, recurring customer objection, technical constraint, or positioning clarification, treat that as content debt until it is placed in the right repository surface. The default is not "summarize it in chat"; the default is to preserve it through `shipflow_data/editorial/content-map.md` (fallback legacy `CONTENT_MAP.md`) and the mapped public or technical surface.
 
 When the conversation contains a sentence, analogy, diagram, list, or troubleshooting explanation that is clearer than a fresh rewrite:
 
@@ -209,7 +209,7 @@ Use repetition deliberately:
 - the landing page may mention the concept if it supports the public promise
 - skill pages or tutorials mention it only when it changes how the workflow should be understood
 - README/local docs preserve operational truth for contributors and operators
-- `CONTENT_MAP.md` records the cluster and cross-surface update rule
+- `shipflow_data/editorial/content-map.md` (fallback legacy `CONTENT_MAP.md`) records the cluster and cross-surface update rule
 
 Repeat the same concept with different jobs per surface. Do not duplicate the same paragraph everywhere.
 
@@ -249,14 +249,14 @@ If the user provides only a URL and not the content itself:
 
 ## Surface selection
 
-Before choosing output forms, check `CONTENT_MAP.md` when present:
+Before choosing output forms, check `shipflow_data/editorial/content-map.md` (fallback legacy `CONTENT_MAP.md`) when present:
 - prefer mapped surfaces over guessed paths
 - use declared pillar pages and semantic clusters to place blog/article/FAQ ideas
 - use declared cross-surface update rules to identify related docs, landing pages, or support content
 - if the map says a surface is missing, report that gap instead of inventing a path
 - if the map appears stale or contradicts the repo, mark the target as `needs verification`
 
-Then check `docs/editorial/` when present:
+Then check `shipflow_data/editorial/` (fallback legacy `docs/editorial/`) when present:
 - use the claim register before publishing sensitive claims
 - use the page intent map before changing public Astro pages
 - use the Astro content schema policy before editing runtime content
@@ -299,7 +299,7 @@ When the source is supplied text, extract:
 Then:
 - for build-conversation sources, inspect the most relevant changed files or mentioned files only as needed to validate behavior and claims
 - for supplied-text sources, stay anchored to the text itself unless the user explicitly asks for outside validation
-- inspect existing internal docs and public surfaces named by `CONTENT_MAP.md`, `docs/editorial/`, changed files, or the conversation to find placement opportunities
+- inspect existing internal docs and public surfaces named by `shipflow_data/editorial/content-map.md` (fallback legacy `CONTENT_MAP.md`), `shipflow_data/editorial/` (fallback legacy `docs/editorial/`), changed files, or the conversation to find placement opportunities
 
 ### Phase 2 — Decide which outputs are justified
 
@@ -362,9 +362,9 @@ Before recommending writing, produce a compact internal diffusion map:
 - per-surface job: why each surface needs a different version
 - surfaces intentionally skipped: with reason
 
-If `CONTENT_MAP.md` exists, recommend a `sf-docs` handoff when a new recurring topic, article, pillar page, or cross-surface rule should be recorded.
+If `shipflow_data/editorial/content-map.md` exists (fallback legacy `CONTENT_MAP.md`), recommend a `sf-docs` handoff when a new recurring topic, article, pillar page, or cross-surface rule should be recorded.
 
-If `docs/editorial/` exists, check the claim register, page intent map, Astro content schema policy, and blog surface policy before recommending public-content handoffs. Runtime content updates must be routed to owner skills with schema constraints included in the handoff.
+If `shipflow_data/editorial/` exists (fallback legacy `docs/editorial/`), check the claim register, page intent map, Astro content schema policy, and blog surface policy before recommending public-content handoffs. Runtime content updates must be routed to owner skills with schema constraints included in the handoff.
 
 ### Phase 3 — Build the structured pack
 

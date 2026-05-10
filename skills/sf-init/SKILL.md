@@ -249,13 +249,13 @@ Path rule:
 
 ### Step 5: Generate business & brand context files
 
-Créer les fichiers de contexte business/marque directement dans le repo du projet. Ces documents sont des contrats de décision du projet et leur source canonique doit rester au plus près du code, des specs et de la documentation qu'ils gouvernent.
+Créer les fichiers de contexte business/marque dans le dossier `shipflow_data/` du repo du projet. Ces documents sont des contrats de décision du projet et leur source canonique doit rester dans le corpus gouverné par ShipFlow, au plus près du code, des specs et de la documentation qu'ils gouvernent.
 
 `shipflow_data` reste réservé au tracking partagé (`TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`). Les artefacts de gouvernance projet vivent dans `shipflow_data/business/*`, `shipflow_data/editorial/*` et `shipflow_data/technical/*` quand disponibles.
 
 **Pour chaque fichier** : vérifier d'abord s'il existe déjà dans le projet. Si oui, sauter.
 
-BUSINESS.md, BRANDING.md, CONTENT_MAP.md et GUIDELINES.md sont des artefacts ShipFlow, pas de simples notes. Ils doivent commencer par un frontmatter YAML ShipFlow avec `metadata_schema_version`, `artifact_version`, `status`, `confidence`, `risk_level`, `evidence`, `next_review`, `depends_on` et `supersedes`. À l'initialisation, utiliser `metadata_schema_version: "1.0"` et `artifact_version: "0.1.0"` tant que le contenu n'a pas été revu explicitement par l'utilisateur; passer à `artifact_version: "1.0.0"` seulement si les réponses utilisateur couvrent les décisions essentielles sans placeholder.
+`shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/editorial/content-map.md` et `shipflow_data/technical/guidelines.md` sont des artefacts ShipFlow, pas de simples notes. Les anciens fichiers racine (`BUSINESS.md`, `BRANDING.md`, `CONTENT_MAP.md`, `GUIDELINES.md`) ne servent que de fallback legacy ou de source de migration quand ils existent encore. Les artefacts doivent commencer par un frontmatter YAML ShipFlow avec `metadata_schema_version`, `artifact_version`, `status`, `confidence`, `risk_level`, `evidence`, `next_review`, `depends_on` et `supersedes`. À l'initialisation, utiliser `metadata_schema_version: "1.0"` et `artifact_version: "0.1.0"` tant que le contenu n'a pas été revu explicitement par l'utilisateur; passer à `artifact_version: "1.0.0"` seulement si les réponses utilisateur couvrent les décisions essentielles sans placeholder.
 
 #### 5a. BUSINESS.md
 
@@ -383,7 +383,7 @@ next_step: "/sf-docs update"
 
 Générer automatiquement depuis ce qui a été détecté en Step 1 + CLAUDE.md. Pas de question à l'utilisateur — c'est technique.
 
-`[project_dir]/GUIDELINES.md` :
+`[project_dir]/shipflow_data/technical/guidelines.md` :
 
 ```markdown
 ---
@@ -596,7 +596,7 @@ Ne pas le transformer en calendrier éditorial ou backlog. Si aucun blog/newslet
 
 ### Step 7.5: Governance Corpus Bootstrap
 
-After `CONTENT_MAP.md` generation or skip decision, detect and report the project-local governance corpus state. This step is a bootstrap and status gate; long-term maintenance stays owned by `sf-docs`.
+After `shipflow_data/editorial/content-map.md` generation or skip decision, detect and report the project-local governance corpus state. This step is a bootstrap and status gate; long-term maintenance stays owned by `sf-docs`.
 
 Load these ShipFlow-owned references from `$SHIPFLOW_ROOT` before creating or auditing governance files:
 - `skills/references/technical-docs-corpus.md`
@@ -607,22 +607,22 @@ Load these ShipFlow-owned references from `$SHIPFLOW_ROOT` before creating or au
 Detect:
 - code areas: `package.json`, lockfiles, `src/`, `app/`, `pages/`, `components/`, `lib/`, `convex/`, `supabase/`, `server/`, `api/`, `*.sh`, `*.py`, `*.ts`, `*.tsx`, `*.js`, `*.jsx`, `*.astro`, `*.vue`, or framework config files
 - public surfaces: public routes, `site/`, `src/pages/`, `app/`, `pages/`, `docs/`, README public promises, FAQ, pricing, support copy, public skill pages, blog/article intent, `src/content`, `content/`, Astro/MDX runtime content, newsletter/social surfaces
-- existing governance files: `docs/technical/README.md`, `docs/technical/code-docs-map.md`, `shipflow_data/editorial/README.md` (ou `docs/editorial/README.md`), `shipflow_data/editorial/content-map.md` (ou `CONTENT_MAP.md`)
+- existing governance files: `shipflow_data/technical/README.md` (ou `docs/technical/README.md`), `shipflow_data/technical/code-docs-map.md` (ou `docs/technical/code-docs-map.md`), `shipflow_data/editorial/README.md` (ou `docs/editorial/README.md`), `shipflow_data/editorial/content-map.md` (ou `CONTENT_MAP.md`)
 - agent entrypoint state: `AGENT.md` and `AGENTS.md`
 
 #### Technical governance bootstrap
 
 Technical governance is applicable to code projects by default.
 
-If code areas are detected and `docs/technical/` can be written:
-- create `docs/technical/README.md` when missing, using the `technical_module_context` schema as the metadata model but keeping the body as a concise index
-- create `docs/technical/code-docs-map.md` when missing, with path patterns, primary technical doc targets, required validation commands, and documentation update triggers based on detected code areas
-- when no major code area can be mapped precisely, still create `docs/technical/code-docs-map.md` with an explicit `non-coverage` reason and next step `/sf-docs technical`
+If code areas are detected and `shipflow_data/technical/` can be written:
+- create `shipflow_data/technical/README.md` when missing, using the `technical_module_context` schema as the metadata model but keeping the body as a concise index
+- create `shipflow_data/technical/code-docs-map.md` when missing, with path patterns, primary technical doc targets, required validation commands, and documentation update triggers based on detected code areas
+- when no major code area can be mapped precisely, still create `shipflow_data/technical/code-docs-map.md` with an explicit `non-coverage` reason and next step `/sf-docs technical`
 - do not create a mega-doc during init; route subsystem detail to `/sf-docs technical`
 
-If `docs/technical/` already exists:
+If `shipflow_data/technical/` already exists (or legacy `docs/technical/` exists):
 - do not overwrite it
-- report `docs/technical: already existed` or `docs/technical: needs audit`
+- report `shipflow_data/technical: already existed` or `shipflow_data/technical: needs audit`
 - name `/sf-docs technical` as the recovery command when the map is missing, stale, or incomplete
 
 If no code areas are detected:
@@ -633,8 +633,8 @@ If no code areas are detected:
 
 Editorial governance is applicable when public pages, README public promises, docs, FAQ, pricing, support copy, public skill pages, blog/article intent, or runtime content surfaces exist.
 
-If public surfaces are detected and `docs/editorial/` can be written:
-- create `docs/editorial/README.md` when missing
+If public surfaces are detected and `shipflow_data/editorial/` can be written:
+- create `shipflow_data/editorial/README.md` when missing
 - create baseline project-specific editorial governance files when evidence exists: `public-surface-map.md`, `page-intent-map.md`, `claim-register.md`, `editorial-update-gate.md`, `astro-content-schema-policy.md`, and `blog-and-article-surface-policy.md`
 - keep entries evidence-based; do not copy ShipFlow's own repository-specific conclusions into the target project
 - preserve runtime content schema boundaries. Do not add ShipFlow metadata to `src/content/**`, Astro collections, MDX consumed by the app, CMS entries, or other runtime content unless the local schema explicitly accepts it
@@ -644,7 +644,7 @@ If no public/content surfaces are detected:
 - report `editorial governance: skipped - no editorial surfaces detected`
 - name `/sf-docs editorial` as the adoption command if public surfaces appear later
 
-If public surfaces are detected but `docs/editorial/` cannot be created safely:
+If public surfaces are detected but `shipflow_data/editorial/` cannot be created safely:
 - report `editorial governance: blocked`
 - name the blocked files and the next safe command `/sf-docs editorial`
 - do not strengthen README, docs, public claims, FAQ, pricing, or support copy until the editorial governance state is created, audited, skipped with reason, or explicitly marked pending
@@ -653,7 +653,7 @@ If public surfaces are detected but `docs/editorial/` cannot be created safely:
 
 `AGENT.md` is the canonical agent routing entrypoint.
 
-- If `AGENT.md` is missing, create a baseline project-specific entrypoint that points to `CLAUDE.md`, `CONTEXT.md` when present, `docs/technical/code-docs-map.md`, `shipflow_data/editorial/content-map.md` (or `CONTENT_MAP.md`), and `README.md`.
+- If `AGENT.md` is missing, create a baseline project-specific entrypoint that points to `CLAUDE.md`, `shipflow_data/technical/context.md` when present (fallback `CONTEXT.md`), `shipflow_data/technical/code-docs-map.md` (fallback `docs/technical/code-docs-map.md`), `shipflow_data/editorial/content-map.md` (fallback `CONTENT_MAP.md`), and `README.md`.
 - If `AGENTS.md` is missing and symlinks are supported, create `AGENTS.md -> AGENT.md` as compatibility only.
 - If `AGENTS.md` exists as a symlink to `AGENT.md`, report it as OK.
 - If `AGENTS.md` exists as a real file or points elsewhere, report `AGENTS.md: compatibility conflict` and ask before converting or preserving it as external-tool-specific guidance.
@@ -680,14 +680,14 @@ Stack:       [detected stack]
 Path:        [project path]
 CLAUDE.md:   [created / skipped / already existed]
 TASKS.md:    [created / skipped / already existed]
-BUSINESS.md: [created / skipped / already existed]
-BRANDING.md: [created / skipped / already existed]
-CONTENT_MAP.md: [created / skipped / already existed]
-GUIDELINES.md: [created / skipped / already existed]
+shipflow_data/business/business.md: [created / skipped / already existed]
+shipflow_data/business/branding.md: [created / skipped / already existed]
+shipflow_data/editorial/content-map.md: [created / skipped / already existed]
+shipflow_data/technical/guidelines.md: [created / skipped / already existed]
 AGENT.md:    [created / already existed / blocked]
 AGENTS.md:   [symlink created / symlink ok / absent / compatibility conflict]
-docs/technical: [created / already existed / skipped - no code areas detected / needs audit / blocked]
-docs/editorial: [created / already existed / skipped - no editorial surfaces detected / needs audit / blocked]
+shipflow_data/technical: [created / already existed / skipped - no code areas detected / needs audit / blocked]
+shipflow_data/editorial: [created / already existed / skipped - no editorial surfaces detected / needs audit / blocked]
 MCP:         [configured / skipped]
 PROJECTS:    [registered / already registered]
 Domains:     [list of applicable domains]

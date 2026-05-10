@@ -19,9 +19,9 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Governance Corpora And Output Plans
 
-Before choosing a public surface, drafting public content, or recommending article/blog/newsletter output, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when `CONTENT_MAP.md` or `docs/editorial/` exists. Follow its load order for content surface routing, public page intent, claim register checks, editorial update gate, Astro runtime schema policy, and blog/article surface policy.
+Before choosing a public surface, drafting public content, or recommending article/blog/newsletter output, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when `shipflow_data/editorial/content-map.md`, legacy `CONTENT_MAP.md`, `shipflow_data/editorial/`, or legacy `docs/editorial/` exists. Follow its load order for content surface routing, public page intent, claim register checks, editorial update gate, Astro runtime schema policy, and blog/article surface policy.
 
-Before changing runtime content, site files, content schemas, public docs, README guidance, skill contracts, or mapped technical documentation surfaces, load `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` and use `docs/technical/code-docs-map.md` to decide whether a `Documentation Update Plan` is required.
+Before changing runtime content, site files, content schemas, public docs, README guidance, skill contracts, or mapped technical documentation surfaces, load `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` and use `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/code-docs-map.md`) to decide whether a `Documentation Update Plan` is required.
 
 The final report must include these governance outcomes when relevant:
 - `Editorial Update Plan`: required for public pages, README/public docs, public skill pages, FAQ, pricing/support copy, runtime public content, or blog/article/newsletter output. Use `no editorial impact` with a reason when there is no public-content consequence.
@@ -32,11 +32,11 @@ The final report must include these governance outcomes when relevant:
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -120 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Branding: !`head -80 BRANDING.md 2>/dev/null || echo "no BRANDING.md"`
-- Business: !`head -80 BUSINESS.md 2>/dev/null || echo "no BUSINESS.md"`
+- Branding: !`if [ -f shipflow_data/business/branding.md ]; then head -80 shipflow_data/business/branding.md; else head -80 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md)"; fi`
+- Business: !`if [ -f shipflow_data/business/business.md ]; then head -80 shipflow_data/business/business.md; else head -80 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md)"; fi`
 - Inspiration: !`head -60 INSPIRATION.md 2>/dev/null || echo "no INSPIRATION.md"`
 - Source: !`head -60 SOURCE.md 2>/dev/null || echo "no SOURCE.md"`
-- Guidelines: !`head -60 GUIDELINES.md 2>/dev/null || echo "no GUIDELINES.md"`
+- Guidelines: !`if [ -f shipflow_data/technical/guidelines.md ]; then head -60 shipflow_data/technical/guidelines.md; else head -60 GUIDELINES.md 2>/dev/null || echo "no shipflow_data/technical/guidelines.md (and no legacy GUIDELINES.md)"; fi`
 - Author identity: !`head -80 FOUNDER.md 2>/dev/null || head -80 AUTHOR.md 2>/dev/null || echo "no FOUNDER.md or AUTHOR.md"`
 - Content language: !`grep -ri "lang=" src/layouts/*.astro src/app/layout.tsx 2>/dev/null | head -3 || echo "detect from content"`
 - Existing content: !`find src/content content posts -name "*.md" -o -name "*.mdx" 2>/dev/null | head -20 || echo "no content dir found"`
@@ -69,7 +69,7 @@ Cette skill peut produire deux types de fichiers :
 
 Avant de planifier ou rédiger, lire le frontmatter complet de `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, `FOUNDER.md`/`AUTHOR.md` quand ils existent. Si le contenu dépend de ces contrats, reporter leurs versions :
 
-Si `docs/editorial/` existe, appliquer la section `Governance Corpora And Output Plans` avant de choisir une surface publique. Utiliser le claim register pour éviter les unsupported public claims, la page intent map pour respecter le rôle des pages publiques, l'Astro content schema policy avant de modifier du runtime content, et la blog/article surface policy avant de créer un article. Si aucune surface blog n'est déclarée, signaler `surface missing: blog` et ne pas inventer de chemin.
+Si `shipflow_data/editorial/` existe (fallback legacy `docs/editorial/`), appliquer la section `Governance Corpora And Output Plans` avant de choisir une surface publique. Utiliser le claim register pour éviter les unsupported public claims, la page intent map pour respecter le rôle des pages publiques, l'Astro content schema policy avant de modifier du runtime content, et la blog/article surface policy avant de créer un article. Si aucune surface blog n'est déclarée, signaler `surface missing: blog` et ne pas inventer de chemin.
 
 ```yaml
 depends_on:
@@ -245,7 +245,7 @@ Avant d'écrire, détecter où créer les fichiers :
 
 Utiliser le même répertoire que le contenu existant. Si plusieurs répertoires existent, utiliser **AskUserQuestion** pour confirmer. Respecter l'extension existante (`.md` ou `.mdx`).
 
-Si un projet ShipFlow déclare `docs/editorial/blog-and-article-surface-policy.md`, ce document prime sur les heuristiques génériques ci-dessus. Ne créer aucun blog/article sans route, collection, page intent, claim boundary et schema compatibles déclarés.
+Si un projet ShipFlow déclare `shipflow_data/editorial/blog-and-article-surface-policy.md` (fallback legacy `docs/editorial/blog-and-article-surface-policy.md`), ce document prime sur les heuristiques génériques ci-dessus. Ne créer aucun blog/article sans route, collection, page intent, claim boundary et schema compatibles déclarés.
 
 #### Frontmatter
 

@@ -42,7 +42,7 @@ Before resolving design lifecycle gates, load `$SHIPFLOW_ROOT/skills/references/
 - Project name: !`basename $(pwd)`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "not a git repo"`
-- Project design docs: !`ls BRANDING.md BUSINESS.md PRODUCT.md GUIDELINES.md 2>/dev/null || echo "no project design/business docs found"`
+- Project design docs: !`ls shipflow_data/business/branding.md shipflow_data/business/business.md shipflow_data/business/product.md shipflow_data/technical/guidelines.md BRANDING.md BUSINESS.md PRODUCT.md GUIDELINES.md 2>/dev/null || echo "no project design/business docs found"`
 - Available specs: !`find specs docs -maxdepth 2 -type f -name "*.md" 2>/dev/null | sort | head -80`
 - Framework hints: !`ls next.config.* nuxt.config.* astro.config.* svelte.config.* vite.config.* remix.config.* gatsby-config.* package.json 2>/dev/null || echo "no framework hints found"`
 - Token files: !`find . -type f \( -name "tokens*" -o -name "theme*" -o -name "design-tokens*" -o -name "_variables*" -o -name "global.css" -o -name "globals.css" \) 2>/dev/null | grep -v node_modules | head -30 || echo "none found"`

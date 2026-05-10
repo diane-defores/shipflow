@@ -174,7 +174,7 @@ Run all required checks for changed surfaces:
 
 ```bash
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
-python3 tools/shipflow_metadata_lint.py specs/<spec>.md README.md shipflow-spec-driven-workflow.md CONTENT_MAP.md docs/technical docs/editorial
+python3 tools/shipflow_metadata_lint.py specs/<spec>.md README.md shipflow-spec-driven-workflow.md shipflow_data/editorial/content-map.md shipflow_data/technical shipflow_data/editorial
 npm --prefix site run build
 ```
 
@@ -190,7 +190,7 @@ Verify current-user runtime links before verification:
 
 - Update `skills/sf-help/SKILL.md` when discoverability or lifecycle routing changed.
 - Update `README.md` and `shipflow-spec-driven-workflow.md` when official workflow doctrine changed.
-- Update `docs/technical/skill-runtime-and-lifecycle.md` and `docs/technical/code-docs-map.md` when mapped technical behavior changed.
+- Update `shipflow_data/technical/skill-runtime-and-lifecycle.md` and `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/*`) when mapped technical behavior changed.
 - Update `site/src/content/skills/<slug>.md` when the skill is public.
 
 Public policy:

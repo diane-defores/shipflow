@@ -29,9 +29,9 @@ Default to `report=user`: concise, findings-first, and focused on top issues, pr
 
 ## Governance Corpora And Output Plans
 
-Before scoring indexed public content, rewriting SEO copy, fixing public site metadata, or recommending article/blog output, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when `CONTENT_MAP.md` or `docs/editorial/` exists. Follow its load order for content surface routing, public page intent, claim register checks, editorial update gate, Astro runtime schema policy, and blog/article surface policy.
+Before scoring indexed public content, rewriting SEO copy, fixing public site metadata, or recommending article/blog output, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when `shipflow_data/editorial/content-map.md`, legacy `CONTENT_MAP.md`, `shipflow_data/editorial/`, or legacy `docs/editorial/` exists. Follow its load order for content surface routing, public page intent, claim register checks, editorial update gate, Astro runtime schema policy, and blog/article surface policy.
 
-Before changing code, runtime content, site files, content schemas, sitemap/robots/metadata infrastructure, skill contracts, public docs, README guidance, or mapped technical documentation surfaces, load `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` and use `docs/technical/code-docs-map.md` to decide whether a `Documentation Update Plan` is required.
+Before changing code, runtime content, site files, content schemas, sitemap/robots/metadata infrastructure, skill contracts, public docs, README guidance, or mapped technical documentation surfaces, load `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` and use `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/code-docs-map.md`) to decide whether a `Documentation Update Plan` is required.
 
 The final report must include these governance outcomes when relevant:
 - `Editorial Update Plan`: required for public pages, README/public docs, public skill pages, FAQ, pricing/support copy, runtime public content, blog/article/newsletter requests, indexed claims, or public SEO copy changes. Use `no editorial impact` with a reason when there is no public-content consequence.
@@ -42,8 +42,8 @@ The final report must include these governance outcomes when relevant:
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -100 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Business context: !`head -40 BUSINESS.md 2>/dev/null || echo "no BUSINESS.md — run /sf-init to generate"`
-- Business metadata: !`for f in BUSINESS.md BRANDING.md GUIDELINES.md; do if [ -f "$f" ]; then printf '%s: ' "$f"; sed -n '1,40p' "$f" | grep -E '^(metadata_schema_version|artifact_version|status|updated|confidence|next_review):' | tr '\n' ' '; printf '\n'; else echo "$f: missing"; fi; done`
+- Business context: !`if [ -f shipflow_data/business/business.md ]; then head -40 shipflow_data/business/business.md; else head -40 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md) — run /sf-init or /sf-docs update"; fi`
+- Business metadata: !`for pair in "shipflow_data/business/business.md BUSINESS.md" "shipflow_data/business/branding.md BRANDING.md" "shipflow_data/technical/guidelines.md GUIDELINES.md"; do set -- $pair; if [ -f "$1" ]; then f="$1"; elif [ -f "$2" ]; then f="$2"; else echo "$2: missing (no $1)"; continue; fi; printf '%s: ' "$f"; sed -n '1,40p' "$f" | grep -E '^(metadata_schema_version|artifact_version|status|updated|confidence|next_review):' | tr '\n' ' '; printf '\n'; done`
 - All pages: !`find src/pages src/app -name "*.astro" -o -name "*.tsx" -o -name "*.vue" 2>/dev/null | grep -v node_modules | sort`
 - Sitemap: !`cat public/sitemap*.xml 2>/dev/null | head -50 || echo "no sitemap found"`
 - Robots.txt: !`cat public/robots.txt 2>/dev/null || echo "no robots.txt"`
@@ -81,7 +81,7 @@ Si le fichier existe mais semble incomplet, signaler. Continuer l'audit dans tou
 
 Use ShipFlow versioning semantics: patch = editorial clarification without strategy change, minor = changed keyword/persona guidance inside the same market strategy, major = changed ICP, positioning, pricing promise, trust posture, market, or acquisition strategy.
 
-If `docs/editorial/` exists, apply `Governance Corpora And Output Plans` before scoring public content, indexed claims, public docs, public skill pages, FAQ/pricing/support copy, runtime content, or article/blog output.
+If `shipflow_data/editorial/` exists (fallback legacy `docs/editorial/`), apply `Governance Corpora And Output Plans` before scoring public content, indexed claims, public docs, public skill pages, FAQ/pricing/support copy, runtime content, or article/blog output.
 
 ---
 

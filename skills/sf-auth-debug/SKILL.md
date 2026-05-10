@@ -53,6 +53,7 @@ Le but n'est pas de "faire passer Playwright à tout prix".
 Le but est de localiser précisément le point de rupture et de produire un diagnostic exploitable par la suite du workflow.
 
 Références locales à charger selon le contexte:
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/specs/master-auth-playbook.md` comme playbook transverse obligatoire avant tout diagnostic auth multi-app ou tout bug auth non trivial. L'utiliser pour classifier la famille auth, les invariants, la preuve minimale, les stop conditions, et les checklists sécurité/env/redirect.
 - `references/clerk-tooling.md` pour choisir entre Clerk MCP, Clerk CLI et Playwright selon le type de bug
 - `references/clerk-testing.md` pour savoir comment tester Clerk avec Playwright, Testing Tokens, comptes de test, OTP de test, et limites dev/prod
 - `references/clerk.md` pour Clerk, Next.js, middleware, redirects, sessions, Google social connection via Clerk
@@ -84,6 +85,14 @@ Les snapshots de `TASKS.md` lus ici sont informatifs seulement.
 ### Step 1 — Consommer le contexte existant
 
 Ne pas repartir de zéro si le problème est déjà cadré.
+
+Charger d'abord `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/specs/master-auth-playbook.md` si le fichier existe, sauf si le bug est explicitement un micro-ajustement mono-fichier sans impact auth réel.
+Appliquer ce playbook comme garde-fou de diagnostic:
+- identifier la famille auth du projet (`Clerk + Convex`, `Flutter web + ClerkJS`, `Supabase`, `Firebase`, `Convex Auth`, `Google OAuth`, autre)
+- vérifier l'invariant "login + session restore + opération backend protégée + logout", pas seulement l'affichage d'une page login
+- utiliser ses stop conditions pour éviter de conclure sur local quand preview/prod est la vraie surface
+- reprendre ses règles de redaction: jamais de tokens, cookies, codes OAuth, secrets ou mots de passe dans le rapport
+- si le playbook est absent, signaler `Master auth playbook: missing` et continuer avec les références spécifiques au stack
 
 Priorité des sources:
 1. spec existante

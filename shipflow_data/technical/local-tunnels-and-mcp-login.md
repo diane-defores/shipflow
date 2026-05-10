@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.3"
+artifact_version: "1.0.4"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-05"
+updated: "2026-05-10"
 status: reviewed
 source_skill: sf-start
 scope: local-tunnels-and-mcp-login
@@ -25,6 +25,7 @@ supersedes: []
 evidence:
   - "local/README.md and function inventory for local scripts."
   - "Blacksmith OAuth callback tunnel added for remote CLI auth."
+  - "Blacksmith SSH Access distinction documented as separate from OAuth callback tunneling."
   - "Managed tunnel detection accepts SSH targets before or after -L in process args."
   - "Local menu headers refreshed to match server ShipFlow DevServer treatment."
 next_review: "2026-06-01"
@@ -36,6 +37,8 @@ next_step: "/sf-docs technical audit local"
 ## Purpose
 
 This doc covers the local tools that connect a workstation to a remote ShipFlow server: app tunnels, saved SSH connection state, remote PM2 and Flutter Web `tmux` port discovery, `shipflow-mcp-login` for remote Codex MCP OAuth callbacks, and `shipflow-blacksmith-login` for remote Blacksmith CLI OAuth callbacks.
+
+Blacksmith SSH Access is intentionally separate from these OAuth callback tunnels. It connects a local terminal directly to an ephemeral Blacksmith runner for a live GitHub Actions job; it does not use `shipflow-blacksmith-login` and does not require a ShipFlow server install.
 
 ## Owned Files
 
@@ -102,6 +105,9 @@ shipflow-blacksmith-login
 - OAuth tokens remain owned by Codex and the provider; ShipFlow only routes the callback.
 - Blacksmith auth tokens remain owned by Blacksmith CLI on the remote server;
   ShipFlow only checks credentials-file presence.
+- Blacksmith SSH Access is not an OAuth tunnel. It is an organization-level
+  Blacksmith feature that relies on the triggering user's GitHub SSH keys and a
+  per-job SSH command from the `Setup runner` step.
 - Saved connection state is shared by app tunnels, MCP login, and Blacksmith login.
 - Remote SSH helper calls run in batch mode so menu scans fail visibly instead of blocking on hidden SSH prompts.
 - The startup session scan is operator feedback only; set `SHIPFLOW_NO_ANIMATION=1` to disable the animated TTY loader.

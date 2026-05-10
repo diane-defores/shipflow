@@ -50,7 +50,7 @@ Use the shared skeleton for intake, work item resolution, readiness, model/topol
 - Local tasks: !`head -80 TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Audit log: !`tail -80 AUDIT_LOG.md 2>/dev/null || tail -80 ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md 2>/dev/null || echo "No AUDIT_LOG.md"`
 - Active specs: !`find specs -maxdepth 1 -type f -name "*.md" 2>/dev/null | sort | head -60 || echo "No specs directory"`
-- Docs governance: !`ls -1 AGENT.md AGENTS.md CLAUDE.md CONTEXT.md CONTENT_MAP.md docs/technical/code-docs-map.md docs/editorial/claim-register.md SECURITY.md .env.example 2>/dev/null || echo "none"`
+- Docs governance: !`found=0; for f in AGENT.md AGENTS.md CLAUDE.md shipflow_data/technical/context.md shipflow_data/editorial/content-map.md shipflow_data/technical/code-docs-map.md shipflow_data/editorial/claim-register.md CONTEXT.md CONTENT_MAP.md docs/technical/code-docs-map.md docs/editorial/claim-register.md SECURITY.md .env.example; do if [ -e "$f" ]; then echo "$f"; found=1; fi; done; [ "$found" = 1 ] || echo "none"`
 
 ## Mission
 

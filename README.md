@@ -28,8 +28,8 @@ linked_systems:
   - skills/shipflow/SKILL.md
   - skills/references/question-contract.md
   - site/src/content/skills/shipflow.md
-  - docs/technical
-  - docs/editorial
+  - shipflow_data/technical
+  - shipflow_data/editorial
 depends_on: []
 supersedes: []
 evidence:
@@ -88,22 +88,24 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 
 ## Core Docs
 
+- Note: in this repository, ShipFlow-owned governance and workflow docs are in `shipflow_data/` by default. Only compatibility entrypoints remain at root (`AGENT.md`, `AGENTS.md`, `CLAUDE.md`).
+
 - [AGENT.md](./AGENT.md) — agent entrypoint: where to look first depending on the task
-- [CONTEXT.md](./CONTEXT.md) — compact operational map of the project, hotspots, invariants, and edit routing
-- [CONTEXT-FUNCTION-TREE.md](./CONTEXT-FUNCTION-TREE.md) — grouped function tree for the main shell scripts
-- [CONTENT_MAP.md](./CONTENT_MAP.md) — editorial map for blog, docs, landing pages, semantic clusters, and repurposing destinations
-- [docs/editorial/README.md](./docs/editorial/README.md) — content governance layer for public content, claims, page intent, and Astro content schema boundaries
-- [docs/technical/README.md](./docs/technical/README.md) — internal technical documentation layer for code-proximate subsystem docs
-- [docs/technical/code-docs-map.md](./docs/technical/code-docs-map.md) — map from code paths to primary docs, validations, and documentation update triggers
+- [shipflow_data/technical/context.md](./shipflow_data/technical/context.md) — compact operational map of the project, hotspots, invariants, and edit routing
+- [shipflow_data/technical/context-function-tree.md](./shipflow_data/technical/context-function-tree.md) — grouped function tree for the main shell scripts
+- [shipflow_data/editorial/content-map.md](./shipflow_data/editorial/content-map.md) — editorial map for blog, docs, landing pages, semantic clusters, and repurposing destinations
+- [shipflow_data/editorial/README.md](./shipflow_data/editorial/README.md) — content governance layer for public content, claims, page intent, and Astro content schema boundaries
+- [shipflow_data/technical/README.md](./shipflow_data/technical/README.md) — internal technical documentation layer for code-proximate subsystem docs
+- [shipflow_data/technical/code-docs-map.md](./shipflow_data/technical/code-docs-map.md) — map from code paths to primary docs, validations, and documentation update triggers
 - [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
 - [skills/references/master-delegation-semantics.md](./skills/references/master-delegation-semantics.md) — shared execution-topology doctrine for master/orchestrator skills
 - [skills/references/master-workflow-lifecycle.md](./skills/references/master-workflow-lifecycle.md) — shared lifecycle skeleton and work item model for master/orchestrator skills
-- [BUSINESS.md](./BUSINESS.md) — target audience, value proposition, business assumptions, and market framing
-- [PRODUCT.md](./PRODUCT.md) — product scope, workflows, outcomes, and non-goals
-- [BRANDING.md](./BRANDING.md) — tone, trust posture, vocabulary, and claims boundaries
-- [GTM.md](./GTM.md) — public promise, acquisition path, proof points, objections, and funnel assumptions
-- [ARCHITECTURE.md](./ARCHITECTURE.md) — system structure, boundaries, flows, and technical invariants
-- [GUIDELINES.md](./GUIDELINES.md) — technical rules, preferred patterns, anti-patterns, and validation expectations
+- [shipflow_data/business/business.md](./shipflow_data/business/business.md) — target audience, value proposition, business assumptions, and market framing
+- [shipflow_data/business/product.md](./shipflow_data/business/product.md) — product scope, workflows, outcomes, and non-goals
+- [shipflow_data/business/branding.md](./shipflow_data/business/branding.md) — tone, trust posture, vocabulary, and claims boundaries
+- [shipflow_data/business/gtm.md](./shipflow_data/business/gtm.md) — public promise, acquisition path, proof points, objections, and funnel assumptions
+- [shipflow_data/technical/architecture.md](./shipflow_data/technical/architecture.md) — system structure, boundaries, flows, and technical invariants
+- [shipflow_data/technical/guidelines.md](./shipflow_data/technical/guidelines.md) — technical rules, preferred patterns, anti-patterns, and validation expectations
 - [CLAUDE.md](./CLAUDE.md) — repository constraints and coding guidance
 - [shipflow-spec-driven-workflow.md](./shipflow-spec-driven-workflow.md) — ShipFlow V3 workflow for `sf-explore`, `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, and `sf-end`
 - [shipflow-metadata-migration-guide.md](./shipflow-metadata-migration-guide.md) — how to adopt ShipFlow metadata and versioning in an existing project
@@ -229,11 +231,12 @@ setup`. This is a guided official-first helper for Blacksmith: it checks whether
 the `blacksmith` CLI is installed, detects a local credentials file without
 reading its contents, shows `T'inquiète, c'est bon, t'es connecté.` when the
 local setup is ready, and prints the exact official command to run only when an
-interactive install or Testbox init step is still required. For auth on a remote
-server, it routes the operator to the local `urls` menu's Blacksmith login
-tunnel instead of suggesting `blacksmith auth login` directly over SSH.
-ShipFlow does not install the unofficial Blacksmith MCP by default and does not
-patch project workflows automatically from this menu.
+interactive install or Testbox init step is still required. It also has an SSH
+Access guide for debugging live Blacksmith runners after a failed build. For
+auth on a remote server, it routes the operator to the local `urls` menu's
+Blacksmith login tunnel instead of suggesting `blacksmith auth login` directly
+over SSH. ShipFlow does not install the unofficial Blacksmith MCP by default and
+does not patch project workflows automatically from this menu.
 
 Notes:
 - `dataforseo` is configured but disabled by default in Codex unless
@@ -451,10 +454,10 @@ ShipFlow keeps bug records split on purpose:
 Technical documentation layer:
 
 ```text
-docs/technical/code-docs-map.md -> primary subsystem doc -> Documentation Update Plan
+shipflow_data/technical/code-docs-map.md -> primary subsystem doc -> Documentation Update Plan
 ```
 
-Use this layer for code-changing work. It keeps technical details close to the code without bloating `AGENT.md`, `CONTEXT.md`, or public docs. `docs/technical/` is internal-only in v1.
+Use this layer for code-changing work. It keeps technical details close to the code without bloating `AGENT.md`, `shipflow_data/technical/context.md`, or public docs. `shipflow_data/technical/` is internal-only in v1.
 
 Governance corpus lifecycle:
 
@@ -462,7 +465,7 @@ Governance corpus lifecycle:
 sf-init -> sf-docs -> sf-build
 ```
 
-`sf-init` bootstraps `docs/technical/`, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, and applicable `docs/editorial/` files, or reports why a layer is skipped or blocked. `sf-docs` owns first-run bootstrap, adoption, update, and audit through `/sf-docs technical`, `/sf-docs editorial`, and `/sf-docs update`. `sf-build` consumes those project-local corpora as gates before implementation, closure, and ship; missing governance routes back to `sf-docs` instead of requiring the operator to rerun ShipFlow's shipped governance specs per project.
+`sf-init` bootstraps `shipflow_data/technical/`, `shipflow_data/technical/code-docs-map.md`, `shipflow_data/editorial/content-map.md`, and applicable `shipflow_data/editorial/` files, or reports why a layer is skipped or blocked. `sf-docs` owns first-run bootstrap, adoption, update, and audit through `/sf-docs technical`, `/sf-docs editorial`, and `/sf-docs update`. `sf-build` consumes those project-local corpora as gates before implementation, closure, and ship; missing governance routes back to `sf-docs` instead of requiring the operator to rerun ShipFlow's shipped governance specs per project.
 
 For expert manual control, the default non-trivial workflow is:
 
@@ -498,37 +501,36 @@ The key rule is simple:
 ShipFlow now uses a dedicated context layer for fast agent onboarding.
 
 - `AGENT.md` is the routing file: it tells an agent where to look first.
-- `CONTEXT.md` is the operational map: entry points, core flows, hotspots, invariants, and where to edit what.
-- `CONTEXT-FUNCTION-TREE.md` is a specialized companion for large procedural files such as `lib.sh`.
-- `CONTENT_MAP.md` is the editorial map: content surfaces, page roles, semantic clusters, pillar pages, and cross-surface update rules.
-- `docs/editorial/` is the editorial coherence layer: public content surfaces, claims, page intent, update gates, and Astro content schema policy.
+- `shipflow_data/technical/context.md` is the operational map: entry points, core flows, hotspots, invariants, and where to edit what.
+- `shipflow_data/technical/context-function-tree.md` is a specialized companion for large procedural files such as `lib.sh`.
+- `shipflow_data/editorial/content-map.md` is the editorial map: content surfaces, page roles, semantic clusters, pillar pages, and cross-surface update rules.
+- `shipflow_data/editorial/` is the editorial coherence layer: public content surfaces, claims, page intent, update gates, and Astro content schema policy.
 
 This split is intentional. `CLAUDE.md` should hold constraints and critical rules, not the full project map. The context files exist to reduce repetitive discovery work at the start of a fresh thread without pretending to replace the code.
 
 ShipFlow also separates decision contracts by role:
 
-- `BUSINESS.md` for who the product is for and why it matters
-- `PRODUCT.md` for what the product should do and not do
-- `BRANDING.md` for how the product should sound
-- `GTM.md` for how the product should be presented and distributed
-- `CONTENT_MAP.md` for where content lives and how ideas should move between blog, docs, landing pages, FAQ, and semantic clusters
-- `docs/editorial/` for content governance: public content impact, public claims, page intent, and runtime content schema boundaries
-- `ARCHITECTURE.md` for how the system is organized
-- `GUIDELINES.md` for how contributors should work inside it
+- `shipflow_data/business/business.md` for who the product is for and why it matters
+- `shipflow_data/business/product.md` for what the product should do and not do
+- `shipflow_data/business/branding.md` for how the product should sound
+- `shipflow_data/business/gtm.md` for how the product should be presented and distributed
+- `shipflow_data/editorial/content-map.md` for where content lives and how ideas should move between blog, docs, landing pages, FAQ, and semantic clusters
+- `shipflow_data/editorial/` for content governance: public content impact, public claims, page intent, and runtime content schema boundaries
+- `shipflow_data/technical/architecture.md` for how the system is organized
+- `shipflow_data/technical/guidelines.md` for how contributors should work inside it
 
 ## Documentation Frame
 
 The current documentation structure is already solid on four axes:
 
-- technical: `CLAUDE.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `CONTENT_MAP.md`, `GUIDELINES.md`, and `specs/`
+- technical: `CLAUDE.md`, `shipflow_data/technical/context.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/technical/guidelines.md`, and `shipflow_data/workflow/specs/`
 - workflow: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-docs`, and versioned metadata
-- product/business: `BUSINESS.md`, `BRANDING.md`, versioned docs, and `depends_on` relationships
-- editorial coherence: `CONTENT_MAP.md`, `docs/editorial/`, public content, claims, page intent, and Astro content schema boundaries
+- product/business: `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, versioned docs, and `depends_on` relationships
+- editorial coherence: `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/`, public content, claims, page intent, and Astro content schema boundaries
 
 The recent step forward is structural clarity:
 
-- a clear agent entrypoint with `AGENT.md`
-- a dedicated context layer with `CONTEXT.md` and specialized context companions
+- a dedicated context layer with `shipflow_data/technical/context.md` and specialized context companions
 - a stronger metadata and lint doctrine with artifact versioning plus `tools/shipflow_metadata_lint.py`
 - a public-content governance layer that keeps README, docs overview, FAQ, public skill pages, pricing copy, and claims aligned with product truth
 - a cleaner separation between active docs, trackers, and runtime content
@@ -580,7 +582,7 @@ security_impact: unknown
 docs_impact: yes
 linked_systems: []
 depends_on:
-  - artifact: BUSINESS.md
+  - artifact: shipflow_data/business/business.md
     artifact_version: "1.0.0"
     required_status: reviewed
 evidence: []
@@ -615,24 +617,24 @@ ShipFlow-owned files are resolved from `${SHIPFLOW_ROOT:-$HOME/shipflow}` even w
 
 For legacy projects, use the migration playbook in [`shipflow-metadata-migration-guide.md`](./shipflow-metadata-migration-guide.md) before normalizing old docs.
 
-By default it checks `specs/`, `docs/`, `AGENT.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `CONTENT_MAP.md`, `BUSINESS.md`, `BRANDING.md`, `PRODUCT.md`, `ARCHITECTURE.md`, `GTM.md`, and `GUIDELINES.md`. Pass explicit files or folders to validate a narrower scope.
+By default it checks `shipflow_data/workflow/specs/`, `shipflow_data/`, `AGENT.md`, `shipflow_data/technical/context.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/product.md`, `shipflow_data/technical/architecture.md`, `shipflow_data/business/gtm.md`, and `shipflow_data/technical/guidelines.md`. Pass explicit files or folders to validate a narrower scope.
 
-For internal ShipFlow files, this schema is mandatory for the active official artifact set. That set now includes `AGENT.md`, `CONTEXT.md`, promoted specialized context docs such as `CONTEXT-FUNCTION-TREE.md`, `CONTENT_MAP.md`, and the decision contracts `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `ARCHITECTURE.md`, and `GUIDELINES.md`. `CLAUDE.md` is supported as an optional active artifact when a project explicitly adopts it as the canonical repository guidance for Claude or multi-agent contributors. In that case, add ShipFlow frontmatter and include it explicitly in metadata checks. For legacy project adoption, the default migration scope is intentionally narrower: active context docs when they exist, active decision contracts when they exist, and `specs/*.md`. Historical ad hoc docs can stay out of scope until they are promoted into the active ShipFlow workflow.
+For internal ShipFlow files, this schema is mandatory for the active official artifact set. That set now includes `AGENT.md`, `shipflow_data/technical/context.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow_data/editorial/content-map.md`, and the decision contracts under `shipflow_data/business/`, `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, and `shipflow_data/business/gtm.md`. `CLAUDE.md` is supported as an optional active artifact when a project explicitly adopts it as the canonical repository guidance for Claude or multi-agent contributors. In that case, add ShipFlow frontmatter and include it explicitly in metadata checks. For legacy project adoption, the default migration scope is intentionally narrower: active context docs when they exist, active decision contracts when they exist, and `shipflow_data/workflow/specs/*.md`. Historical ad hoc docs can stay out of scope until they are promoted into the active ShipFlow workflow.
 
 Operational tracking files are intentionally excluded from the mandatory artifact schema: `TASKS.md`, `AUDIT_LOG.md`, and `PROJECTS.md` are trackers/registries, not decision contracts. Keep them fast to edit. If a task entry contains a durable decision, spec, or business rule, extract that durable content into a dedicated artifact with metadata instead of adding frontmatter to the tracker itself.
 
 Location rule:
 - `shipflow_data` is the control plane for shared tracking and registry files.
-- Each project repository is the canonical home for its own `BUSINESS.md`, `BRANDING.md`, `CONTENT_MAP.md`, `GUIDELINES.md`, specs, research, and decision records.
-- Do not duplicate or symlink project decision-contract documents into `shipflow_data` by default. `shipflow_data` may reference that the contracts exist, but should not host the canonical copy of per-project business or technical documentation.
+- In this project, canonical artifacts are stored under `shipflow_data/` in `technical/`, `business/`, `editorial/`, `workflow/`, and `archives/`.
+- For adopted project repos, keep the same canonical shape by policy.
 
 Application runtime content keeps the schema required by the application. Blog posts, Astro content collections, MDX pages, and app-rendered docs must keep their framework-compatible frontmatter. ShipFlow can enrich compatible fields, but it must not break the app parser.
 
 ### Business documentation is technical documentation
 
-ShipFlow treats `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, `CONTENT_MAP.md`, personas, pricing notes, positioning, and GTM documents as technical artifacts because they drive technical, product, and content-routing decisions.
+ShipFlow treats `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/technical/guidelines.md`, `shipflow_data/editorial/content-map.md`, personas, pricing notes, positioning, and GTM documents as technical artifacts because they drive technical, product, and content-routing decisions.
 
-If `BUSINESS.md` says the product serves solo founders, then copy, onboarding, pricing, feature scope, support, and prioritization should be evaluated against that audience. If `BRANDING.md` says trust and clarity are core values, then UI copy, error messages, claims, screenshots, and documentation must preserve that trust. If a pricing or positioning document is stale, a technically correct feature can still be strategically wrong.
+If `shipflow_data/business/business.md` says the product serves solo founders, then copy, onboarding, pricing, feature scope, support, and prioritization should be evaluated against that audience. If `shipflow_data/business/branding.md` says trust and clarity are core values, then UI copy, error messages, claims, screenshots, and documentation must preserve that trust. If a pricing or positioning document is stale, a technically correct feature can still be strategically wrong.
 
 Business documentation therefore needs the same discipline as code documentation:
 
@@ -651,7 +653,7 @@ ShipFlow uses two version fields:
 - `metadata_schema_version` tracks the shape of the ShipFlow metadata itself.
 - `artifact_version` tracks the decision content of the document.
 
-This matters when business or technical documentation changes. If a spec was written against `BUSINESS.md` version `1.0.0`, and the business document later moves to `1.1.0` because the target persona or pricing changed, the spec should be rechecked before implementation. Versioning makes drift visible instead of relying on memory.
+This matters when business or technical documentation changes. If a spec was written against `shipflow_data/business/business.md` version `1.0.0`, and the business document later moves to `1.1.0` because the target persona or pricing changed, the spec should be rechecked before implementation. Versioning makes drift visible instead of relying on memory.
 
 ### Proof over optimism
 
@@ -724,10 +726,15 @@ shipflow/
 ├── CHANGELOG.md
 ├── shipflow-spec-driven-workflow.md
 ├── ECOSYSTEM-AND-PORTS.md
+├── shipflow_data/
+│   ├── business/
+│   ├── editorial/
+│   ├── workflow/
+│   ├── technical/
+│   └── archives/
 ├── archive/
 ├── skills/
 ├── local/
-├── research/
 ├── tools/
 └── injectors/
 ```
@@ -741,7 +748,7 @@ shipflow/
 - `skills/` — ShipFlow skill library
 - `local/` — local machine tunnel scripts and setup docs
 - `tools/codebase-mcp/` — optional MCP server for token-efficient codebase work
-- `research/` — research notes and evaluations
+- `shipflow_data/workflow/research/` — research notes and evaluations
 - `archive/` — historical plans, reports, and obsolete documents kept for reference
 
 ## Key Features
