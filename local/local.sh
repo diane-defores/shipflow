@@ -754,7 +754,8 @@ run_blacksmith_login_menu() {
 prompt_turso_project_dir() {
     local project_dir=""
 
-    prompt_inline "${YELLOW}Project-dir Flox distant si Turso n'est pas global (Entrée pour aucun):${NC} "
+    # This helper is called through command substitution; prompts must not go to stdout.
+    printf "%b" "${YELLOW}Project-dir Flox distant si Turso n'est pas global (Entrée pour aucun):${NC} " >&2
     read -r project_dir
     project_dir="$(trim_input "$project_dir")"
     printf '%s' "$project_dir"
