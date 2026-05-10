@@ -42,6 +42,7 @@ Ce fichier est le point d'entree rapide pour un agent qui arrive dans le repo. I
 - Si la tache touche le setup serveur ou Codex, lire `install.sh`, `config.sh`, puis `CONTEXT.md`.
 - Si la tache touche les tunnels SSH locaux, lire `local/local.sh`, `local/dev-tunnel.sh`, puis `CONTEXT-FUNCTION-TREE.md`.
 - Si la tache touche les skills, lire `README.md`, `shipflow-spec-driven-workflow.md`, puis les `skills/*/SKILL.md` concernes.
+- Si la tache touche Blacksmith, runners CI, Testboxes, logs CI, APK/AAB Android, SSH Access runner ou debugging de build GitHub Actions, lire `shipflow_data/technical/blacksmith.md`; pour une verification deploy/logs, router via `skills/sf-prod/SKILL.md`, et pour une release complete via `skills/sf-deploy/SKILL.md`.
 - Si la tache touche la metadata des docs, lire `$SHIPFLOW_ROOT/shipflow-metadata-migration-guide.md`, `$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py`, puis `$SHIPFLOW_ROOT/skills/sf-docs/SKILL.md`.
 - Si la tache touche un code area mappe, lire `docs/technical/code-docs-map.md`, puis le doc primaire dans `docs/technical/`. `AGENT.md` reste canonique; `AGENTS.md` ne doit etre qu'un symlink de compatibilite vers `AGENT.md`.
 - Si la tache touche contenu, repurposing, blog, docs publiques, landing pages ou cocons semantiques, lire `CONTENT_MAP.md`, puis `skills/sf-repurpose/SKILL.md` si la demande transforme une source en contenu.

@@ -68,6 +68,7 @@ Orchestrate existing skills; do not duplicate their internals.
 - `sf-check` owns typecheck, lint, build, tests, and optional repair.
 - `sf-ship` owns staging, commit, push, and pre-ship bug risk.
 - `sf-prod` owns deployment discovery, provider state, build logs, runtime logs, and live health.
+- `sf-prod` owns Blacksmith Run History, Logs, Metrics, and SSH Access escalation when the release uses GitHub Actions on Blacksmith runners.
 - `sf-browser` owns non-auth page-level browser proof after the deployment URL is known.
 - `sf-auth-debug` owns login, OAuth, cookies, sessions, callbacks, tenants, and protected-route proof.
 - `sf-test` owns guided manual QA, durable `TEST_LOG.md`, bug files under `bugs/*.md`, and optional `BUGS.md` triage updates.
@@ -157,6 +158,8 @@ Run or route through:
 ```
 
 For Vercel projects, `sf-prod` should use Vercel MCP as the primary deployment truth source when available. Do not continue to browser or manual proof until the matching deployment URL is known and ready, unless the report explicitly marks deployment proof as partial.
+
+For projects whose deploy, APK, or release artifact is built through GitHub Actions on Blacksmith runners, `sf-deploy` must route Blacksmith log and SSH debugging to `sf-prod`; it should not duplicate Blacksmith internals. If `sf-prod` reports that Blacksmith SSH inspection is required but unavailable because the job already ended, keep the release verdict partial or blocked and recommend a failure-only keepalive step or Blacksmith Monitor VM retention.
 
 If `sf-prod` finds a failed build, runtime error, pending deployment timeout, missing URL, or logs that require repair, stop and route to the appropriate repair path:
 

@@ -36,6 +36,8 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 Vérifier que le dernier déploiement en production a réussi. Trois checks : status du deploy, health check de l'URL, et accès aux logs si erreur.
 Le but est de donner un signal de confiance honnête sur la prod, pas un faux "tout va bien" basé sur un seul `200 OK`.
 
+Si le déploiement ou le build passe par GitHub Actions sur Blacksmith runners, lire aussi `${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/technical/blacksmith.md` avant de conclure sur les logs, les métriques, le sizing runner, ou l'accès SSH.
+
 Le registry `PROJECTS.md` est en lecture seule dans cette skill.
 `sf-prod` ne doit jamais modifier `TASKS.md`, `AUDIT_LOG.md` ou `PROJECTS.md`.
 
@@ -223,6 +225,65 @@ Même en cas de succès, remonter les warnings qui indiquent une fragilité prod
 
 Si les logs ou le contexte révèlent une hypothèse non prouvée sur la sécurité ou la cohérence du déploiement, l'écrire dans le rapport au lieu de laisser entendre que la prod est entièrement sûre.
 
+### Step 4.5 — Blacksmith Logs, Metrics, And SSH Access
+
+Utiliser cette étape quand le build ou déploiement cible tourne sur un runner `blacksmith-*`, quand le workflow produit un APK/AAB, ou quand les logs GitHub/Vercel ne suffisent pas à expliquer l'échec.
+
+**Source de vérité pratique :**
+
+1. Blacksmith Run History pour retrouver le job exact.
+2. Blacksmith Logs pour chercher dans les logs par `repo`, `workflow`, `branch`, `job_name`, `step_name`, et `level`.
+3. Blacksmith Metrics pour vérifier CPU/RAM/network avant de recommander un runner plus gros.
+4. Blacksmith SSH Access uniquement si le job est encore vivant, retenu par un monitor, ou gardé par un step `sleep`.
+
+**Recherches utiles :**
+
+```text
+repo:<repo> branch:<branch> level:error,warn
+repo:<repo> job_name:"<android job>" level:error,warn
+repo:<repo> step_name:"Build debug APK" "Execution failed"
+repo:<repo> "OutOfMemory"
+repo:<repo> "SIGKILL"
+repo:<repo> "NDK"
+repo:<repo> "tauri android build"
+```
+
+**SSH Access :**
+
+- L'accès SSH Blacksmith doit avoir été activé côté organisation.
+- Seul l'utilisateur GitHub qui a déclenché le job peut se connecter au runner.
+- La commande SSH est affichée dans le step `Setup runner` ou dans l'alerte Monitor avec VM retention.
+- Si la commande SSH n'est pas disponible dans le contexte agent, demander à l'utilisateur de la coller ou fournir le chemin précis pour la retrouver.
+- Utiliser SSH pour inspecter l'état du runner, pas pour relancer une release ou modifier la prod.
+
+Commandes de diagnostic autorisées en SSH, à résumer sans secrets :
+
+```bash
+pwd
+ls -la src-tauri/gen/android/app/build/outputs || true
+find src-tauri/gen/android/app/build/outputs -type f | sort || true
+ls "$ANDROID_HOME/ndk" || true
+du -sh ~/.gradle ~/.cargo ~/.pnpm-store 2>/dev/null || true
+df -h
+ps aux | sort -nrk 3 | head -20
+```
+
+Ne jamais exécuter `env | sort` dans un rapport utilisateur sans redaction stricte. Si des variables d'environnement sont inspectées en SSH, ne rapporter que les noms nécessaires et jamais les valeurs.
+
+**Si le job se termine trop vite pour SSH :**
+
+Recommander un step de debug conditionnel dans le workflow concerné :
+
+```yaml
+- name: Keep runner available after failure
+  if: failure()
+  run: |
+    echo "Failure detected; use the Blacksmith setup step SSH command."
+    sleep 1800
+```
+
+Ne pas recommander ce step sur les succès. Signaler le coût runner quand la VM est retenue.
+
 ### Step 5 — Rapport
 
 Si tout est OK :
@@ -270,6 +331,7 @@ Dans tous les cas, ajouter une ligne `Hypothèses / risques restants` dès qu'un
 - Toujours fournir le lien vers les logs — l'utilisateur peut vouloir regarder lui-même
 - Ne jamais conclure sur un échec avec des logs tronqués: d'abord collecter/paginer, ensuite filtrer.
 - En cas de Vercel, privilégier `get_deployment_build_logs` + filtrage local; dashboard web en fallback, pas en source primaire.
+- En cas de GitHub Actions sur Blacksmith, utiliser Run History, Logs, Metrics et SSH Access comme escalade de debug quand les logs standards ne suffisent pas; l'accès SSH ne remplace pas les logs dans le rapport final.
 - En mode `vercel-preview-push`, Vercel MCP est la source primaire pour attendre la fin du déploiement; les GitHub commit statuses ne suffisent pas à autoriser le test preview.
 - Si pas de CI/CD détecté (pas de statuses sur le commit), proposer un simple curl + signaler que le projet n'a pas de deploy automatique
 - Compatible Vercel, Netlify, et tout service qui publie des GitHub commit statuses

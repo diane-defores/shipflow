@@ -136,6 +136,13 @@ même mécanisme réseau de tunnel callback. Il vérifie que le CLI Blacksmith
 existe sur le serveur, détecte seulement la présence de
 `~/.blacksmith/credentials`, et ne lit jamais le token.
 
+Blacksmith SSH Access est séparé de ce tunnel OAuth. Il sert à se connecter à
+un runner Blacksmith pendant qu'un job GitHub Actions est encore actif ou retenu
+par VM retention. La commande SSH se récupère dans le step `Setup runner` du
+job, et seul l'utilisateur GitHub qui a déclenché le job peut se connecter.
+L'option locale `Host *.vm.blacksmith.sh` dans `~/.ssh/config` est seulement un
+confort pour les hôtes éphémères; elle n'installe pas le CLI Blacksmith.
+
 Résumé mental:
 - Codex distant lance le login.
 - Le navigateur local reçoit l'autorisation.

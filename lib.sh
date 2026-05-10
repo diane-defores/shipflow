@@ -8525,6 +8525,7 @@ blacksmith_print_status() {
 
     echo ""
     echo -e "${BLUE}GitHub App:${NC} se configure dans le navigateur sur ${CYAN}https://app.blacksmith.sh${NC}"
+    echo -e "${BLUE}SSH Access:${NC} réglage organisation Blacksmith; commande SSH affichée dans le step ${CYAN}Setup runner${NC} quand le job tourne."
     echo -e "${YELLOW}ShipFlow ne lit pas et ne stocke pas le token Blacksmith.${NC}"
 }
 
@@ -8539,7 +8540,9 @@ blacksmith_show_setup_checklist() {
     echo -e "     ${GREEN}urls${NC} ${YELLOW}→${NC} ${GREEN}Login Blacksmith (distant)${NC}"
     echo -e "  ${GREEN}3.${NC} Installer la GitHub App Blacksmith sur les repos concernés:"
     echo -e "     ${CYAN}https://app.blacksmith.sh${NC}"
-    echo -e "  ${GREEN}4.${NC} Dans chaque repo projet, utiliser le menu Blacksmith > Testbox projet."
+    echo -e "  ${GREEN}4.${NC} Activer SSH Access côté organisation si tu veux debugger les runners:"
+    echo -e "     ${CYAN}https://app.blacksmith.sh${NC} ${YELLOW}→${NC} ${CYAN}Settings > Features > SSH Access${NC}"
+    echo -e "  ${GREEN}5.${NC} Dans chaque repo projet, utiliser le menu Blacksmith > Testbox projet si besoin."
     echo ""
     echo -e "${BLUE}Note:${NC} le MCP Blacksmith non officiel n'est pas installé par défaut."
 }
@@ -8634,13 +8637,56 @@ blacksmith_show_runner_tags() {
     echo -e "${BLUE}ShipFlow guide la décision, mais ne patche pas les workflows automatiquement dans cette version.${NC}"
 }
 
+blacksmith_show_ssh_access_guide() {
+    ui_screen_header "Blacksmith SSH Access"
+    blacksmith_print_status
+    echo ""
+    echo -e "${CYAN}Quand l'utiliser${NC}"
+    echo -e "  ${GREEN}✓${NC} Build APK/AAB ou CI Blacksmith en échec avec logs insuffisants."
+    echo -e "  ${GREEN}✓${NC} Besoin d'inspecter outputs, Gradle, Android SDK/NDK, disque, CPU/RAM."
+    echo -e "  ${YELLOW}•${NC} Pas nécessaire pour un simple typecheck/lint dont les logs sont clairs."
+    echo ""
+    echo -e "${CYAN}Prérequis${NC}"
+    echo -e "  ${GREEN}1.${NC} SSH Access activé par un admin dans Blacksmith ${YELLOW}→${NC} Settings > Features."
+    echo -e "  ${GREEN}2.${NC} Ta clé SSH est ajoutée à ton compte GitHub."
+    echo -e "  ${GREEN}3.${NC} Tu es l'utilisateur GitHub qui a déclenché le job."
+    echo -e "  ${GREEN}4.${NC} Le job est encore vivant, ou retenu par Monitor VM retention / keepalive."
+    echo ""
+    echo -e "${CYAN}Connexion${NC}"
+    echo -e "  ${GREEN}1.${NC} Ouvre le run GitHub Actions / Blacksmith."
+    echo -e "  ${GREEN}2.${NC} Ouvre le step ${CYAN}Setup runner${NC}."
+    echo -e "  ${GREEN}3.${NC} Copie la commande complète ${GREEN}ssh -p ... runner@...vm.blacksmith.sh${NC}."
+    echo -e "  ${GREEN}4.${NC} Colle-la dans ton terminal local."
+    echo -e "  ${YELLOW}Le port peut changer selon le job; ne suppose jamais ${GREEN}-p 64000${YELLOW}.${NC}"
+    echo ""
+    echo -e "${CYAN}Option confort dans ~/.ssh/config local${NC}"
+    echo -e "  ${GREEN}Host *.vm.blacksmith.sh${NC}"
+    echo -e "  ${GREEN}    StrictHostKeyChecking no${NC}"
+    echo -e "  ${GREEN}    UserKnownHostsFile /dev/null${NC}"
+    echo ""
+    echo -e "${CYAN}Keepalive workflow en cas d'échec${NC}"
+    echo -e "  ${BLUE}Place ce step à la fin du job à debugger, après les steps de build/upload.${NC}"
+    echo -e "  ${BLUE}Il ne tourne qu'après un échec et garde la VM SSH ouverte 30 minutes.${NC}"
+    echo -e "  ${GREEN}- name: Keep runner available after failure${NC}"
+    echo -e "  ${GREEN}  if: failure()${NC}"
+    echo -e "  ${GREEN}  run: |${NC}"
+    echo -e "  ${GREEN}    echo \"Failure detected; use the Blacksmith setup step SSH command.\"${NC}"
+    echo -e "  ${GREEN}    sleep 1800${NC}"
+    echo -e "  ${YELLOW}Sans keepalive ou VM retention, Blacksmith supprime le host dès la fin du job.${NC}"
+    echo ""
+    echo -e "${BLUE}Agents:${NC} ${GREEN}sf-prod${NC} possède le debug Logs/Run History/Metrics/SSH; ${GREEN}sf-deploy${NC} doit router vers sf-prod."
+    echo -e "${YELLOW}Ne jamais copier de secrets, tokens, cookies ou valeurs d'env depuis le runner dans un rapport.${NC}"
+}
+
 blacksmith_show_security_note() {
     ui_screen_header "Blacksmith Security"
     echo -e "${CYAN}Politique ShipFlow${NC}"
     echo -e "  ${GREEN}✓${NC} Utiliser l'intégration officielle Blacksmith: GitHub App, runners, CLI Testbox."
     echo -e "  ${GREEN}✓${NC} Laisser Blacksmith et GitHub gérer l'auth."
     echo -e "  ${GREEN}✓${NC} Vérifier seulement la présence locale du CLI et du fichier credentials."
+    echo -e "  ${GREEN}✓${NC} Utiliser SSH Access seulement pour inspecter un runner live ou retenu."
     echo -e "  ${YELLOW}•${NC} Ne pas lire, afficher, copier ou stocker le contenu du token."
+    echo -e "  ${YELLOW}•${NC} Ne pas copier les valeurs de variables d'environnement depuis un runner SSH."
     echo -e "  ${YELLOW}•${NC} Ne pas installer le MCP Blacksmith non officiel par défaut."
     echo ""
     echo -e "${BLUE}Le statut connecté repose sur la présence du fichier credentials Blacksmith côté serveur.${NC}"
@@ -8659,6 +8705,7 @@ action_blacksmith_setup() {
             "Setup checklist" \
             "Testbox projet" \
             "Runner tags / Android release" \
+            "SSH Access / debug runner" \
             "Sécurité / auth" \
             "Back" | ui_choose "Blacksmith:") || {
             ui_return_back
@@ -8680,6 +8727,9 @@ action_blacksmith_setup() {
                 ;;
             "Runner tags / Android release")
                 blacksmith_show_runner_tags
+                ;;
+            "SSH Access / debug runner")
+                blacksmith_show_ssh_access_guide
                 ;;
             "Sécurité / auth")
                 blacksmith_show_security_note
