@@ -29,7 +29,7 @@ evidence:
   - "Managed tunnel detection accepts SSH targets before or after -L in process args."
   - "Local menu headers refreshed to match server ShipFlow DevServer treatment."
   - "Turso SSH auth transfer helper added for remote CLI schema proof."
-  - "Turso remote login helper added with callback tunnel/headless fallback."
+  - "Turso remote login helper added with callback tunnel/headless fallback and guided local menu."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit local"
 ---
@@ -62,6 +62,7 @@ Blacksmith SSH Access is intentionally separate from these OAuth callback tunnel
 - `shipflow-mcp-login <provider|all>`: launches remote Codex MCP login and opens a temporary callback tunnel.
 - `shipflow-blacksmith-login`: launches remote `blacksmith auth login` and opens a temporary callback tunnel.
 - `shipflow-turso-login`: launches remote `turso auth login`, opens a callback tunnel if needed, or follows headless auth.
+- Local `urls` menu entry `Turso - Login et checks distants`: guided wrapper for login, ContentFlow checks, and fallback session copy.
 - `shipflow-turso-ssh [db-name]`: copies local Turso CLI config to the remote server, verifies `turso auth whoami`, and optionally checks ContentFlow tables.
 - `local/dev-tunnel.sh`: direct tunnel helper for scripted or simplified flows.
 

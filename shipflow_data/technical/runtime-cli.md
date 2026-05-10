@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.14"
+artifact_version: "1.0.15"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-10"
@@ -42,6 +42,7 @@ evidence:
   - "Subcommand screen headers now route through a shared modular header helper."
   - "Nested menus and search selectors now preserve the ShipFlow DevServer title treatment."
   - "GitHub CLI authentication screen added for deploy-from-GitHub readiness."
+  - "Turso guided setup added under Agents with local tunnel login routing and schema-check commands."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit runtime-cli"
 ---
@@ -112,6 +113,10 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   terminal commands instead of running interactive install/auth/project mutation
   steps automatically, and routes remote Blacksmith auth through the local
   tunnel menu.
+- `lib.sh::action_turso_setup`: guided Turso setup screen under Agents. It
+  reports CLI/auth status through `turso auth whoami`, routes browser login to
+  the local `urls` Turso helper, and prints ContentFlow schema-check commands
+  without reading or storing Turso tokens.
 - `lib.sh::action_codex_launcher`: interactive Codex launcher for choosing a
   workspace and enabling selected MCP providers for the new Codex session only.
 - `lib.sh::action_mcp_menu`: grouped MCP/Codex menu that routes to the Codex
@@ -238,6 +243,9 @@ Flutter Web has two runtime paths:
 - Missing Blacksmith CLI or auth should be shown as a setup status, not as a
   runtime failure; the menu must print the official next command when an
   interactive Blacksmith step is required.
+- Missing Turso CLI or auth should be shown as setup status; the server menu
+  should route login to local tunnel tooling instead of asking the remote shell
+  to open a browser callback directly.
 - Blacksmith SSH Access is an organization/GitHub user capability, not a
   ShipFlow server install step. The runtime menu should explain where to find
   the `Setup runner` SSH command and should not attempt to write local
@@ -264,6 +272,8 @@ Flutter Web has two runtime paths:
   the runtime must not read, print, store, or transform token contents.
 - Blacksmith runner SSH diagnostics must not copy raw environment values,
   tokens, cookies, signing keys, or private headers into reports.
+- Turso auth status may be checked through `turso auth whoami`; token files
+  under `~/.config/turso` must not be read or printed by the runtime menu.
 
 ## Validation
 
@@ -275,6 +285,7 @@ printf 'x\n' | env SHIPFLOW_PROJECTS_DIR=/tmp/shipflow-empty ./shipflow.sh u
 SHIPFLOW_CODEX_DRY_RUN=1 ./shipflow.sh codex --dir "$PWD" supabase playwright
 printf 'x' | bash -lc 'source ./lib.sh; action_health'
 printf 'x\n' | bash -lc 'source ./lib.sh; disk_cleanup_menu'
+printf 'x\n' | bash -lc 'source ./lib.sh; action_turso_setup'
 SHIPFLOW_PM2_LOG_CLEANUP_DRY_RUN=1 bash -lc 'source ./lib.sh; cleanup_pm2_logs_with_rotation'
 bash -lc 'source ./lib.sh; disk_usage_details_menu'
 SHIPFLOW_MCP_CLEANUP_DRY_RUN=1 bash -lc 'source ./lib.sh; mcp_cleanup_menu'

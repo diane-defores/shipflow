@@ -209,9 +209,13 @@ verify_remote_turso_cli() {
 
 verify_remote_auth() {
     local command
+    local output
     command="$(remote_turso_command 'auth whoami')"
     echo -e "${BLUE}👤 Vérification Turso distante...${NC}"
-    if run_remote_bash "$command"; then
+    output="$(run_remote_bash "$command" 2>&1 || true)"
+    printf '%s\n' "$output"
+
+    if [ -n "$output" ] && ! printf '%s\n' "$output" | grep -Eqi 'not logged in|please login|not authenticated|unauthenticated'; then
         echo -e "${GREEN}✓ Auth Turso confirmée sur le serveur.${NC}"
         return 0
     fi

@@ -98,7 +98,7 @@ Le menu offre :
 - 🔄 **Redémarrer** - Redémarre tous les tunnels
 - 🔐 **Login OAuth MCP (distant)** - Lance `codex mcp login` sur le serveur et crée un tunnel OAuth éphémère local
 - 🔨 **Login Blacksmith (distant)** - Lance `blacksmith auth login` sur le serveur et crée le tunnel OAuth éphémère local
-- 🗄️ **Login Turso (distant)** - Lance `turso auth login` sur le serveur, crée un tunnel callback si nécessaire, ou utilise le mode headless
+- 🗄️ **Turso - Login et checks distants** - Lance `turso auth login` sur le serveur, vérifie ContentFlow, ou copie la session locale en fallback
 
 Blacksmith n'est pas un MCP. Le menu l'affiche donc comme une option séparée.
 Si vous tapez quand même `blacksmith` dans le sous-menu MCP custom par erreur,
@@ -158,7 +158,8 @@ Ou via le menu :
 
 ```bash
 urls
-# puis d) Login Turso (distant)
+# puis d) Turso - Login et checks distants
+# puis l) Login Turso distant
 ```
 
 Si Turso n'est disponible que dans un environnement Flox projet côté serveur :

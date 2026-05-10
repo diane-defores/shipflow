@@ -8503,6 +8503,136 @@ action_mcp_menu() {
     esac
 }
 
+turso_cli_path() {
+    command -v turso 2>/dev/null || true
+}
+
+turso_auth_output_is_logged_in() {
+    local output="$1"
+    [ -n "$output" ] || return 1
+    ! printf '%s\n' "$output" | grep -Eqi 'not logged in|please login|not authenticated|unauthenticated'
+}
+
+turso_print_status() {
+    local cli_path
+    cli_path=$(turso_cli_path)
+
+    echo -e "${BLUE}Statut Turso côté serveur${NC}"
+    if [ -n "$cli_path" ]; then
+        local version
+        version=$(turso --version 2>/dev/null | head -1 || true)
+        echo -e "  ${GREEN}✓${NC} CLI installé: ${CYAN}$cli_path${NC}"
+        [ -n "$version" ] && echo -e "  ${BLUE}Version:${NC} $version"
+
+        local auth_output
+        auth_output=$(turso auth whoami 2>&1 || true)
+        if turso_auth_output_is_logged_in "$auth_output"; then
+            echo -e "  ${GREEN}✓${NC} Auth Turso active pour cet utilisateur serveur"
+            printf '%s\n' "$auth_output"
+        else
+            echo -e "  ${YELLOW}⚠${NC} Auth Turso non détectée pour cet utilisateur serveur"
+            [ -n "$auth_output" ] && printf '%s\n' "$auth_output"
+        fi
+    else
+        echo -e "  ${YELLOW}⚠${NC} CLI Turso non installé dans le PATH global"
+        echo -e "  ${BLUE}Si Turso est fourni par Flox projet:${NC} utilise le login local avec --project-dir."
+    fi
+
+    echo ""
+    echo -e "${YELLOW}ShipFlow ne lit pas et ne stocke pas le token Turso.${NC}"
+}
+
+turso_show_login_guide() {
+    ui_screen_header "Turso Login distant"
+    turso_print_status
+    echo ""
+    echo -e "${CYAN}Flow recommandé depuis ta machine locale${NC}"
+    echo -e "  ${GREEN}1.${NC} Installer les scripts locaux ShipFlow si besoin:"
+    echo -e "     ${GREEN}cd ~/shipflow/local && ./install.sh${NC}"
+    echo -e "  ${GREEN}2.${NC} Configurer ce serveur dans le menu local:"
+    echo -e "     ${GREEN}urls${NC} ${YELLOW}→${NC} ${GREEN}c) Configurer nouveau serveur${NC}"
+    echo -e "  ${GREEN}3.${NC} Lancer le login Turso distant:"
+    echo -e "     ${GREEN}urls${NC} ${YELLOW}→${NC} ${GREEN}d) Turso - Login et checks distants${NC}"
+    echo -e "     ${GREEN}puis${NC} ${YELLOW}→${NC} ${GREEN}l) Login Turso distant${NC}"
+    echo -e "     ${BLUE}ou:${NC} ${GREEN}shipflow-turso-login${NC}"
+    echo ""
+    echo -e "${CYAN}Si Turso est dans un env Flox projet côté serveur${NC}"
+    echo -e "     ${GREEN}shipflow-turso-login --project-dir /home/ubuntu/contentflow/contentflow_lab${NC}"
+    echo ""
+    echo -e "${BLUE}Ce flow lance Turso sur le serveur, ouvre le navigateur local, et crée un tunnel SSH callback si Turso en a besoin.${NC}"
+}
+
+turso_show_contentflow_checks() {
+    ui_screen_header "Turso ContentFlow Checks"
+    turso_print_status
+    echo ""
+    echo -e "${CYAN}Après login Turso distant, depuis ta machine locale:${NC}"
+    echo -e "  ${GREEN}shipflow-turso-ssh contentflow-prod2${NC}"
+    echo ""
+    echo -e "${CYAN}Si Turso est dans l'env Flox ContentFlow côté serveur:${NC}"
+    echo -e "  ${GREEN}shipflow-turso-ssh --project-dir /home/ubuntu/contentflow/contentflow_lab contentflow-prod2${NC}"
+    echo ""
+    echo -e "${BLUE}Checks lancés par le helper:${NC}"
+    echo -e "  ${GREEN}SELECT name FROM sqlite_master WHERE type='table' AND name IN ('jobs','CustomerPersona','UserSettings','Project','UserProviderCredential');${NC}"
+    echo -e "  ${GREEN}PRAGMA table_info(jobs);${NC}"
+    echo -e "  ${GREEN}PRAGMA table_info(CustomerPersona);${NC}"
+}
+
+turso_show_security_note() {
+    ui_screen_header "Turso Security"
+    echo -e "${CYAN}Politique ShipFlow${NC}"
+    echo -e "  ${GREEN}✓${NC} Utiliser le CLI officiel Turso."
+    echo -e "  ${GREEN}✓${NC} Laisser Turso gérer son fichier de session sous ~/.config/turso."
+    echo -e "  ${GREEN}✓${NC} Vérifier l'auth via ${CYAN}turso auth whoami${NC} seulement."
+    echo -e "  ${YELLOW}•${NC} Ne jamais afficher, copier dans un rapport, ou stocker un token Turso."
+    echo -e "  ${YELLOW}•${NC} Préférer ${CYAN}shipflow-turso-login${NC} au transfert de config quand un login navigateur est possible."
+    echo ""
+    echo -e "${BLUE}Fallback disponible:${NC} ${GREEN}shipflow-turso-ssh${NC} peut copier ~/.config/turso vers le serveur si tu veux transférer une session déjà connectée."
+}
+
+action_turso_setup() {
+    while true; do
+        clear
+        ui_screen_header "Turso"
+        turso_print_status
+        echo ""
+
+        local choice
+        choice=$(printf '%s\n' \
+            "Login distant guidé" \
+            "Checks ContentFlow jobs/CustomerPersona" \
+            "Sécurité / auth" \
+            "Back" | ui_choose "Turso:") || {
+            ui_return_back
+            return 0
+        }
+
+        if ui_is_back_selection "$choice"; then
+            ui_return_back
+            return 0
+        fi
+
+        clear
+        case "$choice" in
+            "Login distant guidé")
+                turso_show_login_guide
+                ;;
+            "Checks ContentFlow jobs/CustomerPersona")
+                turso_show_contentflow_checks
+                ;;
+            "Sécurité / auth")
+                turso_show_security_note
+                ;;
+            *)
+                ui_return_back
+                return 0
+                ;;
+        esac
+
+        ui_pause "Appuie sur une touche pour revenir au menu Turso..."
+    done
+}
+
 blacksmith_cli_path() {
     command -v blacksmith 2>/dev/null || true
 }
@@ -8961,6 +9091,7 @@ SYSTEM_MENU_ITEMS=(
 AGENTS_CI_MENU_ITEMS=(
     "g|🐙 GitHub Login - gh auth for deploys|action_github_auth"
     "q|🧠 MCP / Codex - Auth and launcher|action_mcp_menu"
+    "u|🗄️ Turso - DB auth and schema checks|action_turso_setup"
     "z|🏗️ Blacksmith - CI runners and Testbox setup|action_blacksmith_setup"
     "x|↩️ Back|__EXIT__"
 )

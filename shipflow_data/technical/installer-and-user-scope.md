@@ -30,6 +30,7 @@ evidence:
   - "PM2 boot autostart removed from default installer contract."
   - "Turso SSH helper command wrapper added to installer-managed global commands."
   - "Turso remote login helper command wrapper added."
+  - "Remote Agents menu includes Turso guidance while local menu owns the SSH tunnel flow."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit installer"
 ---

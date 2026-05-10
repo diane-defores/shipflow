@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.10"
+artifact_version: "0.1.11"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-10"
@@ -16,7 +16,7 @@ docs_impact: "yes"
 linked_systems: ["shipflow.sh", "lib.sh", "menu_gum.sh", "menu_bash.sh", "config.sh", "install.sh", "local/local.sh", "local/dev-tunnel.sh"]
 depends_on: []
 supersedes: []
-evidence: ["Function extraction from shipflow.sh, lib.sh, config.sh, install.sh, local/local.sh, local/dev-tunnel.sh", "Blacksmith setup menu helpers added to lib.sh", "Blacksmith OAuth callback tunnel added to local tooling", "Blacksmith SSH Access guide added to the setup menu", "Codex MCP on-demand launcher added to lib.sh", "Grouped root menu and submenu wrappers added to menu frontends", "Root menu shortcuts aligned with visible menu labels", "Disk overview helpers added to the Health Check monitor", "Agent history and cache cleanup helpers added to disk cleanup", "PM2 log cleanup/rotation and disk usage detail helpers added"]
+evidence: ["Function extraction from shipflow.sh, lib.sh, config.sh, install.sh, local/local.sh, local/dev-tunnel.sh", "Blacksmith setup menu helpers added to lib.sh", "Blacksmith OAuth callback tunnel added to local tooling", "Blacksmith SSH Access guide added to the setup menu", "Codex MCP on-demand launcher added to lib.sh", "Grouped root menu and submenu wrappers added to menu frontends", "Root menu shortcuts aligned with visible menu labels", "Disk overview helpers added to the Health Check monitor", "Agent history and cache cleanup helpers added to disk cleanup", "PM2 log cleanup/rotation and disk usage detail helpers added", "Turso setup menu helpers added to lib.sh"]
 next_step: "/sf-docs update CONTEXT-FUNCTION-TREE.md"
 ---
 
@@ -192,6 +192,13 @@ Codex launcher
   -> codex_select_mcp_preset
   -> codex_select_custom_mcps
   -> codex_launch_with_mcps
+
+Turso setup
+  -> action_turso_setup
+  -> turso_print_status
+  -> turso_show_login_guide
+  -> turso_show_contentflow_checks
+  -> turso_show_security_note
 
 system health
   -> disk_free_bytes
@@ -419,6 +426,7 @@ CLI action wrappers
   -> action_install_sdk
   -> action_mcp_menu
   -> action_codex_launcher
+  -> action_turso_setup
   -> action_blacksmith_setup
 
 menu / docs surfaces

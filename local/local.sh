@@ -684,7 +684,7 @@ show_menu() {
     local_menu_line "c" "🌐 Configurer nouveau serveur"
     local_menu_line "m" "🔐 Login OAuth MCP (distant)"
     local_menu_line "b" "🔨 Login Blacksmith (distant)"
-    local_menu_line "d" "🗄️ Login Turso (distant)"
+    local_menu_line "d" "🗄️ Turso - Login et checks distants"
     echo ""
     local_menu_line "l" "🔌 Choisir une connexion enregistrée"
     local_menu_line "x" "❌ Quitter"
@@ -751,6 +751,15 @@ run_blacksmith_login_menu() {
     "$SCRIPT_DIR/blacksmith-login.sh"
 }
 
+prompt_turso_project_dir() {
+    local project_dir=""
+
+    prompt_inline "${YELLOW}Project-dir Flox distant si Turso n'est pas global (Entrée pour aucun):${NC} "
+    read -r project_dir
+    project_dir="$(trim_input "$project_dir")"
+    printf '%s' "$project_dir"
+}
+
 run_turso_login_menu() {
     local project_dir=""
 
@@ -760,15 +769,95 @@ run_turso_login_menu() {
     echo -e "${BLUE}Ce flow lance Turso sur le serveur et ouvre le login dans ton navigateur local.${NC}"
     echo -e "${YELLOW}Si Turso utilise un callback localhost, ShipFlow ouvre le tunnel SSH temporaire automatiquement.${NC}"
     echo ""
-    prompt_inline "${YELLOW}Project-dir Flox distant si Turso n'est pas global (Entrée pour aucun):${NC} "
-    read -r project_dir
-    project_dir="$(trim_input "$project_dir")"
+    project_dir="$(prompt_turso_project_dir)"
 
     if [ -n "$project_dir" ]; then
         "$SCRIPT_DIR/turso-login.sh" --project-dir "$project_dir"
     else
         "$SCRIPT_DIR/turso-login.sh"
     fi
+}
+
+run_turso_checks_menu() {
+    local project_dir=""
+    local db_name=""
+
+    local_screen_header "Checks Turso distants"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
+    echo ""
+    echo -e "${BLUE}Ce flow vérifie l'auth Turso puis les tables jobs/CustomerPersona sur la base choisie.${NC}"
+    echo ""
+    prompt_inline "${YELLOW}Nom de base Turso (défaut: contentflow-prod2):${NC} "
+    read -r db_name
+    db_name="$(trim_input "$db_name")"
+    [ -n "$db_name" ] || db_name="contentflow-prod2"
+    project_dir="$(prompt_turso_project_dir)"
+
+    if [ -n "$project_dir" ]; then
+        "$SCRIPT_DIR/turso-ssh.sh" --no-copy --project-dir "$project_dir" "$db_name"
+    else
+        "$SCRIPT_DIR/turso-ssh.sh" --no-copy "$db_name"
+    fi
+}
+
+run_turso_copy_session_menu() {
+    local project_dir=""
+    local db_name=""
+
+    local_screen_header "Copie session Turso"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
+    echo ""
+    echo -e "${YELLOW}Fallback seulement: ce flow copie ~/.config/turso local vers le serveur.${NC}"
+    echo -e "${YELLOW}Préfère Login Turso distant quand c'est possible.${NC}"
+    echo ""
+    prompt_inline "${YELLOW}Nom de base pour checks après copie (Entrée pour aucun):${NC} "
+    read -r db_name
+    db_name="$(trim_input "$db_name")"
+    project_dir="$(prompt_turso_project_dir)"
+
+    if [ -n "$project_dir" ] && [ -n "$db_name" ]; then
+        "$SCRIPT_DIR/turso-ssh.sh" --project-dir "$project_dir" "$db_name"
+    elif [ -n "$project_dir" ]; then
+        "$SCRIPT_DIR/turso-ssh.sh" --project-dir "$project_dir"
+    elif [ -n "$db_name" ]; then
+        "$SCRIPT_DIR/turso-ssh.sh" "$db_name"
+    else
+        "$SCRIPT_DIR/turso-ssh.sh"
+    fi
+}
+
+run_turso_menu() {
+    local login_choice=""
+
+    local_screen_header "Turso distant"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
+    echo ""
+    local_menu_line "l" "Login Turso distant"
+    local_menu_line "c" "Checks ContentFlow jobs/CustomerPersona"
+    local_menu_line "f" "Fallback: copier la session Turso locale"
+    local_menu_line "x" "retour"
+    echo ""
+    prompt_inline "${YELLOW}Tape la lettre de ton choix ?${NC} "
+    read_menu_choice login_choice
+
+    case "$login_choice" in
+        l)
+            run_turso_login_menu
+            ;;
+        c)
+            run_turso_checks_menu
+            ;;
+        f)
+            run_turso_copy_session_menu
+            ;;
+        x|q)
+            return 0
+            ;;
+        *)
+            echo -e "${RED}❌ Choix invalide${NC}"
+            return 1
+            ;;
+    esac
 }
 
 # Fonction pour obtenir les ports actifs
@@ -1108,7 +1197,7 @@ main() {
                 pause
                 ;;
             d)
-                run_turso_login_menu
+                run_turso_menu
                 pause
                 ;;
             l)

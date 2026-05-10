@@ -229,7 +229,9 @@ Blacksmith, and the provider own the token exchange. See
 flow.
 
 For Turso Cloud CLI auth on a remote ShipFlow server, use
-`shipflow-turso-login` or the local `urls` menu's Turso login entry. It starts
+`shipflow-turso-login` or the local `urls` menu's Turso entry. The remote
+ShipFlow `Agents` menu also includes a guided Turso screen with status,
+login instructions, ContentFlow checks, and security notes. The local helper starts
 `turso auth login` on the server, opens a temporary SSH callback tunnel when
 Turso exposes a localhost callback URL, and otherwise follows Turso's headless
 login flow. `shipflow-turso-ssh` remains available as a fallback that copies the

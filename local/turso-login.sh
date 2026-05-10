@@ -270,8 +270,17 @@ verify_remote_turso_cli() {
 
 verify_remote_auth() {
     local command
+    local output
     command="$(remote_turso_command 'auth whoami')"
-    run_remote_bash "$command"
+    output="$(run_remote_bash "$command" 2>&1 || true)"
+    printf '%s\n' "$output"
+
+    [ -n "$output" ] || return 1
+    if printf '%s\n' "$output" | grep -Eqi 'not logged in|please login|not authenticated|unauthenticated'; then
+        return 1
+    fi
+
+    return 0
 }
 
 wait_remote_login_completion() {
