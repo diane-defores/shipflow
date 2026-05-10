@@ -684,6 +684,7 @@ show_menu() {
     local_menu_line "c" "🌐 Configurer nouveau serveur"
     local_menu_line "m" "🔐 Login OAuth MCP (distant)"
     local_menu_line "b" "🔨 Login Blacksmith (distant)"
+    local_menu_line "d" "🗄️ Login Turso (distant)"
     echo ""
     local_menu_line "l" "🔌 Choisir une connexion enregistrée"
     local_menu_line "x" "❌ Quitter"
@@ -748,6 +749,26 @@ run_blacksmith_login_menu() {
     echo -e "${YELLOW}Il corrige le cas où Blacksmith affiche une URL localhost qui finit en connection refused.${NC}"
     echo ""
     "$SCRIPT_DIR/blacksmith-login.sh"
+}
+
+run_turso_login_menu() {
+    local project_dir=""
+
+    local_screen_header "Login Turso distant"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
+    echo ""
+    echo -e "${BLUE}Ce flow lance Turso sur le serveur et ouvre le login dans ton navigateur local.${NC}"
+    echo -e "${YELLOW}Si Turso utilise un callback localhost, ShipFlow ouvre le tunnel SSH temporaire automatiquement.${NC}"
+    echo ""
+    prompt_inline "${YELLOW}Project-dir Flox distant si Turso n'est pas global (Entrée pour aucun):${NC} "
+    read -r project_dir
+    project_dir="$(trim_input "$project_dir")"
+
+    if [ -n "$project_dir" ]; then
+        "$SCRIPT_DIR/turso-login.sh" --project-dir "$project_dir"
+    else
+        "$SCRIPT_DIR/turso-login.sh"
+    fi
 }
 
 # Fonction pour obtenir les ports actifs
@@ -1084,6 +1105,10 @@ main() {
                 ;;
             b)
                 run_blacksmith_login_menu
+                pause
+                ;;
+            d)
+                run_turso_login_menu
                 pause
                 ;;
             l)

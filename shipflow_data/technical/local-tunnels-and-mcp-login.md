@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.5"
+artifact_version: "1.0.6"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-10"
@@ -29,6 +29,7 @@ evidence:
   - "Managed tunnel detection accepts SSH targets before or after -L in process args."
   - "Local menu headers refreshed to match server ShipFlow DevServer treatment."
   - "Turso SSH auth transfer helper added for remote CLI schema proof."
+  - "Turso remote login helper added with callback tunnel/headless fallback."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit local"
 ---
@@ -37,7 +38,7 @@ next_step: "/sf-docs technical audit local"
 
 ## Purpose
 
-This doc covers the local tools that connect a workstation to a remote ShipFlow server: app tunnels, saved SSH connection state, remote PM2 and Flutter Web `tmux` port discovery, `shipflow-mcp-login` for remote Codex MCP OAuth callbacks, `shipflow-blacksmith-login` for remote Blacksmith CLI OAuth callbacks, and `shipflow-turso-ssh` for Turso CLI auth transfer and schema proof.
+This doc covers the local tools that connect a workstation to a remote ShipFlow server: app tunnels, saved SSH connection state, remote PM2 and Flutter Web `tmux` port discovery, `shipflow-mcp-login` for remote Codex MCP OAuth callbacks, `shipflow-blacksmith-login` for remote Blacksmith CLI OAuth callbacks, `shipflow-turso-login` for remote Turso CLI login, and `shipflow-turso-ssh` for Turso CLI auth transfer and schema proof.
 
 Blacksmith SSH Access is intentionally separate from these OAuth callback tunnels. It connects a local terminal directly to an ephemeral Blacksmith runner for a live GitHub Actions job; it does not use `shipflow-blacksmith-login` and does not require a ShipFlow server install.
 
@@ -49,6 +50,7 @@ Blacksmith SSH Access is intentionally separate from these OAuth callback tunnel
 | `local/dev-tunnel.sh` | Non-interactive managed tunnel helper | Keep managed PID selection narrow |
 | `local/mcp-login.sh` | Remote Codex MCP OAuth login tunnel flow | Do not store OAuth tokens |
 | `local/blacksmith-login.sh` | Remote Blacksmith OAuth login tunnel flow | Do not read or store Blacksmith token contents |
+| `local/turso-login.sh` | Remote Turso CLI login flow with callback tunnel/headless fallback | Do not read or store Turso token contents |
 | `local/turso-ssh.sh` | Remote Turso CLI auth transfer and optional schema checks | Copy official CLI config only; never print token contents |
 | `local/remote-helpers.sh` | SSH target, identity, and remote port helper functions | Validate inputs before building SSH args |
 | `local/install.sh`, `local/install_local.ps1` | Local installer scripts | Keep platform-specific assumptions explicit |
@@ -59,6 +61,7 @@ Blacksmith SSH Access is intentionally separate from these OAuth callback tunnel
 - `urls` and `tunnel`: shell aliases to `local/local.sh`.
 - `shipflow-mcp-login <provider|all>`: launches remote Codex MCP login and opens a temporary callback tunnel.
 - `shipflow-blacksmith-login`: launches remote `blacksmith auth login` and opens a temporary callback tunnel.
+- `shipflow-turso-login`: launches remote `turso auth login`, opens a callback tunnel if needed, or follows headless auth.
 - `shipflow-turso-ssh [db-name]`: copies local Turso CLI config to the remote server, verifies `turso auth whoami`, and optionally checks ContentFlow tables.
 - `local/dev-tunnel.sh`: direct tunnel helper for scripted or simplified flows.
 
@@ -96,6 +99,16 @@ shipflow-blacksmith-login
 ```
 
 ```text
+shipflow-turso-login
+  -> run remote turso auth login with BROWSER=echo, or --headless when requested
+  -> extract auth URL
+  -> if callback port exists, open temporary ssh -L tunnel
+  -> open or print Turso auth URL locally
+  -> wait for remote login completion
+  -> verify turso auth whoami without reading token files
+```
+
+```text
 shipflow-turso-ssh
   -> load saved ShipFlow SSH target and optional identity
   -> copy ~/.config/turso contents to remote ~/.config/turso via scp
@@ -119,6 +132,7 @@ shipflow-turso-ssh
   ShipFlow only checks credentials-file presence.
 - Turso tokens remain owned by the Turso CLI config. `shipflow-turso-ssh`
   copies the config only on explicit invocation and never logs token contents.
+  `shipflow-turso-login` verifies auth with `turso auth whoami` only.
 - Blacksmith SSH Access is not an OAuth tunnel. It is an organization-level
   Blacksmith feature that relies on the triggering user's GitHub SSH keys and a
   per-job SSH command from the `Setup runner` step.
@@ -135,6 +149,8 @@ shipflow-turso-ssh
   OAuth callback failures when the CLI runs remotely and the browser is local.
 - Turso CLI auth checks can fail if `turso` is absent from remote PATH; use a
   project Flox env with `--project-dir` when Turso is project-local.
+- Turso may use either a localhost callback URL or a headless/device login URL;
+  the helper must support both paths.
 - Reusing an old OAuth URL can fail because provider URLs and callback ports are per attempt.
 - A malformed SSH identity path or target can become an SSH option if validation regresses.
 - Duplicate local ports should block before creating partial tunnels.
@@ -150,8 +166,8 @@ shipflow-turso-ssh
 ## Validation
 
 ```bash
-bash -n local/local.sh local/dev-tunnel.sh local/mcp-login.sh local/blacksmith-login.sh local/turso-ssh.sh local/remote-helpers.sh local/install.sh
-rg -n "validate_connection_target|validate_identity_file|check_local_port_free|parse_mcp_oauth_port_from_text|shipflow-turso-ssh" local/
+bash -n local/local.sh local/dev-tunnel.sh local/mcp-login.sh local/blacksmith-login.sh local/turso-login.sh local/turso-ssh.sh local/remote-helpers.sh local/install.sh
+rg -n "validate_connection_target|validate_identity_file|check_local_port_free|parse_mcp_oauth_port_from_text|shipflow-turso-login|shipflow-turso-ssh" local/
 ```
 
 PowerShell changes require a separate syntax/manual review on a PowerShell-capable host.

@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.3"
+artifact_version: "1.0.4"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-08"
@@ -29,6 +29,7 @@ evidence:
   - "README installer section and install.sh function inventory."
   - "PM2 boot autostart removed from default installer contract."
   - "Turso SSH helper command wrapper added to installer-managed global commands."
+  - "Turso remote login helper command wrapper added."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit installer"
 ---
@@ -52,7 +53,7 @@ This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read
 ## Entrypoints
 
 - `sudo ./install.sh`: server installer.
-- `configure_command_wrappers`: installs global `shipflow`, `sf`, and helper command symlinks such as `shipflow-turso-ssh`.
+- `configure_command_wrappers`: installs global `shipflow`, `sf`, and helper command symlinks such as `shipflow-turso-login` and `shipflow-turso-ssh`.
 - `setup_user`: per-user configuration for eligible users.
 - `configure_*_mcp`: Claude/Codex MCP provider setup. Codex MCP entries
   are registered disabled by default and enabled per session by the ShipFlow
@@ -114,11 +115,11 @@ sudo ./install.sh
 ## Validation
 
 ```bash
-bash -n install.sh local/install.sh local/turso-ssh.sh
+bash -n install.sh local/install.sh local/turso-login.sh local/turso-ssh.sh
 bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh
 bash test_skill_runtime_sync.sh
 tools/shipflow_sync_skills.sh --check --all
-rg -n "configure_aliases|configure_skills|configure_data|setup_user|collect_target_users|configure_codex|shipflow-turso-ssh" install.sh local/
+rg -n "configure_aliases|configure_skills|configure_data|setup_user|collect_target_users|configure_codex|shipflow-turso-login|shipflow-turso-ssh" install.sh local/
 ```
 
 For behavioral changes, prefer a disposable host/container or a narrowly scoped installer dry run before claiming install success.

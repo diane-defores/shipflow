@@ -84,6 +84,7 @@ shipflow-mcp-login vercel   # Login OAuth MCP distant (Vercel)
 shipflow-mcp-login supabase # Login OAuth MCP distant (Supabase)
 shipflow-mcp-login all      # Enchaîne vercel puis supabase
 shipflow-blacksmith-login   # Login Blacksmith distant via tunnel OAuth
+shipflow-turso-login        # Login Turso distant via tunnel/headless
 shipflow-turso-ssh contentflow-prod2 # Copie auth Turso vers le serveur + checks SQL
 ```
 
@@ -97,6 +98,7 @@ Le menu offre :
 - 🔄 **Redémarrer** - Redémarre tous les tunnels
 - 🔐 **Login OAuth MCP (distant)** - Lance `codex mcp login` sur le serveur et crée un tunnel OAuth éphémère local
 - 🔨 **Login Blacksmith (distant)** - Lance `blacksmith auth login` sur le serveur et crée le tunnel OAuth éphémère local
+- 🗄️ **Login Turso (distant)** - Lance `turso auth login` sur le serveur, crée un tunnel callback si nécessaire, ou utilise le mode headless
 
 Blacksmith n'est pas un MCP. Le menu l'affiche donc comme une option séparée.
 Si vous tapez quand même `blacksmith` dans le sous-menu MCP custom par erreur,
@@ -146,8 +148,33 @@ confort pour les hôtes éphémères; elle n'installe pas le CLI Blacksmith.
 
 ### Turso sur serveur distant
 
+Pour faire le login Turso côté serveur depuis votre navigateur local, utilisez :
+
+```bash
+shipflow-turso-login
+```
+
+Ou via le menu :
+
+```bash
+urls
+# puis d) Login Turso (distant)
+```
+
+Si Turso n'est disponible que dans un environnement Flox projet côté serveur :
+
+```bash
+shipflow-turso-login --project-dir /home/ubuntu/contentflow/contentflow_lab
+```
+
+Le helper lance `turso auth login` sur le serveur. Si Turso affiche une URL
+avec callback `127.0.0.1:<port>/callback`, ShipFlow ouvre un tunnel SSH local
+temporaire vers ce port, comme pour Blacksmith. Si Turso utilise un mode
+headless/device sans callback localhost, le helper ouvre ou affiche l'URL et
+attend la fin du login sans tunnel.
+
 Pour transférer une session Turso CLI déjà authentifiée depuis le poste local
-vers le serveur ShipFlow configuré, utilisez :
+vers le serveur ShipFlow configuré sans refaire le login distant, utilisez :
 
 ```bash
 shipflow-turso-ssh contentflow-prod2

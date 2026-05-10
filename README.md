@@ -209,6 +209,7 @@ shipflow-mcp-login vercel
 shipflow-mcp-login supabase
 shipflow-mcp-login all
 shipflow-blacksmith-login
+shipflow-turso-login
 shipflow-turso-ssh contentflow-prod2
 ```
 
@@ -227,11 +228,15 @@ Blacksmith, and the provider own the token exchange. See
 [local/README.md](./local/README.md) for the guided setup and troubleshooting
 flow.
 
-For Turso Cloud CLI auth on a remote ShipFlow server,
-`shipflow-turso-ssh` copies the local official Turso CLI config directory to
-the configured server over SSH/SCP, verifies `turso auth whoami`, and can run
-the ContentFlow table/column checks when a database name is provided. It does
-not read or print Turso tokens.
+For Turso Cloud CLI auth on a remote ShipFlow server, use
+`shipflow-turso-login` or the local `urls` menu's Turso login entry. It starts
+`turso auth login` on the server, opens a temporary SSH callback tunnel when
+Turso exposes a localhost callback URL, and otherwise follows Turso's headless
+login flow. `shipflow-turso-ssh` remains available as a fallback that copies the
+local official Turso CLI config directory to the configured server over
+SSH/SCP, verifies `turso auth whoami`, and can run the ContentFlow table/column
+checks when a database name is provided. ShipFlow does not read or print Turso
+tokens.
 
 The server-side `sf` menu also includes `Blacksmith - CI runners and Testbox
 setup`. This is a guided official-first helper for Blacksmith: it checks whether
