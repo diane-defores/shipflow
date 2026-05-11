@@ -142,6 +142,8 @@ Si le scope touche à l'auth navigateur, aux redirects, aux callbacks, aux pages
 
 If the scope needs browser proof but is not auth-specific, use or request `sf-browser` evidence instead of stretching `sf-auth-debug`.
 
+If the scope touches runtime failures, error boundaries, jobs, webhooks, auth/payment/data failures, or deployed behavior where Sentry should exist, load `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md` and verify only Sentry issue/event pointers that are supplied or visible in app/log context. Skills do not have direct Sentry dashboard access. If no Sentry pointer exists, treat that as a confidence gap; PM2 logs and redacted Doppler presence/scope checks may support the runtime verdict.
+
 ### Step 3 — Vérifier les metadata et versions de contrat
 
 Vérifier que les artefacts ShipFlow utilisés pour implémenter le travail sont synchronisés.
@@ -278,6 +280,7 @@ Quand une spec ou le diff révèle des systèmes liés, vérifier explicitement 
 - routes/pages/consommateurs qui dépendent du code touché
 - contrats de données, auth, permissions, migrations
 - analytics, SEO, i18n, accessibilité, design system
+- Sentry, error tracking, release/environment tags, source maps, and runtime observability when runtime behavior is in scope
 - jobs, scripts, webhooks, ops, déploiement si concernés
 - docs, README, guides, exemples, FAQ, onboarding, pricing, changelog, support, screenshots si la feature change
 
@@ -388,6 +391,7 @@ Générer UN rapport structuré :
 | Bug gate     | clear / partial-risk / blocks ship / not assessed |
 | Dépendances  | N ajoutées, vulnérabilités  |
 | Risques      | N SEC / N PERF / N DATA     |
+| Sentry       | supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / n/a |
 | Technique    | ✓ OK / ✗ N erreurs          |
 
 ### CRITICAL (à corriger avant de ship)
@@ -422,6 +426,7 @@ Ajouter aussi :
 - Error evidence: [tests, guarded code path, manual path, missing proof]
 - Partial failure behavior: [pass / partial / fail / not applicable]
 - Observability: [success visible / error visible / justified silent / gap]
+- Sentry: [supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / not applicable]
 ```
 
 Ajouter ensuite un bloc workflow explicite :
@@ -457,6 +462,13 @@ Ajouter ensuite un bloc workflow explicite :
 - Deployment evidence: [sf-prod confirmed / not needed / missing]
 - Preview/manual evidence: [sf-test, sf-browser, or sf-auth-debug present / not needed / missing]
 - Impact: [none / partial verdict / blocks ready-to-ship verdict]
+```
+
+```text
+### Sentry Observability
+- Status: [supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / not applicable]
+- Evidence: [issue/event pointer, release/environment/window, or reason missing]
+- Impact: [none / confidence gap / blocks runtime confidence]
 ```
 
 ```text

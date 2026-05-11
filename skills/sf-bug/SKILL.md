@@ -147,6 +147,7 @@ Run the evidence owner before fixing when the missing proof matters:
 - Auth, OAuth, cookies, sessions, callbacks, tenants, protected routes -> `/sf-auth-debug [BUG-ID or title]`
 - Non-auth route, visible state, console, network, screenshot, or page assertion -> `/sf-browser [URL or scope] [objective]`
 - Full user flow, human confirmation, durable test record, or retest -> `/sf-test [scope]` or `/sf-test --retest BUG-ID`
+- Runtime crash, error boundary, 5xx, visible Sentry/support event ID, or production exception -> load `$SHIPFLOW_ROOT/skills/references/sentry-observability.md`, then attach a redacted Sentry issue/event pointer to the bug evidence when available
 - Unclear expected behavior, permission contract, data contract, or product rule -> `/sf-spec [bug title]`
 
 Do not invent reproduction results, browser evidence, screenshots, account roles, console logs, or user confirmations.
@@ -179,6 +180,7 @@ For `--close BUG-ID`:
 ## Security And Evidence Rules
 
 - Never print or persist raw secrets, tokens, cookies, private keys, raw auth headers, private payloads, production PII, or sensitive screenshots.
+- Never print or persist raw Sentry payloads, breadcrumbs, replay contents, headers, private URLs, user lists, or PII; keep only redacted issue/event pointers and short summaries.
 - Keep `TEST_LOG.md` and optional `BUGS.md` compact.
 - Keep full detail in `bugs/BUG-ID.md`.
 - Store only redacted large evidence under `test-evidence/BUG-ID/`.
@@ -208,6 +210,7 @@ Classification: [needs capture / needs evidence / needs fix / needs retest / nee
 Execution mode: [main-only / delegated sequential / spec-gated parallel]
 Development mode: [local / vercel-preview-push / hybrid / unknown]
 Evidence posture: [sufficient / missing / sensitive-blocked / not needed]
+Sentry posture: [supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / not applicable]
 Security posture: [ok / risk]
 Decision: [executed / routed / blocked / no action]
 

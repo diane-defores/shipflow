@@ -33,7 +33,7 @@ Default to `report=user`: concise, findings-first, and focused on top issues, pr
 - Project CLAUDE.md: !`head -100 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 - Business context: !`if [ -f shipflow_data/business/business.md ]; then head -60 shipflow_data/business/business.md; else head -60 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md) — run /sf-init or /sf-docs update"; fi`
 - Brand voice: !`if [ -f shipflow_data/business/branding.md ]; then head -60 shipflow_data/business/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md) — run /sf-init or /sf-docs update"; fi`
-- Business metadata: !`for pair in "shipflow_data/business/business.md BUSINESS.md" "shipflow_data/business/branding.md BRANDING.md" "shipflow_data/technical/guidelines.md GUIDELINES.md"; do set -- $pair; if [ -f "$1" ]; then f="$1"; elif [ -f "$2" ]; then f="$2"; else echo "$2: missing (no $1)"; continue; fi; printf '%s: ' "$f"; sed -n '1,40p' "$f" | grep -E '^(metadata_schema_version|artifact_version|status|updated|confidence|next_review):' | tr '\n' ' '; printf '\n'; done`
+- Business metadata: !`for pair in "shipflow_data/business/business.md BUSINESS.md" "shipflow_data/business/branding.md BRANDING.md" "shipflow_data/business/project-competitors-and-inspirations.md -" "shipflow_data/business/affiliate-programs.md -" "shipflow_data/technical/guidelines.md GUIDELINES.md"; do set -- $pair; if [ -f "$1" ]; then f="$1"; elif [ "$2" != "-" ] && [ -f "$2" ]; then f="$2"; else echo "$1: missing optional or no fallback"; continue; fi; printf '%s: ' "$f"; sed -n '1,40p' "$f" | grep -E '^(metadata_schema_version|artifact_version|status|updated|confidence|next_review):' | tr '\n' ' '; printf '\n'; done`
 - All pages: !`find src/pages src/app -name "*.astro" -o -name "*.tsx" -o -name "*.vue" 2>/dev/null | grep -v node_modules | sort`
 - Analytics: !`grep -ri "analytics\|gtag\|plausible\|umami\|posthog\|vercel/analytics" src/ 2>/dev/null | head -10 || echo "no analytics found"`
 - Auth/payment: !`grep -ri "clerk\|stripe\|lemonsqueezy\|paddle\|auth" package.json 2>/dev/null | head -5 || echo "none"`
@@ -58,9 +58,11 @@ Si les fichiers existent mais semblent incomplets, signaler. Continuer l'audit d
 
 ## Metadata versioning doctrine
 
-`BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md` are ShipFlow decision contracts when present. Before scoring:
+`BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md` are ShipFlow decision contracts when present. `shipflow_data/business/project-competitors-and-inspirations.md` and `shipflow_data/business/affiliate-programs.md` are optional ShipFlow decision contracts: absence is acceptable, but presence requires metadata compliance and should affect scoring when the audit touches differentiation, competitor positioning, affiliate monetization, public recommendations, or disclosure. Before scoring:
 - Read their frontmatter or first metadata block and report `artifact_version`, `status`, `updated`, `confidence`, and `next_review` when available.
 - If a contract is missing `artifact_version`, `status`, or `updated`, add a proof gap: `business doc metadata incomplete`.
+- If an optional competitor/inspiration or affiliate registry exists and lacks ShipFlow metadata, add a proof gap: `optional business registry metadata incomplete`.
+- If affiliate/referral/partner links or compensated recommendations are visible but `shipflow_data/business/affiliate-programs.md` is absent, add a proof gap or recommendation; do not treat absence as a baseline failure when no such monetization is visible.
 - If `status` is `draft`, `stale`, `outdated`, `deprecated`, or `confidence` is `low`, cap confidence and mention that GTM scoring depends on an unreviewed business contract.
 - If `next_review` is before today's absolute date, treat the document as stale unless the audit finds an explicit newer replacement.
 - If public pricing, positioning, ICP, funnel, onboarding, or security/compliance promises rely on stale or unversioned business docs, do not give `A` for the affected category.
@@ -113,7 +115,7 @@ Audit ALL commercial projects in the workspace for go-to-market readiness.
    - Rule: **read-only analysis** — no code fixes, only update AUDIT_LOG.md and TASKS.md
    - Rule: before scoring, identify funnel links, measurement dependencies, and downstream conversion consequences
    - Rule: call out user-story drift, unproven claims, documentation mismatch, and risky business/security promises explicitly
-   - Rule: read/report `BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md` metadata versions; flag missing, stale, low-confidence, or unversioned contracts as proof gaps before scoring
+   - Rule: read/report `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, and optional business registry metadata versions when present; flag missing, stale, low-confidence, or unversioned contracts as proof gaps before scoring
    - Rule: do not ask follow-up questions; if context is missing, state assumptions / confidence limits and continue
    - Required sub-report sections: `Scope understood`, `User story / promise`, `Business metadata versions`, `Context read`, `Linked systems & consequences`, `Documentation coherence`, `Risky assumptions / proof gaps`, `Findings`, `Confidence / missing context`
 
@@ -223,6 +225,8 @@ GTM REVIEW: [page name] — funnel stage: [awareness/consideration/conversion/re
 Business metadata:
   BUSINESS.md    artifact_version=[x|missing] status=[x|missing] updated=[date|missing] confidence=[x|missing]
   BRANDING.md    artifact_version=[x|missing] status=[x|missing] updated=[date|missing] confidence=[x|missing]
+  COMPETITORS    artifact_version=[x|missing|absent optional] status=[x|missing|n/a] updated=[date|missing|n/a] confidence=[x|missing|n/a]
+  AFFILIATES     artifact_version=[x|missing|absent optional] status=[x|missing|n/a] updated=[date|missing|n/a] confidence=[x|missing|n/a]
   GUIDELINES.md  artifact_version=[x|missing] status=[x|missing] updated=[date|missing] confidence=[x|missing]
 Positioning        [A/B/C/D] — one-line summary
 Conversion         [A/B/C/D] — one-line summary

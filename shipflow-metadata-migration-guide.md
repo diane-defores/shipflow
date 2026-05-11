@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.3.0"
+artifact_version: "0.4.0"
 project: ShipFlow
 created: "2026-04-25"
-updated: "2026-05-01"
+updated: "2026-05-11"
 status: draft
 source_skill: sf-docs
 scope: metadata-migration
@@ -24,6 +24,7 @@ supersedes: []
 evidence:
   - "Guide aligned with current ShipFlow artifact doctrine, templates, and linter behavior"
   - "Updated on 2026-04-27 to resolve the metadata linter from the canonical ShipFlow root"
+  - "Added migration defaults for competitive intelligence and affiliate program registry artifacts."
 next_review: "unknown"
 next_step: "/sf-docs audit shipflow-metadata-migration-guide.md"
 ---
@@ -36,22 +37,22 @@ This guide explains how to adopt ShipFlow metadata and versioning in an existing
 
 Use it when:
 
-- a project already has `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, specs, or research docs without ShipFlow frontmatter
+- a project already has legacy root ShipFlow docs such as `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, `CONTEXT.md`, `CONTENT_MAP.md`, specs, or research docs that must be moved into the canonical `shipflow_data/` layout
 - old docs need traceability, versioning, and dependency references
 - a team wants to make ShipFlow artifacts machine-checkable with `tools/shipflow_metadata_lint.py`
 
-Official migration scope for legacy adoption:
+Official migration scope for legacy adoption. These root names are migration sources only; they are not compliant final locations except `AGENT.md` and an explicitly adopted `CLAUDE.md`:
 
 - `AGENT.md` when it is the active agent entrypoint
-- `CONTEXT.md` and promoted specialized context docs when they are part of the official project context layer
+- `CONTEXT.md` and promoted specialized context docs when they are part of the official project context layer, migrated to `shipflow_data/technical/`
 - `CLAUDE.md` only when the project explicitly promotes it as an active repository-guidance artifact
-- `BUSINESS.md`
-- `PRODUCT.md`
-- `BRANDING.md`
-- `GTM.md`
-- `ARCHITECTURE.md`
-- `GUIDELINES.md`
-- `specs/*.md`
+- `BUSINESS.md`, migrated to `shipflow_data/business/business.md`
+- `PRODUCT.md`, migrated to `shipflow_data/business/product.md`
+- `BRANDING.md`, migrated to `shipflow_data/business/branding.md`
+- `GTM.md`, migrated to `shipflow_data/business/gtm.md`
+- `ARCHITECTURE.md`, migrated to `shipflow_data/technical/architecture.md`
+- `GUIDELINES.md`, migrated to `shipflow_data/technical/guidelines.md`
+- `specs/*.md`, migrated to `shipflow_data/workflow/specs/`
 
 Everything else should be treated as case-by-case legacy material unless it is already part of the active ShipFlow artifact workflow for that project.
 
@@ -59,28 +60,29 @@ Everything else should be treated as case-by-case legacy material unless it is a
 
 ShipFlow now uses a simple split:
 
-- `shipflow_data` is the control plane for cross-project tracking and registries
-- each project repo is the canonical home for its own decision artifacts
+- root-level project files are limited to `README.md`, `AGENT.md`, `AGENTS.md` as a symlink to `AGENT.md`, optional `CLAUDE.md`, and project/tool-native docs that are not ShipFlow governance artifacts
+- `shipflow_data/` inside each project is the canonical home for ShipFlow governance artifacts
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is the external control plane for cross-project tracking and registries
 
 That means:
 
-- keep `BUSINESS.md`, `BRANDING.md`, `GUIDELINES.md`, specs, research reports, review reports, verification reports, and decision records in the project repo
-- keep `TASKS.md`, `AUDIT_LOG.md`, and `PROJECTS.md` as operational trackers, typically in `shipflow_data`
-- do not duplicate project decision docs into `shipflow_data` by default
+- move business, product, brand, GTM, architecture, technical context, guidelines, specs, research reports, review reports, verification reports, and decision records under the project's `shipflow_data/` tree
+- keep `TASKS.md`, `AUDIT_LOG.md`, and `PROJECTS.md` as operational trackers, typically under the external `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` or `shipflow_data/workflow/` when project-local
+- do not keep duplicate root copies once the canonical `shipflow_data/` artifact exists
 
-If `shipflow_data` needs visibility, reference the artifact. Do not create a second canonical copy.
+If the external cross-project `shipflow_data` needs visibility, reference the project-local artifact. Do not create a second canonical copy.
 
 ## What gets metadata
 
 Metadata is required for ShipFlow decision artifacts, including:
 
-- `BUSINESS.md`
-- `PRODUCT.md`
-- `BRANDING.md`
-- `GTM.md`
-- `ARCHITECTURE.md`
-- `GUIDELINES.md`
-- files in `specs/`
+- `shipflow_data/business/business.md`
+- `shipflow_data/business/product.md`
+- `shipflow_data/business/branding.md`
+- `shipflow_data/business/gtm.md`
+- `shipflow_data/technical/architecture.md`
+- `shipflow_data/technical/guidelines.md`
+- files in `shipflow_data/workflow/specs/`
 - research reports
 - review reports
 - readiness reports
@@ -94,14 +96,9 @@ Metadata is required for ShipFlow decision artifacts, including:
 
 For legacy bulk migration, keep the official default scope narrower:
 
-- active context docs (`AGENT.md`, `CONTEXT.md`, promoted `CONTEXT-*` docs)
-- `BUSINESS.md`
-- `PRODUCT.md`
-- `BRANDING.md`
-- `GTM.md`
-- `ARCHITECTURE.md`
-- `GUIDELINES.md`
-- `specs/*.md`
+- active context docs (`AGENT.md`, root `CONTEXT.md` and promoted `CONTEXT-*` docs only as migration sources)
+- root `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `ARCHITECTURE.md`, `GUIDELINES.md` only as migration sources
+- root `specs/*.md` only as migration sources
 
 `CLAUDE.md` stays out of the bulk-default scope unless the repo has already decided it is part of the active official ShipFlow artifact layer. Promote it intentionally; do not infer that from filename alone.
 
@@ -164,8 +161,8 @@ Good first-pass candidates:
 
 For a large multi-project migration, this should usually become the default first wave:
 
-- migrate every repo-level `BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md`
-- migrate every markdown file under `specs/`
+- move every repo-level `BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md` to canonical `shipflow_data/` paths with metadata
+- move every root markdown file under `specs/` to `shipflow_data/workflow/specs/`
 - leave everything else for a second classification pass
 
 This is the highest-value / lowest-risk slice because these files are explicit decision artifacts and are already part of the ShipFlow linter default scope.
@@ -210,14 +207,16 @@ For a migrated legacy file:
 
 Artifact-specific conservative defaults are recommended:
 
-- `BUSINESS.md` -> `artifact: business_context`
-- `PRODUCT.md` -> `artifact: product_context`
-- `BRANDING.md` -> `artifact: brand_context`
-- `GTM.md` -> `artifact: gtm_context`
-- `ARCHITECTURE.md` -> `artifact: architecture_context`
-- `GUIDELINES.md` -> `artifact: technical_guidelines`
+- `BUSINESS.md` -> `shipflow_data/business/business.md`, `artifact: business_context`
+- `PRODUCT.md` -> `shipflow_data/business/product.md`, `artifact: product_context`
+- `BRANDING.md` -> `shipflow_data/business/branding.md`, `artifact: brand_context`
+- `GTM.md` -> `shipflow_data/business/gtm.md`, `artifact: gtm_context`
+- project competitors/inspirations registry -> `artifact: competitive_intelligence`
+- affiliate/referral/partner program registry -> `artifact: affiliate_program_registry`
+- `ARCHITECTURE.md` -> `shipflow_data/technical/architecture.md`, `artifact: architecture_context`
+- `GUIDELINES.md` -> `shipflow_data/technical/guidelines.md`, `artifact: technical_guidelines`
 - `CLAUDE.md` -> `artifact: technical_guidelines`
-- `specs/*.md` -> `artifact: spec`
+- `specs/*.md` -> `shipflow_data/workflow/specs/*.md`, `artifact: spec`
 - `docs/technical/*.md` -> `artifact: technical_module_context`
 
 When the document does not yet expose the missing metadata clearly, use placeholder-but-honest values that keep the artifact lintable without pretending certainty:
@@ -375,11 +374,12 @@ The right order is:
 
 ## Recommended migration sequence for an existing project
 
-1. Migrate `BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md`.
-2. Migrate stable docs in `specs/`.
-3. Migrate research, review, readiness, verification, and audit artifacts.
-4. Leave trackers untouched.
-5. Review runtime content separately and only if ShipFlow metadata can coexist safely.
+1. Move root `BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md` to canonical `shipflow_data/` paths.
+2. Move stable root docs in `specs/` to `shipflow_data/workflow/specs/`.
+3. Migrate active project competitor/inspiration and affiliate/referral/partner registries when they govern positioning, monetization, public recommendations, or disclosure.
+4. Migrate research, review, readiness, verification, and audit artifacts.
+5. Leave trackers untouched.
+6. Review runtime content separately and only if ShipFlow metadata can coexist safely.
 
 This sequence minimizes risk and gives the highest coordination value first.
 

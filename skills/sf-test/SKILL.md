@@ -70,6 +70,8 @@ If you did not observe the behavior yourself with tooling and the user has not r
 
 Before generating a manual test, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and inspect the project-local `## ShipFlow Development Mode` section in `CLAUDE.md` or `SHIPFLOW.md`.
 
+If a scenario fails with a crash, error boundary, 5xx, visible Sentry/support event ID, or runtime exception, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md` before logging evidence.
+
 If the project mode is `vercel-preview-push` and the requested test targets changed app behavior:
 - Do not generate a preview/manual test while the repo has dirty code changes that have not been shipped.
 - Route first to `/sf-ship [scope]`.
@@ -194,6 +196,7 @@ Ask for only the evidence needed:
 - visible error message
 - whether data/session persisted after reload
 - account/role used, when relevant
+- Sentry/support event ID if the app displayed one
 - screenshot path or copied console/network error, if the user has it
 
 Do not overwhelm the user with every possible edge case in one prompt. For a broad feature, run 2-4 scenarios sequentially.
@@ -293,6 +296,7 @@ Allowed transition policy for `sf-test`:
 Evidence and redaction policy:
 - Never store raw secrets or private data in trackers or bug files.
 - Always redact before persistence: tokens, cookies, raw headers, private payloads, private emails, personal data, HAR dumps, or sensitive screenshots.
+- Store Sentry only as redacted issue/event pointers plus short summaries; never paste raw Sentry payloads, breadcrumbs, replay contents, headers, cookies, tokens, private URLs, or PII.
 - Use `test-evidence/BUG-ID/` for redacted large artifacts; keep only compact pointers in markdown.
 - Reject relative paths escaping repo root (`..`) for stored evidence pointers.
 
@@ -380,6 +384,7 @@ After logging:
 - if a bug was opened: recommend `/sf-fix [bug title]`
 - if auth/browser evidence is needed: recommend `/sf-auth-debug [bug title]`
 - if non-auth one-off browser evidence is needed without a durable manual test log: recommend `/sf-browser [URL or scope] [objective]`
+- if Sentry evidence identifies the likely runtime fault but no fix exists yet: recommend `/sf-fix [BUG-ID or Sentry issue summary]`
 - if the test was blocked by unclear expected behavior: recommend `/sf-spec [scope]` or `/sf-ready [scope]`
 - if the test was blocked by environment/deploy: recommend `/sf-prod` or the project-specific deployment check
 

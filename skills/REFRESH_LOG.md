@@ -4,6 +4,25 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-11 — shared Sentry observability doctrine
+
+**Added:**
+- Shared `skills/references/sentry-observability.md` for Sentry evidence, correlation, privacy, reporting, and performance rules
+- Runtime evidence hooks for `sf-prod`, `sf-deploy`, `sf-auth-debug`, `sf-browser`, `sf-test`, `sf-bug`, `sf-fix`, `sf-start`, and `sf-verify`
+- Sentry observability checks in `sf-audit-code` and Sentry overhead checks in `sf-perf`
+
+**Updated:**
+- Runtime/deploy/debug skills now treat Sentry issue/event IDs as redacted evidence pointers, not raw payloads
+- Verification and release flows now treat Sentry as supplied/visible pointers only; skills never assume direct dashboard access
+- PM2 logs and redacted Doppler presence/scope checks are documented as fallback runtime evidence when no Sentry pointer is supplied or visible
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow doctrine update: Sentry is now used across projects; operator clarified skills never access Sentry dashboard directly)
+
+---
+
 ## 2026-05-05 — shared question contract
 
 **Added:**

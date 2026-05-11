@@ -175,6 +175,7 @@ Analyze the project's build output and dependency weight.
 - [ ] Route-level code splitting configured
 - [ ] Heavy components lazily loaded (`React.lazy`, `defineAsyncComponent`, dynamic imports)
 - [ ] No single bundle containing rarely-used features
+- [ ] Sentry browser tracing, profiling, replay, and source-map helpers are not bundled more broadly than needed
 
 #### 1.3 Asset Optimization
 - [ ] Images use modern formats (WebP/AVIF with fallbacks)
@@ -186,9 +187,10 @@ Analyze the project's build output and dependency weight.
 
 #### 1.4 Script Loading
 - [ ] Third-party scripts use `async` or `defer`
-- [ ] Analytics/tracking not blocking render
+- [ ] Analytics/tracking/Sentry initialization does not block render
 - [ ] No synchronous `<script>` tags in `<head>`
 - [ ] Prefetch/preload for critical resources
+- [ ] Sentry replay, tracing, and profiling sampling rates are proportionate to the environment and privacy/performance budget
 
 ---
 
@@ -239,6 +241,7 @@ Analyze the project's build output and dependency weight.
 - [ ] No long tasks blocking the main thread (>50ms)
 - [ ] Input handlers debounced appropriately
 - [ ] Optimistic UI updates for perceived speed
+- [ ] Sentry instrumentation, breadcrumbs, and replay capture do not add avoidable long tasks to key interactions
 
 #### 3.4 TTFB (Time to First Byte)
 - [ ] Static pages served from CDN/edge

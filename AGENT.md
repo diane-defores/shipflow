@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.4.1"
+artifact_version: "0.5.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-10"
+updated: "2026-05-11"
 status: draft
 source_skill: manual
 scope: "agent-entrypoint"
@@ -13,10 +13,10 @@ confidence: "high"
 risk_level: "low"
 security_impact: "none"
 docs_impact: "yes"
-linked_systems: ["CLAUDE.md", "shipflow_data/technical/context.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "README.md", "shipflow_data/technical/", "shipflow_data/technical/code-docs-map.md", "shipflow_data/technical/blacksmith.md", "skills/references/canonical-paths.md"]
+linked_systems: ["CLAUDE.md", "shipflow_data/technical/context.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "README.md", "shipflow_data/technical/", "shipflow_data/technical/code-docs-map.md", "shipflow_data/technical/blacksmith.md", "skills/references/canonical-paths.md", "shipflow_data/business/project-competitors-and-inspirations.md", "shipflow_data/business/affiliate-programs.md"]
 depends_on: []
 supersedes: []
-evidence: ["Repository structure and active context docs", "shipflow_data/editorial/content-map.md added as the content routing artifact", "Canonical path resolution added for ShipFlow-owned tools and references", "Technical documentation layer added for code-proximate agent routing", "Blacksmith CI/SSH Access routing added for APK build and log debugging."]
+evidence: ["Repository structure and active context docs", "shipflow_data/editorial/content-map.md added as the content routing artifact", "Canonical path resolution added for ShipFlow-owned tools and references", "Technical documentation layer added for code-proximate agent routing", "Blacksmith CI/SSH Access routing added for APK build and log debugging.", "Business registries added for project competitors/inspirations and affiliate programs."]
 next_step: "/sf-docs update AGENT.md"
 ---
 
@@ -47,6 +47,8 @@ Ce fichier est le point d'entree rapide pour un agent qui arrive dans le repo. I
 - Si la tache touche un code area mappe, lire `shipflow_data/technical/code-docs-map.md`, puis le doc primaire dans `shipflow_data/technical/`. `AGENT.md` reste canonique; `AGENTS.md` ne doit etre qu'un symlink de compatibilite vers `AGENT.md`.
 - Si la tache touche contenu, repurposing, blog, docs publiques, landing pages ou cocons semantiques, lire `shipflow_data/editorial/content-map.md`, puis `skills/sf-repurpose/SKILL.md` si la demande transforme une source en contenu.
 - Si la tache touche produit, audience, priorites ou scope, lire `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, puis `shipflow_data/business/gtm.md` si la demande touche la promesse publique.
+- Si la tache touche concurrents, alternatives, inspirations, references marche, differenciation ou anti-patterns par projet, lire `shipflow_data/business/project-competitors-and-inspirations.md`, puis `shipflow_data/business/gtm.md`.
+- Si la tache touche affiliation, referral, sponsorship, partner programs, liens remuneres ou disclosure commerciale, lire `shipflow_data/business/affiliate-programs.md`, puis `shipflow_data/business/gtm.md`.
 - Si la tache touche architecture ou conventions techniques, lire `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, puis `shipflow_data/technical/context.md`.
 
 ## Context Docs
@@ -64,6 +66,8 @@ Ce fichier est le point d'entree rapide pour un agent qui arrive dans le repo. I
 - `shipflow_data/business/product.md`: contrat produit.
 - `shipflow_data/business/branding.md`: contrat de marque.
 - `shipflow_data/business/gtm.md`: contrat de promesse publique et de distribution.
+- `shipflow_data/business/project-competitors-and-inspirations.md`: registre des concurrents, alternatives, inspirations et anti-patterns par projet.
+- `shipflow_data/business/affiliate-programs.md`: registre des programmes d'affiliation, referral, partner et disclosure par projet.
 - `shipflow_data/technical/architecture.md`: contrat de structure technique.
 - `shipflow_data/technical/guidelines.md`: conventions techniques et de contribution.
 

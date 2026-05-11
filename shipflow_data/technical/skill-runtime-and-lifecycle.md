@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.12.1"
+artifact_version: "1.12.4"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-08"
+updated: "2026-05-11"
 status: reviewed
 source_skill: sf-start
 scope: skill-runtime-and-lifecycle
@@ -31,6 +31,7 @@ linked_systems:
   - skills/references/reporting-contract.md
   - skills/references/master-workflow-lifecycle.md
   - skills/references/question-contract.md
+  - skills/references/sentry-observability.md
   - specs/sf-build-autonomous-master-skill.md
   - specs/skill-reporting-modes-and-compact-reports.md
   - shipflow-spec-driven-workflow.md
@@ -68,6 +69,8 @@ evidence:
   - "shipflow <instruction> documented as the primary non-technical router with direct main-thread handoff to selected skills."
   - "Shared question/default contract added for numbered user-facing decisions and context-safe defaults."
   - "sf-bug clarified as a bug lifecycle executor through owner skills and bounded subagents, not a simple next-command router."
+  - "Shared Sentry observability reference added for runtime evidence, release/environment correlation, redaction, and performance overhead checks."
+  - "Sentry reference clarified: skills never have direct Sentry dashboard access; bounded local PM2 logs and redacted Doppler presence/scope checks are acceptable supporting evidence when no Sentry pointer is supplied or visible."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -87,6 +90,7 @@ This doc covers ShipFlow skills, lifecycle flow, references, templates, model/to
 | `skills/references/master-delegation-semantics.md` | Shared master/orchestrator delegation, subagent, short-approval, and parallelism doctrine | Load before master skills choose execution topology |
 | `skills/references/master-workflow-lifecycle.md` | Shared master/orchestrator lifecycle skeleton and work item model | Load before master skills resolve intake, readiness, model/topology, validation, verification, closure, or ship/deploy routes |
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
+| `skills/references/sentry-observability.md` | Shared Sentry runtime evidence, PM2/Doppler fallback evidence, release/environment correlation, redaction, and performance-overhead doctrine | Load when runtime behavior, crashes, 5xx, event IDs, deploy confidence, auth/payment/data failures, jobs, webhooks, verification, audits, or perf checks depend on observability |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
 | `shipflow-spec-driven-workflow.md` | Global workflow doctrine | Sequential shared file |
@@ -235,6 +239,7 @@ sf-content
 - Skills that use Playwright MCP for browser evidence must load
   `skills/references/playwright-mcp-runtime.md` first and refuse stale Linux
   ARM64 Chrome-stable fallback evidence.
+- Skills that use runtime failure evidence, deploy confidence, bug evidence, auth/payment/data failure diagnosis, jobs, webhooks, verification, or performance telemetry must load `skills/references/sentry-observability.md` when Sentry is configured, visible, or materially relevant. Skills never have direct Sentry dashboard access; Sentry evidence means a redacted issue/event pointer supplied by the operator, visible in the app, visible in logs, or already present in context. When no Sentry pointer is available, bounded PM2 logs and Doppler key presence/scope checks may be used as supporting evidence without printing secrets.
 - `sf-browser` owns generic non-auth browser proof. `sf-auth-debug` owns auth, session, callback, provider, tenant, and protected-route browser proof.
 - `sf-deploy` owns release orchestration only; `sf-ship` owns commit/push, `sf-prod` owns deployed truth, and proof skills own observed behavior.
 - `sf-bug` owns bug lifecycle execution through owner skills and bounded subagents; phase skills still own bug record mutation, diagnosis, retest evidence, verification, and shipping internals.

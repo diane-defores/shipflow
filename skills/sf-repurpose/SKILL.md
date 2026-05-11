@@ -49,6 +49,8 @@ If subagents are unavailable, continue with a sequential read scan and report th
 - Brand context: !`if [ -f shipflow_data/business/branding.md ]; then head -60 shipflow_data/business/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md)"; fi`
 - Product context: !`if [ -f shipflow_data/business/product.md ]; then head -60 shipflow_data/business/product.md; else head -60 PRODUCT.md 2>/dev/null || echo "no shipflow_data/business/product.md (and no legacy PRODUCT.md)"; fi`
 - GTM context: !`if [ -f shipflow_data/business/gtm.md ]; then head -60 shipflow_data/business/gtm.md; else head -60 GTM.md 2>/dev/null || echo "no shipflow_data/business/gtm.md (and no legacy GTM.md)"; fi`
+- Competitors/inspirations registry: !`if [ -f shipflow_data/business/project-competitors-and-inspirations.md ]; then head -60 shipflow_data/business/project-competitors-and-inspirations.md; else echo "no optional shipflow_data/business/project-competitors-and-inspirations.md"; fi`
+- Affiliate programs registry: !`if [ -f shipflow_data/business/affiliate-programs.md ]; then head -60 shipflow_data/business/affiliate-programs.md; else echo "no optional shipflow_data/business/affiliate-programs.md"; fi`
 - Guidelines: !`if [ -f shipflow_data/technical/guidelines.md ]; then head -60 shipflow_data/technical/guidelines.md; else head -60 GUIDELINES.md 2>/dev/null || echo "no shipflow_data/technical/guidelines.md (and no legacy GUIDELINES.md)"; fi`
 - Content map: !`if [ -f shipflow_data/editorial/content-map.md ]; then head -120 shipflow_data/editorial/content-map.md; else head -120 CONTENT_MAP.md 2>/dev/null || echo "no shipflow_data/editorial/content-map.md (and no legacy CONTENT_MAP.md)"; fi`
 - Existing docs/pages: !`find docs src content app -maxdepth 2 -type f \( -name "*.md" -o -name "*.mdx" -o -name "*.tsx" -o -name "*.astro" \) 2>/dev/null | head -40 || echo "no docs/pages found"`
@@ -263,6 +265,11 @@ Then check `shipflow_data/editorial/` (fallback legacy `docs/editorial/`) when p
 - use the blog surface policy before creating or recommending article output
 - include an `Editorial Update Plan` when public content, page intent, claim safety, FAQ, pricing, README, or public docs are impacted
 
+Then check optional business registries when relevant:
+- use `shipflow_data/business/project-competitors-and-inspirations.md` when the pack includes competitor comparisons, alternatives, inspiration-led positioning, anti-patterns, or differentiation claims
+- use `shipflow_data/business/affiliate-programs.md` when the pack includes affiliate/referral/partner recommendations, sponsorship mentions, paid links, or disclosure language
+- absence is acceptable; presence means the registry must stay metadata-compliant and should be included in any `sf-docs` handoff if stale or incomplete
+
 ## Mode detection
 
 Parse `$ARGUMENTS` as an optional focus override:
@@ -363,6 +370,8 @@ Before recommending writing, produce a compact internal diffusion map:
 - surfaces intentionally skipped: with reason
 
 If `shipflow_data/editorial/content-map.md` exists (fallback legacy `CONTENT_MAP.md`), recommend a `sf-docs` handoff when a new recurring topic, article, pillar page, or cross-surface rule should be recorded.
+
+If competitor/inspiration or affiliate/referral details become durable project context, recommend a `sf-docs` handoff to create or update the optional business registry rather than burying the decision in generated copy.
 
 If `shipflow_data/editorial/` exists (fallback legacy `docs/editorial/`), check the claim register, page intent map, Astro content schema policy, and blog surface policy before recommending public-content handoffs. Runtime content updates must be routed to owner skills with schema constraints included in the handoff.
 

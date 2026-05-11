@@ -26,6 +26,8 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -40 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 - Business context: !`if [ -f shipflow_data/business/business.md ]; then head -60 shipflow_data/business/business.md; else head -60 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md) — run /sf-init or /sf-docs update"; fi`
+- Competitors/inspirations registry: !`if [ -f shipflow_data/business/project-competitors-and-inspirations.md ]; then head -80 shipflow_data/business/project-competitors-and-inspirations.md; else echo "no optional shipflow_data/business/project-competitors-and-inspirations.md"; fi`
+- Affiliate programs registry: !`if [ -f shipflow_data/business/affiliate-programs.md ]; then head -80 shipflow_data/business/affiliate-programs.md; else echo "no optional shipflow_data/business/affiliate-programs.md"; fi`
 - DataForSEO MCP available: !`echo "dfs-mcp tools available — use mcp__dfs-mcp__* tools"`
 
 ## Pre-check : contexte business
@@ -79,6 +81,12 @@ next_review: "[YYYY-MM-DD]"
 ```
 
 Si `BUSINESS.md` existe, lire son frontmatter complet et reporter sa `artifact_version` dans `depends_on`. Si la version est absente, utiliser `artifact_version: "unknown"` et signaler un `metadata gap`. Si l'étude sert à créer le premier `BUSINESS.md`, mettre `depends_on: []` et `status: draft`.
+
+Les registres `shipflow_data/business/project-competitors-and-inspirations.md` et `shipflow_data/business/affiliate-programs.md` sont optionnels, mais gouvernés quand ils existent :
+- Si une étude identifie des concurrents, alternatives, inspirations ou anti-patterns qui vont influencer le positionnement, recommander ou mettre à jour `shipflow_data/business/project-competitors-and-inspirations.md` avec `artifact: competitive_intelligence`.
+- Si une étude identifie des programmes d'affiliation/referral/partner réellement utilisés ou recommandés publiquement, recommander ou mettre à jour `shipflow_data/business/affiliate-programs.md` avec `artifact: affiliate_program_registry`.
+- Ne pas créer ces fichiers pour chaque étude par défaut. Les créer seulement si l'utilisateur le demande, si le résultat sera réutilisé comme contrat projet, ou si des liens rémunérés/disclosures sont en jeu.
+- Quand un registre existe ou est créé, lancer le linter ShipFlow sur le fichier ou rapporter `metadata compliance not proven`.
 
 ### Bump `artifact_version`
 
@@ -191,6 +199,7 @@ Use **`mcp__dfs-mcp__dataforseo_labs_google_ranked_keywords`**:
 
 Use **`mcp__dfs-mcp__dataforseo_labs_google_competitors_domain`**:
 - Who else competes in this space?
+- Which entries should be recorded in `shipflow_data/business/project-competitors-and-inspirations.md` if that registry exists or the study will become durable project context?
 
 Use **`mcp__dfs-mcp__backlinks_summary`** for each competitor:
 - How many backlinks?
@@ -384,6 +393,9 @@ Competitors found:  [count] ([count] serious)
 Market size (TAM):  [value]
 Best price point:   [price]
 Report saved to:    [file path]
+Business registries:
+  Competitors/inspirations: [updated / recommended / absent optional / not applicable]
+  Affiliate programs:       [updated / recommended / absent optional / not applicable]
 ═══════════════════════════════════════════════════════
 
 KEY METRICS

@@ -26,6 +26,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 - Product context: !`if [ -f shipflow_data/business/product.md ]; then head -40 shipflow_data/business/product.md; else head -40 PRODUCT.md 2>/dev/null || echo "no PRODUCT.md (and no shipflow_data/business/product.md)"; fi`
 - Architecture context: !`if [ -f shipflow_data/technical/architecture.md ]; then head -40 shipflow_data/technical/architecture.md; else head -40 ARCHITECTURE.md 2>/dev/null || echo "no shipflow_data/technical/architecture.md (and no legacy ARCHITECTURE.md)"; fi`
 - GTM context: !`if [ -f shipflow_data/business/gtm.md ]; then head -40 shipflow_data/business/gtm.md; else head -40 GTM.md 2>/dev/null || echo "no GTM.md (and no shipflow_data/business/gtm.md)"; fi`
+- Competitors/inspirations registry: !`if [ -f shipflow_data/business/project-competitors-and-inspirations.md ]; then head -40 shipflow_data/business/project-competitors-and-inspirations.md; else echo "no optional shipflow_data/business/project-competitors-and-inspirations.md"; fi`
+- Affiliate programs registry: !`if [ -f shipflow_data/business/affiliate-programs.md ]; then head -40 shipflow_data/business/affiliate-programs.md; else echo "no optional shipflow_data/business/affiliate-programs.md"; fi`
 - Guidelines: !`if [ -f shipflow_data/technical/guidelines.md ]; then head -40 shipflow_data/technical/guidelines.md; else head -40 GUIDELINES.md 2>/dev/null || echo "no shipflow_data/technical/guidelines.md (and no legacy GUIDELINES.md)"; fi`
 - Content map: !`if [ -f shipflow_data/editorial/content-map.md ]; then head -40 shipflow_data/editorial/content-map.md; else head -40 CONTENT_MAP.md 2>/dev/null || echo "no CONTENT_MAP.md (and no shipflow_data/editorial/content-map.md)"; fi`
 - Package.json: !`cat package.json 2>/dev/null | head -40 || echo "no package.json"`
@@ -69,6 +71,7 @@ En mode `update` ou `audit`, prioriser les docs qui peuvent faire échouer un ut
 - `sf-init` may create first-run baseline governance scaffolding and report status.
 - `sf-docs technical` bootstraps or audits `shipflow_data/technical/` and `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/`).
 - `sf-docs editorial` bootstraps or audits `shipflow_data/editorial/` when public/content surfaces exist (fallback legacy `docs/editorial/`).
+- `sf-docs update` treats `shipflow_data/business/project-competitors-and-inspirations.md` and `shipflow_data/business/affiliate-programs.md` as optional business governance artifacts: do not create them for every project, but if either exists, require ShipFlow metadata compliance and include it in docs drift checks.
 - `sf-docs update` detects missing `shipflow_data/technical/`, missing `shipflow_data/editorial/`, stale `shipflow_data/editorial/content-map.md` (fallback `CONTENT_MAP.md`), invalid `AGENT.md` / `AGENTS.md` compatibility, and routes each layer to creation, audit, skip, or blocked status.
 - Future project work must not ask operators to rerun ShipFlow's shipped governance specs. Use `/sf-docs technical`, `/sf-docs editorial`, or `/sf-docs update` instead.
 
@@ -99,11 +102,11 @@ next_step: "[recommended command]"
 ---
 ```
 
-Business, product, GTM, architecture, content map, and technical context files are ShipFlow artifacts too. Their canonical locations are `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/technical/architecture.md`, `shipflow_data/technical/context.md`, `shipflow_data/editorial/content-map.md`, and `shipflow_data/technical/guidelines.md`. Legacy root files (`BUSINESS.md`, `BRANDING.md`, `PRODUCT.md`, `ARCHITECTURE.md`, `GTM.md`, `CONTEXT.md`, `CONTENT_MAP.md`, `GUIDELINES.md`) are read only as compatibility fallbacks or migration sources. Canonical artifacts must use the ShipFlow schema with these minimum fields:
+Business, product, GTM, competitive intelligence, affiliate program, architecture, content map, and technical context files are ShipFlow artifacts too. Their canonical locations are `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/project-competitors-and-inspirations.md`, `shipflow_data/business/affiliate-programs.md`, `shipflow_data/technical/architecture.md`, `shipflow_data/technical/context.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow_data/editorial/content-map.md`, and `shipflow_data/technical/guidelines.md`. Legacy root files (`BUSINESS.md`, `BRANDING.md`, `PRODUCT.md`, `ARCHITECTURE.md`, `GTM.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `CONTENT_MAP.md`, `GUIDELINES.md`) are migration sources only. They are not compliant final locations in project repos. Canonical artifacts must use the ShipFlow schema with these minimum fields:
 
 ```yaml
 ---
-artifact: "[business_context|brand_context|product_context|architecture_context|gtm_context|technical_guidelines]"
+artifact: "[business_context|brand_context|product_context|architecture_context|gtm_context|competitive_intelligence|affiliate_program_registry|technical_guidelines]"
 metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: "[project name]"
@@ -111,7 +114,7 @@ created: "[YYYY-MM-DD]"
 updated: "[YYYY-MM-DD]"
 status: "[draft|reviewed|stale|deprecated]"
 source_skill: "[sf-init|sf-docs|manual]"
-scope: "[business|branding|product|architecture|gtm|guidelines]"
+scope: "[business|branding|product|architecture|gtm|project-competitors-and-inspirations|affiliate-programs|guidelines]"
 owner: "[user or team if known]"
 confidence: "[high|medium|low]"
 risk_level: "[low|medium|high]"
@@ -570,7 +573,13 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
    - Les docs mentionnent `test-evidence/BUG-ID/` pour les preuves volumineuses, avec redaction obligatoire.
    - Les docs ne demandent pas d'ajouter de frontmatter à `TEST_LOG.md`/`BUGS.md` (tracker rule).
 
-1b. **Migrer les anciens artefacts ShipFlow si nécessaire :**
+1b. **Vérifier les registres business optionnels quand ils existent :**
+   - `shipflow_data/business/project-competitors-and-inspirations.md` est optionnel. Ne pas le créer automatiquement pour tous les projets. S'il existe, il doit utiliser `artifact: competitive_intelligence`, les champs requis par le linter, des URLs/dates de preuve quand disponibles, et une séparation claire entre observation, inférence et inspiration.
+   - `shipflow_data/business/affiliate-programs.md` est optionnel. Ne pas le créer automatiquement pour tous les projets. S'il existe, il doit utiliser `artifact: affiliate_program_registry`, les champs requis par le linter, une policy de disclosure, et une règle explicite interdisant secrets, tokens privés, coordonnées bancaires ou informations fiscales.
+   - Si un projet contient des concurrents/inspirations ou affiliations dans `BUSINESS.md`, `GTM.md`, `README.md`, `TASKS.md`, `PROJECTS.md`, ou une note ad hoc, recommander l'extraction vers le registre optionnel seulement si l'information gouverne réellement le positionnement, la monétisation, une recommandation publique ou une disclosure.
+   - Si un registre optionnel existe mais échoue au linter, corriger sa compliance ou rapporter `metadata compliance not proven`; ne pas supprimer le registre pour éviter la conformité.
+
+1c. **Migrer les anciens artefacts ShipFlow si nécessaire :**
    - Ajouter le frontmatter ShipFlow obligatoire aux specs, reviews, audits, research reports et docs projet qui n'en ont pas.
    - Préserver le contenu existant.
    - Inférer seulement les champs évidents depuis le nom de fichier, le titre, la date et le contenu.
@@ -614,6 +623,8 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
 
    Stocker les fichiers directement dans le repo du projet. `shipflow_data` peut référencer l'existence de ces contrats, mais ne doit pas en devenir la copie canonique par défaut.
 
+   Les registres `shipflow_data/business/project-competitors-and-inspirations.md` et `shipflow_data/business/affiliate-programs.md` sont des contrats business optionnels. Ne les ajouter que si l'utilisateur le demande, si une étude de marché/GTM en produit le besoin, ou si des liens/recommandations publics rémunérés existent. Quand ils existent, les inclure dans la validation metadata et la cohérence documentaire.
+
 3. **Classer les problèmes techniques par priorité :**
    - **P0** : drift dangereux (doc qui induit en erreur — mauvaises commandes, fonctions supprimées)
    - **P1** : conventions non respectées (doctrine de langue ShipFlow, langue active, accents, format)
@@ -650,6 +661,8 @@ Harmoniser et mettre à jour la doc existante pour la rendre cohérente.
 - GTM.md : [créé / complété / mis à jour / OK]
 - CONTENT_MAP.md : [créé / complété / mis à jour / OK]
 - GUIDELINES.md : [créé / mis à jour / OK]
+- project-competitors-and-inspirations.md : [absent optionnel / créé / complété / mis à jour / OK / compliance gap]
+- affiliate-programs.md : [absent optionnel / créé / complété / mis à jour / OK / compliance gap]
 
 **Doc technique corrigée :**
 - [N] drifts corrigés (P0)
@@ -696,16 +709,18 @@ Use this mode for:
 2. **Définir le scope avant édition**
    - Scope par défaut pour legacy adoption :
      - `AGENT.md`
-     - `shipflow_data/technical/context.md` (fallback `CONTEXT.md`)
-     - `shipflow_data/technical/context-function-tree.md` (fallback `CONTEXT-FUNCTION-TREE.md`)
-     - `shipflow_data/editorial/content-map.md` (fallback `CONTENT_MAP.md`)
-     - `shipflow_data/business/business.md` (fallback `BUSINESS.md`)
-     - `shipflow_data/business/branding.md` (fallback `BRANDING.md`)
-     - `shipflow_data/business/product.md` (fallback `PRODUCT.md`)
-     - `shipflow_data/technical/architecture.md` (fallback `ARCHITECTURE.md`)
-     - `shipflow_data/business/gtm.md` (fallback `GTM.md`)
-     - `shipflow_data/technical/guidelines.md` (fallback `GUIDELINES.md`)
-     - `specs/*.md`
+     - `shipflow_data/technical/context.md`; root `CONTEXT.md` only as migration source
+     - `shipflow_data/technical/context-function-tree.md`; root `CONTEXT-FUNCTION-TREE.md` only as migration source
+     - `shipflow_data/editorial/content-map.md`; root `CONTENT_MAP.md` only as migration source
+     - `shipflow_data/business/business.md`; root `BUSINESS.md` only as migration source
+     - `shipflow_data/business/branding.md`; root `BRANDING.md` only as migration source
+     - `shipflow_data/business/product.md`; root `PRODUCT.md` only as migration source
+     - `shipflow_data/technical/architecture.md`; root `ARCHITECTURE.md` only as migration source
+     - `shipflow_data/business/gtm.md`; root `GTM.md` only as migration source
+     - `shipflow_data/business/project-competitors-and-inspirations.md` si le fichier existe
+     - `shipflow_data/business/affiliate-programs.md` si le fichier existe
+     - `shipflow_data/technical/guidelines.md`; root `GUIDELINES.md` only as migration source
+     - `shipflow_data/workflow/specs/*.md`; root `specs/*.md` only as migration source
      - `docs/**/*.md` seulement si le dossier existe et contient des artefacts ShipFlow actifs
    - `CLAUDE.md` n'entre dans ce scope que si le repo l'a explicitement promu comme artefact officiel de guidance.
    - Ne pas élargir automatiquement à tous les `.md` du repo.
@@ -725,6 +740,8 @@ Use this mode for:
    Pour `runtime content`, préserver le schéma applicatif. Ne pas ajouter de frontmatter ShipFlow si cela peut casser le parser.
 
    Pour `tracker excluded`, ne jamais ajouter de frontmatter. Si le tracker contient une décision durable, recommander d'extraire cette décision dans un artefact séparé.
+
+   Pour `legacy root artifact`, ne pas le considérer compliant même s'il a du frontmatter valide. Le migrer vers le chemin canonique sous `shipflow_data/`, puis supprimer ou archiver le fichier racine seulement si cela ne casse pas un outil externe. `AGENT.md`, `README.md`, `AGENTS.md` symlink, et `CLAUDE.md` explicitement adopté sont les exceptions racine.
 
    Pour `ambiguous`, demander confirmation si la migration changerait la source de vérité, la visibilité publique, le runtime, ou le périmètre officiel. Sinon laisser exclu et rapporter.
 
@@ -752,7 +769,7 @@ SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
 
 ```bash
 SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-$HOME/shipflow}"
-"$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py" AGENT.md CONTEXT.md CONTEXT-FUNCTION-TREE.md shipflow_data/editorial/content-map.md shipflow_data/business/business.md shipflow_data/business/product.md shipflow_data/business/branding.md shipflow_data/business/gtm.md shipflow_data/technical/context.md specs docs
+"$SHIPFLOW_ROOT/tools/shipflow_metadata_lint.py" AGENT.md CONTEXT.md CONTEXT-FUNCTION-TREE.md shipflow_data/editorial/content-map.md shipflow_data/business/business.md shipflow_data/business/product.md shipflow_data/business/branding.md shipflow_data/business/gtm.md shipflow_data/business/project-competitors-and-inspirations.md shipflow_data/business/affiliate-programs.md shipflow_data/technical/context.md specs docs
 ```
 
    - Si `CLAUDE.md` est officialisé dans le repo, l'ajouter explicitement au scope de validation au lieu de l'imposer partout par défaut.

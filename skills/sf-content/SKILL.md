@@ -82,7 +82,8 @@ Rejected scope:
 2. Load `shipflow_data/editorial/content-map.md` if present, otherwise fallback to `CONTENT_MAP.md`.
 3. Load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when the work touches public content, README public promises, docs, FAQ, pricing, support copy, public skill pages, blog/article intent, claims, or runtime content.
 4. Check `shipflow_data/editorial/claim-register.md` (or `docs/editorial/claim-register.md`), `shipflow_data/editorial/page-intent-map.md` (or `docs/editorial/page-intent-map.md`), `shipflow_data/editorial/editorial-update-gate.md` (or `docs/editorial/editorial-update-gate.md`), and `shipflow_data/editorial/astro-content-schema-policy.md` (or `docs/editorial/astro-content-schema-policy.md`) when present.
-5. If no source, goal, or target can be inferred, ask one targeted question. Do not draft generic content from nothing.
+5. If the work touches competitor comparisons, alternatives, inspiration-led positioning, affiliate links, partner recommendations, sponsorship, or disclosure, check `shipflow_data/business/project-competitors-and-inspirations.md` and `shipflow_data/business/affiliate-programs.md` when present. Their absence is acceptable; their presence requires ShipFlow metadata compliance.
+6. If no source, goal, or target can be inferred, ask one targeted question. Do not draft generic content from nothing.
 
 ## Mode Detection
 
@@ -175,7 +176,7 @@ python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 For ShipFlow docs/specs/content-map artifacts:
 
 ```bash
-python3 tools/shipflow_metadata_lint.py specs README.md shipflow-spec-driven-workflow.md shipflow_data/editorial/content-map.md shipflow_data/business/business.md shipflow_data/business/product.md shipflow_data/business/branding.md shipflow_data/business/gtm.md shipflow_data/technical/context.md docs/technical docs/editorial docs/skill-launch-cheatsheet.md
+python3 tools/shipflow_metadata_lint.py specs README.md shipflow-spec-driven-workflow.md shipflow_data/editorial/content-map.md shipflow_data/business/business.md shipflow_data/business/product.md shipflow_data/business/branding.md shipflow_data/business/gtm.md shipflow_data/business/project-competitors-and-inspirations.md shipflow_data/business/affiliate-programs.md shipflow_data/technical/context.md docs/technical docs/editorial docs/skill-launch-cheatsheet.md
 ```
 
 For public site or runtime content:

@@ -100,6 +100,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - If the user explicitly says this project uses Vercel previews as the development/test surface, treat the current run as `vercel-preview-push` and update or request the project section before the next validation step.
   - If no hosting signal exists, default to `local` for this run and recommend adding the section during project setup.
 - If Supabase is in the stack and the task touches auth, storage, uploads, DB, or RLS, load only the relevant references among `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-storage.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-db.md` before editing.
+- If the task touches runtime error handling, crash reporting, error boundaries, jobs, webhooks, auth/payment/data failures, or a deployed bug with a Sentry/support event ID, load `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md` and preserve Sentry correlation expectations in the execution contract.
 - Si la tâche est `spec-first`, préférer une exécution sur contexte frais :
   - lancer un subagent sans historique si c'est possible
   - sinon demander explicitement à l'utilisateur d'ouvrir un nouveau thread avant de continuer
@@ -115,6 +116,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - read-first files / entry points
   - invariants and non-goals
   - linked systems / consequences to revalidate
+  - Sentry observability expectations when runtime evidence or instrumentation is relevant
   - documentation surfaces to update or explicitly leave unchanged
   - project development mode and validation surface: whether success must be proven locally or through `sf-ship` -> `sf-prod` on a Vercel preview
   - fresh external docs verdict when the task depends on external documented behavior: dependency/service, local version when available, Context7 or official docs source, and whether the implementation path is supported
@@ -234,6 +236,7 @@ Implementation constraints:
 - implement the user story outcome, not a narrow proxy metric
 - make successful actions observable to the user/operator unless the contract explicitly justifies silent success and provides another verification path
 - make failures observable or recoverable unless the contract explicitly justifies silent failure and provides a recovery/observation path
+- preserve Sentry/error instrumentation when the project has it; do not swallow exceptions only to report them, and do not remove release/environment/user-safe context needed for runtime diagnosis
 - follow existing project conventions
 - keep the change inside the declared task scope
 - preserve the invariants and linked systems named in the execution contract
@@ -261,6 +264,7 @@ Run focused validation relevant to the modified area:
 - include at least one sanity check on each linked system / consumer impacted by the change
 - include a documentation coherence check when the user-visible feature behavior changed
 - include abuse-case / security sanity checks when the contract names them
+- if runtime errors or Sentry instrumentation are in scope, include a sanity check that errors remain visible to the user/operator and that Sentry evidence can be correlated without exposing secrets
 
 Project development mode gate:
 - If `development_mode` is `local`, run the focused validation normally with the local dev server or local tooling when needed.
@@ -317,6 +321,7 @@ Success / error behavior:
 - Success behavior -> [pass/fail/not checked]
 - Error behavior -> [pass/fail/not checked]
 - Observability -> [success visible / error visible / justified silent / gap]
+- Sentry -> [instrumentation preserved / supplied pointer correlated / no pointer supplied / not applicable]
 
 Security / abuse checks:
 - [check] -> [pass/fail]

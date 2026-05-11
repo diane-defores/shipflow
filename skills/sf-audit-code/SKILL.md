@@ -201,6 +201,7 @@ Score each category **A/B/C/D**. Be strict.
 - [ ] User-facing errors are helpful and actionable
 - [ ] Edge cases handled: null, undefined, empty arrays, network failure
 - [ ] No unhandled promise rejections
+- [ ] Runtime exceptions are reported to Sentry with safe context when the project uses Sentry
 
 #### 7. Performance
 - [ ] No unnecessary re-renders (React: stable callbacks, proper deps arrays)
@@ -466,6 +467,7 @@ Quick architecture-level checks only:
 #### 6.1 Error Handling
 - [ ] Errors caught at every async boundary
 - [ ] Errors logged with context
+- [ ] Sentry captures operationally meaningful exceptions with environment/release context and without sensitive payloads
 - [ ] External service failures have fallback
 - [ ] Unhandled rejections caught at process level
 
@@ -478,7 +480,8 @@ Quick architecture-level checks only:
 
 #### 6.3 Observability
 - [ ] Structured logging (not just `console.log`)
-- [ ] Error tracking configured or easy to add
+- [ ] Sentry is configured unless the project documents an explicit exception
+- [ ] Sentry release, environment, source maps, and issue/event correlation are usable for production or preview incidents
 - [ ] Health check endpoint exists
 
 #### 6.4 Deployment & Recovery

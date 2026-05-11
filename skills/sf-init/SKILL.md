@@ -255,7 +255,9 @@ Créer les fichiers de contexte business/marque dans le dossier `shipflow_data/`
 
 **Pour chaque fichier** : vérifier d'abord s'il existe déjà dans le projet. Si oui, sauter.
 
-`shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/editorial/content-map.md` et `shipflow_data/technical/guidelines.md` sont des artefacts ShipFlow, pas de simples notes. Les anciens fichiers racine (`BUSINESS.md`, `BRANDING.md`, `CONTENT_MAP.md`, `GUIDELINES.md`) ne servent que de fallback legacy ou de source de migration quand ils existent encore. Les artefacts doivent commencer par un frontmatter YAML ShipFlow avec `metadata_schema_version`, `artifact_version`, `status`, `confidence`, `risk_level`, `evidence`, `next_review`, `depends_on` et `supersedes`. À l'initialisation, utiliser `metadata_schema_version: "1.0"` et `artifact_version: "0.1.0"` tant que le contenu n'a pas été revu explicitement par l'utilisateur; passer à `artifact_version: "1.0.0"` seulement si les réponses utilisateur couvrent les décisions essentielles sans placeholder.
+`shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/editorial/content-map.md` et `shipflow_data/technical/guidelines.md` sont des artefacts ShipFlow, pas de simples notes. Les anciens fichiers racine (`BUSINESS.md`, `BRANDING.md`, `CONTENT_MAP.md`, `GUIDELINES.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `PRODUCT.md`, `GTM.md`, `ARCHITECTURE.md`) ne servent que de sources de migration quand ils existent encore. Ils ne sont pas des emplacements finaux conformes. Les artefacts doivent commencer par un frontmatter YAML ShipFlow avec `metadata_schema_version`, `artifact_version`, `status`, `confidence`, `risk_level`, `evidence`, `next_review`, `depends_on` et `supersedes`. À l'initialisation, utiliser `metadata_schema_version: "1.0"` et `artifact_version: "0.1.0"` tant que le contenu n'a pas été revu explicitement par l'utilisateur; passer à `artifact_version: "1.0.0"` seulement si les réponses utilisateur couvrent les décisions essentielles sans placeholder.
+
+Les registres `shipflow_data/business/project-competitors-and-inspirations.md` et `shipflow_data/business/affiliate-programs.md` sont optionnels. `sf-init` ne les crée pas par défaut pour tous les projets. Si l'un d'eux existe déjà, reporter son statut et le faire valider par `/sf-docs update` ou le linter ShipFlow. Si l'utilisateur demande explicitement une initialisation marché/affiliation, utiliser les templates `templates/artifacts/competitive_intelligence.md` et `templates/artifacts/affiliate_program_registry.md`; sinon reporter `absent optionnel`.
 
 #### 5a. BUSINESS.md
 
@@ -682,6 +684,8 @@ CLAUDE.md:   [created / skipped / already existed]
 TASKS.md:    [created / skipped / already existed]
 shipflow_data/business/business.md: [created / skipped / already existed]
 shipflow_data/business/branding.md: [created / skipped / already existed]
+shipflow_data/business/project-competitors-and-inspirations.md: [absent optional / created on request / already existed / needs audit]
+shipflow_data/business/affiliate-programs.md: [absent optional / created on request / already existed / needs audit]
 shipflow_data/editorial/content-map.md: [created / skipped / already existed]
 shipflow_data/technical/guidelines.md: [created / skipped / already existed]
 AGENT.md:    [created / already existed / blocked]

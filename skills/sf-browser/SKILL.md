@@ -43,6 +43,8 @@ Always load these before browser work:
 
 Load `references/browser-evidence.md` when the request involves console/network evidence, screenshots, production data, redaction, sensitive output, uncertain verdicts, or localized report wording.
 
+Load `$SHIPFLOW_ROOT/skills/references/sentry-observability.md` when the browser check sees a crash, error boundary, 5xx, unhandled console exception, or visible Sentry/support event ID. Skills do not have direct Sentry dashboard access; use only visible/supplied issue or event pointers.
+
 Read `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` and inspect `CLAUDE.md` or `SHIPFLOW.md` before treating local browser proof as authoritative for changed behavior.
 
 ## Input Triage
@@ -86,9 +88,10 @@ In those cases, do not diagnose the app. Report the runtime blocker and route to
 4. Capture an accessibility snapshot first when useful.
 5. Capture a screenshot only when visual evidence adds value or the user asks for it.
 6. Review console messages or network requests only when relevant to the objective or when visible evidence is partial.
-7. Avoid raw dumps. Prefer targeted, redacted summaries.
-8. Decide a narrow verdict for the requested objective only.
-9. Route the next step based on the evidence.
+7. If a Sentry/support event ID is visible or supplied, correlate only that issue/event pointer and summarize it without raw payloads.
+8. Avoid raw dumps. Prefer targeted, redacted summaries.
+9. Decide a narrow verdict for the requested objective only.
+10. Route the next step based on the evidence.
 
 ## Read-Only Default
 
@@ -171,6 +174,7 @@ Observed: [short factual observation]
 Verdict: [pass / fail / partial / blocked / needs-auth / needs-deploy / needs-manual-test / unsafe-action]
 Evidence:
 - [snapshot/screenshot/console/network summary]
+- [Sentry issue/event summary or limit, when relevant]
 Limits:
 - [what was not proven]
 Next step:

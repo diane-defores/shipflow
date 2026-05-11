@@ -38,6 +38,8 @@ Le but est de donner un signal de confiance honnête sur la prod, pas un faux "t
 
 Si le déploiement ou le build passe par GitHub Actions sur Blacksmith runners, lire aussi `${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/technical/blacksmith.md` avant de conclure sur les logs, les métriques, le sizing runner, ou l'accès SSH.
 
+Lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md` quand le projet expose Sentry ou quand le signal prod dépend d'une erreur runtime, d'un 5xx, d'un crash, d'un flow auth/paiement/données, d'un job, d'un webhook, ou d'une erreur visible après déploiement.
+
 Le registry `PROJECTS.md` est en lecture seule dans cette skill.
 `sf-prod` ne doit jamais modifier `TASKS.md`, `AUDIT_LOG.md` ou `PROJECTS.md`.
 
@@ -179,6 +181,26 @@ Si la nature de la release rend le health check insuffisant, dire explicitement 
    - Paginer/relancer jusqu'à stabilisation (plus de nouvelles lignes) ou jusqu'au plafond de sécurité ci-dessous.
    - Plafond recommandé: jusqu'à 5000 lignes ou 10 appels successifs, puis marquer explicitement "collecte partielle" si incomplet.
 
+2.5. **Preuve runtime Sentry quand disponible** :
+   - Lire la référence Sentry partagée avant d'utiliser un issue/event comme preuve.
+   - Ne jamais supposer un accès direct au dashboard Sentry depuis la skill.
+   - Utiliser seulement les issue/event IDs fournis par l'utilisateur, affichés par l'app, présents dans les logs, ou déjà disponibles dans le contexte.
+   - Si un event ID est visible dans l'app, les logs ou un error boundary, l'inclure comme pointeur caviardé.
+   - Si aucun pointeur Sentry n'est disponible, le signaler comme limite de confiance et passer aux preuves PM2/Doppler quand elles sont disponibles.
+
+2.6. **Fallback PM2 local / Doppler par défaut hors pointeur Sentry** :
+   - Utiliser les logs PM2 locaux comme preuve runtime bornée quand l'app est gérée par PM2.
+   - Exemples à adapter au projet :
+   ```bash
+   pm2 list
+   pm2 logs contentflow_lab --lines 80 --nostream
+   tail -f ~/.pm2/logs/contentflow-lab-out.log
+   tail -f ~/.pm2/logs/contentflow-lab-error.log
+   ```
+   - Préférer `pm2 logs ... --lines N --nostream` pour les rapports; utiliser `tail -f` seulement pendant un diagnostic live, puis résumer.
+   - Pour Doppler, vérifier uniquement présence, scope, config et chargement des variables attendues. Ne jamais afficher les valeurs de secrets.
+   - Si aucun pointeur Sentry n'était exploitable mais que PM2/Doppler l'a été, reporter explicitement : `Sentry: no direct dashboard access; PM2/Doppler checked`.
+
 3. **Filtrage erreurs/warnings (obligatoire)** :
    - Après collecte brute, filtrer localement les lignes pertinentes.
    - Priorité de filtres:
@@ -297,6 +319,7 @@ Si tout est OK :
 **Health check :**  ✓ 200 OK (142ms)
 **Mode dev :**      vercel-preview-push
 **Source deploy :** Vercel MCP
+**Sentry :**        ISSUE-ID fourni/visible ou no direct dashboard access; PM2/Doppler checked
 
 Tout est live.
 ```
@@ -332,6 +355,7 @@ Dans tous les cas, ajouter une ligne `Hypothèses / risques restants` dès qu'un
 - Ne jamais conclure sur un échec avec des logs tronqués: d'abord collecter/paginer, ensuite filtrer.
 - En cas de Vercel, privilégier `get_deployment_build_logs` + filtrage local; dashboard web en fallback, pas en source primaire.
 - En cas de GitHub Actions sur Blacksmith, utiliser Run History, Logs, Metrics et SSH Access comme escalade de debug quand les logs standards ne suffisent pas; l'accès SSH ne remplace pas les logs dans le rapport final.
+- Quand Sentry est configuré, ne jamais supposer un accès dashboard; corréler seulement les pointeurs fournis/visibles au release/environnement courant et inclure seulement des pointeurs caviardés.
 - En mode `vercel-preview-push`, Vercel MCP est la source primaire pour attendre la fin du déploiement; les GitHub commit statuses ne suffisent pas à autoriser le test preview.
 - Si pas de CI/CD détecté (pas de statuses sur le commit), proposer un simple curl + signaler que le projet n'a pas de deploy automatique
 - Compatible Vercel, Netlify, et tout service qui publie des GitHub commit statuses

@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.3.0"
+artifact_version: "0.4.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-08"
+updated: "2026-05-11"
 status: draft
 source_skill: manual
 scope: "context"
@@ -13,10 +13,10 @@ confidence: "high"
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
-linked_systems: ["shipflow.sh", "lib.sh", "config.sh", "install.sh", "local/local.sh", "skills/", "shipflow-spec-driven-workflow.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "shipflow_data/technical/"]
+linked_systems: ["shipflow.sh", "lib.sh", "config.sh", "install.sh", "local/local.sh", "skills/", "shipflow-spec-driven-workflow.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "shipflow_data/technical/", "shipflow_data/business/project-competitors-and-inspirations.md", "shipflow_data/business/affiliate-programs.md"]
 depends_on: []
 supersedes: []
-evidence: ["README.md", "CLAUDE.md", "shipflow_data/editorial/content-map.md", function extraction from core shell scripts, "shipflow_data/technical/* as code-proximate subsystem documentation"]
+evidence: ["README.md", "CLAUDE.md", "shipflow_data/editorial/content-map.md", function extraction from core shell scripts, "shipflow_data/technical/* as code-proximate subsystem documentation", "Business registries added for project competitors/inspirations and affiliate programs."]
 next_step: "/sf-docs update shipflow_data/technical/context.md"
 ---
 
@@ -56,6 +56,8 @@ ShipFlow combine deux couches :
 - `shipflow_data/editorial/content-map.md`: carte des surfaces de contenu, pages piliers, cocons semantiques et destinations de repurposing.
 - `shipflow_data/technical/`: couche interne de documentation technique proche du code.
 - `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`: contrats business, produit et promesse publique.
+- `shipflow_data/business/project-competitors-and-inspirations.md`: registre par projet des concurrents, alternatives, inspirations et anti-patterns.
+- `shipflow_data/business/affiliate-programs.md`: registre par projet des affiliations, referrals, partners, disclosures et contraintes non secretes.
 - `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`: contrats structurels et techniques.
 
 ## Core Flows
@@ -182,6 +184,8 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - Changer la documentation technique proche du code : `shipflow_data/technical/code-docs-map.md` puis le doc primaire dans `shipflow_data/technical/`.
 - Changer la cartographie editoriale, les destinations de contenu ou les cocons semantiques : `shipflow_data/editorial/content-map.md`, puis `site/src/pages/docs.astro` ou les surfaces concernees.
 - Changer le positionnement, l'audience ou le scope produit : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/branding.md`.
+- Changer les concurrents, alternatives, inspirations marche, anti-patterns ou notes de differenciation par projet : `shipflow_data/business/project-competitors-and-inspirations.md`.
+- Changer les programmes d'affiliation, referral, sponsorship, partner ou disclosure commerciale : `shipflow_data/business/affiliate-programs.md`.
 - Changer la structure technique globale : `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, puis `lib.sh` ou les scripts concernes.
 
 ## Read First By Task
@@ -192,7 +196,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - Metadata docs : `shipflow-metadata-migration-guide.md`, `skills/sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`.
 - Docs techniques / code change : `shipflow_data/technical/code-docs-map.md`, puis le doc primaire mappe.
 - Tunnels / acces local : `local/README.md`, `local/local.sh`, `local/dev-tunnel.sh`.
-- Produit / business / site : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`.
+- Produit / business / site : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`, puis les registres `shipflow_data/business/project-competitors-and-inspirations.md` et `shipflow_data/business/affiliate-programs.md` si la tache touche marche, inspirations, differenciation ou monetisation partenaire.
 - Contenu / repurposing : `shipflow_data/editorial/content-map.md`, `skills/sf-repurpose/SKILL.md`, puis la surface cible.
 - Architecture / conventions : `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, `CLAUDE.md`.
 
@@ -211,6 +215,8 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - [business/product.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/product.md)
 - [business/branding.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/branding.md)
 - [business/gtm.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/gtm.md)
+- [business/project-competitors-and-inspirations.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/project-competitors-and-inspirations.md)
+- [business/affiliate-programs.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/affiliate-programs.md)
 - [technical/architecture.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/technical/architecture.md)
 - [technical/guidelines.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/technical/guidelines.md)
 

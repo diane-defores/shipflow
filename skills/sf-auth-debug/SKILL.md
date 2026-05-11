@@ -70,6 +70,7 @@ Références locales à charger selon le contexte:
 - `references/sdk-policy.md` pour choisir stable/beta/non-officiel dans le stack ShipFlow
 - `references/flutter-web-clerkjs-bridge.md` pour le pattern ContentFlow: Flutter web + routes HTML ClerkJS + bridge Dart
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` pour savoir si la preuve auth doit se faire en local ou après push sur preview Vercel
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md` quand le flow auth échoue avec une exception runtime, un error boundary, un 5xx, un event ID, ou un signal Sentry côté client/serveur
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md` pour Supabase Auth, `@supabase/ssr`, cookies, redirects, callbacks et limites `getUser()` / `getSession()`
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/flutter-web-clerkjs-auth-pattern.md` comme documentation technique transverse à réutiliser dans les autres repos Flutter
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/tubeflow-youtube-oauth-nextjs-convex-pattern.md` comme documentation technique transverse pour YouTube OAuth via Next.js + Convex
@@ -173,6 +174,8 @@ Charger les références locales pertinentes avant de conclure:
 - Clerk ou `@clerk/*` détecté -> lire `references/clerk-tooling.md`, puis `references/clerk-testing.md` si l'agent doit réellement tester, puis `references/clerk.md`
 - Supabase Auth, `@supabase/ssr`, `@supabase/supabase-js`, `supabase.auth`, `auth/v1`, callback email/OAuth Supabase, ou dossier `supabase/` détecté -> lire `references/supabase-tooling.md`, puis `references/supabase-testing.md` si l'agent doit réellement tester, puis `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`
 - Vercel ou problème de runtime/deploy/logs détecté -> lire `references/vercel-tooling.md`
+- Sentry détecté, event ID visible, 5xx, crash, error boundary, ou exception runtime pendant le flow auth -> lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md`
+- App PM2 sans pointeur Sentry fourni/visible -> utiliser les logs PM2 locaux et les checks Doppler caviardés décrits dans `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md`
 - Mode `vercel-preview-push`, `hybrid` avec flow hébergé, ou Vercel détecté -> lire aussi `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` et utiliser `sf-prod` pour obtenir l'URL de déploiement fiable avant Playwright
 - Google OAuth direct ou social login Google -> lire `references/google-oauth.md`
 - Convex détecté -> lire `references/convex-tooling.md`
@@ -273,6 +276,7 @@ Pour chaque hypothèse, chercher au moins une preuve observable:
 - statut réseau
 - contenu DOM
 - config ou code lu dans le repo
+- issue/event Sentry corrélé au même environnement et au même flow, si disponible
 
 Éviter les diagnostics vagues du type "Clerk ne marche pas".
 
@@ -318,6 +322,7 @@ Evidence:
 - [URL finale]
 - [message visible]
 - [signal réseau / console utile]
+- [Sentry issue/event corrélé ou limite Sentry]
 - [fichier ou config pertinent]
 
 Recommended next step:
@@ -362,5 +367,6 @@ Règle d'intégration:
 - Préférer une observation réelle à un raisonnement abstrait quand le flow est reproductible
 - Toujours nommer l'étape exacte de rupture
 - Toujours distinguer symptôme, preuve, hypothèse et correctif recommandé
+- Si un pointeur Sentry est fourni ou visible, l'utiliser comme preuve corrélée et caviardée; ne jamais supposer un accès dashboard et ne jamais coller de payload brut, breadcrumb sensible, token, cookie ou donnée privée.
 - Si l'auth complète est bloquée, pousser le diagnostic aussi loin que possible au lieu d'abandonner trop tôt
 - Ne jamais traiter un succès auth local comme preuve suffisante d'une preview Vercel quand le projet est en `vercel-preview-push` ou quand le bug dépend de callback, domaine, cookie, env déployée, edge/serverless ou provider OAuth hébergé.

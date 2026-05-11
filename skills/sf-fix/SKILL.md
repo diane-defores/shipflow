@@ -162,6 +162,13 @@ If the bug touches browser authentication, protected routes, OAuth redirects, Cl
 - use it to locate the exact failure step instead of inferring the auth break only from static code
 - keep `sf-fix` as the router and execution owner; `sf-auth-debug` provides evidence, not a separate workflow
 
+If the bug includes a crash, error boundary, 5xx, visible Sentry/support event ID, production exception, or suspected deployed-runtime failure:
+- load `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md`
+- use only supplied or visible Sentry issue/event evidence to identify the failing release, environment, stack frame, and affected surface
+- never assume direct Sentry dashboard access; if no Sentry pointer exists and the app is PM2-managed, use bounded local PM2 logs and redacted Doppler presence/scope checks as supporting runtime evidence
+- keep Sentry evidence redacted; do not paste raw payloads, breadcrumbs, replay contents, headers, cookies, tokens, private URLs, or PII into bug files or reports
+- if no Sentry pointer is available, report the observability gap instead of claiming no runtime error exists
+
 If the bug needs browser reproduction but is not auth-specific, prefer `/sf-browser [URL or route] [objective]` for public UI, visual, console, network, or non-auth navigation evidence before patching. Keep `sf-fix` as the execution owner when a direct fix is still appropriate.
 
 Force `spec-first` if any unresolved point could change:
@@ -213,6 +220,7 @@ If `direct`:
   - hypothesis
   - validation command (or why not run)
   - result (`failed|partial|passed`)
+  - Sentry issue/event pointer, `no pointer supplied`, `PM2-Doppler fallback`, or `not applicable`, when runtime evidence is relevant
   - next retest command (`/sf-test --retest BUG-ID`)
 - after patching, keep status `fix-attempted` until retest evidence exists
 - include the Documentation Freshness Gate verdict when it was triggered, especially the dependency/version and Context7 or official docs source that influenced the fix
@@ -254,6 +262,7 @@ Clarifications asked: [none / short list]
 Product coherence: [ok / risk]
 Documentation coherence: [ok / risk / not impacted]
 Fresh external docs: [checked / not needed / gap / conflict]
+Sentry evidence: [supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / not applicable]
 Development mode: [local / vercel-preview-push / hybrid / unknown-vercel]
 Preview verification gate: [not needed / requires sf-ship -> sf-prod / completed]
 Security posture: [ok / risk]

@@ -270,16 +270,16 @@ open_browser_or_print() {
 prompt_headless_token_or_verification() {
     local token=""
 
-    echo ""
-    echo -e "${YELLOW}Après avoir terminé le login Turso dans ton navigateur, reviens ici.${NC}"
-    echo -e "${YELLOW}Si Turso affiche un token/code long, colle-le ici. Sinon appuie juste sur Entrée.${NC}"
-    echo -e "${YELLOW}Le texte collé ne sera pas affiché.${NC}"
+    echo "" >&2
+    echo -e "${YELLOW}Après avoir terminé le login Turso dans ton navigateur, reviens ici.${NC}" >&2
+    echo -e "${YELLOW}Si Turso affiche un token/code long, colle-le ici. Sinon appuie juste sur Entrée.${NC}" >&2
+    echo -e "${YELLOW}Le texte collé ne sera pas affiché.${NC}" >&2
     if [ -r /dev/tty ]; then
         read -r -s token < /dev/tty || true
     else
         read -r -s token || true
     fi
-    echo ""
+    echo "" >&2
 
     printf '%s' "$token"
 }

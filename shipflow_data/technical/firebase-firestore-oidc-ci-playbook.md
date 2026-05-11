@@ -1,7 +1,7 @@
 ---
 artifact: technical_runbook
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: ShipFlow
 created: "2026-05-10"
 updated: "2026-05-10"
@@ -19,6 +19,10 @@ linked_systems:
   - Workload Identity Federation
   - Firebase CLI
   - Cloud Firestore
+depends_on: []
+supersedes: []
+evidence:
+  - "Runbook records a concrete GitHub OIDC / Firebase Firestore CI setup path and known failure signatures."
 next_step: "Reuse in every new project before first Firestore CI deploy."
 ---
 

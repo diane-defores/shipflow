@@ -14,7 +14,6 @@ from pathlib import Path
 
 
 BASE_DEFAULT_TARGETS = (
-    "specs",
     "docs",
     "shipflow_data",
     "AGENT.md",
@@ -28,6 +27,17 @@ BASE_DEFAULT_TARGETS = (
     "GTM.md",
     "GUIDELINES.md",
 )
+LEGACY_ROOT_CANONICAL = {
+    "ARCHITECTURE.md": "shipflow_data/technical/architecture.md",
+    "BRANDING.md": "shipflow_data/business/branding.md",
+    "BUSINESS.md": "shipflow_data/business/business.md",
+    "CONTENT_MAP.md": "shipflow_data/editorial/content-map.md",
+    "CONTEXT-FUNCTION-TREE.md": "shipflow_data/technical/context-function-tree.md",
+    "CONTEXT.md": "shipflow_data/technical/context.md",
+    "GTM.md": "shipflow_data/business/gtm.md",
+    "GUIDELINES.md": "shipflow_data/technical/guidelines.md",
+    "PRODUCT.md": "shipflow_data/business/product.md",
+}
 VALID_STATUSES = {"draft", "reviewed", "ready", "active", "stale", "superseded"}
 VALID_CONFIDENCE = {"low", "medium", "high", "unknown"}
 VALID_RISK = {"low", "medium", "high", "critical", "unknown"}
@@ -75,6 +85,14 @@ ARTIFACT_REQUIRED = {
     "product_context": {"target_user", "user_problem", "desired_outcomes", "non_goals", "next_review"},
     "architecture_context": {"linked_systems", "external_dependencies", "invariants", "next_review"},
     "gtm_context": {"target_segment", "offer", "channels", "proof_points", "next_review"},
+    "competitive_intelligence": {"target_projects", "reference_categories", "source_policy", "next_review"},
+    "affiliate_program_registry": {
+        "target_projects",
+        "program_statuses",
+        "disclosure_policy",
+        "secrets_policy",
+        "next_review",
+    },
     "technical_guidelines": {"linked_systems", "next_review"},
     "audit_report": {"domains", "issue_counts"},
     "verification_report": {"verified_outcomes", "assumptions"},
@@ -101,7 +119,32 @@ ARTIFACT_REQUIRED = {
     },
 }
 
-SKIP_ARTIFACT_TRACKERS = {"BUGS.md", "TEST_LOG.md"}
+SKIP_ARTIFACT_TRACKERS = {"AUDIT_LOG.md", "BUGS.md", "PROJECTS.md", "TASKS.md", "TEST_LOG.md"}
+OFFICIAL_ARTIFACT_PATHS = {
+    "AGENT.md",
+    "CONTEXT.md",
+    "shipflow_data/AGENT.md",
+    "CONTEXT-FUNCTION-TREE.md",
+    "CONTENT_MAP.md",
+    "shipflow_data/editorial/content-map.md",
+    "BUSINESS.md",
+    "BRANDING.md",
+    "PRODUCT.md",
+    "ARCHITECTURE.md",
+    "GTM.md",
+    "GUIDELINES.md",
+    "shipflow_data/business/business.md",
+    "shipflow_data/business/product.md",
+    "shipflow_data/business/branding.md",
+    "shipflow_data/business/gtm.md",
+    "shipflow_data/business/project-competitors-and-inspirations.md",
+    "shipflow_data/business/affiliate-programs.md",
+    "shipflow_data/technical/code-docs-map.md",
+    "shipflow_data/technical/README.md",
+    "shipflow_data/technical/context.md",
+    "shipflow_data/editorial/README.md",
+    "shipflow_data/workflow/specs",
+}
 
 
 def default_targets() -> list[str]:
@@ -172,30 +215,11 @@ def should_lint(path: Path, fields: dict[str, str], all_markdown: bool) -> bool:
         return True
     if fields.get("metadata_schema_version") or fields.get("artifact_version"):
         return True
-    if path.name in {
-        "AGENT.md",
-        "CONTEXT.md",
-        "shipflow_data/AGENT.md",
-        "CONTEXT-FUNCTION-TREE.md",
-        "CONTENT_MAP.md",
-        "shipflow_data/editorial/content-map.md",
-        "BUSINESS.md",
-        "BRANDING.md",
-        "PRODUCT.md",
-        "ARCHITECTURE.md",
-        "GTM.md",
-        "GUIDELINES.md",
-        "shipflow_data/business/business.md",
-        "shipflow_data/business/product.md",
-        "shipflow_data/business/branding.md",
-        "shipflow_data/business/gtm.md",
-        "shipflow_data/technical/code-docs-map.md",
-        "shipflow_data/technical/README.md",
-        "shipflow_data/technical/context.md",
-        "shipflow_data/editorial/README.md",
-        "shipflow_data/workflow/TASKS.md",
-        "shipflow_data/workflow/specs",
-    }:
+    path_key = path.as_posix()
+    if path.name in OFFICIAL_ARTIFACT_PATHS or any(
+        path_key == official_path or path_key.endswith(f"/{official_path}")
+        for official_path in OFFICIAL_ARTIFACT_PATHS
+    ):
         return True
     if "specs" in path.parts:
         return True
@@ -231,6 +255,12 @@ def validate(path: Path, fields: dict[str, str], initial_errors: list[str]) -> l
     errors = list(initial_errors)
     if errors:
         return errors
+
+    if len(path.parts) == 1 and path.name in LEGACY_ROOT_CANONICAL:
+        errors.append(
+            f"legacy root ShipFlow artifact; move to {LEGACY_ROOT_CANONICAL[path.name]} "
+            "or keep only as a temporary migration source"
+        )
 
     missing = sorted(key for key in COMMON_REQUIRED if key not in fields)
     if missing:

@@ -68,6 +68,7 @@ Orchestrate existing skills; do not duplicate their internals.
 - `sf-check` owns typecheck, lint, build, tests, and optional repair.
 - `sf-ship` owns staging, commit, push, and pre-ship bug risk.
 - `sf-prod` owns deployment discovery, provider state, build logs, runtime logs, and live health.
+- `sf-prod` owns Sentry runtime correlation for deploy/release health when Sentry is configured.
 - `sf-prod` owns Blacksmith Run History, Logs, Metrics, and SSH Access escalation when the release uses GitHub Actions on Blacksmith runners.
 - `sf-browser` owns non-auth page-level browser proof after the deployment URL is known.
 - `sf-auth-debug` owns login, OAuth, cookies, sessions, callbacks, tenants, and protected-route proof.
@@ -148,6 +149,7 @@ After a successful push, record:
 - branch
 - ship mode
 - whether hosted validation is required by project development mode
+- whether Sentry release/environment correlation is expected for post-deploy runtime proof
 
 ## Phase 4 — Deployment Truth
 
@@ -158,6 +160,8 @@ Run or route through:
 ```
 
 For Vercel projects, `sf-prod` should use Vercel MCP as the primary deployment truth source when available. Do not continue to browser or manual proof until the matching deployment URL is known and ready, unless the report explicitly marks deployment proof as partial.
+
+When Sentry is configured, deployment truth should include only Sentry evidence that `sf-prod` can see from a supplied/visible issue or event pointer, plus PM2/Doppler fallback evidence when no pointer exists. Skills must not assume direct Sentry dashboard access. Do not treat missing Sentry evidence as full product proof.
 
 For projects whose deploy, APK, or release artifact is built through GitHub Actions on Blacksmith runners, `sf-deploy` must route Blacksmith log and SSH debugging to `sf-prod`; it should not duplicate Blacksmith internals. If `sf-prod` reports that Blacksmith SSH inspection is required but unavailable because the job already ended, keep the release verdict partial or blocked and recommend a failure-only keepalive step or Blacksmith Monitor VM retention.
 
@@ -242,6 +246,7 @@ Evidence:
 - Deployment URL: [url or none]
 - Browser/manual proof: [summary or missing]
 - Logs: [summary or not collected]
+- Sentry: [issue/event summary | no direct dashboard access; PM2/Doppler checked | no pointer supplied | not applicable]
 
 Risks or gaps:
 - [item or none]
@@ -279,4 +284,5 @@ Verdict sf-deploy:
 - Follow the shared master delegation reference for delegated sequential defaults and spec/batch-gated parallelism.
 - Use existing skills for implementation, ship, deploy, and proof internals.
 - Never print secrets, cookies, tokens, private headers, or raw sensitive logs.
+- Never print raw Sentry payloads, breadcrumbs, replay contents, headers, cookies, tokens, private URLs, or PII; report redacted issue/event pointers only.
 - Never mutate production data, send emails, publish content, charge money, or delete records during deploy proof without explicit approval.
