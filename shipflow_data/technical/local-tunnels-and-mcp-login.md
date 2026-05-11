@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.6"
+artifact_version: "1.0.7"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-10"
@@ -29,7 +29,7 @@ evidence:
   - "Managed tunnel detection accepts SSH targets before or after -L in process args."
   - "Local menu headers refreshed to match server ShipFlow DevServer treatment."
   - "Turso SSH auth transfer helper added for remote CLI schema proof."
-  - "Turso remote login helper changed to headless-first guided local flow."
+  - "Turso remote login helper accepts browser-provided headless JWT/token."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit local"
 ---
@@ -61,7 +61,7 @@ Blacksmith SSH Access is intentionally separate from these OAuth callback tunnel
 - `urls` and `tunnel`: shell aliases to `local/local.sh`.
 - `shipflow-mcp-login <provider|all>`: launches remote Codex MCP login and opens a temporary callback tunnel.
 - `shipflow-blacksmith-login`: launches remote `blacksmith auth login` and opens a temporary callback tunnel.
-- `shipflow-turso-login`: launches remote `turso auth login --headless` by default, opens/prints the auth URL, then verifies `turso auth whoami`.
+- `shipflow-turso-login`: launches remote `turso auth login --headless` by default, opens/prints the auth URL, accepts the browser-provided JWT/token when Turso shows one, stores it through the official remote CLI, then verifies `turso auth whoami`.
 - Local `urls` menu entry `Turso - Login et checks distants`: guided wrapper for login, ContentFlow checks, and fallback session copy.
 - `shipflow-turso-ssh [db-name]`: copies local Turso CLI config to the remote server, verifies `turso auth whoami`, and optionally checks ContentFlow tables.
 - `local/dev-tunnel.sh`: direct tunnel helper for scripted or simplified flows.
@@ -104,7 +104,8 @@ shipflow-turso-login
   -> run remote turso auth login --headless by default
   -> extract auth URL
   -> open or print Turso auth URL locally
-  -> ask operator to confirm browser login completion
+  -> accept optional Turso JWT/token from the browser page
+  -> run remote turso config set token without printing token contents
   -> verify turso auth whoami without reading token files
 ```
 

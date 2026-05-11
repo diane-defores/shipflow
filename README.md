@@ -233,7 +233,10 @@ For Turso Cloud CLI auth on a remote ShipFlow server, use
 ShipFlow `Agents` menu also includes a guided Turso screen with status,
 login instructions, ContentFlow checks, and security notes. The local helper
 uses Turso's headless login flow by default because Turso does not always match
-the localhost callback behavior used by Blacksmith or hosted MCP OAuth.
+the localhost callback behavior used by Blacksmith or hosted MCP OAuth. If the
+Turso browser page displays a JWT/token, paste it back into the ShipFlow prompt;
+ShipFlow sends it to the remote official CLI with `turso config set token` and
+then verifies `turso auth whoami`.
 `shipflow-turso-ssh` remains available as a fallback that copies the
 local official Turso CLI config directory to the configured server over
 SSH/SCP, verifies `turso auth whoami`, and can run the ContentFlow table/column

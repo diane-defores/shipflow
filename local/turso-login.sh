@@ -38,7 +38,8 @@ Usage: shipflow-turso-login [options]
 Run this from your local machine. It starts Turso CLI auth on the configured
 remote ShipFlow server. Turso's supported remote/WSL mode is headless, so this
 helper uses `turso auth login --headless` by default, opens or prints the auth
-URL locally, then asks you to confirm before it verifies `turso auth whoami`.
+URL locally, lets you paste the Turso JWT/token if the browser shows one, then
+verifies `turso auth whoami`.
 
 Options:
   --project-dir <path>   Run remote Turso through `flox activate -d <path> --`.
@@ -266,15 +267,38 @@ open_browser_or_print() {
     fi
 }
 
-prompt_headless_verification() {
+prompt_headless_token_or_verification() {
+    local token=""
+
     echo ""
     echo -e "${YELLOW}Après avoir terminé le login Turso dans ton navigateur, reviens ici.${NC}"
-    echo -e "${YELLOW}Appuie sur Entrée pour vérifier l'auth côté serveur.${NC}"
+    echo -e "${YELLOW}Si Turso affiche un token/code long, colle-le ici. Sinon appuie juste sur Entrée.${NC}"
+    echo -e "${YELLOW}Le texte collé ne sera pas affiché.${NC}"
     if [ -r /dev/tty ]; then
-        read -r _ < /dev/tty || true
+        read -r -s token < /dev/tty || true
     else
-        read -r _ || true
+        read -r -s token || true
     fi
+    echo ""
+
+    printf '%s' "$token"
+}
+
+configure_remote_turso_token() {
+    local token="$1"
+    local set_token_command
+
+    if [ -z "$token" ]; then
+        return 0
+    fi
+
+    if [ -n "$PROJECT_DIR" ]; then
+        set_token_command="IFS= read -r token; flox activate -d $(remote_quote "$PROJECT_DIR") -- turso config set token \"\$token\""
+    else
+        set_token_command='IFS= read -r token; turso config set token "$token"'
+    fi
+
+    printf '%s\n' "$token" | run_remote_bash "$set_token_command"
 }
 
 wait_for_url_or_timeout() {
@@ -371,6 +395,7 @@ start_remote_login() {
 run_turso_login() {
     local auth_url=""
     local callback_port=""
+    local headless_token=""
 
     if ! check_remote_ssh; then
         return 1
@@ -442,7 +467,16 @@ run_turso_login() {
     echo -e "${YELLOW}⏳ Finalise le login Turso dans le navigateur...${NC}"
 
     if [ "$FORCE_HEADLESS" -eq 1 ]; then
-        prompt_headless_verification
+        headless_token="$(prompt_headless_token_or_verification)"
+        if [ -n "$headless_token" ]; then
+            echo -e "${BLUE}🔐 Configuration du token Turso côté serveur...${NC}"
+            if ! configure_remote_turso_token "$headless_token"; then
+                echo -e "${RED}✗ Token Turso refusé par le CLI distant.${NC}"
+                echo -e "${YELLOW}  Vérifie que tu as collé le token/JWT complet donné par Turso, pas l'URL.${NC}"
+                return 1
+            fi
+            headless_token=""
+        fi
         if kill -0 "$REMOTE_SSH_PID" 2>/dev/null; then
             wait "$REMOTE_SSH_PID" || true
         fi

@@ -169,11 +169,13 @@ shipflow-turso-login --project-dir /home/<user>/<projet>
 ```
 
 Le helper lance `turso auth login --headless` sur le serveur, ouvre ou affiche
-l'URL dans votre navigateur local, puis vous demande de revenir au terminal pour
-vérifier `turso auth whoami` côté serveur. Turso ne suit pas toujours le même
-modèle callback que Blacksmith/Supabase; le mode headless est le chemin remote
-officiel. Un mode callback avancé reste disponible avec
-`shipflow-turso-login --browser-callback`, mais ce n'est pas le défaut.
+l'URL dans votre navigateur local, puis vous demande de revenir au terminal. Si
+Turso affiche un token/code JWT dans le navigateur, collez-le dans cette invite:
+ShipFlow l'envoie au CLI officiel côté serveur via `turso config set token`
+avant de vérifier `turso auth whoami`. Turso ne suit pas toujours le même modèle
+callback que Blacksmith/Supabase; le mode headless est le chemin remote officiel.
+Un mode callback avancé reste disponible avec `shipflow-turso-login
+--browser-callback`, mais ce n'est pas le défaut.
 
 Pour transférer une session Turso CLI déjà authentifiée depuis le poste local
 vers le serveur ShipFlow configuré sans refaire le login distant, utilisez :
