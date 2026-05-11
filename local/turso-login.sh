@@ -213,7 +213,10 @@ wait_local_tunnel_ready() {
 }
 
 extract_auth_url() {
-    sed -nE 's/.*(https:\/\/[^[:space:]"]+).*/\1/p' "$LOGIN_OUTPUT_FILE" | tail -1
+    local auth_url
+    auth_url="$(sed -nE 's/.*(https:\/\/[^[:space:]"]+).*/\1/p' "$LOGIN_OUTPUT_FILE" | tail -1)"
+    [ -n "$auth_url" ] || return 1
+    printf '%s\n' "$auth_url"
 }
 
 parse_turso_callback_port_from_text() {
