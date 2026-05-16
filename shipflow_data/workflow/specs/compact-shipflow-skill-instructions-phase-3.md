@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-05-16"
 created_at: "2026-05-16 13:50:01 UTC"
 updated: "2026-05-16"
-updated_at: "2026-05-16 13:54:11 UTC"
+updated_at: "2026-05-16 13:55:34 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -56,7 +56,7 @@ evidence:
   - "After phase 2, skill budget audit reports 0 hard violations, 0 warnings, 0 SKILL.md files over 500 lines, and 11 bodies over about 5000 tokens."
   - "Remaining token-risk non-lifecycle targets: sf-audit 5721, sf-audit-a11y 5563, sf-audit-copy 7254, sf-audit-gtm 5459, sf-auth-debug 5174, sf-enrich 6035, sf-market-study 5429, sf-prod 5528, sf-redact 6526 estimated tokens."
   - "Remaining lifecycle token-risk targets sf-spec and sf-start are deferred to a dedicated phase because they own lifecycle gates; sf-start also has pre-existing dirty changes outside this chantier."
-next_step: "/sf-ship Compact ShipFlow Skill Instructions Phase 3"
+next_step: "none"
 ---
 
 # Spec: Compact ShipFlow Skill Instructions Phase 3
@@ -263,6 +263,7 @@ None. The target set is determined by the current budget audit and excludes life
 | 2026-05-16 13:54:11 UTC | sf-start | GPT-5 Codex | Compacted 9 non-lifecycle token-risk skills into activation surfaces and skill-local workflow references | implemented | /sf-verify Compact ShipFlow Skill Instructions Phase 3 |
 | 2026-05-16 13:54:11 UTC | sf-verify | GPT-5 Codex | Verified budget audit, metadata lint, runtime sync, and focused skill coherence checks | verified | /sf-end Compact ShipFlow Skill Instructions Phase 3 |
 | 2026-05-16 13:54:11 UTC | sf-end | GPT-5 Codex | Closed phase 3 chantier and prepared quick ship | closed | /sf-ship Compact ShipFlow Skill Instructions Phase 3 |
+| 2026-05-16 13:55:34 UTC | sf-ship | GPT-5 Codex | Committed and pushed phase 3 compaction to origin/main | shipped | none |
 
 ## Current Chantier Flow
 
@@ -271,5 +272,5 @@ None. The target set is determined by the current budget audit and excludes life
 - sf-start: implemented
 - sf-verify: verified
 - sf-end: closed
-- sf-ship: not launched
-- Next step: `/sf-ship Compact ShipFlow Skill Instructions Phase 3`
+- sf-ship: shipped
+- Next step: none
