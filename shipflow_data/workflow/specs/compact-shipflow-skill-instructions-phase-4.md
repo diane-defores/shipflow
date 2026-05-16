@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-05-16"
 created_at: "2026-05-16 14:10:00 UTC"
 updated: "2026-05-16"
-updated_at: "2026-05-16 14:18:00 UTC"
+updated_at: "2026-05-16 14:22:00 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -52,7 +52,7 @@ evidence:
   - "After phase 3, skill budget audit reports only two token-risk skills: sf-spec and sf-start."
   - "sf-spec and sf-start are lifecycle gates, so their compaction needs a dedicated phase with stricter preservation of chantier semantics."
   - "skills/sf-start/SKILL.md already contains a local result-semantics clarification that must be preserved during compaction."
-next_step: "/sf-ship Compact ShipFlow Skill Instructions Phase 4"
+next_step: "none"
 ---
 
 # Spec: Compact ShipFlow Skill Instructions Phase 4
@@ -119,7 +119,7 @@ When phase 4 runs, ShipFlow must compact the two remaining lifecycle `SKILL.md` 
 - [x] Preserve `sf-start` result semantics in the compact top-level body.
 - [x] Run budget audit, metadata lint, runtime sync, and focused lifecycle `rg` checks.
 - [x] Update changelog and this spec's run history.
-- [ ] Commit and push the phase 4 changes.
+- [x] Commit and push the phase 4 changes.
 
 ## Acceptance Criteria
 
@@ -137,6 +137,7 @@ When phase 4 runs, ShipFlow must compact the two remaining lifecycle `SKILL.md` 
 | 2026-05-16 14:18:00 UTC | sf-start | GPT-5 Codex | Compacted lifecycle skill activation bodies and moved detailed workflows to local references | implemented | /sf-verify Compact ShipFlow Skill Instructions Phase 4 |
 | 2026-05-16 14:18:00 UTC | sf-verify | GPT-5 Codex | Ran budget audit, metadata lint, runtime sync, and focused lifecycle gate checks | verified | /sf-end Compact ShipFlow Skill Instructions Phase 4 |
 | 2026-05-16 14:18:00 UTC | sf-end | GPT-5 Codex | Updated changelog and prepared phase 4 for shipping | closed | /sf-ship Compact ShipFlow Skill Instructions Phase 4 |
+| 2026-05-16 14:22:00 UTC | sf-ship | GPT-5 Codex | Committed and pushed phase 4 lifecycle compaction to origin/main | shipped | none |
 
 ## Current Chantier Flow
 
@@ -146,5 +147,5 @@ When phase 4 runs, ShipFlow must compact the two remaining lifecycle `SKILL.md` 
 - sf-start: implemented
 - sf-verify: verified
 - sf-end: closed
-- sf-ship: pending
-- Next step: /sf-ship Compact ShipFlow Skill Instructions Phase 4
+- sf-ship: shipped
+- Next step: none
