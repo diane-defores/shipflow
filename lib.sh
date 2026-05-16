@@ -7609,7 +7609,7 @@ print_header() {
     local long_count
     long_count=$(mem_long_running_processes 2>/dev/null | wc -l)
     if [ "${long_count:-0}" -gt 0 ]; then
-        echo -e "${YELLOW}⚠️  ${long_count} process(es) running ${SHIPFLOW_PROCESS_LONG_RUNNING_HOURS:-24}h+ — press h) Health Check${NC}"
+        echo -e "${YELLOW}⚠️  ${long_count} process(es) running ${SHIPFLOW_PROCESS_LONG_RUNNING_HOURS:-24}h+ — press s) System, then h) Health Check${NC}"
     fi
 
     echo ""

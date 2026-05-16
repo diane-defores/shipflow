@@ -29,6 +29,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-05-14]
 
 ### Changed
+- `sf-build agents` now explicitly validates delegated sequential execution for file work, validation, closure preparation, and ship preparation; parallel agents remain controlled only by ready spec `Execution Batches`.
 - `sf-model`, `sf-start`, and shared master lifecycle references now treat `gpt-5.5` as the Codex/OpenAI premium default for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work.
 - Small bounded Codex/OpenAI subagent missions now default to `gpt-5.4-mini`, with `gpt-5.3-codex-spark` reserved for micro-code or targeted UI/local edits.
 - `gpt-5.3-codex` is now documented as the Codex/OpenAI default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution.

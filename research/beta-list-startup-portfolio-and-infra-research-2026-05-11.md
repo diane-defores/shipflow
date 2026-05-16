@@ -3,7 +3,7 @@ artifact: research
 project: "ShipFlow"
 created: "2026-05-11"
 updated: "2026-05-11"
-status: reviewed
+status: dispatched
 source_skill: sf-research
 scope: "Betalist startup roundup + DataForSEO + Web-Analytics"
 confidence: "medium"
@@ -42,6 +42,7 @@ evidence:
   - "https://web-analytics.ai/"
   - "https://dataforseo.com/help-center/live-vs-standard-method/amp"
 next_step: "Prioritize the startup list into an evaluation shortlist, then run technical due diligence on 3-5 highest-value candidates against fit, cost, and risk before any pilots."
+dispatch_artifact: "/home/claude/shipflow_data/projects/veille-dispatch-2026-05-11.md"
 ---
 
 # Research: BetaList + Data/Analytics Signals (2026-05-11)

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.2.1"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-06"
+updated: "2026-05-14"
 status: active
 source_skill: sf-build
 scope: master-delegation-semantics
@@ -34,6 +34,7 @@ evidence:
   - "User decision 2026-05-04: delegation/subagent execution is distinct from parallelism; parallelism means simultaneous subagents and requires ready Execution Batches."
   - "User decision 2026-05-04: short natural-language confirmations continue the current chantier in delegated sequential mode after diagnosis or proposal; they are interpreted by intent, not exact keyword."
   - "User decision 2026-05-06: sf-design joins the master/orchestrator topology set."
+  - "User decision 2026-05-14: an `agents` argument should explicitly validate delegated sequential execution; parallelism remains spec-gated through `Execution Batches`, not an `agents parallel` shortcut."
 next_review: "2026-06-04"
 next_step: "/sf-verify master delegation semantics"
 ---
@@ -68,6 +69,8 @@ When subagents are available, the default topology for master-skill work that re
 
 Use one bounded subagent at a time. A small scope may use a mini-contract, but small scope is not an exception to delegation. If file work or validation is needed and subagents are available, the master should delegate sequentially instead of doing routine diffs or patches in the master conversation.
 
+When a master skill accepts an `agents` argument, treat it as a strict delegated sequential request for the current work item. If file work, validation, closure preparation, or ship preparation proceeds without a bounded subagent, the run must stop or report `degraded: subagents unavailable/not applied` with the reason. `agents` never means parallel execution.
+
 For Codex/OpenAI subagents, the default bounded mission model is `gpt-5.4-mini`. Escalate only when the mission profile requires it: `gpt-5.3-codex-spark` for micro-code or targeted UI/local edits, `gpt-5.3-codex` for long implementation or multi-file code work, and `gpt-5.5` for transverse audits, risky arbitration, architecture/product decisions, or business-risk synthesis.
 
 Each delegated mission must include:
@@ -100,6 +103,8 @@ Do not reinterpret short confirmations as consent for parallel subagents. Do not
 ## Parallelism
 
 Parallelism means simultaneous subagents. It is allowed only through ready `Execution Batches`.
+
+Do not define an argument-level `agents parallel` mode. If the user asks for parallel agents, route to the ready spec's `Execution Batches` or block until those batches define non-overlapping ownership and integration.
 
 Ready `Execution Batches` must define:
 

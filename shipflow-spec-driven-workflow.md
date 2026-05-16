@@ -97,7 +97,7 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `shipflow <instruction>` | Routes pure conversational answers directly; routes real work to the right master or specialist skill; asks one numbered question when ambiguous. |
-| Non-trivial product, code, site, or docs work | `sf-build <story, bug, or goal>` | Plain task text is the story; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
+| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story; use `agents` to make delegated sequential execution a validation gate; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
@@ -155,7 +155,7 @@ Direct build entrypoint for non-trivial work:
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
 ```
 
-`sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: delegated sequential is the default for file and validation work, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`.
+`sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: delegated sequential is the default for file and validation work, `agents` makes that delegation a strict validation gate, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`.
 
 Recommended release entrypoint after implementation:
 

@@ -86,7 +86,7 @@ sudo ./install.sh
   default system `caddy.service`; normal environment proxying is launched later
   by ShipFlow in user mode and tied to PM2 app lifecycle.
 - Existing user config must be preserved outside ShipFlow-managed blocks.
-- Symlinks and aliases should be idempotent and updated consistently.
+- Symlinks and aliases should be idempotent and updated consistently. The managed bash aliases include `shipflow`/`sf`/`s`, Claude/Codex launch shortcuts, reload helpers, and `ch` for clearing the current terminal plus tmux pane history (`clear; tmux clear-history`).
 - Helper command wrappers under `/usr/local/bin` should point back to scripts in
   `$SHIPFLOW_ROOT`; do not duplicate helper logic into generated files.
 - ShipFlow skill runtime entries under `~/.claude/skills` and `~/.codex/skills` are symlinks to `$SHIPFLOW_ROOT/skills/<name>`.

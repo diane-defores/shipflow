@@ -54,7 +54,7 @@ Use a focused skill directly when you intentionally want one owner lane: checks,
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes feature/code/docs to `sf-build`, maintenance to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, design to `sf-design`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. Uses context-safe defaults and asks one numbered question when ambiguity changes route, risk, scope, or proof. |
-| Non-trivial product, code, site, or docs work | `sf-build <story, bug, or goal>` | Plain task text is the story. Use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
+| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story. Use `agents` to make delegated sequential execution a validation gate. Use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
@@ -87,7 +87,7 @@ Model routing note: `sf-model` recommends the right model for the current scope.
 | Skill | Explicit modes currently documented |
 | --- | --- |
 | `shipflow` | `<instruction>`; pure conversation direct answer; direct main-thread handoff to selected `sf-*` skill; one numbered clarification question when ambiguous |
-| `sf-build` | `<story, bug, or goal>`; `report=agent`; `handoff`; `verbose`; `full-report` |
+| `sf-build` | `<story, bug, or goal>`; `agents`; `no-agents`; `report=agent`; `handoff`; `verbose`; `full-report` |
 | `sf-maintain` | no argument/`full`; `quick`; `security`; `deps`; `docs`; `audits`; `no-ship`; `global`; detailed report modes |
 | `sf-deploy` | no argument; `skip-check`; `--preview`; `--prod`; `no-changelog` |
 | `sf-bug` | no argument; `BUG-ID`; free-text summary; `--fix`; `--retest`; `--verify`; `--ship`; `--close` |
@@ -109,3 +109,9 @@ An argument can be one of three things:
 | Free-form task | The argument is the actual work description. | `sf-build add a markdown skill cheatsheet` |
 
 When in doubt, read the skill's `argument-hint` and mode-detection section. If no mode rule matches, treat the argument as a task or target description.
+
+## Shell Shortcuts
+
+| Shortcut | Expands to | Use |
+| --- | --- | --- |
+| `ch` | `clear; tmux clear-history` | Clear the current shell screen and the current tmux pane scrollback. |

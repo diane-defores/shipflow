@@ -201,7 +201,7 @@ Score each category **A/B/C/D**. Be strict.
 - [ ] User-facing errors are helpful and actionable
 - [ ] Edge cases handled: null, undefined, empty arrays, network failure
 - [ ] No unhandled promise rejections
-- [ ] Runtime exceptions are reported to Sentry with safe context when the project uses Sentry
+- [ ] Runtime exceptions are reported to Sentry with safe release/environment context and sanitized tags, contexts, breadcrumbs, logs, and replay settings when the project uses Sentry
 
 #### 7. Performance
 - [ ] No unnecessary re-renders (React: stable callbacks, proper deps arrays)
@@ -218,7 +218,7 @@ Score each category **A/B/C/D**. Be strict.
 - [ ] No secrets or hardcoded credentials
 - [ ] No `eval()`, `new Function()`, or dynamic code execution
 - [ ] No open redirects, XSS, injection, IDOR, or cross-tenant access vectors
-- [ ] Sensitive data is not leaked through logs, errors, cache, analytics, or client state
+- [ ] Sensitive data is not leaked through logs, errors, cache, analytics, client state, Sentry contexts, breadcrumbs, replays, uptime checks, source maps, or alert/webhook payloads
 - [ ] External integrations, webhooks, uploads, generated content, and async jobs have trust checks
 - [ ] Availability / abuse controls exist when relevant: rate limits, quotas, body size limits, retry discipline, idempotency
 
@@ -307,6 +307,7 @@ Read the project structure, entry points, docs, route map, tests, and 10-15 key 
 - [ ] Actor, trigger, expected behavior, and value are identifiable
 - [ ] The main promise is observable in the product, not only implied in implementation details
 - [ ] Scope boundaries are visible: what this product deliberately does not do
+- [ ] Critical operator-facing failure signals are named before scoring: errors, slow spans, log patterns, custom metrics, cron jobs, uptime URLs, releases, and mobile build size where relevant
 
 #### 1.2 Product Coherence
 - [ ] Main flows feel coherent from UI to backend to data side effects
@@ -333,6 +334,8 @@ Critique the product as an adversary and as a disappointed user.
 - [ ] Invalid state transitions are rejected
 - [ ] Partial failure, timeout, cancellation, and rollback paths are coherent
 - [ ] Async jobs and manual actions do not race into inconsistent outcomes
+- [ ] Critical async jobs, webhooks, queues, scheduled tasks, and external callbacks have an observable success/failure signal suitable for a Cron Monitor, Metric Monitor, or structured log monitor
+- [ ] Alert-worthy failures create or update triageable Sentry issues before notification routing is assumed; Monitors own detection, Alerts own routing
 
 #### 2.2 Abuse & Misuse Cases
 - [ ] Unauthorized user, malicious user, cross-tenant user, or low-privilege operator paths were considered
@@ -385,7 +388,8 @@ Read the project structure, entry points, configs, and 10-15 key files. Audit:
 - [ ] Common utilities exist exactly once (no “near-duplicate” helpers across `utils/`, `lib/`, `shared/`)
 - [ ] Error handling is standardized (don’t have multiple competing patterns unless clearly scoped)
 - [ ] Validation is standardized at boundaries (pick one approach per layer)
-- [ ] Logging/telemetry is consistent (structured logs, consistent error context)
+- [ ] Logging/telemetry is consistent and monitor-ready: structured logs, spans, metrics, tags, and contexts use stable names, bounded attributes, and shared conventions
+- [ ] Sentry monitor/alert configuration in code, IaC, scripts, runbooks, or docs uses the Monitors/Alerts split, not deprecated Metric Alert or Issue Alert API assumptions
 - [ ] No parallel state-management paradigms competing in the same app (unless intentionally isolated)
 - [ ] New code follows conventions set in the last 3–6 months (avoid regressions to legacy patterns)
 
@@ -452,6 +456,8 @@ Quick architecture-level checks only:
 - [ ] User data deletion possible (RGPD)
 - [ ] File uploads stored outside web root
 - [ ] Sensitive data minimized in analytics, telemetry, caches, and client state
+- [ ] Sentry contexts, breadcrumbs, logs, custom metric attributes, replay settings, uptime headers/bodies, and alert/webhook payloads exclude secrets, tokens, auth codes, private URLs, user content, and unnecessary PII
+- [ ] Source map, debug symbol, and Sentry auth-token upload config keeps tokens in CI secrets and prevents public `.map` exposure after upload
 - [ ] Backups, exports, and support/admin tools do not widen access accidentally
 
 #### 5.6 Availability & Abuse Resistance
@@ -467,7 +473,7 @@ Quick architecture-level checks only:
 #### 6.1 Error Handling
 - [ ] Errors caught at every async boundary
 - [ ] Errors logged with context
-- [ ] Sentry captures operationally meaningful exceptions with environment/release context and without sensitive payloads
+- [ ] Sentry captures operationally meaningful exceptions and monitor-created issues with environment, release, dist/build/source-map context, and without sensitive payloads
 - [ ] External service failures have fallback
 - [ ] Unhandled rejections caught at process level
 
@@ -480,8 +486,12 @@ Quick architecture-level checks only:
 
 #### 6.3 Observability
 - [ ] Structured logging (not just `console.log`)
-- [ ] Sentry is configured unless the project documents an explicit exception
-- [ ] Sentry release, environment, source maps, and issue/event correlation are usable for production or preview incidents
+- [ ] Sentry instrumentation and monitor coverage are configured unless the project documents an explicit static-site exception
+- [ ] Sentry release, environment, dist/build id, source maps/debug IDs, issue/event IDs, and monitor/alert source scope are usable for production or preview incidents
+- [ ] Monitors and Alerts are treated separately in evidence: Monitors define detection thresholds and issue creation; Alerts define sources, triggers, filters, and actions
+- [ ] Metric Monitors for critical flows use appropriate datasets and thresholds across errors, spans, logs, releases, or application metrics, with fixed/change/dynamic thresholds chosen from expected traffic patterns
+- [ ] Alerts have explicit owners, source scope, environment scope, trigger/filter rationale, notification frequency, and severity routing
+- [ ] Cron and uptime coverage exists for operator-critical scheduled jobs and public or protected health-critical URLs, unless the static-site exception explicitly applies
 - [ ] Health check endpoint exists
 
 #### 6.4 Deployment & Recovery

@@ -1394,7 +1394,7 @@ configure_aliases() {
     local bashrc="$1/.bashrc"
     [ -f "$bashrc" ] || touch "$bashrc"
     sed -i '/^# >>> ShipFlow AI aliases >>>$/,/^# <<< ShipFlow AI aliases <<<$/{d}' "$bashrc"
-    sed -i '/^alias \(shipflow\|sf\|s\|c\|co\|cask\|coask\|re\|reload\)=/d' "$bashrc"
+    sed -i '/^alias \(shipflow\|sf\|s\|c\|co\|cask\|coask\|ch\|re\|reload\)=/d' "$bashrc"
     cat >> "$bashrc" << ALIASES
 
 # >>> ShipFlow AI aliases >>>
@@ -1405,6 +1405,7 @@ alias c='claude --dangerously-skip-permissions --permission-mode bypassPermissio
 alias co='codex'
 alias cask='claude --permission-mode default'
 alias coask='codex --ask-for-approval on-request --sandbox danger-full-access'
+alias ch='clear; tmux clear-history'
 alias re='source ~/.bashrc && echo "✓ Shell reloaded"'
 alias reload='source ~/.bashrc && echo "✓ Shell reloaded"'
 # <<< ShipFlow AI aliases <<<

@@ -4,6 +4,26 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-12 — shared Sentry Monitors/Alerts refresh
+
+**Added:**
+- [reference] Sentry Monitors/Alerts split: Monitors detect/create issues, Alerts route notifications/actions
+- [reference] Metric Monitor migration, Cron Monitor, Uptime Monitor, and alert-routing evidence rules
+- [sf-prod] Sentry Uptime comparison and monitor-alert runtime proof checks
+- [sf-audit-code] Monitor-ready telemetry, monitor coverage, alert routing, and sensitive telemetry checks
+- [sf-verify] Monitor/alert correlation statuses and runtime confidence gap rules
+
+**Updated:**
+- [reference] Sentry evidence, correlation, reporting, privacy, and performance rules now distinguish detection from routing
+- [sf-prod] Sentry proof now accepts only visible/operator-provided issue/event/monitor/alert evidence
+- [sf-audit-code] Reliability and security checks now include monitor-created issues, dist/build IDs, debug IDs, and alert/webhook payloads
+- [sf-verify] Sentry status vocabulary now separates monitor issue proof from alert routing proof
+
+**New phases:**
+- None
+
+**Sources:** 30 URLs consulted
+
 ## 2026-05-11 — shared Sentry observability doctrine
 
 **Added:**

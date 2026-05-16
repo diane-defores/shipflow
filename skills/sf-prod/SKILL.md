@@ -159,6 +159,7 @@ Quand c'est faisable sans inventer de scénario fragile, ajouter un check de coh
 - vérifier l'URL finale après redirection (`curl -I -L` ou équivalent)
 - vérifier qu'on touche bien le domaine de prod attendu
 - vérifier un marqueur simple de contenu si la page principale doit afficher un titre ou un mot-clé connu
+- si une preuve Sentry Uptime Monitor est fournie, comparer le résultat `curl` avec le monitor : URL/méthode, intervalle, timeout, critères de succès, dernier état, et issue liée si déclenchée
 
 Si la release concerne l'auth, une zone protégée, un dashboard privé, ou un callback OAuth:
 - signaler qu'un `200` public ne prouve pas le flow principal
@@ -184,7 +185,12 @@ Si la nature de la release rend le health check insuffisant, dire explicitement 
 2.5. **Preuve runtime Sentry quand disponible** :
    - Lire la référence Sentry partagée avant d'utiliser un issue/event comme preuve.
    - Ne jamais supposer un accès direct au dashboard Sentry depuis la skill.
-   - Utiliser seulement les issue/event IDs fournis par l'utilisateur, affichés par l'app, présents dans les logs, ou déjà disponibles dans le contexte.
+   - Utiliser seulement les issue/event/monitor/alert IDs fournis par l'utilisateur, affichés par l'app, présents dans les logs, ou déjà disponibles dans le contexte.
+   - Distinguer Sentry Monitor et Alert : le Monitor détecte et crée/met à jour une issue; l'Alert route la notification ou l'action.
+   - Si un monitor breach est fourni/visible, relier seulement les preuves caviardées : `monitor id/name/type -> issue shortId/event id -> alert/workflow id -> delivery action`.
+   - Pour une ancienne Metric Alert migrée, demander la preuve du Metric Monitor et de l'Alert connectée : signal/query/agrégat, environnement, fenêtre, seuil, issue ouverte/récente, action de routage.
+   - Pour les Cron Monitors, relever la fenêtre de check-in, l'état missed/failed/success, la tolérance, et l'issue liée si déclenchée.
+   - Pour les Uptime Monitors, relever URL/méthode, intervalle, critères de succès, dernier état, et issue liée si déclenchée.
    - Si un event ID est visible dans l'app, les logs ou un error boundary, l'inclure comme pointeur caviardé.
    - Si aucun pointeur Sentry n'est disponible, le signaler comme limite de confiance et passer aux preuves PM2/Doppler quand elles sont disponibles.
 
@@ -320,6 +326,7 @@ Si tout est OK :
 **Mode dev :**      vercel-preview-push
 **Source deploy :** Vercel MCP
 **Sentry :**        ISSUE-ID fourni/visible ou no direct dashboard access; PM2/Doppler checked
+**Sentry Monitors/Alerts :** monitor issue correlated / alert routing correlated / no direct dashboard access; no operator evidence supplied / n/a
 
 Tout est live.
 ```
@@ -356,6 +363,7 @@ Dans tous les cas, ajouter une ligne `Hypothèses / risques restants` dès qu'un
 - En cas de Vercel, privilégier `get_deployment_build_logs` + filtrage local; dashboard web en fallback, pas en source primaire.
 - En cas de GitHub Actions sur Blacksmith, utiliser Run History, Logs, Metrics et SSH Access comme escalade de debug quand les logs standards ne suffisent pas; l'accès SSH ne remplace pas les logs dans le rapport final.
 - Quand Sentry est configuré, ne jamais supposer un accès dashboard; corréler seulement les pointeurs fournis/visibles au release/environnement courant et inclure seulement des pointeurs caviardés.
+- Quand Sentry Monitors/Alerts sont en scope, ne pas confondre détection et routage : le Monitor prouve la condition surveillée, l'Alert prouve la notification/action.
 - En mode `vercel-preview-push`, Vercel MCP est la source primaire pour attendre la fin du déploiement; les GitHub commit statuses ne suffisent pas à autoriser le test preview.
 - Si pas de CI/CD détecté (pas de statuses sur le commit), proposer un simple curl + signaler que le projet n'a pas de deploy automatique
 - Compatible Vercel, Netlify, et tout service qui publie des GitHub commit statuses

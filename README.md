@@ -293,7 +293,7 @@ Android/iOS rendering.
 
 Per-user configuration includes:
 - `~/.claude/skills/*` and `~/.codex/skills/*` symlinks for every ShipFlow skill
-- aliases in `~/.bashrc` for `shipflow`, `sf`, autonomous `c`/`co`, and safe escape hatches `cask`/`coask`
+- aliases in `~/.bashrc` for `shipflow`, `sf`, autonomous `c`/`co`, safe escape hatches `cask`/`coask`, shell reload (`re`/`reload`), and tmux pane cleanup (`ch` = `clear; tmux clear-history`)
 - `~/shipflow_data/TASKS.md`, `AUDIT_LOG.md`, and `PROJECTS.md`
 
 Skill runtime visibility can also be checked or repaired without rerunning the full installer:
@@ -364,7 +364,7 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes real work to the right master or specialist skill; uses context-safe defaults and asks one numbered decision question when ambiguity changes route, risk, scope, or proof. |
-| Non-trivial product, code, site, or docs work | `sf-build <story, bug, or goal>` | Plain task text is the story; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
+| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story; `agents` strictly validates delegated sequential execution; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
@@ -426,7 +426,7 @@ Direct build entrypoint for non-trivial feature/code/docs work:
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
 ```
 
-`sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invocation authorizes bounded delegated sequential execution for the current chantier, short natural-language confirmations continue that bounded sequential path after diagnosis by intent rather than exact keyword, and parallel agent execution requires ready non-overlapping `Execution Batches`. `sf-build` keeps user interaction focused on decisions and progress; material questions are framed as business decision briefs with the root problem, business stakes, options, and a recommended best-practice answer. It skips the question only when the best default is safe, reversible, compatible with the current project context, aligned with best practices, and verifiable.
+`sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invocation authorizes bounded delegated sequential execution for the current chantier, and `sf-build agents <story>` makes that a strict validation gate for file work, validation, closure preparation, and ship preparation. If `agents` is requested but no bounded subagent runs, `sf-build` must stop or report degraded execution with the reason. Short natural-language confirmations continue the bounded sequential path after diagnosis by intent rather than exact keyword. Parallel agent execution is not an argument mode; it requires ready non-overlapping `Execution Batches` in the spec. `sf-build` keeps user interaction focused on decisions and progress; material questions are framed as business decision briefs with the root problem, business stakes, options, and a recommended best-practice answer. It skips the question only when the best default is safe, reversible, compatible with the current project context, aligned with best practices, and verifiable.
 
 Recommended release entrypoint after implementation:
 

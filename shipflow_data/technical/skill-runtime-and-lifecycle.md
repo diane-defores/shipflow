@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.12.7"
+artifact_version: "1.12.8"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-14"
@@ -73,6 +73,7 @@ evidence:
   - "Sentry reference clarified: skills never have direct Sentry dashboard access; bounded local PM2 logs and redacted Doppler presence/scope checks are acceptable supporting evidence when no Sentry pointer is supplied or visible."
   - "Model routing clarified: GPT-5.5 is the Codex/OpenAI premium default for ambiguous, cross-project, governance-heavy, transverse audit, prioritization, prompt/docs migration, and business-risk synthesis work; GPT-5.3-Codex is the default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; main-thread model changes are recommendations unless the runtime actually applies an override."
   - "Subagent model defaults clarified: GPT-5.4-mini is the default for small bounded Codex/OpenAI subagent missions, GPT-5.3-Codex-Spark for micro-code or targeted UI/local edits, GPT-5.3-Codex for long implementation, and GPT-5.5 for high-risk transverse reasoning."
+  - "`sf-build agents` clarified as a strict delegated sequential validation gate; parallel agents remain controlled only by ready spec `Execution Batches`."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -228,7 +229,7 @@ sf-content
 - The Reader diagnoses docs impact; the executor or integrator applies docs updates.
 - The Technical Reader diagnoses code-docs impact; the Editorial Reader diagnoses public-content and claim impact.
 - Shared files are sequential by default.
-- Master/orchestrator skills load `skills/references/master-delegation-semantics.md` before choosing execution topology. Delegated sequential subagents are the default for file, validation, closure, and ship work when subagents are available; parallelism means simultaneous subagents and requires ready `Execution Batches`.
+- Master/orchestrator skills load `skills/references/master-delegation-semantics.md` before choosing execution topology. Delegated sequential subagents are the default for file, validation, closure, and ship work when subagents are available; `sf-build agents` makes that delegated sequential path a strict validation gate; parallelism means simultaneous subagents and requires ready `Execution Batches`.
 - Master/orchestrator skills load `skills/references/master-workflow-lifecycle.md` before resolving lifecycle flow. The shared skeleton is intake, work item resolution, readiness, model/topology routing, owner-skill execution, validation/evidence, verification, post-verify closure, and bounded ship/deploy/release routing.
 - Skills should load `skills/references/question-contract.md` before user-facing questions. They ask only when the answer changes route, scope, risk, validation, closure, ship posture, public claims, or technical/product/editorial direction; otherwise they proceed by the best-practice default only when it is clear, low-risk, reversible, context-compatible, and verifiable.
 - Bug work uses one Markdown bug file under `bugs/*.md` as the durable source of truth. `BUGS.md`, when present, is an optional compact/generated/triage view and must not override the bug file.
@@ -264,6 +265,7 @@ sf-content
 - If public content, README, FAQ, pricing, public docs, skill pages, or claims are affected but missing from an `Editorial Update Plan`, the editorial gate fails.
 - If `sf-build` prepares implementation with missing or stale `docs/technical/code-docs-map.md`, applicable `docs/editorial/`, or `CONTENT_MAP.md`, it must route to `sf-docs` or record explicit no-impact/no-surface status before proceeding.
 - If a master skill patches in the master conversation merely because a file change is small while subagents are available, treat that as workflow drift. Small scope may use a mini-contract, but the execution mode remains delegated sequential for file work.
+- If `sf-build agents` touches files, runs validation, prepares closure, or prepares ship without launching a bounded subagent and without explicitly reporting degraded execution, treat that as workflow drift.
 - If the `shipflow <instruction>` router nests `sf-build`, `sf-maintain`, `sf-bug`, `sf-deploy`, `sf-content`, or `sf-skill-build` inside a subagent instead of handing off the main thread, treat that as workflow drift.
 - If a short natural-language confirmation is treated as consent for parallel subagents without ready `Execution Batches`, treat that as workflow drift.
 - If future projects are told to rerun ShipFlow's shipped governance specs instead of using `sf-init` and `sf-docs`, treat that as workflow drift.
