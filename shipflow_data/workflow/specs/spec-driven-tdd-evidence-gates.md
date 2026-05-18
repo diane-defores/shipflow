@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-05-17"
 created_at: "2026-05-17 21:39:40 UTC"
 updated: "2026-05-18"
-updated_at: "2026-05-18 17:59:27 UTC"
+updated_at: "2026-05-18 18:16:26 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -29,10 +29,10 @@ linked_systems:
   - "skills/references/skill-context-budget.md"
 depends_on:
   - artifact: "skills/references/master-workflow-lifecycle.md"
-    artifact_version: "1.2.1"
+    artifact_version: "1.2.2"
     required_status: "active"
   - artifact: "skills/references/master-delegation-semantics.md"
-    artifact_version: "1.2.1"
+    artifact_version: "1.2.2"
     required_status: "active"
   - artifact: "skills/references/skill-instruction-layering.md"
     artifact_version: "0.1.0"
@@ -335,13 +335,15 @@ None.
 | 2026-05-18 16:12:44 UTC | sf-start | GPT-5 Codex | Implemented shared proof-path discipline, skill hooks, verification gate, master lifecycle/delegation updates, technical docs, and validation. | partial: implementation complete; CHANGELOG.md deferred to sf-end per sf-start rule. | /sf-verify spec-driven-tdd-evidence-gates |
 | 2026-05-18 17:55:57 UTC | sf-end | GPT-5 Codex | Closed the proof-first discipline chantier, updated task trackers, and added the changelog entry. | closed: implementation and bookkeeping complete; separate sf-verify was not launched by operator decision. | /sf-ship spec-driven-tdd-evidence-gates |
 | 2026-05-18 17:59:27 UTC | sf-ship | GPT-5 Codex | Quick-shipped the proof-first discipline chantier after focused metadata, skill budget, and runtime sync checks. | shipped | none |
+| 2026-05-18 18:09:51 UTC | sf-verify | GPT-5 Codex | Verified shipped proof-first discipline changes against user story, proof path fit, metadata, skill coherence, docs, bug gate, and runtime checks. | verified: no blocking issue; spec dependency metadata aligned to current reference versions. | /sf-ship spec-driven-tdd-evidence-gates trace-update |
+| 2026-05-18 18:16:26 UTC | sf-ship | GPT-5 Codex | Quick-shipped the verification trace update for the proof-first discipline chantier. | shipped | none |
 
 ## Current Chantier Flow
 
 - sf-spec: done
 - sf-ready: ready
 - sf-start: implemented; changelog gap closed by sf-end
-- sf-verify: not launched by operator decision
+- sf-verify: verified
 - sf-end: closed
 - sf-ship: shipped
 
