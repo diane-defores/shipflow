@@ -116,6 +116,12 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - lancer un subagent sans historique si c'est possible
   - sinon demander explicitement à l'utilisateur d'ouvrir un nouveau thread avant de continuer
 - If a `ready` spec exists, read it fully before touching code
+- If the task changes behavior, fixes a bug, changes a skill contract, or needs evidence before completion, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/spec-driven-development-discipline.md` and choose a proof path before editing:
+  - `test-first` for behavior with a reasonable automated test surface
+  - `regression-first` for bugs
+  - `scenario-first` for skill, prompt, routing, or governance contract changes
+  - `evidence-first` for UI, docs, auth, deployment, operational, visual, content, or integration work
+  - `exception-with-proof` when the strongest path is impractical; record why and name the alternate evidence
 - Derive an execution contract:
   - spec metadata: `metadata_schema_version`, `artifact_version`, `status`, `updated`
   - minimal behavior contract: what the feature accepts/triggers, what it produces/returns, what happens on failure, and the easiest edge case to miss
@@ -129,6 +135,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - linked systems / consequences to revalidate
   - Sentry observability expectations when runtime evidence or instrumentation is relevant
   - documentation surfaces to update or explicitly leave unchanged
+  - chosen proof path, exception reason if any, and validation/evidence expected before completion
   - project development mode and validation surface: whether success must be proven locally or through `sf-ship` -> `sf-prod` on a Vercel preview
   - fresh external docs verdict when the task depends on external documented behavior: dependency/service, local version when available, Context7 or official docs source, and whether the implementation path is supported
   - abuse cases / misuse cases and security constraints when present
@@ -269,6 +276,7 @@ Implementation constraints:
 
 Run focused validation relevant to the modified area:
 - include at least one validation that the main user story outcome is actually delivered
+- include proof that matches the chosen proof path, or record the explicit exception and alternate evidence
 - validate `Success Behavior` and `Error Behavior` when the contract names them; if an error path cannot be exercised, state the gap explicitly
 - include a sanity check that success is not silent and failure is not silent unless explicitly justified by the contract
 - when the user story depends on a browser auth flow or protected app path, run or emulate `sf-auth-debug` logic to confirm the observable flow in a real browser
@@ -315,6 +323,9 @@ Files changed:
 
 Validation:
 - [check] -> [pass/fail]
+
+Proof path:
+- [test-first / regression-first / scenario-first / evidence-first / exception-with-proof] -> [evidence or exception]
 
 Linked checks:
 - [area] -> [pass/fail]
@@ -378,6 +389,8 @@ Verdict sf-start:
 - If request and spec conflict, surface the conflict before coding
 - Do not silently compensate for a weak spec during implementation; reroute instead
 - Do not silently drop or reinterpret `depends_on` metadata from the spec; version context must survive from read -> implementation -> report -> sf-verify
+- Do not treat tests as the product contract; the spec, bug file, release scope, or mini-contract remains the source of truth.
+- Do not claim completion without a proof path and matching evidence.
 - Do not reduce a user story to UI behavior only when the contract implies workflow, permission, data, or system guarantees
 - Do not ship a feature behavior change while leaving known docs, examples, onboarding, pricing, FAQ or support copy stale
 - When ambiguity affects security or product semantics, ask the user before proceeding

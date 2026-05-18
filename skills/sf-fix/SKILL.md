@@ -41,6 +41,11 @@ Use bug language, not session language.
 
 Goal: close small, clear bugs quickly without breaking the user promise, product coherence, or security posture.
 
+Before any fix attempt, load `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md` and choose a bug proof path:
+- `regression-first` when reproduction and a practical failing regression test exist.
+- `evidence-first` when the only reliable proof is browser/manual/runtime evidence.
+- `exception-with-proof` when automated regression is impractical; record why, the root cause hypothesis, and the alternate proof.
+
 ### Routing rule
 
 - **Direct fix path** (small/local/clear):
@@ -149,7 +154,8 @@ Apply the shared Project Development Mode gate from `${SHIPFLOW_ROOT:-$HOME/ship
 
 If Supabase is detected and the bug touches auth, storage, upload, DB, or RLS behavior, load only the relevant references among `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-storage.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-db.md` before classifying or patching.
 
-During triage, verify four things before choosing `direct`:
+During triage, verify these things before choosing `direct`:
+- **Reproduction and root cause**: the bug has reproduction evidence, or the report says what proof is missing; repeated patch attempts require a cause-root hypothesis before another edit
 - **User story fit**: the expected fix is clearly tied to the promised user outcome
 - **Product coherence**: the intended behavior matches adjacent flows, copy, permissions, and existing conventions
 - **Documentation coherence**: the bug fix does not leave docs, FAQ, examples, onboarding, changelog, pricing or support copy describing the old behavior
@@ -189,6 +195,7 @@ If classification confidence is low (mixed signals), use **AskUserQuestion**:
 
 If `direct`:
 - implement the fix directly
+- start from reproduction and a root cause hypothesis; prefer a failing regression test when practical before patching
 - ensure the bug is attached to durable project memory before ending the run:
   - reuse an existing `BUG-ID` when the bug already exists
   - otherwise create `bugs/BUG-ID.md` and optional `BUGS.md` triage pointer unless a justified minor exception applies
@@ -218,12 +225,14 @@ If `direct`:
   - timestamp UTC
   - files changed
   - hypothesis
+  - proof path (`regression-first`, `evidence-first`, or `exception-with-proof`)
   - validation command (or why not run)
   - result (`failed|partial|passed`)
   - Sentry issue/event pointer, `no pointer supplied`, `PM2-Doppler fallback`, or `not applicable`, when runtime evidence is relevant
   - next retest command (`/sf-test --retest BUG-ID`)
 - after patching, keep status `fix-attempted` until retest evidence exists
 - include the Documentation Freshness Gate verdict when it was triggered, especially the dependency/version and Context7 or official docs source that influenced the fix
+- report why no automated regression test was added when the proof path is not `regression-first`
 - if the bug involves auth, redirects, protected pages, or session behavior in the browser, run or emulate `sf-auth-debug` logic to reproduce and re-check the broken flow
 - run a documentation coherence check when the bug changes visible behavior, API behavior, permissions, pricing, integration behavior, or support expectations
 - run at least one quick coherence/security sanity check when the bug touches auth, data, workflow, external effects, or non-trivial state
@@ -259,6 +268,8 @@ Bug reference: [BUG-ID | minor exception]
 Bug file: [bugs/BUG-ID.md | minor exception]
 Bug trace exception: [no | yes + reason]
 Clarifications asked: [none / short list]
+Proof path: [regression-first / evidence-first / exception-with-proof]
+Root cause hypothesis: [short hypothesis or missing]
 Product coherence: [ok / risk]
 Documentation coherence: [ok / risk / not impacted]
 Fresh external docs: [checked / not needed / gap / conflict]
@@ -284,6 +295,8 @@ Scope estimate: [small / medium / large]
 - Keep triage short and actionable
 - Ask the user instead of guessing when ambiguity changes product meaning or security posture
 - A direct fix must still defend product coherence, not only pass the local repro
+- A direct fix must not repeat patch attempts without reproduction evidence and a cause-root hypothesis
+- If a practical regression test exists, prefer `regression-first`; otherwise record the exception and alternate proof
 - A direct fix must still leave durable bug memory unless a narrow minor exception is explicitly justified
 - A direct fix that changes feature behavior must align docs or explicitly report the doc gap
 - A direct fix must keep or improve security posture; never weaken controls for speed

@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.14.1"
+artifact_version: "1.15.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-17"
+updated: "2026-05-18"
 status: reviewed
 source_skill: sf-start
 scope: skill-runtime-and-lifecycle
@@ -32,6 +32,7 @@ linked_systems:
   - skills/sf-docs/SKILL.md
   - skills/references/reporting-contract.md
   - skills/references/master-workflow-lifecycle.md
+  - skills/references/spec-driven-development-discipline.md
   - skills/references/question-contract.md
   - skills/references/sentry-observability.md
   - specs/sf-build-autonomous-master-skill.md
@@ -77,6 +78,7 @@ evidence:
   - "Subagent model defaults clarified: GPT-5.4-mini is the default for small bounded Codex/OpenAI subagent missions, GPT-5.3-Codex-Spark for micro-code or targeted UI/local edits, GPT-5.3-Codex for long implementation, and GPT-5.5 for high-risk transverse reasoning."
   - "`sf-build agents` clarified as a strict delegated sequential validation gate; parallel agents remain controlled only by ready spec `Execution Batches`."
   - "Layered skill-instruction contract added for progressive SKILL.md compaction with pilot extraction to skill-local references."
+  - "Spec-driven development discipline added: spec-first remains the outer lifecycle contract, while execution skills choose proof paths such as test-first, regression-first, scenario-first, evidence-first, or exception-with-proof."
   - "Pilot compaction applied to sf-docs, sf-audit-design, and sf-verify while preserving chantier/reporting/security/doc-update gates."
   - "Skill taxonomy description audit applied compact routing descriptions across 61 skills while preserving names, trace categories, process roles, and runtime visibility."
   - "sf-verify aligned stale dependency metadata during the skill taxonomy description verification."
@@ -130,6 +132,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/<skill>/references/*.md` | Skill-local heavy checklists, mode playbooks, and report matrices | Keep top-level SKILL focused on activation and gates |
 | `skills/references/master-delegation-semantics.md` | Shared master/orchestrator delegation, subagent, short-approval, and parallelism doctrine | Load before master skills choose execution topology |
 | `skills/references/master-workflow-lifecycle.md` | Shared master/orchestrator lifecycle skeleton and work item model | Load before master skills resolve intake, readiness, model/topology, validation, verification, closure, or ship/deploy routes |
+| `skills/references/spec-driven-development-discipline.md` | Shared spec-first/proof-first discipline | Load before execution or verification when behavior, bug, skill contract, UI/docs/auth/deploy, operational, or integration work needs a proof path |
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
 | `skills/references/sentry-observability.md` | Shared Sentry runtime evidence, PM2/Doppler fallback evidence, release/environment correlation, redaction, and performance-overhead doctrine | Load when runtime behavior, crashes, 5xx, event IDs, deploy confidence, auth/payment/data failures, jobs, webhooks, verification, audits, or perf checks depend on observability |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
@@ -264,6 +267,7 @@ sf-content
 - Lifecycle skills trace into exactly one chantier spec when one is identified.
 - `shipflow <instruction>` is a router, not a hidden master runner: it answers pure conversation directly, asks one numbered question when ambiguous, and otherwise hands the main thread to the selected skill.
 - `sf-start` implements from the ready contract; it should not rediscover product intent while coding.
+- Spec-first is the outer lifecycle contract; proof-first is the implementation discipline. Execution and verification skills choose a proof path (`test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof`) before claiming completion.
 - The Reader diagnoses docs impact; the executor or integrator applies docs updates.
 - The Technical Reader diagnoses code-docs impact; the Editorial Reader diagnoses public-content and claim impact.
 - Shared files are sequential by default.
@@ -329,7 +333,7 @@ python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh
 bash test_skill_runtime_sync.sh
 tools/shipflow_sync_skills.sh --check --all
-python3 tools/shipflow_metadata_lint.py skills/references/master-delegation-semantics.md skills/references/master-workflow-lifecycle.md skills/references/technical-docs-corpus.md skills/references/editorial-content-corpus.md skills/references/subagent-roles/editorial-reader.md skills/references/skill-instruction-layering.md skills/references/skill-context-budget.md shipflow-spec-driven-workflow.md AGENT.md
+python3 tools/shipflow_metadata_lint.py skills/references/master-delegation-semantics.md skills/references/master-workflow-lifecycle.md skills/references/spec-driven-development-discipline.md skills/references/technical-docs-corpus.md skills/references/editorial-content-corpus.md skills/references/subagent-roles/editorial-reader.md skills/references/skill-instruction-layering.md skills/references/skill-context-budget.md shipflow-spec-driven-workflow.md AGENT.md
 rg -n "Governance Corpus Gate|sf-init.*bootstrap|sf-docs.*maintain|sf-build.*consume|sf-deploy|sf-maintain|sf-content|master-delegation-semantics|master-workflow-lifecycle|bug file|delegated sequential|subagent|parallelism|short natural-language|Execution Batches|reporting-contract|report=user|docs/technical|docs/editorial" skills/sf-init/SKILL.md skills/sf-docs/SKILL.md skills/sf-deploy/SKILL.md skills/sf-maintain/SKILL.md skills/sf-content/SKILL.md specs/sf-build-autonomous-master-skill.md shipflow-spec-driven-workflow.md README.md skills/references/reporting-contract.md skills/references/master-delegation-semantics.md skills/references/master-workflow-lifecycle.md
 ```
 

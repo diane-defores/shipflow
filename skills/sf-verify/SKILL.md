@@ -56,6 +56,7 @@ Mandatory explicit checks:
 
 - `Success Behavior` pass/partial/fail/not demonstrated
 - `Error Behavior` pass/partial/fail/not demonstrated
+- `Proof Path Fit` pass/partial/fail/not chosen: test-first, regression-first, scenario-first, evidence-first, or exception-with-proof matches the changed surface
 - `Bug Gate` (clear/partial-risk/blocks ship/not assessed)
 - project development mode and validation surface
 - fresh external docs verdict (`fresh-docs checked|not needed|gap|conflict`)
@@ -69,6 +70,7 @@ Always load:
 1. `$SHIPFLOW_ROOT/skills/sf-verify/references/verification-gates.md`
 2. `$SHIPFLOW_ROOT/skills/references/project-development-mode.md`
 3. `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`
+4. `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`
 
 Load on demand:
 
@@ -83,6 +85,7 @@ When verified changes include `skills/*/SKILL.md`:
 - each changed skill must expose `Trace category` and `Process role`
 - changed `source-de-chantier` skills must still contain chantier-potential guidance
 - changed helper skills must not present themselves as chantier sources
+- skill contract changes must show `scenario-first` pressure scenarios, mechanical checks, or `exception-with-proof`
 - if runtime-discoverable skills changed, run `tools/shipflow_sync_skills.sh --check --skill <name>` or `--check --all`
 
 ## Tracker Rule
@@ -99,6 +102,7 @@ Report `not verified` or `blocked` when:
 - no reliable scope/work-item contract can be identified
 - high/critical bug in scope is still open
 - required validation surface is missing for `vercel-preview-push`/`hybrid` scope
+- completion evidence does not match the chosen proof path, or no proof path was chosen for behavioral, bug, skill-contract, UI/docs/auth/deploy, or operational work
 - critical security/data/workflow risk is unproven or failing
 
 ## Validation
@@ -106,6 +110,6 @@ Report `not verified` or `blocked` when:
 Run focused checks based on scope and diff:
 
 ```bash
-rg -n "Trace category|Process role|Success Behavior|Error Behavior|fresh-docs|Chantier" skills/sf-verify/SKILL.md
+rg -n "Trace category|Process role|Success Behavior|Error Behavior|Proof Path Fit|proof path|evidence-first|test-first|scenario-first|fresh-docs|Chantier" skills/sf-verify/SKILL.md
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 ```

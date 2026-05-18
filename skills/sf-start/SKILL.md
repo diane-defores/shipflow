@@ -36,6 +36,7 @@ Default to `report=user`: concise, outcome-first, and using the compact chantier
 Load only the references needed for the active run:
 
 - `references/execution-workflow.md`: detailed task identification, scope triage, execution contract, model/delegation choice, implementation loop, validation, spec trace, and final report rules.
+- `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`: required before implementation when the task changes behavior, fixes a bug, changes a skill contract, or needs a proof path. Choose `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof` before editing and report the chosen proof path.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`: required only when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
 - `$SHIPFLOW_ROOT/skills/references/project-development-mode.md`: required before deriving the execution contract for project validation surface.
 - Supabase, Sentry, auth-debug, browser, or model-routing references only when the workflow reference triggers their gate.
@@ -53,6 +54,8 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 
 - `sf-start` implements; it should not stop at planning when a valid execution contract exists.
 - Preserve the user story outcome over task-checkbox completion.
+- Preserve the spec or mini-contract as the source of truth; tests and evidence prove the contract, they do not redefine it.
+- For testable behavior, prefer a `test-first` proof path. For skill/governance changes, use `scenario-first`. For UI/docs/auth/deploy/operational work, use `evidence-first`. If the strongest path is impractical, record `exception-with-proof` and the alternate evidence.
 - Read only the files needed for the execution contract and linked systems that can change correctness.
 - Prefer fresh-context execution for non-trivial spec-first work when available, but keep the main thread responsible for integration, validation, and user-facing truth.
 - Do not weaken documentation, security, redaction, chantier, or validation gates to finish faster.
@@ -71,6 +74,6 @@ Stop and report blocked or rerouted when:
 
 Validate this skill after edits with:
 
-- `rg -n "Trace category|Process role|Result semantics|implemented|partial|Report Modes|Required References|Spec-first|ready spec|references/execution-workflow" skills/sf-start/SKILL.md`
+- `rg -n "Trace category|Process role|Result semantics|implemented|partial|Report Modes|Required References|Spec-first|ready spec|references/execution-workflow|spec-driven-development-discipline|test-first|evidence-first|proof path" skills/sf-start/SKILL.md`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `tools/shipflow_sync_skills.sh --check --all`

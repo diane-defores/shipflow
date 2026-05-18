@@ -121,11 +121,17 @@ For non-trivial work, spec-first is mandatory.
 4. Do not edit `SKILL.md` while readiness is `draft`, `reviewed`, or `not ready`.
 5. Use one unique spec only; if multiple specs match, stop and ask the user to select one.
 
+## Scenario-First Contract
+
+Before modifying a skill contract, load `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md` and choose `scenario-first` unless the change is purely mechanical. Define the pressure scenario, routing ambiguity, failure mode, or mechanical check that proves the old contract is insufficient. If no scenario is practical, record `exception-with-proof` and the alternate validation before editing.
+
 ## Implementation Flow
 
 ### Step 1 — Build or update the skill contract
 
 - Create or edit `skills/<name>/SKILL.md`.
+- Preserve the spec as the source of truth and keep the chosen proof path visible in the execution/report contract.
+- For skill contract changes, validate with pressure scenarios or mechanical checks before claiming completion.
 - Keep internal contracts in English.
 - Keep `description` to one concise sentence and keep arguments in `argument-hint`.
 - Encode explicit lifecycle gates, stop conditions, and validation commands.
@@ -273,6 +279,8 @@ Lifecycle gates:
 
 Validation:
 - [check] -> [pass/fail]
+Proof path:
+- [scenario-first / evidence-first / exception-with-proof] -> [pressure scenario or mechanical proof]
 
 Documentation:
 - Documentation Update Plan -> [complete/no impact/blocked]
@@ -313,6 +321,7 @@ Verdict sf-skill-build:
 ## Rules
 
 - Implement the lifecycle, not only the markdown edit.
+- Do not change a skill contract without a pressure scenario, mechanical validation, or explicit exception-with-proof.
 - Do not commit or push.
 - Follow the shared master delegation reference for delegated sequential defaults and spec/batch-gated parallelism.
 - Ask only targeted questions when the answer changes behavior, security, naming, scope, or public promise.

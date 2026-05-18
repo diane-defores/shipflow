@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.3.12"
+artifact_version: "0.3.13"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-17"
+updated: "2026-05-18"
 status: draft
 source_skill: sf-docs
 scope: documentation
@@ -25,6 +25,15 @@ evidence: []
 next_step: "/sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
+
+## [2026-05-18]
+
+### Added
+- Added a shared spec-driven development discipline for ShipFlow: specs, bug files, release scopes, and mini-contracts remain the source of truth while execution chooses a concrete proof path.
+
+### Changed
+- Updated `sf-start`, `sf-fix`, `sf-bug`, `sf-skill-build`, and `sf-verify` to use proof paths such as `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof`.
+- Updated master lifecycle, delegation, and skill runtime documentation so delegated missions and completion claims carry proof-path evidence instead of relying on unqualified "done" claims.
 
 ## [2026-05-17]
 

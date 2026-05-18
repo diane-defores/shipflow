@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.1"
+artifact_version: "1.2.2"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-08"
+updated: "2026-05-18"
 status: active
 source_skill: sf-skill-build
 scope: master-workflow-lifecycle
@@ -23,6 +23,7 @@ linked_systems:
   - skills/sf-bug/SKILL.md
   - skills/sf-audit/SKILL.md
   - skills/references/master-delegation-semantics.md
+  - skills/references/spec-driven-development-discipline.md
   - skills/references/question-contract.md
   - skills/references/chantier-tracking.md
   - docs/technical/skill-runtime-and-lifecycle.md
@@ -30,7 +31,7 @@ linked_systems:
   - README.md
 depends_on:
   - artifact: "skills/references/master-delegation-semantics.md"
-    artifact_version: "1.2.0"
+    artifact_version: "1.2.2"
     required_status: active
   - artifact: "skills/references/question-contract.md"
     artifact_version: "1.0.0"
@@ -56,6 +57,8 @@ next_step: "/sf-verify master workflow lifecycle reference"
 This reference defines the shared lifecycle skeleton for ShipFlow master and orchestrator skills.
 
 It does not redefine delegation, subagent, short-confirmation, or parallelism semantics. Load `skills/references/master-delegation-semantics.md` for execution topology.
+
+Spec-first is the outer lifecycle contract: it defines user story, scope, success/error behavior, dependencies, risks, and source of truth. Proof-first is the implementation discipline: execution must choose `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof` from `skills/references/spec-driven-development-discipline.md` before claiming completion.
 
 ## Applies To
 
@@ -164,6 +167,8 @@ Do not duplicate owner internals inside a master skill for convenience.
 ### 6. Validation And Evidence Routing
 
 Run checks and evidence collection that match the changed surface. Do not invent proof.
+
+For behavior, bug, skill-contract, UI/docs/auth/deploy, operational, or integration changes, name the chosen proof path and verify that the evidence matches it.
 
 Use proof owners by evidence type:
 

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.1"
+artifact_version: "1.2.2"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-14"
+updated: "2026-05-18"
 status: active
 source_skill: sf-build
 scope: master-delegation-semantics
@@ -23,6 +23,7 @@ linked_systems:
   - skills/sf-deploy/SKILL.md
   - skills/sf-bug/SKILL.md
   - skills/sf-audit/SKILL.md
+  - skills/references/spec-driven-development-discipline.md
   - docs/technical/skill-runtime-and-lifecycle.md
   - shipflow-spec-driven-workflow.md
   - README.md
@@ -85,6 +86,7 @@ Each delegated mission must include:
 - fast or cheap fallback when the selected model is unavailable or too costly
 - model application status: `override applied`, `recommended only`, or `not supported by runtime`
 - validation commands
+- expected proof path when the mission changes behavior, fixes a bug, changes a skill contract, or gathers completion evidence
 - report mode
 - stop conditions
 
@@ -167,6 +169,7 @@ Agent or handoff reports may include:
 - delegated mission summaries
 - owned and forbidden file sets
 - validation commands and results
+- expected proof path and whether it was satisfied
 - integration notes
 - stop conditions hit or cleared
 

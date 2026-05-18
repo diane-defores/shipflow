@@ -33,6 +33,10 @@ Before resolving bug lifecycle state, load `$SHIPFLOW_ROOT/skills/references/mas
 
 Use the shared bug work item model: one Markdown bug file under `bugs/*.md` is the source of truth for one bug work item. `BUGS.md`, when present, is only an optional compact/generated/triage view and must not override the bug file.
 
+## Proof-First Bug Gate
+
+Before routing to fix, retest, verify, or ship-risk claims, load `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`. Bug work uses a `regression-first` proof path when reproduction and an automated regression surface are practical; otherwise it must record `evidence-first` or `exception-with-proof` with concrete reproduction, root cause hypothesis, and retest evidence.
+
 ## Chantier Potential Intake
 
 Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the bug reveals non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/sf-spec ...` command, and next step.
@@ -152,6 +156,14 @@ Run the evidence owner before fixing when the missing proof matters:
 
 Do not invent reproduction results, browser evidence, screenshots, account roles, console logs, or user confirmations.
 
+Set the bug proof path before dispatching the owner skill:
+
+- `regression-first`: reproduction exists and a failing automated regression test is practical before the fix.
+- `evidence-first`: the reliable proof is browser, manual, runtime, Sentry/PM2, screenshot, or retest evidence.
+- `exception-with-proof`: automated regression is impractical; the bug file or report must say why and name the alternate proof.
+
+If the bug has repeated fix attempts without root cause evidence, route to deeper diagnosis instead of another patch.
+
 ## Step 4 — Apply Development Mode Gate
 
 Read `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` and the project-local `## ShipFlow Development Mode` section in `CLAUDE.md` or `SHIPFLOW.md`.
@@ -210,6 +222,7 @@ Classification: [needs capture / needs evidence / needs fix / needs retest / nee
 Execution mode: [main-only / delegated sequential / spec-gated parallel]
 Development mode: [local / vercel-preview-push / hybrid / unknown]
 Evidence posture: [sufficient / missing / sensitive-blocked / not needed]
+Proof path: [regression-first / evidence-first / exception-with-proof / not chosen]
 Sentry posture: [supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / not applicable]
 Security posture: [ok / risk]
 Decision: [executed / routed / blocked / no action]
