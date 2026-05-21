@@ -209,6 +209,7 @@ For remote Codex usage, ShipFlow local tooling also supports OAuth login flows f
 shipflow-mcp-login vercel
 shipflow-mcp-login supabase
 shipflow-mcp-login all
+shipflow-clerk-login
 shipflow-blacksmith-login
 shipflow-turso-login
 shipflow-turso-ssh contentflow-prod2
@@ -218,13 +219,13 @@ The reason is specific to remote agent work: Codex or the provider CLI runs on
 the server, but the OAuth provider redirects the browser to
 `127.0.0.1:<port>/callback` on the local machine. ShipFlow opens a temporary
 SSH `-L` tunnel for the fresh callback port so the local browser can reach the
-remote login process. This applies to hosted MCP provider logins and to
-Blacksmith CLI auth.
+remote login process. This applies to hosted MCP provider logins, Clerk CLI
+auth, and Blacksmith CLI auth.
 
 The local menu stores the remote host, SSH user, and optional SSH key path used
-by `urls`, `tunnel`, `shipflow-mcp-login`, and
+by `urls`, `tunnel`, `shipflow-mcp-login`, `shipflow-clerk-login`, and
 `shipflow-blacksmith-login`. Leaving the key path blank means ShipFlow uses the
-normal SSH config or agent. ShipFlow does not store OAuth tokens; Codex,
+normal SSH config or agent. ShipFlow does not store OAuth tokens; Codex, Clerk,
 Blacksmith, and the provider own the token exchange. See
 [local/README.md](./local/README.md) for the guided setup and troubleshooting
 flow.

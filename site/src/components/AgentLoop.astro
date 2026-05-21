@@ -1,0 +1,52 @@
+---
+const loops = [
+  {
+    step: "01",
+    title: "Frame the work before the agent starts",
+    body:
+      "Turn a loose request into context, scope, acceptance criteria, and constraints the agent can actually follow."
+  },
+  {
+    step: "02",
+    title: "Run the implementation inside a known system",
+    body:
+      "Give the agent the repo map, the active contracts, the relevant docs, and the operational commands before it edits."
+  },
+  {
+    step: "03",
+    title: "Verify against the promise, not just the build",
+    body:
+      "Check behavior, docs, public claims, edge cases, and workflow impact before treating a change as done."
+  },
+  {
+    step: "04",
+    title: "Ship with the server state still visible",
+    body:
+      "Keep environments, processes, tunnels, publishing, health, and logs close enough to the agent workflow to act on them."
+  }
+];
+---
+
+<section class="section">
+  <div class="section-heading">
+    <p class="eyebrow">The Agent Loop</p>
+    <h2>ShipFlow covers the work around the agent, not only the prompt you send it.</h2>
+    <p>
+      The useful question is not whether AI can write code. It can. The useful
+      question is whether your system can direct, inspect, run, and explain that
+      work after the first answer arrives.
+    </p>
+  </div>
+
+  <div class="card-grid">
+    {
+      loops.map((loop) => (
+        <article class="card loop-card">
+          <span>{loop.step}</span>
+          <h3>{loop.title}</h3>
+          <p>{loop.body}</p>
+        </article>
+      ))
+    }
+  </div>
+</section>

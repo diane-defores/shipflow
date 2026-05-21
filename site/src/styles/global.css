@@ -573,6 +573,16 @@ h3 {
   margin: 14px 0 0;
 }
 
+.loop-card span {
+  display: inline-flex;
+  margin-bottom: 16px;
+  color: var(--accent-strong);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
 .check-list {
   padding-left: 18px;
 }

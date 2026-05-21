@@ -110,6 +110,7 @@ ALIAS_BLOCK="
 alias urls='$SCRIPT_DIR/local.sh'
 alias tunnel='$SCRIPT_DIR/local.sh'
 alias shipflow-mcp-login='$SCRIPT_DIR/mcp-login.sh'
+alias shipflow-clerk-login='$SCRIPT_DIR/clerk-login.sh'
 alias shipflow-blacksmith-login='$SCRIPT_DIR/blacksmith-login.sh'
 alias shipflow-turso-login='$SCRIPT_DIR/turso-login.sh'
 alias turso-login='$SCRIPT_DIR/turso-login.sh'
@@ -122,6 +123,10 @@ if grep -q "# ShipFlow - Alias pour tunnels SSH" "$SHELL_RC" 2>/dev/null; then
     if ! grep -q "alias shipflow-blacksmith-login=" "$SHELL_RC" 2>/dev/null; then
         echo "alias shipflow-blacksmith-login='$SCRIPT_DIR/blacksmith-login.sh'" >> "$SHELL_RC"
         echo -e "${GREEN}   ✓ Alias shipflow-blacksmith-login ajouté à $SHELL_RC${NC}"
+    fi
+    if ! grep -q "alias shipflow-clerk-login=" "$SHELL_RC" 2>/dev/null; then
+        echo "alias shipflow-clerk-login='$SCRIPT_DIR/clerk-login.sh'" >> "$SHELL_RC"
+        echo -e "${GREEN}   ✓ Alias shipflow-clerk-login ajouté à $SHELL_RC${NC}"
     fi
     if ! grep -q "alias shipflow-turso-login=" "$SHELL_RC" 2>/dev/null; then
         echo "alias shipflow-turso-login='$SCRIPT_DIR/turso-login.sh'" >> "$SHELL_RC"
@@ -144,6 +149,7 @@ echo -e "${BLUE}4. Configuration des permissions...${NC}"
 chmod +x "$SCRIPT_DIR/dev-tunnel.sh"
 chmod +x "$SCRIPT_DIR/local.sh"
 chmod +x "$SCRIPT_DIR/mcp-login.sh"
+chmod +x "$SCRIPT_DIR/clerk-login.sh"
 chmod +x "$SCRIPT_DIR/blacksmith-login.sh"
 chmod +x "$SCRIPT_DIR/turso-login.sh"
 chmod +x "$SCRIPT_DIR/turso-ssh.sh"
@@ -156,6 +162,7 @@ echo ""
 echo -e "${BLUE}📋 Commandes disponibles:${NC}"
 echo -e "   ${GREEN}urls${NC} ou ${GREEN}tunnel${NC}         - Ouvrir le menu de gestion des tunnels"
 echo -e "   ${GREEN}shipflow-mcp-login${NC}   - Login OAuth MCP distant via tunnel éphémère"
+echo -e "   ${GREEN}shipflow-clerk-login${NC} - Login Clerk CLI distant via tunnel éphémère"
 echo -e "   ${GREEN}shipflow-blacksmith-login${NC} - Login Blacksmith distant via tunnel éphémère"
 echo -e "   ${GREEN}shipflow-turso-login${NC} - Login Turso distant via tunnel/headless"
 echo -e "   ${GREEN}shipflow-turso-ssh${NC} - Copie auth Turso vers le serveur + checks SQL"

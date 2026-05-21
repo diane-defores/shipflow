@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.1.11"
+artifact_version: "0.1.12"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-10"
@@ -16,7 +16,7 @@ docs_impact: "yes"
 linked_systems: ["shipflow.sh", "lib.sh", "menu_gum.sh", "menu_bash.sh", "config.sh", "install.sh", "local/local.sh", "local/dev-tunnel.sh"]
 depends_on: []
 supersedes: []
-evidence: ["Function extraction from shipflow.sh, lib.sh, config.sh, install.sh, local/local.sh, local/dev-tunnel.sh", "Blacksmith setup menu helpers added to lib.sh", "Blacksmith OAuth callback tunnel added to local tooling", "Blacksmith SSH Access guide added to the setup menu", "Codex MCP on-demand launcher added to lib.sh", "Grouped root menu and submenu wrappers added to menu frontends", "Root menu shortcuts aligned with visible menu labels", "Disk overview helpers added to the Health Check monitor", "Agent history and cache cleanup helpers added to disk cleanup", "PM2 log cleanup/rotation and disk usage detail helpers added", "Turso setup menu helpers added to lib.sh"]
+evidence: ["Function extraction from shipflow.sh, lib.sh, config.sh, install.sh, local/local.sh, local/dev-tunnel.sh", "Blacksmith setup menu helpers added to lib.sh", "Blacksmith OAuth callback tunnel added to local tooling", "Blacksmith SSH Access guide added to the setup menu", "Codex MCP on-demand launcher added to lib.sh", "Grouped root menu and submenu wrappers added to menu frontends", "Root menu shortcuts aligned with visible menu labels", "Disk overview helpers added to the Health Check monitor", "Agent history and cache cleanup helpers added to disk cleanup", "PM2 log cleanup/rotation and disk usage detail helpers added", "Turso setup menu helpers added to lib.sh", "Clerk CLI OAuth callback tunnel added to local tooling"]
 next_step: "/sf-docs update CONTEXT-FUNCTION-TREE.md"
 ---
 
@@ -126,12 +126,14 @@ menu / local UX
   -> print_header
   -> show_menu
   -> run_mcp_login_menu
+  -> run_clerk_login_menu
   -> run_blacksmith_login_menu
   -> pause
   -> main
 
 remote OAuth callback tunnels
   -> local/mcp-login.sh
+  -> local/clerk-login.sh
   -> local/blacksmith-login.sh
 
 tunnel lifecycle

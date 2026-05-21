@@ -29,6 +29,39 @@ const categoryCopy: Record<(typeof categoryOrder)[number], string> = {
     "Maintain the ShipFlow system itself: setup, orientation, meta tooling, and operator guidance."
 };
 
+const runtimeFamilies = [
+  {
+    title: "Lifecycle and master",
+    skills: "shipflow, sf-build, sf-maintain, sf-deploy, sf-design, sf-content, sf-skill-build, plus the manual spec -> ready -> start -> verify -> end -> ship path",
+    role:
+      "Use these when the work should move across several gates instead of staying inside one specialist lane."
+  },
+  {
+    title: "Audit and source",
+    skills: "sf-audit*, sf-deps, sf-perf",
+    role:
+      "Use these to expose quality, security, performance, SEO, copy, design, dependency, or GTM risk and decide whether a durable chantier is needed."
+  },
+  {
+    title: "Bug and proof",
+    skills: "sf-bug, sf-fix, sf-test, sf-browser, sf-auth-debug, sf-prod, sf-check, sf-migrate",
+    role:
+      "Use these when the next move depends on a failure, validation evidence, deployed truth, or migration risk."
+  },
+  {
+    title: "Content, docs, and support",
+    skills: "sf-docs, sf-redact, sf-enrich, sf-repurpose, sf-changelog, sf-scaffold, sf-skills-refresh, sf-init",
+    role:
+      "Use these to keep public content, documentation, scaffolding, skill contracts, and governance surfaces coherent with shipped behavior."
+  },
+  {
+    title: "Research, pilotage, and helpers",
+    skills: "sf-research, sf-market-study, sf-veille, sf-backlog, sf-priorities, sf-review, sf-tasks, sf-context, sf-model, sf-help, sf-status, sf-resume, sf-explore, name",
+    role:
+      "Use these to clarify information, order work, preserve context, or route the next move without pretending to own the whole lifecycle."
+  }
+];
+
 const skills = (await getCollection("skills")).sort((a, b) => a.data.order - b.data.order);
 const featuredSkills = skills.filter((skill) => skill.data.featured);
 const groupedSkills = categoryOrder.map((category) => ({
@@ -72,6 +105,34 @@ const groupedSkills = categoryOrder.map((category) => ({
         <div class="hero-actions">
           <a class="button button-secondary" href="/skill-modes">Open the launch cheatsheet</a>
         </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Current Runtime Taxonomy</p>
+        <h2>The public categories help browsing. The runtime families explain routing.</h2>
+        <p>
+          ShipFlow now keeps skill discovery descriptions compact, so the
+          runtime can select skills without carrying long summaries. The
+          important distinction is whether a skill owns a lifecycle, exposes
+          risk, proves behavior, supports content or docs, or simply helps route
+          the next move.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        {
+          runtimeFamilies.map((family) => (
+            <article class="doc-card">
+              <h3>{family.title}</h3>
+              <p>{family.role}</p>
+              <p>
+                <strong>Includes:</strong> {family.skills}
+              </p>
+            </article>
+          ))
+        }
       </div>
     </section>
 

@@ -78,6 +78,34 @@ const supportSkillCheatsheet = [
   }
 ];
 
+const runtimeFamilies = [
+  {
+    title: "Lifecycle/master",
+    use: "Carry a work item across several gates.",
+    examples: "shipflow, sf-build, sf-maintain, sf-deploy, sf-design, sf-content, sf-skill-build"
+  },
+  {
+    title: "Audit/source",
+    use: "Expose risk or drift that may need a chantier.",
+    examples: "sf-audit*, sf-deps, sf-perf"
+  },
+  {
+    title: "Bug/proof",
+    use: "Diagnose failures, prove behavior, or validate deployment truth.",
+    examples: "sf-bug, sf-fix, sf-test, sf-browser, sf-auth-debug, sf-prod, sf-check, sf-migrate"
+  },
+  {
+    title: "Content/docs/support",
+    use: "Keep public content, docs, scaffolding, changelogs, and skill maintenance coherent.",
+    examples: "sf-docs, sf-redact, sf-enrich, sf-repurpose, sf-changelog, sf-scaffold, sf-skills-refresh, sf-init"
+  },
+  {
+    title: "Research/pilotage/helper",
+    use: "Clarify information, prioritize, summarize, route, or preserve context.",
+    examples: "sf-research, sf-market-study, sf-veille, sf-backlog, sf-priorities, sf-review, sf-tasks, sf-context, sf-model, sf-help, sf-status, sf-resume, sf-explore, name"
+  }
+];
+
 const skillsWithModes = (await getCollection("skills"))
   .filter((skill) => skill.data.argument_modes.length > 0)
   .sort((a, b) => a.data.order - b.data.order);
@@ -125,6 +153,33 @@ const skillsWithModes = (await getCollection("skills"))
             a skill exposes distinct workflows behind one command name.
           </p>
         </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Runtime Families</p>
+        <h2>The shortest route depends on the role the skill plays.</h2>
+        <p>
+          Public categories make the catalog easier to browse. Runtime families
+          explain how ShipFlow routes work: lifecycle owners carry work, source
+          skills expose future chantiers, proof skills validate behavior, and
+          helpers keep orientation clean without owning closure.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        {
+          runtimeFamilies.map((family) => (
+            <article class="doc-card">
+              <h3>{family.title}</h3>
+              <p>{family.use}</p>
+              <p>
+                <strong>Examples:</strong> {family.examples}
+              </p>
+            </article>
+          ))
+        }
       </div>
     </section>
 

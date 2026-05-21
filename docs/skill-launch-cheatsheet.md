@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.3.1"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-08"
+updated: "2026-05-17"
 status: reviewed
 source_skill: sf-docs
 scope: skill-launch-cheatsheet
@@ -22,7 +22,7 @@ linked_systems:
   - shipflow_data/editorial/content-map.md
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.15.1"
+    artifact_version: "0.17.0"
     required_status: draft
 supersedes: []
 evidence:
@@ -34,6 +34,7 @@ evidence:
   - "Shared question/default contract added for numbered decisions and context-safe defaults."
   - "sf-design added as the master design lifecycle entrypoint for UI/UX, tokens, playgrounds, implementation, proof, and ship routing."
   - "sf-bug clarified as a lifecycle executor that continues through owner skills and bounded subagents when safe."
+  - "Skill taxonomy description audit clarified runtime families while keeping public skill names and invocation paths stable."
 next_step: "/sf-docs audit docs/skill-launch-cheatsheet.md"
 ---
 
@@ -48,6 +49,18 @@ Start with `shipflow <instruction>` when you want a non-technical first command.
 Start with `sf-build` directly when you already know the request is a feature, code, site, or docs workstream that needs the build lifecycle.
 
 Use a focused skill directly when you intentionally want one owner lane: checks, docs, browser proof, auth diagnosis, manual QA, production truth, audit, dependency posture, migration, or final ship.
+
+## Current Runtime Families
+
+Public categories make the catalog easier to browse. Runtime families explain how ShipFlow routes work internally.
+
+| Family | Role | Examples |
+| --- | --- | --- |
+| Lifecycle/master | Carry work across several gates. | `shipflow`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-design`, `sf-content`, `sf-skill-build`, plus `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end -> sf-ship` |
+| Audit/source | Expose quality, security, performance, SEO, copy, design, dependency, or GTM risk that may deserve a chantier. | `sf-audit*`, `sf-deps`, `sf-perf` |
+| Bug/proof | Diagnose failures, validate behavior, or confirm deployment truth. | `sf-bug`, `sf-fix`, `sf-test`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-migrate` |
+| Content/docs/support | Keep public content, documentation, scaffolding, changelogs, skill contracts, and governance surfaces coherent with shipped behavior. | `sf-docs`, `sf-redact`, `sf-enrich`, `sf-repurpose`, `sf-changelog`, `sf-scaffold`, `sf-skills-refresh`, `sf-init` |
+| Research/pilotage/helper | Clarify information, prioritize, summarize, route, or preserve context without owning full lifecycle closure. | `sf-research`, `sf-market-study`, `sf-veille`, `sf-backlog`, `sf-priorities`, `sf-review`, `sf-tasks`, `sf-context`, `sf-model`, `sf-help`, `sf-status`, `sf-resume`, `sf-explore`, `name` |
 
 ## Master Skills
 

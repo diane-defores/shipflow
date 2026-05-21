@@ -59,6 +59,7 @@ Le script installe automatiquement :
 - ✅ Connexion distante ShipFlow si `SHIPFLOW_SSH_REMOTE_HOST` est fourni
 - ✅ Alias shell : `urls`, `tunnel`
 - ✅ Helpers OAuth distants : `shipflow-mcp-login`, `shipflow-blacksmith-login`
+- ✅ Helper Clerk CLI distant : `shipflow-clerk-login`
 - ✅ Menu interactif pour gérer les tunnels (Linux/macOS/WSL)
 - ✅ Script de tunnel pour Windows PowerShell
 - ✅ Permissions exécutables
@@ -83,6 +84,7 @@ tunnel            # Alias identique à urls
 shipflow-mcp-login vercel   # Login OAuth MCP distant (Vercel)
 shipflow-mcp-login supabase # Login OAuth MCP distant (Supabase)
 shipflow-mcp-login all      # Enchaîne vercel puis supabase
+shipflow-clerk-login        # Login Clerk CLI distant via tunnel OAuth
 shipflow-blacksmith-login   # Login Blacksmith distant via tunnel OAuth
 shipflow-turso-login        # Login Turso distant via tunnel/headless
 shipflow-turso-ssh contentflow-prod2 # Copie auth Turso vers le serveur + checks SQL
@@ -97,10 +99,12 @@ Le menu offre :
 - 📊 **Statut** - Vérifie l'état des tunnels actifs
 - 🔄 **Redémarrer** - Redémarre tous les tunnels
 - 🔐 **Login OAuth MCP (distant)** - Lance `codex mcp login` sur le serveur et crée un tunnel OAuth éphémère local
+- 🔑 **Login Clerk CLI (distant)** - Lance `clerk auth login` sur le serveur et crée le tunnel OAuth éphémère local
 - 🔨 **Login Blacksmith (distant)** - Lance `blacksmith auth login` sur le serveur et crée le tunnel OAuth éphémère local
 - 🗄️ **Turso - Login et checks distants** - Lance `turso auth login` sur le serveur, vérifie ContentFlow, ou copie la session locale en fallback
 
-Blacksmith n'est pas un MCP. Le menu l'affiche donc comme une option séparée.
+Clerk CLI et Blacksmith ne sont pas des logins MCP Codex. Le menu les affiche
+donc comme des options séparées.
 Si vous tapez quand même `blacksmith` dans le sous-menu MCP custom par erreur,
 ShipFlow bascule vers le tunnel Blacksmith dédié au lieu de chercher un MCP
 Codex nommé `blacksmith`.
@@ -115,11 +119,12 @@ SHIPFLOW_NO_ANIMATION=1 urls
 
 Quand Codex tourne sur un serveur distant, le process `codex mcp login <provider>` écoute son callback OAuth sur le serveur. Le navigateur, lui, s'ouvre sur votre machine locale et essaie de joindre `127.0.0.1:<port>/callback`. Sans tunnel, `127.0.0.1` désigne votre machine locale, pas le serveur distant.
 
-Blacksmith a le même problème avec `blacksmith auth login`: son callback
-localhost tourne sur le serveur, tandis que le navigateur est local. Utilisez
-donc `urls` puis `Login Blacksmith (distant)`, ou la commande locale
-`shipflow-blacksmith-login`, au lieu de lancer `blacksmith auth login`
-directement dans une session SSH distante.
+Clerk CLI et Blacksmith ont le même problème avec `clerk auth login` et
+`blacksmith auth login`: leur callback localhost tourne sur le serveur, tandis
+que le navigateur est local. Utilisez donc `urls` puis `Login Clerk CLI
+(distant)` / `Login Blacksmith (distant)`, ou les commandes locales
+`shipflow-clerk-login` et `shipflow-blacksmith-login`, au lieu de lancer ces
+commandes directement dans une session SSH distante.
 
 Le problème n'est pas OAuth lui-même. Le problème est le routage: le navigateur local doit pouvoir rejoindre le listener de callback qui tourne sur le serveur distant.
 
@@ -138,6 +143,12 @@ Le port change a chaque tentative OAuth. `shipflow-mcp-login` extrait donc le po
 même mécanisme réseau de tunnel callback. Il vérifie que le CLI Blacksmith
 existe sur le serveur, détecte seulement la présence de
 `~/.blacksmith/credentials`, et ne lit jamais le token.
+
+`shipflow-clerk-login` n'utilise pas Codex MCP non plus. Il lance `clerk auth
+login` sur le serveur, ouvre ou affiche l'URL Clerk dans votre navigateur local,
+puis vérifie le résultat avec `clerk whoami`. Les identifiants restent gérés par
+la CLI Clerk sur le serveur; ShipFlow ne lit pas le fichier de configuration ni
+le token.
 
 Blacksmith SSH Access est séparé de ce tunnel OAuth. Il sert à se connecter à
 un runner Blacksmith pendant qu'un job GitHub Actions est encore actif ou retenu
@@ -315,6 +326,20 @@ Si `shipflow-mcp-login vercel` ou `shipflow-mcp-login supabase` indique que le p
 codex mcp add vercel --url https://mcp.vercel.com
 codex mcp add supabase --url https://mcp.supabase.com/mcp
 ```
+
+### Clerk CLI: callback localhost `connection refused`
+
+N'utilisez pas `clerk auth login` directement dans une session SSH distante.
+Depuis votre machine locale, lancez `urls`, puis choisissez `k) Login Clerk CLI
+(distant)`, ou lancez directement:
+
+```bash
+shipflow-clerk-login
+```
+
+Si la CLI Clerk n'est pas installée côté serveur, installez-la d'abord avec
+`npm install -g clerk`, `brew install clerk/stable/clerk` ou
+`curl -fsSL https://clerk.com/install | bash`.
 
 ### Port déjà utilisé localement
 

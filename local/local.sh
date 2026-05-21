@@ -272,7 +272,7 @@ save_and_activate_connection() {
         add_saved_connection "$target"
         CACHED_SESSION_INFO=""
         CACHED_SESSION_TIME=0
-        echo -e "${GREEN}✓ Serveur actif enregistré pour urls, tunnel, shipflow-mcp-login et Blacksmith${NC}"
+        echo -e "${GREEN}✓ Serveur actif enregistré pour urls, tunnel, shipflow-mcp-login, Clerk et Blacksmith${NC}"
         return 0
     fi
 
@@ -683,6 +683,7 @@ show_menu() {
     local_menu_line "r" "🔄 Redémarrer les tunnels"
     local_menu_line "c" "🌐 Configurer nouveau serveur"
     local_menu_line "m" "🔐 Login OAuth MCP (distant)"
+    local_menu_line "k" "🔑 Login Clerk CLI (distant)"
     local_menu_line "b" "🔨 Login Blacksmith (distant)"
     local_menu_line "d" "🗄️ Turso - Login et checks distants"
     echo ""
@@ -703,7 +704,7 @@ run_mcp_login_menu() {
     local_menu_line "c" "custom"
     local_menu_line "x" "retour"
     echo ""
-    echo -e "${YELLOW}Blacksmith n'est pas un MCP: retour puis b) Login Blacksmith (distant).${NC}"
+    echo -e "${YELLOW}Clerk CLI et Blacksmith ont leurs flows dédiés: retour puis k ou b.${NC}"
     echo ""
     prompt_inline "${YELLOW}Tape la lettre de ton choix ?${NC} "
     read_menu_choice login_choice
@@ -733,12 +734,30 @@ run_mcp_login_menu() {
         return $?
     fi
 
+    if [ "$provider" = "clerk-cli" ]; then
+        echo ""
+        echo -e "${BLUE}Je bascule vers le tunnel OAuth Clerk CLI dédié.${NC}"
+        echo ""
+        "$SCRIPT_DIR/clerk-login.sh"
+        return $?
+    fi
+
     if [ -z "$provider" ]; then
         echo -e "${RED}❌ Provider vide${NC}"
         return 1
     fi
 
     "$SCRIPT_DIR/mcp-login.sh" "$provider"
+}
+
+run_clerk_login_menu() {
+    local_screen_header "Login Clerk CLI distant"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
+    echo ""
+    echo -e "${BLUE}Ce flow lance ${GREEN}clerk auth login${BLUE} sur le serveur et ouvre le callback OAuth via tunnel SSH local.${NC}"
+    echo -e "${YELLOW}Il corrige le cas où Clerk ouvre une URL localhost depuis une session SSH distante.${NC}"
+    echo ""
+    "$SCRIPT_DIR/clerk-login.sh"
 }
 
 run_blacksmith_login_menu() {
@@ -1250,6 +1269,10 @@ main() {
                 ;;
             m)
                 run_mcp_login_menu
+                pause
+                ;;
+            k)
+                run_clerk_login_menu
                 pause
                 ;;
             b)

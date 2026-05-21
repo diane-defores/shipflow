@@ -8091,11 +8091,15 @@ action_mcp_auth_setup() {
     echo -e "   ${GREEN}shipflow-mcp-login supabase${NC}"
     echo -e "   ${GREEN}shipflow-mcp-login all${NC}"
     echo ""
+    echo -e "${CYAN}4. For Clerk CLI auth, run this from your local machine:${NC}"
+    echo -e "   ${GREEN}shipflow-clerk-login${NC}"
+    echo -e "   ${YELLOW}This launches 'clerk auth login' on the server and tunnels its localhost callback.${NC}"
+    echo ""
     echo -e "${YELLOW}If Codex says the provider is missing on the remote server, add it there first:${NC}"
     echo -e "   ${GREEN}codex mcp add vercel --url https://mcp.vercel.com${NC}"
     echo -e "   ${GREEN}codex mcp add supabase --url https://mcp.supabase.com/mcp${NC}"
     echo ""
-    echo -e "${BLUE}ShipFlow does not read or store OAuth tokens; Codex and the provider own the token exchange.${NC}"
+    echo -e "${BLUE}ShipFlow does not read or store OAuth tokens; Codex, Clerk, and the provider own the token exchange.${NC}"
 }
 
 CODEX_MCP_DEFINITIONS=(

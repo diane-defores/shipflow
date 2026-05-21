@@ -90,3 +90,9 @@ Il sert a eviter que ces references restent seulement dans une conversation. Une
 ## Maintenance Rule
 
 Update this file when a competitor, alternative, inspiration source, or anti-pattern materially influences product scope, positioning, copy, pricing, onboarding, documentation, or visual direction.
+
+
+Synexis Core is an AI business health platform that helps companies monitor website performance, SEO, security, accessibility, revenue signals, inventory, leads, ads, and operational risks in one dashboard. It runs continuous scans, detects issues and anomalies, scores business impact, and helps teams prioritize fixes. Synexis Core also includes AI modules for financial intelligence, fraud monitoring, workforce insights, compliance readiness, vendor intelligence, opportunity detection, reputation tracking, sales forecasting, and more.
+https://synexiscore.com/?ref=betalist
+
+
