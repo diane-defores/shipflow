@@ -40,6 +40,7 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Shared tracking file write protocol
 
+- Before creating or mutating task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and preserve that format for new `TASKS.md` writes.
 - Treat the TASKS snapshots loaded at skill start as informational only.
 - Right before editing the master or local TASKS file, re-read the target from disk and use that version as authoritative.
 - Apply a minimal targeted edit to the relevant dashboard rows and project sections; never rewrite the whole file from stale context.

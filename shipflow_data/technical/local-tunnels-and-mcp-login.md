@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.8"
+artifact_version: "1.0.9"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-10"
+updated: "2026-05-22"
 status: reviewed
 source_skill: sf-start
 scope: local-tunnels-and-mcp-login
@@ -31,6 +31,7 @@ evidence:
   - "Turso SSH auth transfer helper added for remote CLI schema proof."
   - "Turso remote login helper accepts browser-provided headless JWT/token."
   - "Clerk CLI OAuth callback tunnel added for remote clerk auth login."
+  - "Local auth flows grouped under a single tunnel menu entry."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit local"
 ---
@@ -65,7 +66,7 @@ Blacksmith SSH Access is intentionally separate from these OAuth callback tunnel
 - `shipflow-clerk-login`: launches remote `clerk auth login`, opens a temporary callback tunnel, and verifies with `clerk whoami`.
 - `shipflow-blacksmith-login`: launches remote `blacksmith auth login` and opens a temporary callback tunnel.
 - `shipflow-turso-login`: launches remote `turso auth login --headless` by default, opens/prints the auth URL, accepts the browser-provided JWT/token when Turso shows one, stores it through the official remote CLI, then verifies `turso auth whoami`.
-- Local `urls` menu entry `Turso - Login et checks distants`: guided wrapper for login, ContentFlow checks, and fallback session copy.
+- Local `urls` menu entry `Authentifications distantes`: grouped wrapper for MCP Codex, Clerk CLI, Blacksmith, Turso login, ContentFlow checks, and fallback session copy.
 - `shipflow-turso-ssh [db-name]`: copies local Turso CLI config to the remote server, verifies `turso auth whoami`, and optionally checks ContentFlow tables.
 - `local/dev-tunnel.sh`: direct tunnel helper for scripted or simplified flows.
 
@@ -76,6 +77,7 @@ local/local.sh
   -> load current connection
   -> fetch remote session identity with animated TTY scan feedback
   -> fetch remote PM2 ports and active Flutter Web tmux ports
+  -> route remote auth flows through Authentifications distantes submenu
   -> validate local port availability
   -> start autossh tunnels
   -> show localhost URLs

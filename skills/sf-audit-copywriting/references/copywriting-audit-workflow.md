@@ -645,6 +645,7 @@ next_review: "[date]"
 ## Tracking (all modes)
 
 Protocole d'ecriture des fichiers partages (`AUDIT_LOG.md`, `TASKS.md`) :
+- Charger d'abord `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` ; les nouveaux enregistrements audit et task doivent suivre son format operationnel traffic-first.
 - Les snapshots lus au debut du skill sont informatifs, pas autoritatifs.
 - Juste avant chaque ecriture, relire le fichier cible depuis le disque et utiliser cette version comme source de verite.
 - N'ajouter ou remplacer que la ligne ou sous-section visee ; ne jamais reecrire tout le fichier a partir d'un etat perime.
@@ -654,12 +655,12 @@ Protocole d'ecriture des fichiers partages (`AUDIT_LOG.md`, `TASKS.md`) :
 ### Log the audit
 
 Append à :
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** : remplir la colonne Copywriting.
-2. **Local `./AUDIT_LOG.md`** : idem sans la colonne Project.
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** : créer ou mettre à jour un enregistrement `audit:` traffic-first pour l'audit Copywriting.
+2. **Local `./AUDIT_LOG.md`** : meme enregistrement traffic-first explicite cote projet; conserver le token `[project]` requis.
 
 ### Update TASKS.md
 
-1. **Local TASKS.md** : ajouter `### Audit: Copywriting` avec les recommandations comme tâches.
+1. **Local TASKS.md** : créer ou mettre à jour des enregistrements `task:` traffic-first pour les recommandations Copywriting.
 2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** : même chose dans la section du projet.
 
 ---

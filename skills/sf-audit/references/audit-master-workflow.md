@@ -191,7 +191,7 @@ Total: X critical, Y high, Z medium
 
 ### Step 6: Update global tracking
 
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** — one row per project with all domain scores.
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** — one traffic-first audit record per project with all domain scores.
 2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — update each project's audit subsections.
 
 ### Step 7: Ask about fixes
@@ -370,6 +370,7 @@ Rules for consolidation:
 ### Shared file write protocol
 
 Before editing `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`, project-local `AUDIT_LOG.md`, or either `TASKS.md` file:
+- Load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; new audit and task records must follow its traffic-first grammar.
 - Treat the snapshots loaded earlier in the skill as informational only.
 - Right before each write, re-read the target file from disk and use that version as authoritative.
 - Append or replace only the intended row or subsection; never rewrite the whole file from stale context.
@@ -380,33 +381,12 @@ Before editing `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`, project
 
 Update **two** audit logs. Never delete previous rows — this is the history.
 
-**1. Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** — cross-project dashboard:
+**1. Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** — cross-project dashboard.
 
-```markdown
-# Audit Log
+**2. Project-local `./AUDIT_LOG.md`** — project-scoped audit log.
 
-> Quick view of all audit runs across all projects. See project-local `AUDIT_LOG.md` for details.
-
-| Date       | Project          | Scope        | Code | Design | Copy | SEO | GTM | Translate | Deps | Perf | Overall | Issues     |
-|------------|------------------|--------------|------|--------|------|-----|-----|-----------|------|------|---------|------------|
-| 2026-02-21 | plaisirsurprise  | full project | B    | C      | B    | D   | B   | C         | B    | B    | C       | 3/8/12     |
-| 2026-02-21 | GoCharbon        | full project | A    | B      | B    | C   | —   | B         | A    | A    | B       | 0/3/7      |
-| 2026-03-05 | plaisirsurprise  | index.astro  | A    | B      | B    | B   | B   | B         | —    | B    | B       | 0/2/4      |
-```
-
-**2. Project-local `./AUDIT_LOG.md`** — same format but only for this project (no Project column):
-
-```markdown
-# Audit Log — [project name]
-
-| Date       | Scope        | Code | Design | Copy | SEO | GTM | Translate | Deps | Perf | Overall | Issues     |
-|------------|--------------|------|--------|------|-----|-----|-----------|------|------|---------|------------|
-| 2026-02-21 | full project | B    | C      | B    | D   | B   | C         | B    | B    | C       | 3/8/12     |
-```
-
-- Issues column format: `critical/high/medium`.
-- Use `—` for skipped domains.
-- Append a new row per run. This is an append-only log.
+- Create or update one traffic-first `audit:` record per run using `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`.
+- Preserve legacy rows as migration input when present; do not add new legacy table-only rows.
 
 ### Step 5: Update TASKS.md
 
@@ -414,30 +394,14 @@ Add audit findings as tasks. Two files to update:
 
 **1. Project-local TASKS.md** (e.g., `./TASKS.md` in the current project):
 - Create it if it doesn't exist.
-- Add an `## Audit Findings` section (or update it if it already exists — replace old findings with fresh ones).
-- List all issues (critical, high, and medium) as tasks:
-
-```markdown
-## Audit Findings
-> Last audit: 2026-02-21 — Overall: [C]
-
-| Pri | Task | Domain | Status |
-|-----|------|--------|--------|
-| 🔴 | Fix XSS in user comment rendering (src/components/Comments.tsx:42) | Code | 📋 todo |
-| 🔴 | Add missing meta descriptions on 8 pages | SEO | 📋 todo |
-| 🟠 | Standardize button styles across 12 components | Design | 📋 todo |
-| 🟠 | Rewrite homepage headline — benefit-driven | Copy | 📋 todo |
-| 🟡 | Add alt text to 5 decorative images | SEO | 📋 todo |
-| 🟡 | French typographic spaces before colons | Translate | 📋 todo |
-```
-
-- Use 🔴 for critical, 🟠 for high, 🟡 for medium.
-- If a previous `## Audit Findings` section exists, replace it entirely with fresh findings (don't accumulate stale issues).
+- Add or update traffic-first `task:` records for open findings.
+- Use the traffic marker as the severity signal and preserve unknown fields when updating existing records.
+- Treat existing legacy audit sections as migration input; do not add new legacy task tables.
 
 **2. Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**:
 - Find the section for the current project.
-- Add or update an `### Audit` subsection with a summary line and all issues as tasks.
-- Update the Dashboard table's "Top Priority" column if audit found critical issues (they take precedence).
+- Mirror the same traffic-first `task:` records for coordination.
+- Update any dashboard summary only when that surface still exists and critical issues take precedence.
 
 ### Step 6: Apply fixes
 

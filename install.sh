@@ -1424,6 +1424,10 @@ configure_shipflow_environment() {
 export SHIPFLOW_ROOT='$SHIPFLOW_DIR'
 export SHIPFLOW_DATA_DIR='$target_home/shipflow_data'
 
+if [ -d "\$HOME/.local/bin" ]; then
+  export PATH="\$HOME/.local/bin:\$PATH"
+fi
+
 # Flutter / Android shared tooling, when installed for this user.
 if [ -d "\$HOME/flutter/bin" ]; then
   export PATH="\$HOME/flutter/bin:\$PATH"
@@ -1480,6 +1484,42 @@ configure_command_wrappers() {
     if [ -x "$bin_dir/shipflow-turso-ssh" ]; then
         echo -e "  ${GREEN}✅ Commande Turso SSH disponible :${NC} /usr/local/bin/shipflow-turso-ssh"
     fi
+}
+
+install_shipflow_tui_for_user() {
+    local target_home="$1"
+    local username="$2"
+    local installer="$SHIPFLOW_DIR/tui/scripts/install-shipflow-tui.sh"
+
+    if [ "${SHIPFLOW_SKIP_TUI_INSTALL:-0}" = "1" ]; then
+        echo -e "  ${YELLOW}⚠️ ShipFlow TUI ignorée pour :${NC} $username"
+        return 0
+    fi
+
+    if [ "$username" = "root" ] && [ "${SHIPFLOW_INSTALL_TUI_FOR_ROOT:-0}" != "1" ] && [ "${#TARGET_USERS[@]}" -gt 0 ]; then
+        echo -e "  ${BLUE}ℹ️ ShipFlow TUI installée côté utilisateur quotidien, pas côté root${NC}"
+        return 0
+    fi
+
+    if [ ! -f "$installer" ]; then
+        warning "Installateur TUI introuvable: $installer"
+        return 1
+    fi
+
+    if [ "$username" = "root" ]; then
+        HOME="$target_home" bash "$installer" || {
+            warning "Installation ShipFlow TUI incomplète pour $username"
+            return 1
+        }
+    else
+        sudo -u "$username" -H bash "$installer" || {
+            warning "Installation ShipFlow TUI incomplète pour $username"
+            return 1
+        }
+    fi
+
+    echo -e "  ${GREEN}✅ ShipFlow TUI installée :${NC} tui, sftui, sf-tui, shipflow-tui"
+    return 0
 }
 
 # Create shipflow_data for a user
@@ -1660,6 +1700,7 @@ setup_user() {
     configure_skills "$user_home" || setup_failed=1
     configure_shipflow_environment "$user_home"
     configure_aliases "$user_home"
+    install_shipflow_tui_for_user "$user_home" "$username" || setup_failed=1
     configure_data "$user_home"
 
     # Fix ownership — everything we created must belong to the user
@@ -1701,6 +1742,9 @@ echo -e "   ${CYAN}gh auth login${NC}"
 echo ""
 echo -e "2. ${YELLOW}Lancer ShipFlow${NC} :"
 echo -e "   ${CYAN}shipflow${NC}  ou  ${CYAN}sf${NC}"
+echo ""
+echo -e "3. ${YELLOW}Lancer la TUI ShipFlow${NC} :"
+echo -e "   ${CYAN}tui${NC}  ou  ${CYAN}sftui${NC}"
 echo ""
 
 # Résumé des installations

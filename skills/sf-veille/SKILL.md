@@ -20,24 +20,50 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the findings reveal non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/sf-spec ...` command, and next step. If the work is only a direct local fix or already belongs to the current chantier, state `Chantier potentiel: non` with the concrete reason.
 
+## Report Modes
+
+Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
+
+Default to `report=user`: concise, action-first, French user-facing summaries, compact checks, and chantier block only when relevant. Use `report=agent`, `handoff`, `verbose`, or `full-report` when another skill needs detailed source scoring, decision history, validation evidence, or unresolved content-surface gates.
+
+## Required References
+
+Load only the references required by the active run:
+
+- `$SHIPFLOW_ROOT/skills/references/question-contract.md` before asking for missing input or per-link triage decisions.
+- `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` before recommending blog, article, newsletter, social, public-docs, public-skill-page, claim, or public-content actions.
+- `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md` before coordinating delegated URL fetch/research contexts.
+- `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` before the final report.
+
 
 ## Context
 
 - Current directory: !`pwd`
-- Workspace CLAUDE.md (tous les projets): !`cat ~/shipflow_data/CLAUDE.md 2>/dev/null || echo "no shipflow_data/CLAUDE.md"`
-- Project registry: !`cat ~/shipflow_data/PROJECTS.md 2>/dev/null || echo "no PROJECTS.md"`
+- Control-plane project registry: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md 2>/dev/null || echo "no control-plane PROJECTS.md"`
+- Current project governance sample: !`find shipflow_data -maxdepth 3 -type f 2>/dev/null | sort | head -80 || echo "no local shipflow_data governance corpus"`
 - Memory index: !`cat ~/.claude/projects/-home-claude/memory/MEMORY.md 2>/dev/null || echo "no memory"`
 
 ## Chargement du contexte business
 
-**Source de vérité : `~/shipflow_data/`** — contient CLAUDE.md (workspace overview avec tous les projets et stacks), PROJECTS.md (registry avec chemins et domaines), et les données de suivi.
+Separate control-plane files from project decision context:
 
-Pour chaque projet mentionné dans PROJECTS.md, lire son CLAUDE.md local si besoin de contexte détaillé :
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` is the cross-project registry used to discover candidate projects.
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` is the cross-project master tracker used only when the user chooses to add portfolio tasks.
+- Project-local `shipflow_data/` is the decision context for scoring a project: `business/`, `editorial/`, `technical/`, and `workflow/`.
+- Root legacy files such as `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `CONTEXT.md`, `CONTENT_MAP.md`, `TASKS.md`, and `AUDIT_LOG.md` are migration sources only unless a project explicitly has not adopted the governance corpus yet.
+
+For each relevant project from `PROJECTS.md`, read only the project-local governance files needed for the score:
+
 ```
-cat [project_path]/CLAUDE.md
+cat [project_path]/shipflow_data/business/business.md
+cat [project_path]/shipflow_data/business/product.md
+cat [project_path]/shipflow_data/business/branding.md
+cat [project_path]/shipflow_data/business/gtm.md
+cat [project_path]/shipflow_data/editorial/content-map.md
+cat [project_path]/shipflow_data/technical/context.md
 ```
 
-Charger aussi les mémoires pertinentes depuis `~/.claude/projects/-home-claude/memory/` pour le contexte business (objectifs, décisions, contraintes).
+Use `[project_path]/CLAUDE.md` or `[project_path]/AGENT.md` only as contributor guidance. If a listed project lacks local governance context, keep the score conservative and report the context gap instead of treating the control-plane registry as business truth. Load relevant memories from `~/.claude/projects/-home-claude/memory/` only as supplementary context, not as the canonical project contract.
 
 ---
 
@@ -45,7 +71,7 @@ Charger aussi les mémoires pertinentes depuis `~/.claude/projects/-home-claude/
 
 - **`$ARGUMENTS` contains URLs** (http/https) → Fetch and analyze each URL.
 - **`$ARGUMENTS` contains text without URLs** → Analyze the pasted content directly.
-- **`$ARGUMENTS` is empty** → Use **AskUserQuestion**:
+- **`$ARGUMENTS` is empty** → Load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask one numbered input question:
   - Question: "Colle les liens ou le contenu à analyser"
   - Freeform text input
 
@@ -59,7 +85,7 @@ Parse `$ARGUMENTS` to separate:
 - **URLs** — each http/https link found
 - **Raw text** — everything else (pasted content, notes, descriptions)
 
-If there are more than 3 URLs, batch them into groups of 2-3 and launch **parallel Agent subagents** for speed. Each agent gets the full business context + its batch of URLs.
+If there are more than 3 URLs, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md` before using delegated URL-fetch/research contexts. Parallel URL analysis is read-only only: no edits, no tracker writes, no content creation, and no chantier mutation from delegated contexts.
 
 ### Step 2: Fetch & analyze
 
@@ -92,9 +118,11 @@ Score chaque projet 0-10. Être honnête — un 2/10 c'est bien. Ne pas gonfler 
 
 **Détection de concurrents** : vérifier systématiquement si le lien est un concurrent direct ou indirect d'un de nos projets (même marché, même audience, même problème résolu). Si oui, le signaler clairement dans le résumé avec le tag **⚔️ CONCURRENT** et le projet concerné.
 
+**Détection contenu public** : si le lien suggère un article, blog post, newsletter, social post, public docs, public skill page, FAQ, claim ou page marketing, charger `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md`, puis vérifier le `shipflow_data/editorial/content-map.md` du projet cible. Ne jamais inventer un blog, une newsletter ou une surface sociale absente. Pour un blog/article absent, signaler `surface missing: blog` et proposer un handoff `sf-content` (qui peut router vers `sf-repurpose`) ou `sf-docs editorial`.
+
 ### Step 4: Triage interactif — lien par lien
 
-Traiter **un seul lien à la fois** — une seule question par AskUserQuestion pour maximiser le nombre d'options (4 max par question).
+Traiter **un seul lien à la fois**. Avant toute question utilisateur, charger `$SHIPFLOW_ROOT/skills/references/question-contract.md`. Chaque question doit être numérotée, expliquer pourquoi la décision change la route, et proposer un choix recommandé quand il existe un défaut responsable.
 
 **Format d'affichage avant chaque question :**
 
@@ -111,7 +139,7 @@ Traiter **un seul lien à la fois** — une seule question par AskUserQuestion p
 (lister uniquement les projets scorés >= 3)
 ```
 
-**Puis AskUserQuestion** avec **une question pour ce lien**. Les options doivent être **spécifiques au lien analysé** — pas des options génériques. Chaque option doit :
+**Puis poser une question de triage pour ce lien**. Les options doivent être **spécifiques au lien analysé** — pas des options génériques. Chaque option doit :
 1. Commencer par un **numéro** (pour que l'utilisateur puisse combiner via "Other" — ex: "1+3")
 2. Inclure le **nom du projet** concerné
 3. Préciser le **type d'action** concret (pas juste "backlog contenu")
@@ -129,10 +157,10 @@ Pour les 3 options restantes, piocher dans cette palette et adapter au contexte 
 - `🔍 [Projet] — surveiller concurrent (ajouter à la watchlist)` — pas d'action immédiate mais noter
 
 **📝 Contenu** :
-- `📝 [Projet] — article blog [type]` — types : portrait entreprise, guide comparatif, tutoriel, avis/review, opinion, pilier, FAQ
-- `📝 [Projet] — post social [plateforme]` — LinkedIn, Twitter/X, Instagram
-- `📝 [Projet] — script vidéo YouTube`
-- `📝 [Projet] — newsletter / étude de cas`
+- `📝 [Projet] — handoff sf-content pour article/blog [type]` — seulement si une surface blog/article est déclarée; sinon signaler `surface missing: blog`
+- `📝 [Projet] — handoff sf-content pour post social [plateforme]` — seulement si une surface sociale est déclarée; sinon signaler une surface éditoriale manquante
+- `📝 [Projet] — handoff sf-content pour script vidéo YouTube` — seulement si la surface vidéo est déclarée
+- `📝 [Projet] — handoff sf-content pour newsletter / étude de cas` — seulement si la surface newsletter/case study est déclarée
 
 **🏗️ Architecture / produit** :
 - `🏗️ [Projet] — intégrer [outil/API/service précis]`
@@ -156,25 +184,33 @@ Pour les 3 options restantes, piocher dans cette palette et adapter au contexte 
 
 Pour chaque lien selon la décision de l'utilisateur :
 
-Avant d'écrire dans `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` ou `~/shipflow/research/tools.md` :
+Avant d'écrire dans un tracker ou dans le dossier de veille canonique :
 - traiter les snapshots lus au début comme informatifs seulement
 - relire le fichier cible depuis le disque juste avant l'écriture et utiliser cette version comme source de vérité
 - appliquer un ajout ou une mise à jour minimale sur l'entrée visée, jamais une réécriture complète depuis un contexte périmé
 - si l'ancre ou la fiche attendue a bougé, relire une fois et recalculer
 - si c'est encore ambigu après cette seconde lecture, s'arrêter et demander à l'utilisateur
 
+Canonical write targets:
+
+- Veille reports and tools: project-local `shipflow_data/workflow/research/` when running in a target project; for ShipFlow/global portfolio veille, `$SHIPFLOW_ROOT/shipflow_data/workflow/research/`.
+- Cross-project tasks: `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` only when the user chooses a master-tracker backlog action.
+- Project-local tasks: `[project_path]/shipflow_data/workflow/TASKS.md` only when the target project owns its local tracker and the action is explicitly project-local.
+- Content actions: do not write article/blog/newsletter/social tasks directly when the surface is undeclared; route to `sf-content` / `sf-repurpose` through the content lifecycle, or report `surface missing: blog`.
+
 #### Si "Ignorer"
 - Ne rien faire. Le lien apparaîtra dans le rapport final comme IGNORÉ.
 
 #### Si "Backlog contenu"
-- Ajouter une tâche dans `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` sous le projet concerné, format :
+- If the chosen action affects public content, first apply the editorial corpus and content-map gate. If the target blog/article surface is missing, report `surface missing: blog` and route to `/sf-content [project] [source URL] [content goal]` or `/sf-docs editorial [project]`. If the surface exists and the source should be repurposed, route through `sf-content` to `sf-repurpose` instead of writing article copy directly.
+- If the surface exists or the action is non-public content planning, add the task to the appropriate tracker chosen above, format :
   ```
   - [ ] 📝 [Description de la tâche contenu] — source: [URL] (veille [date])
   ```
 - Ajouter une fiche dans `tools.md` (voir format Step 6).
 
 #### Si "Backlog archi"
-- Ajouter une tâche dans `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` sous le projet concerné, format :
+- Ajouter une tâche dans le tracker choisi ci-dessus, format :
   ```
   - [ ] 🏗️ [Description de la tâche archi/tech] — source: [URL] (veille [date])
   ```
@@ -190,10 +226,13 @@ Avant d'écrire dans `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` ou `~/
 
 ### Step 6: Save files
 
-Produire **2 fichiers** dans `~/shipflow/research/` (créer le dossier si besoin) :
+Produire **2 fichiers** dans le dossier de veille canonique :
+
+- project-local run: `shipflow_data/workflow/research/`
+- ShipFlow/global portfolio run: `$SHIPFLOW_ROOT/shipflow_data/workflow/research/`
 
 #### Fichier 1 : Rapport de veille
-**Chemin :** `~/shipflow/research/veille-[YYYY-MM-DD].md`
+**Chemin :** `[research-dir]/veille-[YYYY-MM-DD].md`
 Si un rapport existe déjà pour ce jour, append `-2`, `-3`, etc.
 
 Contient le rapport final avec les **décisions de l'utilisateur** (pas des verdicts auto-générés) :
@@ -223,7 +262,7 @@ CREUSÉ: X | BACKLOG: X | IGNORÉ: X
 ```
 
 #### Fichier 2 : Fiches outils (append)
-**Chemin :** `~/shipflow/research/tools.md`
+**Chemin :** `[research-dir]/tools.md`
 
 Ce fichier est **persistant** — on y accumule les fiches des outils/liens intéressants au fil des sessions de veille. Ne pas écraser le contenu existant, **ajouter à la suite**.
 
@@ -258,6 +297,7 @@ Afficher un récap compact des actions effectuées :
 - Nombre de fiches ajoutées/mises à jour dans tools.md
 - Liens creusés (avec résumé des findings)
 - Rapport sauvegardé : chemin du fichier
+- Content gates: `sf-content` handoffs, `surface missing: blog`, `no editorial impact`, or `Editorial Update Plan` when relevant
 
 ---
 
@@ -267,8 +307,8 @@ Afficher un récap compact des actions effectuées :
 - **Être spécifique.** "Pourrait être utile" n'est pas une analyse. Dire exactement COMMENT et POUR QUOI.
 - **Ne pas sur-scorer.** Être honnête. Un 2/10 c'est bien.
 - **Penser cross-projets.** Un même lien peut être CREUSER pour un projet et IGNORER pour un autre. Évaluer chaque projet du registry.
-- **Source de vérité : `~/shipflow_data/`** — toujours charger CLAUDE.md et PROJECTS.md de ce dossier avant d'analyser. Sans contexte, l'analyse est générique et inutile. Compléter avec les mémoires.
+- **Source de vérité projet : `shipflow_data/` local au projet.** Le control plane `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` sert à découvrir les projets et gérer le master tracker, pas à remplacer les contrats business/editorial/techniques des projets.
 - **4 axes, pas 5.** Contenu (web + réseaux, éducationnel + divertissant) | Architecture (apps rapides, intelligentes, un plaisir à utiliser) | Concurrence/inspiration (produit, contenu, copywriting) | Opportunité collab (partenariats, intégrations, cross-promo).
-- **Paralléliser** les fetches et analyses via des agents quand il y a plus de 3 URLs. La vitesse compte pour une veille.
+- **Paralléliser** les fetches et analyses seulement comme lecture déléguée après chargement de `master-delegation-semantics`; aucune écriture depuis les contextes délégués.
 - **Accents français obligatoires** dans tout le rapport.
 - **Le tableau récap doit lister TOUS les projets pertinents**, pas seulement 3. Se baser sur PROJECTS.md pour connaître la liste complète.

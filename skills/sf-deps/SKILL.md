@@ -89,7 +89,7 @@ Audit dependencies across ALL projects in the workspace.
    ═══════════════════════════════════════
    ```
 
-5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one row per project, Deps column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: Deps` subsection).
+5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one traffic-first audit record per project, Deps column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: Deps` subsection).
 
 6. Ask: **"Which projects should I fix?"** — list projects with scores. Fix only approved projects, one at a time.
 
@@ -281,6 +281,7 @@ Confidence: [high/medium/low]
 ## Tracking (all modes)
 
 Shared file write protocol for `AUDIT_LOG.md` and `TASKS.md`:
+- First load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; new audit and task records must use that traffic-first operational format.
 - Treat the snapshots loaded at skill start as informational only.
 - Right before each write, re-read the target file from disk and use that version as authoritative.
 - Append or replace only the intended row or subsection; never rewrite the whole file from stale context.
@@ -291,17 +292,17 @@ After generating the report and applying fixes:
 
 ### Log the audit
 
-Append a row to two files:
+Create or update traffic-first audit operational records in the target audit logs:
 
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: append a row filling the Deps column, `—` for other domains.
-2. **Project-local `./AUDIT_LOG.md`**: same but without the Project column.
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: create or update a traffic-first `audit:` record for the Deps audit.
+2. **Project-local `./AUDIT_LOG.md`**: same project-explicit traffic-first record; keep the required `[project]` token.
 
-Create either file if missing, using the table header from the master `/sf-audit` skill format.
+Create either file if missing with a short heading and traffic-first audit records per the shared operational record format.
 
 ### Update TASKS.md
 
-1. **Local TASKS.md** (project root): add/replace a `### Audit: Deps` subsection with critical (🔴), high (🟠), and medium (🟡) issues.
-2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project's section, add/replace a `### Audit: Deps` subsection with the same tasks.
+1. **Local TASKS.md** (project root): create or update traffic-first task records for the Deps audit findings.
+2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project section and mirror the same traffic-first task records.
 
 ---
 

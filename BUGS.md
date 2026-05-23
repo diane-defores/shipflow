@@ -2,6 +2,8 @@
 
 | Bug ID | Status | Severity | Title | Last tested | Next step |
 |--------|--------|----------|-------|-------------|-----------|
+| [BUG-2026-05-20-001](shipflow_data/workflow/bugs/BUG-2026-05-20-001.md) | fixed-pending-verify | medium | Terminal TUI activity panel shows headings instead of task and audit entries | 2026-05-20 | /sf-test --retest BUG-2026-05-20-001 |
+| [BUG-2026-05-19-001](shipflow_data/workflow/bugs/BUG-2026-05-19-001.md) | fixed-pending-verify | medium | Terminal TUI project filter does not scope specs | 2026-05-19 | /sf-test --retest BUG-2026-05-19-001 |
 | [BUG-2026-05-10-005](bugs/BUG-2026-05-10-005.md) | fix-attempted | medium | Menu navigation ignores typed environment/folder name | 2026-05-10 | /sf-test --retest BUG-2026-05-10-005 |
 | [BUG-2026-05-08-002](bugs/BUG-2026-05-08-002.md) | closed | high | Health Check can auto-enter aggressive cleanup after pressing H | 2026-05-08 | none |
 | [BUG-2026-05-08-001](bugs/BUG-2026-05-08-001.md) | closed | high | ShipFlow top-level menu takes several seconds to render with Gum | 2026-05-08 | none |

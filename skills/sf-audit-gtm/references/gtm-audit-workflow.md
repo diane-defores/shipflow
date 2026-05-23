@@ -169,7 +169,7 @@ Audit ALL commercial projects in the workspace for go-to-market readiness.
    ═══════════════════════════════════════
    ```
 
-5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one row per project, GTM column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: GTM` subsection).
+5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one traffic-first audit record per project, GTM column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: GTM` subsection).
 
 6. Ask: **"Which projects should I fix?"** — list projects with scores. Fix only approved projects, one at a time.
 
@@ -418,6 +418,7 @@ Strategic recommendations: Z (detailed below)
 ## Tracking (all modes)
 
 Shared file write protocol for `AUDIT_LOG.md` and `TASKS.md`:
+- First load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; new audit and task records must use that traffic-first operational format.
 - Treat the snapshots loaded at skill start as informational only.
 - Right before each write, re-read the target file from disk and use that version as authoritative.
 - Append or replace only the intended row or subsection; never rewrite the whole file from stale context.
@@ -428,17 +429,17 @@ After generating the report and applying fixes:
 
 ### Log the audit
 
-Append a row to two files:
+Create or update traffic-first audit operational records in the target audit logs:
 
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: append a row filling only the GTM column, `—` for others.
-2. **Project-local `./AUDIT_LOG.md`**: same without the Project column.
+1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: create or update a traffic-first `audit:` record for the GTM audit.
+2. **Project-local `./AUDIT_LOG.md`**: same project-explicit traffic-first record; keep the required `[project]` token.
 
 Create either file if missing.
 
 ### Update TASKS.md
 
-1. **Local TASKS.md** (project root): add/replace an `### Audit: GTM` subsection with critical (🔴), high (🟠), and medium (🟡) issues as task rows.
-2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project's section, add/replace an `### Audit: GTM` subsection with the same tasks.
+1. **Local TASKS.md** (project root): create or update traffic-first task records for the GTM audit findings.
+2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project section and mirror the same traffic-first task records.
 
 ---
 

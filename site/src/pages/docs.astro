@@ -7,6 +7,7 @@ const coreDocs = [
   ["AGENT.md (compat)", "Where a fresh agent should look first depending on the task."],
   ["shipflow_data/technical/context.md", "How to orient quickly in the repo, identify hotspots, and route edits."],
   ["shipflow_data/technical/context-function-tree.md", "How to navigate large procedural shell files without re-reading everything."],
+  ["shipflow_data/technical/terminal-tui.md", "How the optional terminal cockpit stays read-only, local, and separate from skill execution."],
   ["shipflow_data/editorial/content-map.md", "Where content lives: docs, landing pages, semantic clusters, public surfaces, and repurposing destinations."],
   ["shipflow_data/editorial/README.md", "How public content, claims, page intent, and Astro content schema boundaries stay aligned."],
   ["docs/skill-launch-cheatsheet.md", "Markdown reference for master skills, supporting skills, and argument modes."],
@@ -143,6 +144,20 @@ const editorialPath = "/docs#editorial-governance";
         </article>
 
         <article class="doc-card">
+          <h3>Terminal cockpit for small screens</h3>
+          <p>
+            The ShipFlow TUI is an optional read-only dashboard installed by the
+            main ShipFlow setup. Operators can launch <code>tui</code> from a
+            terminal to scan projects, specs, tasks, audits, and diagnostics
+            without opening the Flutter app or giving the dashboard write
+            powers.
+          </p>
+          <a class="doc-action" href="/docs#terminal-tui">
+            Read the TUI boundary
+          </a>
+        </article>
+
+        <article class="doc-card">
           <h3>Direct fixes still leave bug memory</h3>
           <p>
             `sf-fix` can patch a local bug quickly, but the default is still a
@@ -162,6 +177,51 @@ const editorialPath = "/docs#editorial-governance";
             into unreadable prompt inventory.
           </p>
           <a class="doc-action" href="/faq">Read the compatibility FAQ</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="terminal-tui">
+      <div class="section-heading">
+        <p class="eyebrow">Terminal TUI</p>
+        <h2>A compact ShipFlow dashboard for operators who live in the terminal.</h2>
+        <p>
+          The TUI is built for quick orientation on remote shells and phone-sized
+          terminals. It reads the same ShipFlow Markdown sources as the rest of
+          the workflow and keeps execution inside the skills layer.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>Install once, launch with <code>tui</code></h3>
+          <p>
+            The root installer provisions the TUI for configured users. After
+            <code>sudo ./install.sh</code> and a fresh shell, the daily command is
+            <code>tui</code>. Longer aliases remain available as
+            <code>sftui</code>, <code>sf-tui</code>, and
+            <code>shipflow-tui</code>.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Read-only by design</h3>
+          <p>
+            V1 can navigate projects, specs, tasks, audits, and diagnostics. It
+            does not write Markdown, run shell commands, manage auth, or store
+            cloud credentials. That boundary keeps the dashboard useful without
+            turning it into an unsafe action surface.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Different from Gum and Flutter</h3>
+          <p>
+            Gum remains useful for one-shot shell prompts. The Flutter app stays
+            a separate product surface. The terminal TUI is the persistent local
+            cockpit between those two: faster than opening a full app, but still
+            intentionally narrower than a write-capable workflow.
+          </p>
         </article>
       </div>
     </section>

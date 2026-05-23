@@ -79,6 +79,7 @@ Examples:
 ### Step 2 — Update TASKS.md (silent)
 
 Using the master TASKS.md from context:
+- Before creating or mutating task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and follow it for new `TASKS.md` writes.
 - Mark completed items: `🔄 in progress` → `✅ done` and `📋 todo` → `✅ done`
 - Mark partially done items: `📋 todo` → `🔄 in progress` with a note
 - Add new tasks discovered during the work

@@ -9,6 +9,10 @@ argument-hint: '[skill-name] (omit to pick multiple)'
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
+## Instruction Layering
+
+Before editing or expanding this skill, load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md`. Keep this file as the activation contract and move bulky domain checklists to skill-local or shared references.
+
 ## Chantier Tracking
 
 Trace category: `conditionnel`.
@@ -16,6 +20,21 @@ Process role: `support-de-chantier`.
 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` when this run is attached to a spec-first chantier. If exactly one active `specs/*.md` chantier is identified, append the current run to `Skill Run History`, update `Current Chantier Flow` when the run changes the chantier state, and include a final `Chantier` block. If no unique chantier is identified, do not write to any spec; report `Chantier: non applicable` or `Chantier: non trace` with the reason.
 
+## Report Modes
+
+Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
+
+Default to `report=user`: concise, outcome-first, active user language, and compact chantier block when relevant. Use `report=agent`, `handoff`, `verbose`, or `full-report` for orchestrator handoff, blocked runs, validation matrices, or ambiguous findings that need downstream action.
+
+## Required References
+
+Load only the references required by the active run:
+
+- `$SHIPFLOW_ROOT/skills/references/question-contract.md` before any user-facing skill selection or scope question.
+- `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md` before launching or coordinating delegated research/execution contexts.
+- `$SHIPFLOW_ROOT/skills/references/skill-context-budget.md` before changing discovery metadata, `agents/openai.yaml`, public skill pages, or materially expanding a `SKILL.md`.
+- `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when the refresh depends on external framework, SDK, provider, security, browser, accessibility, SEO, or platform behavior.
+- `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` before the final report.
 
 ## Context
 
@@ -25,7 +44,7 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Your task
 
-Refresh one or more skills to match 2025-2026 state of the art. Workflow: spawn parallel research agents → apply findings as targeted edits → log the refresh.
+Refresh one or more skills against both current external practice and current ShipFlow governance. Workflow: resolve scope → load the required shared contracts → gather current evidence → apply targeted edits → validate skill budget/docs/runtime surfaces → log the refresh.
 
 **Never rewrite a skill from scratch.** Additive only — new checks, new phases, updated thresholds. Preserve the author's voice and existing structure.
 
@@ -34,13 +53,33 @@ Refresh one or more skills to match 2025-2026 state of the art. Workflow: spawn 
 ## MODE DETECTION
 
 - **`$ARGUMENTS` is a skill name** (e.g., `sf-audit-seo`): refresh that single skill.
-- **`$ARGUMENTS` is empty**: use **AskUserQuestion** to let the user pick which skills to refresh.
+- **`$ARGUMENTS` names governance, docs, freshness, or skill-maintenance skills**: prioritize local ShipFlow governance alignment before external trend research. Typical targets: `sf-docs`, `sf-skills-refresh`, `sf-skill-build`, `sf-help`, `sf-init`, and public skill pages.
+- **`$ARGUMENTS` is empty**: load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask one numbered selection question for which skills to refresh.
   - Question: "Which skills should I refresh?"
   - `multiSelect: true`
   - List all `skills/sf-*` directories with a `SKILL.md` as options (label = skill name, description = first-line `description:` from the frontmatter)
   - Pre-select nothing — force explicit choice (batch refresh burns tokens)
 
 ---
+
+## PHASE 0: GOVERNANCE BASELINE
+
+Before reading external sources, compare each target skill against the current ShipFlow baseline:
+
+- `Canonical Paths`
+- `Instruction Layering` when the skill is compacted or may grow
+- `Trace category` and `Process role`
+- `Report Modes`
+- required shared references and mode-specific references
+- `question-contract` before user-facing questions
+- `master-delegation-semantics` before delegated research or execution
+- `spec-driven-development-discipline` proof path when the refresh changes a skill contract
+- `documentation-freshness-gate` when the change depends on external behavior
+- `skill-context-budget` and `skill_budget_audit.py` when skills, discovery, public skill pages, or body size change
+- `sf-docs/help` and public skill-page coherence when the refresh changes a public promise, route, or workflow doctrine
+- current-user runtime link checks when invocation directories, runtime visibility, or skill sync behavior are touched
+
+If the target is `sf-skills-refresh` itself, do not run ordinary self-refresh. Treat it as a manual `sf-skill-build` maintenance job with `scenario-first` proof, because stale self-refresh rules can otherwise preserve their own blind spots.
 
 ## PHASE 1: UNDERSTAND EACH TARGET
 
@@ -49,13 +88,18 @@ For each selected skill, read its `SKILL.md` and identify:
 - **Current phases**: what's already covered (avoid duplication)
 - **Obvious 2025+ patterns**: signals the skill was recently refreshed — adjust research accordingly
 - **Likely gaps**: what could be new in the domain since ~6 months ago
+- **Governance gaps**: missing current ShipFlow gates from Phase 0
 - **Language doctrine gaps**: compare touched sections against `GUIDELINES.md` and `shipflow-spec-driven-workflow.md` when available. Internal skill contracts should be English; user-facing prompts and reports should use the active user/project language; French user-facing text needs proper accents; casual language mixing inside one artifact should be flagged unless it is a quoted source, quoted user prompt, legal text, external material, or stable machine-readable anchor.
 
 ---
 
-## PHASE 2: RESEARCH (parallel agents)
+## PHASE 2: RESEARCH AND EVIDENCE
 
-Spawn one `Agent` per skill using `subagent_type: "general-purpose"`, `run_in_background: true`. **Send all agent calls in a single message** to run in parallel.
+Choose the smallest evidence path that fits the target:
+
+- For local governance/doc/freshness skills, read local shared references first. External research is optional unless a domain claim depends on current external behavior.
+- For domain skills that drift with external standards, run the Documentation Freshness Gate and use current official docs or primary sources.
+- Use delegated research contexts only when allowed by the active runtime and after loading `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`. Parallel research requires non-overlapping read-only missions or a ready batch plan; otherwise keep the run sequential.
 
 Each agent prompt MUST include:
 
@@ -97,7 +141,14 @@ For each returned report:
 3. For each **EXISTING CHECK TO UPDATE**: use `Edit` with exact old/new strings.
 4. For each **NEW PHASE PROPOSAL**: evaluate. Only add if genuinely missing (not a rename of existing content). Insert between existing phases, matching numbering convention.
 5. Update report template / score rubric at the bottom to include new categories.
-6. If a refresh edits `description`, `argument-hint`, `agents/openai.yaml`, discovery wording, or materially changes `SKILL.md` length, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/skill-context-budget.md` and run `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/skill_budget_audit.py --skills-root "${SHIPFLOW_ROOT:-$HOME/shipflow}/skills"` before reporting.
+6. If a refresh edits `description`, `argument-hint`, `agents/openai.yaml`, discovery wording, public skill pages, or materially changes `SKILL.md` length, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/skill-context-budget.md` and run `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/skill_budget_audit.py --skills-root "${SHIPFLOW_ROOT:-$HOME/shipflow}/skills" --format markdown` before reporting.
+7. If a refresh changes discoverability, lifecycle routing, workflow doctrine, public skill promises, or docs/help behavior, update or explicitly mark no impact for:
+   - `skills/sf-help/SKILL.md`
+   - `README.md`
+   - `shipflow-spec-driven-workflow.md`
+   - `shipflow_data/technical/skill-runtime-and-lifecycle.md`
+   - `site/src/content/skills/<skill>.md`
+8. If a refresh changes invocation directories or runtime visibility, run `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/shipflow_sync_skills.sh --check --skill <skill-name>`.
 
 **Rules:**
 - Never delete a check that's still valid today.
@@ -107,6 +158,7 @@ For each returned report:
 - If a new check replaces an outdated one (e.g., FID → INP), update in place. Don't leave both.
 - When refreshing French user-facing output, fix missing accents in touched text. Treat accentless French as an error unless the text is a technical identifier, command, slug, or ASCII-only format.
 - Flag inappropriate casual language mixing as a refresh finding; do not launch a broad legacy rewrite unless the user explicitly requests it.
+- Do not add ShipFlow governance frontmatter to runtime content such as `site/src/content/skills/*.md`.
 
 ---
 
@@ -135,7 +187,34 @@ One `##` block per skill refreshed. Don't batch multiple skills into one block.
 
 ---
 
+## PHASE 4.5: VALIDATE
+
+Run checks that match touched surfaces:
+
+```bash
+python3 tools/skill_budget_audit.py --skills-root skills --format markdown
+tools/shipflow_sync_skills.sh --check --skill <skill-name>
+python3 tools/shipflow_metadata_lint.py <changed-governance-artifacts>
+```
+
+When public skill pages or the site content collection changed:
+
+```bash
+npm --prefix site run build
+```
+
+Use focused `rg` checks for new or required gate language, stale names, and public claim drift.
+
+Produce both statuses when the refresh changes docs/help/public surfaces:
+
+- `Documentation Update Plan`: `complete` / `no impact` / `blocked`
+- `Editorial Update Plan`: `complete` / `no editorial impact` / `blocked`
+
 ## PHASE 5: REPORT
+
+Apply `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
+
+User mode should be concise:
 
 ```
 SKILLS REFRESHED — [date]
@@ -146,6 +225,9 @@ SKILLS REFRESHED — [date]
 ═══════════════════════════════════════
 Total: X new checks, Y updates, Z new phases across N skills
 Log: skills/REFRESH_LOG.md
+Checks: [skill budget/runtime sync/build/etc.]
+Docs: Documentation Update Plan [status], Editorial Update Plan [status]
+Fresh docs: [checked/not needed/gap/conflict]
 ```
 
 If any research agent returned findings that need human judgment (ambiguous, controversial, project-specific), list them under **NEEDS DECISION** — don't apply unilaterally.
@@ -160,5 +242,5 @@ If any research agent returned findings that need human judgment (ambiguous, con
 - **Skill budget compliance stays scoped here**: enforce Codex/Claude Code skill budget rules during skill refreshes, not through broad reminders in unrelated agent guidelines.
 - **Never touch `name:` in frontmatter.** It's the invocation key.
 - **ShipFlow language doctrine**: internal contracts use English; user-facing interaction uses the active user/project language; stable machine-readable labels stay English; quoted user input, source evidence, legal text, and external material keep their original language.
-- **Don't refresh `sf-skills-refresh` itself** from this skill — that's a manual edit job.
+- **Refreshing `sf-skills-refresh` itself**: only through `sf-skill-build` or another explicit manual maintenance contract with `scenario-first` proof. Ordinary self-refresh is blocked.
 - **French accents are required** in French user-facing output: é, è, ê, à, â, ù, û, ô, î, ï, ç, œ, æ. Missing accents are spelling errors unless a technical identifier, command, slug, or ASCII-only format requires them.

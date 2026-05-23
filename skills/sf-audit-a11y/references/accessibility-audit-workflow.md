@@ -372,15 +372,16 @@ Standard pattern: read PROJECTS.md, AskUserQuestion for selection, parallel agen
 ## Tracking
 
 Shared file write protocol for `AUDIT_LOG.md` and `TASKS.md`:
+- First load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; new audit and task records must use that traffic-first operational format.
 - Treat the snapshots loaded at skill start as informational only.
 - Right before each write, re-read the target file from disk and use that version as authoritative.
 - Append or replace only the intended row or subsection; never rewrite the whole file from stale context.
 - If the expected anchor moved or changed, re-read once and recompute.
 - If it is still ambiguous after the second read, stop and ask the user instead of forcing the write.
 
-- Local `AUDIT_LOG.md` : row for "A11y" audit with date + score + critical count
-- Local `TASKS.md` : `### Audit: A11y` subsection (🔴 items bubble up to top of TASKS.md since they block real users)
-- Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` : same subsection under project
+- Local `AUDIT_LOG.md` : create or update a traffic-first `audit:` record for the A11y audit
+- Local `TASKS.md` : create or update traffic-first task records for the A11y audit findings
+- Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` : mirror the same traffic-first task records under the project
 
 ---
 

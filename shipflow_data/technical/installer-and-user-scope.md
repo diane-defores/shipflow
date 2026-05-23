@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.4"
+artifact_version: "1.0.5"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-08"
+updated: "2026-05-23"
 status: reviewed
 source_skill: sf-start
 scope: installer-and-user-scope
@@ -31,6 +31,7 @@ evidence:
   - "Turso SSH helper command wrapper added to installer-managed global commands."
   - "Turso remote login helper command wrapper added."
   - "Remote Agents menu includes Turso guidance while local menu owns the SSH tunnel flow."
+  - "Short remote ShipFlow bootstrap added for clone-free install."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit installer"
 ---
@@ -53,6 +54,8 @@ This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read
 
 ## Entrypoints
 
+- `curl -fsSL https://winflowz.com/shipflow-script | sudo sh`: short remote bootstrap. It clones or updates `~/shipflow` for the invoking sudo user, stashes local dirty repo changes before updating, then delegates to the root installer.
+- `install-shipflow.sh`: raw bootstrap script used by the short remote endpoint.
 - `sudo ./install.sh`: server installer.
 - `configure_command_wrappers`: installs global `shipflow`, `sf`, and helper command symlinks such as `shipflow-turso-login` and `shipflow-turso-ssh`.
 - `setup_user`: per-user configuration for eligible users.
@@ -65,6 +68,12 @@ This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read
 ## Control Flow
 
 ```text
+curl -fsSL https://winflowz.com/shipflow-script | sudo sh
+  -> install git/curl/bash bootstrap dependencies when missing
+  -> clone or update ShipFlow under the invoking user's home
+  -> stash local dirty repo changes before update
+  -> exec sudo/root install.sh
+
 sudo ./install.sh
   -> verify root scope
   -> install system tools
@@ -78,6 +87,7 @@ sudo ./install.sh
 ## Invariants
 
 - Server install is root-level and should fail clearly without root.
+- The remote bootstrap must preserve the root boundary: it may prepare the repository, but the real system setup still runs through `install.sh` as root.
 - Daily work should run under an operational user, not by forcing all state into root.
 - The installer installs the PM2 binary but must not configure PM2 boot
   autostart by default; environments should start explicitly under the

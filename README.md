@@ -107,6 +107,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [shipflow_data/business/gtm.md](./shipflow_data/business/gtm.md) — public promise, acquisition path, proof points, objections, and funnel assumptions
 - [shipflow_data/technical/architecture.md](./shipflow_data/technical/architecture.md) — system structure, boundaries, flows, and technical invariants
 - [shipflow_data/technical/guidelines.md](./shipflow_data/technical/guidelines.md) — technical rules, preferred patterns, anti-patterns, and validation expectations
+- [shipflow_data/technical/terminal-tui.md](./shipflow_data/technical/terminal-tui.md) — internal contract for the optional read-only terminal dashboard
 - [CLAUDE.md](./CLAUDE.md) — repository constraints and coding guidance
 - [shipflow-spec-driven-workflow.md](./shipflow-spec-driven-workflow.md) — ShipFlow V3 workflow for `sf-explore`, `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, and `sf-end`
 - [shipflow-metadata-migration-guide.md](./shipflow-metadata-migration-guide.md) — how to adopt ShipFlow metadata and versioning in an existing project
@@ -119,10 +120,13 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 ## Installation
 
 ```bash
-# Via the bootstrap dotfiles flow
-curl -fsSL https://raw.githubusercontent.com/dianedef/dotfiles/main/bootstrap.sh | bash
+# Install without manually cloning the repository
+curl -fsSL https://winflowz.com/shipflow-script | sudo sh
+```
 
-# Or manually
+Manual equivalent:
+
+```bash
 cd ~/shipflow
 sudo ./install.sh
 ```
@@ -138,6 +142,7 @@ ShipFlow's installer is intentionally a root-level installer. It must be run wit
   and starts a user-mode Caddy proxy only while PM2 apps are online
 - `/etc/dokploy/compose`
 - ShipFlow user configuration for root and detected regular users
+- ShipFlow Terminal TUI dependencies and commands: `tui`, `sftui`, `sf-tui`, and `shipflow-tui`
 
 If `./install.sh` is launched without root, it stops before making partial system changes. The log explains that the root-only scope was skipped and tells the operator to rerun with `sudo`.
 
@@ -162,6 +167,21 @@ git clone git@github.com:<owner>/shipflow_data.git ~/shipflow_data
 ShipFlow creates starter files in `~/shipflow_data` when the folder is missing.
 If you start working before restoring your real data, skills may write new
 tracking entries into the empty folder and make the later merge harder.
+
+The same install also provisions the optional terminal cockpit in
+`~/shipflow/tui` / `$SHIPFLOW_ROOT/tui`. After opening a fresh shell, launch it
+with:
+
+```bash
+tui
+```
+
+The TUI is intentionally read-only in V1. It gives a compact terminal view of
+projects, specs, tasks, audits, and diagnostics while keeping skills and
+Markdown files as the source of truth. See
+[tui/README.md](./tui/README.md) for keys and
+[shipflow_data/technical/terminal-tui.md](./shipflow_data/technical/terminal-tui.md)
+for the internal architecture contract.
 
 ## Codex TUI Defaults
 
@@ -754,6 +774,7 @@ shipflow/
 ├── CHANGELOG.md
 ├── shipflow-spec-driven-workflow.md
 ├── ECOSYSTEM-AND-PORTS.md
+├── tui/
 ├── shipflow_data/
 │   ├── business/
 │   ├── editorial/
@@ -773,6 +794,7 @@ shipflow/
 - `lib.sh` — shared shell library for ports, PM2, Flox, Caddy, validation, and tracking
 - `config.sh` — central configuration
 - `install.sh` — installation and machine setup
+- `tui/` — optional read-only terminal dashboard for ShipFlow operators
 - `skills/` — ShipFlow skill library
 - `local/` — local machine tunnel scripts and setup docs
 - `tools/codebase-mcp/` — optional MCP server for token-efficient codebase work

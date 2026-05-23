@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.1.1"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-11"
+updated: "2026-05-23"
 status: reviewed
 source_skill: sf-start
 scope: code-docs-map
@@ -26,6 +26,7 @@ evidence:
   - "Repository inventory and ready spec task map."
   - "Menu frontend variants mapped to runtime CLI docs after grouped root menu change."
   - "Project governance layout decision moved root governance docs to canonical shipflow_data/ paths."
+  - "ShipFlow remote bootstrap script added to installer mapping."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -47,7 +48,7 @@ Shared files in this map are sequential integration files. Do not assign concurr
 | `lib.sh` | Runtime CLI | `shipflow_data/technical/runtime-cli.md` | `shipflow_data/technical/context-function-tree.md`, `shipflow_data/technical/guidelines.md` | `bash -n lib.sh`; relevant function smoke or grep proof | PM2/Flox/Caddy/DuckDNS behavior, validation, dashboard, health, publish, or environment lifecycle changes |
 | `config.sh` | Runtime CLI | `shipflow_data/technical/runtime-cli.md` | `README.md` | `bash -n config.sh`; config validation smoke when changed | Config variable, default, or validation contract changes |
 | `local/**` | Local tunnels and MCP login | `shipflow_data/technical/local-tunnels-and-mcp-login.md` | `local/README.md`, `README.md` | `bash -n local/*.sh`; PowerShell syntax review when `.ps1` changes | SSH target, identity path, tunnel lifecycle, MCP OAuth, or local UX changes |
-| `install.sh` | Installer and user scope | `shipflow_data/technical/installer-and-user-scope.md` | `README.md`, `shipflow_data/technical/guidelines.md` | `bash -n install.sh`; dry-run/review of touched installer branch | Root/user split, symlink, alias, MCP config, package install, or destructive behavior changes |
+| `install.sh`, `install-shipflow.sh` | Installer and user scope | `shipflow_data/technical/installer-and-user-scope.md` | `README.md`, `shipflow_data/technical/guidelines.md` | `bash -n install.sh install-shipflow.sh`; dry-run/review of touched installer branch | Root/user split, remote bootstrap, symlink, alias, MCP config, package install, or destructive behavior changes |
 | `tools/shipflow_sync_skills.sh`, `test_skill_runtime_sync.sh` | Skill runtime and installer user scope | `shipflow_data/technical/skill-runtime-and-lifecycle.md`, `shipflow_data/technical/installer-and-user-scope.md` | `README.md` | `bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh`; `bash test_skill_runtime_sync.sh`; `tools/shipflow_sync_skills.sh --check --all` | Runtime skill visibility, Claude/Codex symlink behavior, install-time selected-user skill linking, collision handling |
 | `skills/**/SKILL.md` | Skill runtime and lifecycle | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `shipflow-spec-driven-workflow.md`, `skills/references/technical-docs-corpus.md` | `python3 tools/skill_budget_audit.py --skills-root skills --format markdown` when skill surfaces change | Skill routing, lifecycle, validation, documentation gate, or model/topology behavior changes |
 | `skills/references/**` | Skill references | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/references/technical-docs-corpus.md` | Metadata lint for references with frontmatter; targeted rg checks | Reference doctrine or path-resolution behavior changes |

@@ -174,6 +174,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
 - If the task touches Supabase, include the matching schema/policy/migration files, storage path conventions, and the exact client split (`browser`, `server`, `service-role`) in the read-first set
 - Update task tracking to `🔄 in progress` in master TASKS.md
 - Update local TASKS.md too when present
+- Before creating or mutating task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and follow its traffic-first writer obligations.
 - Treat the TASKS content loaded in Context as informational only.
 - Immediately before editing either TASKS file, re-read it from disk and use that version as authoritative.
 - Apply a minimal targeted edit (status row / task line only), never a whole-file rewrite from stale context.

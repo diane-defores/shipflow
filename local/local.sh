@@ -682,10 +682,7 @@ show_menu() {
     local_menu_line "s" "📊 Statut des tunnels"
     local_menu_line "r" "🔄 Redémarrer les tunnels"
     local_menu_line "c" "🌐 Configurer nouveau serveur"
-    local_menu_line "m" "🔐 Login OAuth MCP (distant)"
-    local_menu_line "k" "🔑 Login Clerk CLI (distant)"
-    local_menu_line "b" "🔨 Login Blacksmith (distant)"
-    local_menu_line "d" "🗄️ Turso - Login et checks distants"
+    local_menu_line "o" "🔐 Authentifications distantes"
     echo ""
     local_menu_line "l" "🔌 Choisir une connexion enregistrée"
     local_menu_line "x" "❌ Quitter"
@@ -704,7 +701,7 @@ run_mcp_login_menu() {
     local_menu_line "c" "custom"
     local_menu_line "x" "retour"
     echo ""
-    echo -e "${YELLOW}Clerk CLI et Blacksmith ont leurs flows dédiés: retour puis k ou b.${NC}"
+    echo -e "${YELLOW}Clerk CLI et Blacksmith ont leurs flows dédiés dans le menu Authentifications.${NC}"
     echo ""
     prompt_inline "${YELLOW}Tape la lettre de ton choix ?${NC} "
     read_menu_choice login_choice
@@ -928,6 +925,44 @@ run_turso_menu() {
             ;;
         f)
             run_turso_copy_session_menu
+            ;;
+        x|q)
+            return 0
+            ;;
+        *)
+            echo -e "${RED}❌ Choix invalide${NC}"
+            return 1
+            ;;
+    esac
+}
+
+run_auth_menu() {
+    local login_choice=""
+
+    local_screen_header "Authentifications distantes"
+    echo -e "${BLUE}Connexion actuelle:${NC} ${GREEN}$REMOTE_HOST${NC}"
+    echo ""
+    local_menu_line "m" "Login OAuth MCP Codex"
+    local_menu_line "k" "Login Clerk CLI"
+    local_menu_line "b" "Login Blacksmith"
+    local_menu_line "t" "Turso - Login et checks"
+    local_menu_line "x" "retour"
+    echo ""
+    prompt_inline "${YELLOW}Tape la lettre de ton choix ?${NC} "
+    read_menu_choice login_choice
+
+    case "$login_choice" in
+        m)
+            run_mcp_login_menu
+            ;;
+        k)
+            run_clerk_login_menu
+            ;;
+        b)
+            run_blacksmith_login_menu
+            ;;
+        t)
+            run_turso_menu
             ;;
         x|q)
             return 0
@@ -1267,20 +1302,8 @@ main() {
                 configure_new_server
                 pause
                 ;;
-            m)
-                run_mcp_login_menu
-                pause
-                ;;
-            k)
-                run_clerk_login_menu
-                pause
-                ;;
-            b)
-                run_blacksmith_login_menu
-                pause
-                ;;
-            d)
-                run_turso_menu
+            o)
+                run_auth_menu
                 pause
                 ;;
             l)

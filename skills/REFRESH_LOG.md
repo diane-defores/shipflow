@@ -4,6 +4,55 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-22 — sf-veille
+
+**Added:**
+- [governance] Report modes, question contract, editorial corpus loading, and delegated-read semantics for URL triage
+- [content] `sf-content` / `sf-repurpose` handoff and `surface missing: blog` gate for public-content opportunities
+- [paths] Canonical `shipflow_data/workflow/research/` output path for reports and tools
+
+**Updated:**
+- [context] Cross-project control plane is now registry/master-tracker only; scoring uses project-local `shipflow_data/` governance
+- [docs] README and public skill page now describe project-local context and content-surface gates
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
+## 2026-05-22 — sf-skills-refresh
+
+**Added:**
+- [governance baseline] Current ShipFlow gates before external refresh research: reporting, question, delegation, proof path, freshness, budget, docs/public surfaces, and runtime visibility
+- [reporting] Explicit `report=user` / `report=agent` contract through `reporting-contract.md`
+- [self-refresh] Manual `sf-skill-build` recovery path for refreshing `sf-skills-refresh` itself
+
+**Updated:**
+- [research] Replaced stale hard-coded agent wording with runtime-aware delegation semantics and local-governance-first evidence for docs/freshness skills
+- [validation] Added skill budget, runtime sync, metadata, public site build, and docs/editorial plan expectations
+- [public docs] Updated public skill page to describe governance-aligned refresh behavior
+
+**New phases:**
+- Phase 0 — Governance Baseline
+- Phase 4.5 — Validate
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
+## 2026-05-22 — sf-docs
+
+**Added:**
+- [required references] `question-contract` before user-facing docs decisions and `documentation-freshness-gate` for external-behavior docs
+- [skill docs] Explicit coherence gate for `skills/`, skill READMEs, public skill pages, discovery metadata, and runtime skill visibility
+- [validation] Runtime sync and site build checks when skill docs or public skill pages change
+
+**Updated:**
+- [public docs] Public `sf-docs` page now names skill documentation and public skill-page coherence as governed surfaces
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
 ## 2026-05-12 — shared Sentry Monitors/Alerts refresh
 
 **Added:**

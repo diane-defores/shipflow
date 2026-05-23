@@ -34,6 +34,7 @@ Default to `report=user`: concise, outcome-first, and in the user's active langu
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/audit-workflow.md`: GLOBAL, FILE, and PROJECT mode workflow, phase checklists, scoring, fix/report rules, and tracking details.
+- `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`: required before creating or mutating audit or task operational records in `AUDIT_LOG.md` or `TASKS.md`.
 
 ## Mode Detection
 

@@ -77,6 +77,7 @@ Une spec est prête UNIQUEMENT si :
 
 Les snapshots de `TASKS.md` lus ici sont informatifs seulement.
 `sf-spec` n'édite jamais `TASKS.md`, `AUDIT_LOG.md` ou `PROJECTS.md` ; la skill produit une spec, pas du tracking.
+Avant de créer ou modifier une ligne opérationnelle `spec:`, charger `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; cette ligne est un résumé raw-scan, pas le contrat complet de la spec.
 
 ---
 

@@ -75,7 +75,7 @@ Stop and report `blocked` when:
 
 ## Tracking Contract
 
-Use the shared read-before-write protocol for `AUDIT_LOG.md` and `TASKS.md` documented in `audit-gates.md`.
+Use the shared read-before-write protocol for `AUDIT_LOG.md` and `TASKS.md` documented in `audit-gates.md`. Before creating or mutating audit or task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; `audit-gates.md` narrows write safety but does not replace the shared grammar.
 
 ## Validation
 

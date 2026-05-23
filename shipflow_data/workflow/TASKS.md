@@ -82,7 +82,7 @@
 |-----|------|--------|
 | 🟠 | Harmoniser tous les sous-menus CLI : lettres au lieu de chiffres, `x) Cancel` unique, et comportement Cancel cohérent entre `gum` et fallback bash | ✅ done |
 | 🟠 | Regrouper le menu racine ShipFlow en entrées lisibles avec sous-menus iconés (`Dashboard`, `Deploy / Start`, `Environments`, `Tools`, `System`, `Agents / ShipFlow`, `Help`) | ✅ done |
-| 🟢 | Aligner `sf-veille` avec la gouvernance contenu : router les idées blog/newsletter vers `sf-content`/`sf-repurpose` et signaler `surface missing: blog` quand aucune surface n'est déclarée | 💤 deferred |
+| ✅ | Aligner `sf-veille` avec la gouvernance contenu : router les idées blog/newsletter vers `sf-content`/`sf-repurpose` et signaler `surface missing: blog` quand aucune surface n'est déclarée | ✅ done |
 | 🟢 | Ajouter un handoff contenu à `sf-research` et `sf-market-study` quand leurs rapports recommandent des contenus publics, avec sources, claims et route vers `sf-content` | 💤 deferred |
 | 🟢 | Renforcer `sf-audit` master pour charger explicitement les corpus éditorial/technique quand l'audit touche des surfaces publiques, claims ou docs mappées | 💤 deferred |
 | 🟢 | Ajouter une micro-intégration `technical-docs-corpus` à `sf-content`/`sf-repurpose` quand les opportunités ou handoffs touchent des docs techniques internes | 💤 deferred |

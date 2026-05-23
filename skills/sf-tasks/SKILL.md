@@ -40,6 +40,7 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Shared tracking file write protocol
 
+- Before creating or mutating task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and follow its traffic-first grammar for new `TASKS.md` entries.
 - Treat the TASKS snapshots loaded at skill start as informational only.
 - Right before editing the master or local TASKS file, re-read the target from disk and use that version as authoritative.
 - Apply the smallest possible patch to the relevant dashboard row, project section, or backlog block; never rewrite the whole file from stale context.
@@ -101,65 +102,41 @@ If the current directory has no project markers (not inside a specific project) 
    - Look for TODOs in code, pending PRs, failing tests, or incomplete features
 
 4. **Update TASKS.md**:
-   - **Always check if TASKS.md exists first.** If it does not exist, create it using the canonical ShipFlow format below — do NOT create a bare-minimum file.
+   - **Always check if TASKS.md exists first.** If it does not exist, create it using a concise project heading plus task operational records that follow `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` — do NOT create a bare-minimum file.
    - If project work already exists in the master tracker for this repo, import only the still-active items into the local active backlog. Historical `done` items may be copied into a short context section, but never into the active backlog.
-   - If TASKS.md doesn't exist, create it with this exact structure (adapt section titles to the detected project):
+   - If TASKS.md doesn't exist, create it with this compact structure (adapt section titles to the detected project):
      ```markdown
      # Tasks — [Project Name]
 
-     > **Priority:** 🔴 P0 blocker · 🟠 P1 high · 🟡 P2 normal · 🟢 P3 low · ⚪ deferred
-     > **Status:** 📋 todo · 🔄 in progress · ✅ done · ⛔ blocked · 💤 deferred
+     > Operational task records follow `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`.
 
      ---
 
-     ## [Section — e.g. Setup / Core Features / Infrastructure]
+     ## Active
 
-     | Pri | Task | Status |
-     |-----|------|--------|
-     | 🔴 | [First blocking task identified from project state] | 📋 todo |
-     | 🟠 | [High priority task] | 📋 todo |
-     | 🟡 | [Normal priority task] | 📋 todo |
-
-     ---
+     [traffic-first task records]
 
      ## Historical completed work
 
-     > Optional. Use only when older project work already exists in the master tracker and would otherwise be lost locally.
-
-     | Pri | Task | Status |
-     |-----|------|--------|
-     | ✅ | [Previously completed project task imported from master tracker] | ✅ done |
+     Optional. Use only when older project work already exists in the master tracker and would otherwise be lost locally.
 
      ---
 
      ## Backlog
 
-     | Pri | Task | Status |
-     |-----|------|--------|
-     | 🟢 | [Future improvement] | 💤 deferred |
+     [traffic-first task records for deferred work]
 
      ---
 
      ## Audit Findings
-     <!-- Populated by /sf-audit — dated sections with Fixed: / Remaining: -->
+     <!-- Populated by /sf-audit with traffic-first task records when findings become tasks. -->
      ```
-   - When **audit findings** are added to TASKS.md (by `/sf-audit` or manually), they follow this format:
-     ```markdown
-     ### Audit: [Domain] (YYYY-MM-DD)
-
-     **Fixed:**
-     - [x] Description of what was resolved
-
-     **Remaining:**
-     - [ ] 🔴 Critical issue still open
-     - [ ] 🟠 High-priority issue
-     - [ ] 🟡 Normal issue
-     ```
+   - When **audit findings** are added to TASKS.md (by `/sf-audit` or manually), add or update task operational records using the shared traffic-first contract.
    - If TASKS.md exists, update it:
-     - Check off completed items (change `📋 todo` → `✅ done` in Status column, or `- [ ]` → `- [x]`)
-     - Add new tasks under appropriate sections using the table format
+     - Update existing canonical task records in place when present, preserving unknown fields.
+     - Treat legacy tables or checklist rows as migration input only; do not add new legacy-only task rows.
      - Preserve existing audit sections — never remove dated `### Audit:` blocks
-     - Keep priority icons consistent: 🔴 🟠 🟡 🟢 ⚪
+     - Keep traffic markers consistent with `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`: 🔴 🟠 🟡 🟢.
 
 5. **Update CHANGELOG.md**:
    - Look for a `CHANGELOG.md` in the current project directory

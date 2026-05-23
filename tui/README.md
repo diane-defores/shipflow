@@ -1,0 +1,155 @@
+# ShipFlow Terminal TUI (V1)
+
+Optional terminal dashboard for ShipFlow, isolated under `/home/claude/shipflow/tui`.
+
+## Status
+
+- V1 scope: read-only.
+- No write-back, no shell runner, no auth/cloud/db.
+- ShipFlow skills remain the main command surface; this TUI is an optional operator cockpit.
+
+## What It Is For
+
+Use the TUI when you want a fast terminal overview before deciding which
+ShipFlow skill to run next. It is optimized for small screens and remote
+terminal sessions:
+
+- check the current projects without opening the Flutter app,
+- scan specs/chantiers by status,
+- switch to task and audit panels when you need recent operational context,
+- open diagnostics only when the reader or source policy needs inspection.
+
+Do not use it as a write surface. Edits still happen through skills, Markdown
+files, and validated workflows.
+
+## Requirements
+
+- Bun runtime (OpenTUI V1 is Bun-only).
+- `@opentui/core` installed in this subproject.
+
+## Setup
+
+The main ShipFlow installer also installs this TUI for configured users:
+
+```bash
+cd /home/claude/shipflow
+sudo ./install.sh
+```
+
+Recommended one-time install:
+
+```bash
+/home/claude/shipflow/tui/scripts/install-shipflow-tui.sh
+```
+
+Then launch from anywhere:
+
+```bash
+tui
+sftui
+```
+
+Available command names:
+
+- `tui`: shortest daily command.
+- `sftui`: explicit ShipFlow TUI alias.
+- `sf-tui`: hyphenated alias.
+- `shipflow-tui`: full launcher name.
+
+Manual setup:
+
+```bash
+cd /home/claude/shipflow/tui
+bun install
+```
+
+## Run
+
+```bash
+bun run dev
+```
+
+## Cheat Sheet
+
+- `Tab`: move focus between projects, specs, tasks, and audits.
+- `!!!`: open diagnostics.
+- Type while projects/specs/tasks/audits is active: filter that list or the project scope.
+- `Backspace`: edit the active filter.
+- `Up`/`Down`: move selection in the active list; when the selection reaches the bottom, the visible window scrolls to the next results.
+- `q`, `Esc`, `Ctrl+C`: quit and restore the terminal.
+
+Display behavior:
+
+- Default view renders only projects and specs to stay readable on phone-sized terminals.
+- Tasks and audits render on separate panels.
+- Projects are shown as names only, in a compact three-column grid.
+- Projects remain visible on task and audit panels.
+- When the project filter is active, specs, tasks, and audits are scoped to the matching selected project.
+- Diagnostics are outside the normal `Tab` cycle and require `!!!`.
+
+## New Server Flow
+
+On a freshly cloned server:
+
+```bash
+cd ~/shipflow
+sudo ./install.sh
+```
+
+Then open a new shell and run:
+
+```bash
+tui
+```
+
+If the command is missing in the current shell, check that `~/.local/bin` is in
+`PATH` or source the shell profile created by the installer.
+
+## Summary Line Format
+
+Task, spec, and audit summaries use a traffic-first format so severity stays visible when terminal lines wrap:
+
+```text
+🔴 [project] summary...
+🟠 [project] summary...
+🟡 [project] summary...
+🟢 [project] summary...
+```
+
+Selectable summaries keep the selection marker after the traffic light, for example `🟢 > [shipflow_app] [ready] ...`.
+
+The TUI reader now follows the shared operational record contract at
+`/home/claude/shipflow/skills/references/operational-record-format.md`:
+
+- canonical `task`, `audit`, and `spec` records are parsed directly from one-line traffic-first entries,
+- canonical parsing runs before legacy table summarization,
+- canonical rows take precedence when a dedupe key matches a legacy row,
+- duplicate canonical/legacy rows are deduplicated per kind and surfaced as diagnostics.
+
+## Validation
+
+```bash
+bun run typecheck
+bun test
+```
+
+If the current shell cannot find Bun after install, run `export BUN_INSTALL="$HOME/.bun"; export PATH="$BUN_INSTALL/bin:$PATH"` or call `~/.bun/bin/bun` directly.
+
+## Data Sources (read-only)
+
+- `/home/claude/shipflow_data/PROJECTS.md`
+- `/home/claude/shipflow_data/TASKS.md`
+- `/home/claude/shipflow_data/AUDIT_LOG.md`
+- `/home/claude/shipflow/shipflow_data/workflow/TASKS.md`
+- `/home/claude/shipflow/shipflow_data/workflow/AUDIT_LOG.md`
+- `/home/claude/shipflow_data/OPERATIONS_LOG.md`
+- `/home/claude/shipflow_data/DEPENDENCY_LOG.md`
+- `/home/claude/shipflow/shipflow_data/workflow/specs/*.md`
+- `/home/claude/shipflow/skills/*`
+
+All reads go through `src/sources/sourcePolicy.ts` with allowlisted roots, symlink escape protection, file size limit, and redacted diagnostics.
+
+## Gum / Flutter relation
+
+- Gum is for one-shot shell prompts in scripts, not this persistent dashboard.
+- Flutter app remains separate and unaffected by TUI dependencies.

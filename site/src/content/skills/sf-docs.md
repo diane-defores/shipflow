@@ -24,6 +24,7 @@ what_you_get:
   - "Metadata and technical-docs coherence when contracts change"
   - "A stronger documentation contract for future work"
   - "Better coherence between code and supporting docs"
+  - "Skill documentation and public skill-page coherence when skill contracts change"
 example_prompts:
   - "/sf-docs readme"
   - "/sf-docs audit"
@@ -35,6 +36,7 @@ limits:
   - "A local README refresh is not enough when the real issue is mixed governance layout or stale metadata contracts"
   - "Bug workflow docs should be checked for coherence across TEST_LOG.md, BUGS.md, dossier formats, and public skill pages"
   - "Docs audits should also verify skill-budget coherence with the ShipFlow skill budget audit script when skill docs change"
+  - "Skill-contract changes still belong to sf-skill-build; sf-docs keeps the docs and public surfaces coherent"
 related_skills:
   - "sf-context"
   - "sf-spec"
@@ -52,3 +54,5 @@ If one page still implies the old tracker behavior, the docs result should call 
 `sf-docs migrate-layout` owns the cleanup of legacy ShipFlow governance files that were left at a project root. Files such as `BUSINESS.md`, `PRODUCT.md`, `GTM.md`, `CONTENT_MAP.md`, `CONTEXT.md`, `GUIDELINES.md`, `TASKS.md`, and `AUDIT_LOG.md` are migration sources only; their compliant destinations live under `shipflow_data/business/`, `shipflow_data/editorial/`, `shipflow_data/technical/`, or `shipflow_data/workflow/`.
 
 When public or internal skill documentation changes, `sf-docs` should also treat the skill budget audit as part of documentary coherence. The skill catalog has to remain understandable to humans and discoverable by Codex and Claude Code.
+
+For public skill pages, `sf-docs` should keep runtime content schema compatibility intact and avoid ShipFlow governance frontmatter in Astro content collections.

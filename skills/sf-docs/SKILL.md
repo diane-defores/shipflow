@@ -59,6 +59,8 @@ Load on demand:
 
 - `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` when mode is technical or update touches technical governance.
 - `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when mode is editorial or update touches public-content surfaces.
+- `$SHIPFLOW_ROOT/skills/references/question-contract.md` before any user-facing merge/replace/scope/surface question.
+- `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when documentation depends on current external framework, SDK, provider, runtime, schema, auth, deployment, or API behavior.
 - `$SHIPFLOW_ROOT/skills/references/skill-context-budget.md` only when scope touches `skills/`, skill discovery metadata, or Codex/Claude skill compliance.
 - `$SHIPFLOW_ROOT/shipflow-metadata-migration-guide.md` when mode is metadata/migrate-frontmatter.
 
@@ -69,6 +71,8 @@ Load on demand:
 - Preserve documentation-update gates: changed behavior must have docs alignment proof or explicit `not impacted because ...`.
 - Preserve canonical ShipFlow paths and metadata schema rules.
 - `TEST_LOG.md`, `BUGS.md`, `PROJECTS.md`, and canonical workflow trackers are operational trackers, not frontmatter-required decision artifacts.
+- When scope touches `skills/`, skill README files, `site/src/content/skills/*.md`, or skill discovery metadata, verify skill contract coherence, public skill-page coherence, and runtime skill visibility together. Route non-trivial skill-contract changes through `sf-skill-build`.
+- Do not add ShipFlow governance frontmatter to app-rendered runtime content such as `site/src/content/skills/*.md`.
 
 ## Stop Conditions
 
@@ -78,6 +82,8 @@ Stop and report `blocked` when:
 - requested migration would overwrite canonical docs without explicit merge decision
 - metadata lint fails on changed artifacts and cannot be corrected safely
 - governance conflicts cannot be resolved (for example `AGENTS.md` not a symlink to `AGENT.md`)
+- a skill documentation update changes the public promise or lifecycle route but has no bounded skill-maintenance contract
+- external behavior is documented without a required `fresh-docs checked` or explicit `fresh-docs not needed` verdict
 
 ## Validation
 
@@ -94,4 +100,12 @@ When the scope touches skill discovery or skill docs policy:
 
 ```bash
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
+tools/shipflow_sync_skills.sh --check --all
+rg -n "Report Modes|Required References|Validation|Stop Conditions" skills/sf-*.md skills/*/SKILL.md
+```
+
+When the scope touches public skill pages or docs rendered by the site:
+
+```bash
+npm --prefix site run build
 ```

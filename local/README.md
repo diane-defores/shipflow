@@ -98,13 +98,12 @@ Le menu offre :
 - 🛑 **Arrêter les tunnels** - Arrête tous les tunnels en cours
 - 📊 **Statut** - Vérifie l'état des tunnels actifs
 - 🔄 **Redémarrer** - Redémarre tous les tunnels
-- 🔐 **Login OAuth MCP (distant)** - Lance `codex mcp login` sur le serveur et crée un tunnel OAuth éphémère local
-- 🔑 **Login Clerk CLI (distant)** - Lance `clerk auth login` sur le serveur et crée le tunnel OAuth éphémère local
-- 🔨 **Login Blacksmith (distant)** - Lance `blacksmith auth login` sur le serveur et crée le tunnel OAuth éphémère local
-- 🗄️ **Turso - Login et checks distants** - Lance `turso auth login` sur le serveur, vérifie ContentFlow, ou copie la session locale en fallback
+- 🔐 **Authentifications distantes** - Regroupe MCP Codex, Clerk CLI, Blacksmith et Turso
 
-Clerk CLI et Blacksmith ne sont pas des logins MCP Codex. Le menu les affiche
-donc comme des options séparées.
+Le sous-menu **Authentifications distantes** lance les flows OAuth ou headless
+côté serveur et crée les tunnels nécessaires depuis la machine locale. Clerk CLI
+et Blacksmith ne sont pas des logins MCP Codex; ils restent donc des entrées
+dédiées dans ce sous-menu.
 Si vous tapez quand même `blacksmith` dans le sous-menu MCP custom par erreur,
 ShipFlow bascule vers le tunnel Blacksmith dédié au lieu de chercher un MCP
 Codex nommé `blacksmith`.
@@ -121,8 +120,8 @@ Quand Codex tourne sur un serveur distant, le process `codex mcp login <provider
 
 Clerk CLI et Blacksmith ont le même problème avec `clerk auth login` et
 `blacksmith auth login`: leur callback localhost tourne sur le serveur, tandis
-que le navigateur est local. Utilisez donc `urls` puis `Login Clerk CLI
-(distant)` / `Login Blacksmith (distant)`, ou les commandes locales
+que le navigateur est local. Utilisez donc `urls` puis `Authentifications
+distantes`, ou les commandes locales
 `shipflow-clerk-login` et `shipflow-blacksmith-login`, au lieu de lancer ces
 commandes directement dans une session SSH distante.
 
@@ -169,7 +168,8 @@ Ou via le menu :
 
 ```bash
 urls
-# puis d) Turso - Login et checks distants
+# puis o) Authentifications distantes
+# puis t) Turso - Login et checks
 # puis l) Login Turso distant
 ```
 
@@ -330,8 +330,8 @@ codex mcp add supabase --url https://mcp.supabase.com/mcp
 ### Clerk CLI: callback localhost `connection refused`
 
 N'utilisez pas `clerk auth login` directement dans une session SSH distante.
-Depuis votre machine locale, lancez `urls`, puis choisissez `k) Login Clerk CLI
-(distant)`, ou lancez directement:
+Depuis votre machine locale, lancez `urls`, puis choisissez `o) Authentifications
+distantes`, puis `k) Login Clerk CLI`, ou lancez directement:
 
 ```bash
 shipflow-clerk-login

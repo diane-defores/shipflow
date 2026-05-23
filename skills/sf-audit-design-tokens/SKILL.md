@@ -299,6 +299,7 @@ Same pattern as `sf-audit-design` GLOBAL MODE:
 ## Tracking (all modes)
 
 Shared file write protocol for `AUDIT_LOG.md` and `TASKS.md`:
+- First load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; new audit and task records must use that traffic-first operational format.
 - Treat the snapshots loaded at skill start as informational only.
 - Right before each write, re-read the target file from disk and use that version as authoritative.
 - Append or replace only the intended row or subsection; never rewrite the whole file from stale context.
@@ -307,9 +308,9 @@ Shared file write protocol for `AUDIT_LOG.md` and `TASKS.md`:
 
 After generating the report:
 
-1. **Project-local `AUDIT_LOG.md`** : append a row for "Design Tokens" audit with date + overall score + critical count
-2. **Local `TASKS.md`** : add/replace a `### Audit: Design Tokens` subsection with 🔴🟠🟡 issues as task rows
-3. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** : find the project's section, add same subsection, update Dashboard Top Priority if 🔴 issues found
+1. **Project-local `AUDIT_LOG.md`** : create or update a traffic-first `audit:` record for the Design Tokens audit
+2. **Local `TASKS.md`** : create or update traffic-first task records for the Design Tokens audit findings
+3. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** : find the project section and mirror the same traffic-first task records; update any dashboard summary only when that surface still exists
 
 ---
 

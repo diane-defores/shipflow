@@ -34,6 +34,7 @@ Default to `report=user`: concise, findings-first for audits and failures, outco
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/audit-master-workflow.md`: Master audit planning, domain routing, parallel/read-only audit rules, consolidation, tracking, and fix handoff details.
+- `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`: required before creating or mutating audit or task operational records in `AUDIT_LOG.md` or `TASKS.md`.
 
 ## Mode Detection
 

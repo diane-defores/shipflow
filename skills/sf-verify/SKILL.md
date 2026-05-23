@@ -93,6 +93,7 @@ When verified changes include `skills/*/SKILL.md`:
 `sf-verify` can patch code/docs when contract is stable, but shared trackers are read-only in this skill:
 
 - do not edit `TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md` from `sf-verify`
+- if verification only reads task, audit, or `spec:` operational records, treat `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` as reader context; load it before any exceptional spec-summary repair.
 - do not treat tracker frontmatter absence as defect
 
 ## Stop Conditions

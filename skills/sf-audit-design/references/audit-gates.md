@@ -86,6 +86,7 @@ Run full project audit when no explicit mode is selected. Include inventory, out
 
 Before writing `AUDIT_LOG.md` or `TASKS.md`:
 
+0. Load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; new audit and task records must follow that traffic-first grammar.
 1. Re-read target file from disk.
 2. Apply minimal row/subsection edit only.
 3. If anchors moved and remain ambiguous after re-read, stop and ask user.

@@ -36,6 +36,7 @@ Default to `report=user`: concise, outcome-first, and using the compact chantier
 Load only the references needed for the active run:
 
 - `references/execution-workflow.md`: detailed task identification, scope triage, execution contract, model/delegation choice, implementation loop, validation, spec trace, and final report rules.
+- `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`: required before creating or mutating task, audit, or `spec:` operational records in `TASKS.md`, `AUDIT_LOG.md`, or spec summary sections.
 - `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`: required before implementation when the task changes behavior, fixes a bug, changes a skill contract, or needs a proof path. Choose `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof` before editing and report the chosen proof path.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`: required only when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
 - `$SHIPFLOW_ROOT/skills/references/project-development-mode.md`: required before deriving the execution contract for project validation surface.

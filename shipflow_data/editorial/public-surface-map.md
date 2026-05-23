@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.2.1"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-04"
+updated: "2026-05-23"
 status: reviewed
 source_skill: sf-start
 scope: public-surface-map
@@ -62,6 +62,7 @@ This map lists ShipFlow's public content surfaces, the source contracts that bou
 | About page | `site/src/pages/about.astro` | Explain why ShipFlow exists and who it serves | `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md` | Audience, mission, or proof posture changes | Build plus claim review |
 | Contact page | `site/src/pages/contact.astro` | Give a lightweight contact route | `GTM.md`, `BRANDING.md` | Support, sales, or contact channel changes | Build |
 | Docs overview | `site/src/pages/docs.astro` | Public map of context docs, decision contracts, and workflow docs | `README.md`, `shipflow-spec-driven-workflow.md`, `CONTENT_MAP.md`, `docs/editorial/` | New official artifact, docs role, editorial layer, technical layer, or workflow doctrine changes | Build; public/private boundary review |
+| Terminal TUI docs section | `site/src/pages/docs.astro#terminal-tui` | Explain the optional read-only terminal cockpit without exposing internal implementation detail | `README.md`, `tui/README.md`, `shipflow_data/technical/terminal-tui.md`, `shipflow_data/workflow/specs/shipflow-terminal-tui-v1.md` | TUI install behavior, command aliases, read/write boundary, Gum/Flutter positioning, or source policy changes | Build; public/private boundary review |
 | FAQ page | `site/src/pages/faq.astro` | Answer recurring public objections and support-style questions | `PRODUCT.md`, `GTM.md`, `BRANDING.md`, `README.md` | User-facing workflow, claim, pricing, support, or scope changes | Build; claim register review |
 | Pricing page | `site/src/pages/pricing.astro` and `site/src/components/PricingHypothesis.astro` | Present current packaging hypothesis without implying a settled business model | `BUSINESS.md`, `GTM.md`, `BRANDING.md` | Pricing, packaging, commercial model, or proof changes | Build; pricing claim review |
 | Remote MCP OAuth guide | `site/src/pages/remote-mcp-oauth-tunnel.astro` | Explain the public operator guide for local OAuth callback routing | `README.md`, `local/README.md`, `specs/local-mcp-oauth-tunnel-login.md`, `docs/technical/local-tunnels-and-mcp-login.md` | MCP login, tunnel, local callback, security, or install behavior changes | Build; sensitive detail review |
