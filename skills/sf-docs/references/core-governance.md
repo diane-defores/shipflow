@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.3.0"
 project: ShipFlow
 created: "2026-05-16"
 updated: "2026-05-24"
@@ -21,7 +21,7 @@ linked_systems:
   - shipflow-metadata-migration-guide.md
 depends_on:
   - artifact: "skills/references/technical-docs-corpus.md"
-    artifact_version: "1.1.0"
+    artifact_version: "1.5.0"
     required_status: "active"
   - artifact: "skills/references/editorial-content-corpus.md"
     artifact_version: "1.1.0"
@@ -30,6 +30,7 @@ supersedes: []
 evidence:
   - "Extracted from sf-docs SKILL.md during compact-skill pilot."
   - "Governance corpus now distinguishes global external provider notes from project-local provider usage docs."
+  - "Operator decision on 2026-05-24: project-local provider usage notes are conditional on risk and project-specific behavior."
 next_review: "2026-06-16"
 next_step: "/sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -83,7 +84,7 @@ Preferred governance locations:
 - `shipflow_data/business/*`
 - `shipflow_data/technical/*`
 - `shipflow_data/technical/external-platforms/*` for global external provider source notes
-- `shipflow_data/technical/platforms/*` inside a project for project-local provider usage
+- `shipflow_data/technical/platforms/*` inside a project for project-local provider usage when local risk or complexity justifies a dedicated note
 - `shipflow_data/editorial/*`
 - `shipflow_data/workflow/specs/*`
 

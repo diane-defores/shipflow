@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-18"
 updated: "2026-05-24"
@@ -21,6 +21,7 @@ depends_on: []
 supersedes: []
 evidence:
   - "Frontmatter added when the external platform corpus became the global source-map layer for Freshness Gate decisions."
+  - "Operator decision on 2026-05-24: project-local provider usage notes are conditional on risk and project-specific behavior."
 next_review: "2026-06-24"
 next_step: "/sf-docs technical audit"
 ---
@@ -43,7 +44,7 @@ The gate is not required for clearly local changes where existing project code f
 ## Source Order
 
 1. Read the local repo first: installed versions, lockfiles, config, wrappers, adapters, and adjacent project patterns.
-2. Read the global provider note under `shipflow_data/technical/external-platforms/<provider>.md` when it exists, then read the project-local usage note under `shipflow_data/technical/platforms/<provider>.md` when the project uses that provider.
+2. Read the global provider note under `shipflow_data/technical/external-platforms/<provider>.md` when it exists, then read the project-local usage note under `shipflow_data/technical/platforms/<provider>.md` when it exists or when project-specific provider behavior affects the decision.
 3. Use Context7 first for official current documentation when the dependency is covered.
 4. If Context7 is unavailable or incomplete for the needed point, use official web documentation from the vendor/project.
 5. Use changelogs, release notes, GitHub issues, blogs, or Q&A only as secondary evidence for symptoms or known issues, not as the contract to implement.
@@ -53,7 +54,8 @@ The gate is not required for clearly local changes where existing project code f
 When the gate changes or confirms the decision, record:
 - dependency/service name and local version when discoverable
 - documentation source consulted: Context7 library id or official docs URL/title
-- global provider note and project-local usage note consulted when available
+- global provider note consulted when available
+- project-local usage note consulted when available or marked `not needed` with a risk-based reason
 - the specific rule, API, constraint, migration note, or behavior that affects the decision
 - whether the local code follows, intentionally diverges from, or must be changed to match that source
 

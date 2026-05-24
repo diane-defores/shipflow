@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.5.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-24"
@@ -29,6 +29,7 @@ evidence:
   - "Ready spec requires a skill-facing reference for technical docs loading."
   - "sf-docs first-run bootstrap and update adoption now treat missing code-docs maps as recoverable bootstrap state."
   - "External platform corpus added for global Freshness Gate source notes and project-local provider usage docs."
+  - "Operator decision on 2026-05-24: project-local provider usage notes are risk-driven, not mandatory per technology."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -46,7 +47,7 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 3. Load only the primary technical doc and necessary secondary docs.
 4. Produce a `Documentation Update Plan` after every code-changing execution wave and again during end verification.
 5. Keep shared docs sequential unless the ready spec assigns disjoint ownership.
-6. When a task depends on an external provider, SDK, framework, hosting platform, API, or toolchain behavior, read the matching global note under `shipflow_data/technical/external-platforms/` when it exists, then read the project-local usage note under `shipflow_data/technical/platforms/` when the project uses that provider.
+6. When a task depends on an external provider, SDK, framework, hosting platform, API, or toolchain behavior, read the matching global note under `shipflow_data/technical/external-platforms/` when it exists. Then read the project-local usage note under `shipflow_data/technical/platforms/` only when it exists or when the task is materially affected by project-specific provider configuration.
 
 ## `sf-docs` Technical Mode Contract
 
@@ -59,7 +60,7 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 - scaffold missing subsystem docs from `templates/artifacts/technical_module_context.md`
 - check stale path references, missing validations, missing `Maintenance Rule` sections, and missing Reader triggers
 - check global external platform notes when provider behavior is part of the documented technical contract
-- report a project-local platform usage gap when code/config/docs show a provider is used but `shipflow_data/technical/platforms/<provider>.md` is missing
+- report a project-local platform usage gap only when provider use is project-specific enough to affect validation, auth, deploy, runtime, SDK behavior, storage, security, migrations, secrets handling, observability, compliance, or production proof
 - verify that `technical_module_context` files pass `tools/shipflow_metadata_lint.py`
 - fail or report a blocking gap when a mapped code area changed but no impacted doc appears in the `Documentation Update Plan`
 
@@ -73,7 +74,9 @@ Use the format defined in `shipflow_data/technical/code-docs-map.md`. The owner 
 
 Global provider notes live under `shipflow_data/technical/external-platforms/`. They preserve source maps and ShipFlow decision rules for the Freshness Gate, but they must not duplicate vendor documentation.
 
-Project-local provider usage lives under each project at `shipflow_data/technical/platforms/<provider>.md`. These files document actual adoption: environments, validation surface, domains/callback expectations, env var keys, MCP/CLI evidence route, and local exceptions. Create them from `templates/artifacts/project_platform_usage.md` when a project uses a provider and no local note exists.
+Project-local provider usage lives under each project at `shipflow_data/technical/platforms/<provider>.md`. These files document actual adoption: environments, validation surface, domains/callback expectations, env var keys, MCP/CLI evidence route, and local exceptions.
+
+Do not require one project-local note per technology. Create one from `templates/artifacts/project_platform_usage.md` only when local usage changes the agent's decisions or proof route. For standard, low-risk usage where the code/config plus the global platform note are enough, record `not needed - standard usage covered by code/config and global note` instead of creating filler documentation.
 
 Use the global note to decide what current external sources to check. Use the project-local note to decide whether local, preview, production, MCP, CLI, browser, or manual proof is authoritative for that project.
 

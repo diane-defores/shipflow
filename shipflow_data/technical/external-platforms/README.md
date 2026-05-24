@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.3.0"
 project: ShipFlow
 created: "2026-05-24"
 updated: "2026-05-24"
@@ -26,6 +26,7 @@ supersedes: []
 evidence:
   - "Operator decision on 2026-05-24: maintain a global source corpus for Freshness Gate and project-local usage docs for precise project adoption."
   - "Initial common provider set added: Vercel, Firecrawl, Convex, Clerk, Firebase, Google Cloud, Supabase, Sentry, Astro, Python, Bash, and Gum."
+  - "Operator decision on 2026-05-24: project-local provider usage notes are conditional on local risk/complexity, not mandatory per technology."
 next_review: "2026-06-24"
 next_step: "/sf-docs technical audit"
 ---
@@ -47,6 +48,8 @@ Use two layers:
 
 The global note records official sources, freshness anchors, recurring risks, command/tool routing, and ShipFlow decision rules. The project-local note records how one project actually uses the provider: environment, domains, validation surface, integrations, secrets locations by name only, and known exceptions.
 
+Project-local notes are not mandatory for every technology. Create one only when the project's usage materially affects agent decisions: auth, deployment, runtime behavior, SDK/API assumptions, storage, migrations, security, compliance, secrets handling, observability, production proof, or local exceptions. If usage is standard and fully clear from code/config plus the global note, report `not needed - standard usage covered by code/config and global note`.
+
 Do not put project secrets, private deployment URLs, tokens, raw logs, or account-specific identifiers in either layer. Project-local notes may name expected environment variable keys, provider features, and validation commands, but not secret values.
 
 ## When Agents Should Read This Corpus
@@ -59,7 +62,7 @@ Read the relevant global platform note when a task depends on:
 - dependency upgrades where release notes may imply code or configuration changes
 - an `sf-deps`, `sf-audit-code`, `sf-migrate`, `sf-prod`, `sf-auth-debug`, `sf-verify`, or future `sf-tech-watch` decision
 
-Then read the project-local usage note if the current project uses that provider. If the project clearly uses a provider but has no local note, report a documentation gap and recommend creating one from `templates/artifacts/project_platform_usage.md`.
+Then read the project-local usage note if one exists or if project-specific provider behavior affects the decision. If the project clearly needs a local note but has none, report a documentation gap and recommend creating one from `templates/artifacts/project_platform_usage.md`.
 
 ## Freshness Policy
 
