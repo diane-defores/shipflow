@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-04-27"
-updated: "2026-05-11"
+updated: "2026-05-24"
 status: active
 source_skill: sf-start
 scope: canonical-path-resolution
@@ -23,6 +23,7 @@ supersedes: []
 evidence:
   - "Repeated skill path-resolution failures when running from project repositories"
   - "Project governance layout decision moved ShipFlow artifacts out of project roots and into shipflow_data/."
+  - "Operator decision on 2026-05-24: monorepos must keep one governance corpus at the monorepo root instead of repeating shipflow_data in each app/package."
 next_review: "2026-05-27"
 next_step: "/sf-verify canonical path policy"
 ---
@@ -36,12 +37,13 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
 - ShipFlow root: `${SHIPFLOW_ROOT:-$HOME/shipflow}`
 - ShipFlow tracking data: `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}`
 - Project root: current working directory, unless the user explicitly gives another project path
+- Governance root: the nearest canonical root for project-owned ShipFlow artifacts. In a single-project repo, this is the repository root. In a monorepo, this is the monorepo root, not an app/package subdirectory.
 
 ## Resolution Rules
 
 - ShipFlow-owned tools, shared references, skill references, templates, workflow docs, and internal scripts must be loaded from `$SHIPFLOW_ROOT`.
 - Skill-local references such as `references/foo.md` mean `$SHIPFLOW_ROOT/skills/<skill-name>/references/foo.md`, not `./references/foo.md` in the project repo.
-- Project-owned artifacts are resolved from the project local `shipflow_data` umbrella during this phase.
+- Project-owned artifacts are resolved from the governance-root `shipflow_data` umbrella.
 
   - `shipflow_data/technical/*`
   - `shipflow_data/business/*`
@@ -56,7 +58,10 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
   - `AGENTS.md` (must be a compatibility symlink to `AGENT.md`)
   - `CHANGELOG.md` (optional public/project changelog)
 
-- `shipflow_data/` remains the project-local governance corpus for this phase; the external `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` remains out of scope as project-document source of truth.
+- `shipflow_data/` remains the project governance corpus for this phase; the external `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` remains out of scope as project-document source of truth.
+- Monorepo rule: keep exactly one canonical `shipflow_data/` at the monorepo root. Do not create parallel `shipflow_data/` directories inside `apps/*`, `packages/*`, or sibling app/site/lab folders unless that subdirectory is intentionally a separately cloned and shipped standalone project.
+- When running from a monorepo subdirectory, source files resolve from the target subdirectory but governance artifacts resolve from the monorepo root `shipflow_data/`.
+- If both a monorepo root `shipflow_data/` and nested subproject `shipflow_data/` directories exist, treat nested copies as migration debt unless the repo documents a standalone exception.
 - `shipflow_data/workflow/` holds project-level workflow artifacts such as `specs/`, `bugs/`, `audits/`, `reviews/`, `verification/`, and project-local operational trackers.
 - Project-local `TASKS.md` and `AUDIT_LOG.md` live at `shipflow_data/workflow/TASKS.md` and `shipflow_data/workflow/AUDIT_LOG.md`. Root `TASKS.md` and `AUDIT_LOG.md` are legacy project tracker locations unless an external project tool explicitly requires them.
 - `PROJECTS.md` remains a master-tracker artifact in `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` unless a project explicitly defines a local registry need.

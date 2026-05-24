@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: "[project name]"
 created: "YYYY-MM-DD"
 updated: "YYYY-MM-DD"
@@ -30,7 +30,9 @@ next_step: "/sf-docs technical audit"
 
 ## Purpose
 
-Document how this project actually uses `[provider]`. This is the project-local usage contract, not a copy of vendor docs.
+Document how this project, monorepo, app, or package actually uses `[provider]`. This file must live under the canonical governance root at `shipflow_data/technical/platforms/[provider].md`; in monorepos, that means the monorepo root, not each app/package subdirectory.
+
+This is the local usage contract, not a copy of vendor docs.
 
 Use the global provider note for general source links and ShipFlow rules:
 
@@ -40,6 +42,7 @@ Use the global provider note for general source links and ShipFlow rules:
 
 - Provider role:
 - Project/provider identifier:
+- Applies to paths:
 - Environments used:
 - Validation surface:
 - Owner:

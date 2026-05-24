@@ -88,7 +88,7 @@ Use `fresh-docs conflict` when current Vercel docs or provider state contradict 
 
 ## Common Project-Local Fields
 
-A project using Vercel should maintain `<project>/shipflow_data/technical/platforms/vercel.md` with:
+A project using Vercel should maintain `<governance-root>/shipflow_data/technical/platforms/vercel.md` with:
 
 - Vercel project name or non-secret identifier if safe
 - production branch

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-11"
+updated: "2026-05-24"
 status: active
 source_skill: sf-start
 scope: editorial-content-corpus
@@ -35,6 +35,7 @@ supersedes: []
 evidence:
   - "Ready spec requires a compact loading reference for editorial and content agents."
   - "sf-docs first-run bootstrap and update adoption now treat missing editorial governance as recoverable bootstrap state when public surfaces exist."
+  - "Operator decision on 2026-05-24: monorepos use one root shipflow_data editorial corpus with scoped public surfaces."
 next_review: "2026-06-01"
 next_step: "/sf-docs audit editorial"
 ---
@@ -47,14 +48,15 @@ This reference tells content, copy, docs, and Editorial Reader agents how to loa
 
 ## Load Order
 
-1. Read `shipflow_data/editorial/content-map.md` first. It is the canonical public content routing map. Root `CONTENT_MAP.md` is a migration source only.
-2. Read `shipflow_data/editorial/README.md` for the editorial governance index when present; if it is missing on a public/content project, report an editorial governance bootstrap trigger and route to `/sf-docs editorial`. Legacy `docs/editorial/` is a migration source only.
-3. Read `shipflow_data/editorial/public-surface-map.md` for public surfaces and update triggers.
-4. Read `shipflow_data/editorial/page-intent-map.md` for page jobs, CTAs, source contracts, and shared-file risk.
-5. Read `shipflow_data/editorial/claim-register.md` when public claims touch security, privacy, compliance, AI reliability, automation, speed, savings, availability, pricing, or business outcomes.
-6. Read `shipflow_data/editorial/editorial-update-gate.md` to produce an `Editorial Update Plan` or `Claim Impact Plan`.
-7. Read `shipflow_data/editorial/astro-content-schema-policy.md` before editing `site/src/content/**`.
-8. Read `shipflow_data/editorial/blog-and-article-surface-policy.md` before recommending blog or article output.
+1. Resolve the governance root first. In a monorepo, use the monorepo-root `shipflow_data/`, not a nested app/site/package `shipflow_data/`.
+2. Read `shipflow_data/editorial/content-map.md` first. It is the canonical public content routing map. Root `CONTENT_MAP.md` is a migration source only.
+3. Read `shipflow_data/editorial/README.md` for the editorial governance index when present; if it is missing on a public/content project, report an editorial governance bootstrap trigger and route to `/sf-docs editorial`. Legacy `docs/editorial/` is a migration source only.
+4. Read `shipflow_data/editorial/public-surface-map.md` for public surfaces and update triggers.
+5. Read `shipflow_data/editorial/page-intent-map.md` for page jobs, CTAs, source contracts, and shared-file risk.
+6. Read `shipflow_data/editorial/claim-register.md` when public claims touch security, privacy, compliance, AI reliability, automation, speed, savings, availability, pricing, or business outcomes.
+7. Read `shipflow_data/editorial/editorial-update-gate.md` to produce an `Editorial Update Plan` or `Claim Impact Plan`.
+8. Read `shipflow_data/editorial/astro-content-schema-policy.md` before editing `site/src/content/**`.
+9. Read `shipflow_data/editorial/blog-and-article-surface-policy.md` before recommending blog or article output.
 
 ## Contract Sources
 
@@ -101,6 +103,7 @@ These skills should use this corpus before changing or judging public content:
 - No public impact: state `no editorial impact` with a reason.
 - Missing blog or article path: report `surface missing: blog`.
 - Runtime schema conflict: preserve the schema and report the incompatibility.
+- Monorepo content surfaces: keep one root `shipflow_data/editorial/` corpus and scope entries by app/site/package; do not create duplicate editorial corpora under each frontend.
 
 ## Maintenance Rule
 

@@ -137,6 +137,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - documentation surfaces to update or explicitly leave unchanged
   - chosen proof path, exception reason if any, and validation/evidence expected before completion
   - project development mode and validation surface: whether success must be proven locally or through `sf-ship` -> `sf-prod` on a Vercel preview
+  - for Flutter mobile/UI work: the proof ladder expected before APK/device testing, starting with widget tests when practical, then agent-run Flutter Web smoke for shared UI behavior via `sf-browser` or `sf-auth-debug`, then APK/device proof only for native-only behavior
   - fresh external docs verdict when the task depends on external documented behavior: dependency/service, local version when available, Context7 or official docs source, and whether the implementation path is supported
   - abuse cases / misuse cases and security constraints when present
   - validation commands and stop conditions
@@ -173,6 +174,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
 - Include associated tests or entry points
 - If the task touches auth, redirects, protected pages, callback flows, or browser session state, include the relevant login/callback entrypoints and the minimum routes needed for `sf-auth-debug`
 - If the task touches non-auth browser behavior, visual state, console errors, network failures, or page-level assertions, include the minimum routes and validation objective needed for `sf-browser`
+- If the task touches Flutter UI that can run on Web, include agent-run Flutter Web smoke scenarios before APK testing; use `sf-browser` for non-auth UI objectives and `sf-auth-debug` for auth/session/callback/protected-route objectives. Reserve APK/device proof for IME, permissions, overlays, native plugins, platform channels, notifications, storage, install/update, or real-device performance
 - If the task touches Supabase, include the matching schema/policy/migration files, storage path conventions, and the exact client split (`browser`, `server`, `service-role`) in the read-first set
 - Update task tracking to `🔄 in progress` in master TASKS.md
 - Update local TASKS.md too when present

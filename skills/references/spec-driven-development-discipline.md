@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-18"
 updated: "2026-05-24"
@@ -36,6 +36,7 @@ supersedes: []
 evidence:
   - "Spec spec-driven-tdd-evidence-gates.md keeps ShipFlow spec-driven development as the outer lifecycle and adds proof-first implementation discipline."
   - "User decision 2026-05-24: proof paths must support high-quality code and durable decisions, not just the quickest passing change."
+  - "User decision 2026-05-24: for Flutter mobile work, prove common UI first with widget tests and Flutter Web smoke before asking for APK/device testing."
 next_review: "2026-06-18"
 next_step: "/sf-verify spec-driven-tdd-evidence-gates"
 ---
@@ -62,6 +63,20 @@ Before implementation, name the proof path that fits the changed surface:
 
 The proof path is part of the execution contract. It does not replace the source-of-truth work item.
 
+## Flutter Mobile Proof Ladder
+
+For Flutter mobile work, do not ask the operator to install or test an APK until cheaper proof surfaces have been used or explicitly ruled out.
+
+Default order:
+
+1. Widget tests first for ordinary Flutter UI behavior, state transitions, form validation, crashes, regressions, loaders, empty states, and error states.
+2. Flutter Web smoke next for UI surfaces that share the same Flutter widget/app code. The agent should run or route this proof itself when a local, preview, or production Web target is available: use `sf-browser` for non-auth UI proof and `sf-auth-debug` for auth/session/callback/protected-route proof.
+3. Android APK/device proof last for behavior Flutter Web cannot prove: IME/keyboard behavior, permissions, overlays, notifications, background/foreground services, native plugins, platform channels, file pickers, camera/mic, storage, install/update behavior, and real-device performance.
+
+For classic Flutter UI flows, the execution contract should list agent-run Web smoke scenarios before APK testing. Examples: manual clipboard add, edit, cancel, save without change, save with change, search, pin/unpin, and visual onboarding/settings.
+
+Use `exception-with-proof` only when widget tests or Flutter Web are not practical, and name the reason before routing to APK/device evidence.
+
 ## Stop Conditions
 
 Stop, reroute, or report `partial`/`not verified` when:
@@ -72,6 +87,7 @@ Stop, reroute, or report `partial`/`not verified` when:
 - a skill contract change lacks pressure scenarios or mechanical checks
 - evidence-first work names no concrete evidence surface
 - proof collection would expose secrets, cookies, tokens, credentials, private payloads, production PII, or sensitive screenshots
+- a Flutter UI change routes straight to APK/manual device testing while widget tests or agent-run Flutter Web smoke via `sf-browser`/`sf-auth-debug` can reasonably prove the shared UI behavior
 - the proposed implementation is merely the fastest/easiest patch and does not satisfy the decision-quality contract
 - the proposed implementation is adequate but visibly below the excellence bar for the risk
 

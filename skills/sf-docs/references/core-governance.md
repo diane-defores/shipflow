@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.3.0"
+artifact_version: "0.4.0"
 project: ShipFlow
 created: "2026-05-16"
 updated: "2026-05-24"
@@ -29,8 +29,9 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from sf-docs SKILL.md during compact-skill pilot."
-  - "Governance corpus now distinguishes global external provider notes from project-local provider usage docs."
-  - "Operator decision on 2026-05-24: project-local provider usage notes are conditional on risk and project-specific behavior."
+  - "Governance corpus now distinguishes global external provider notes from governance-root provider usage docs."
+  - "Operator decision on 2026-05-24: provider usage notes are conditional on risk and project-specific behavior."
+  - "Operator decision on 2026-05-24: monorepos use one root shipflow_data corpus instead of per-app/package copies."
 next_review: "2026-06-16"
 next_step: "/sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -49,7 +50,7 @@ Treat stale docs as product risk, especially for security, permissions, billing,
 
 ## Governance Corpus Ownership
 
-`sf-docs` is the owner for project-local governance corpus creation, update, and audit.
+`sf-docs` is the owner for project governance corpus creation, update, and audit.
 
 - `sf-docs technical` owns technical governance layer bootstrapping/auditing.
 - `sf-docs editorial` owns editorial/public-content governance bootstrapping/auditing.
@@ -79,14 +80,21 @@ When bumping artifact version:
 
 ## Canonical Artifact Families
 
-Preferred governance locations:
+Preferred governance locations live under the canonical governance root. In a single-project repo this is the repo root. In a monorepo this is the monorepo root.
 
 - `shipflow_data/business/*`
 - `shipflow_data/technical/*`
 - `shipflow_data/technical/external-platforms/*` for global external provider source notes
-- `shipflow_data/technical/platforms/*` inside a project for project-local provider usage when local risk or complexity justifies a dedicated note
+- `shipflow_data/technical/platforms/*` for provider usage when local risk or complexity justifies a dedicated note
 - `shipflow_data/editorial/*`
 - `shipflow_data/workflow/specs/*`
+
+Monorepo rule:
+
+- keep one canonical `shipflow_data/` at the monorepo root
+- scope app/package docs inside that root, for example `shipflow_data/technical/apps/<app>.md` or map entries in `shipflow_data/technical/code-docs-map.md`
+- do not create `shipflow_data/` inside every app/site/lab/package
+- treat nested `shipflow_data/` directories as migration debt unless the nested folder is intentionally a standalone project with its own repo lifecycle
 
 Legacy root files (`BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `ARCHITECTURE.md`, `CONTENT_MAP.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `GUIDELINES.md`, root `specs/`) are migration sources.
 

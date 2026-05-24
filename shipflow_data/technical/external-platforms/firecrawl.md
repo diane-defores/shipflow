@@ -89,7 +89,7 @@ Use `fresh-docs conflict` when current Firecrawl docs, changelog, or release not
 
 ## Common Project-Local Fields
 
-A project using Firecrawl should maintain `<project>/shipflow_data/technical/platforms/firecrawl.md` with:
+A project using Firecrawl should maintain `<governance-root>/shipflow_data/technical/platforms/firecrawl.md` with:
 
 - Firecrawl role in the product: research, scraping, docs ingestion, lead enrichment, monitoring, agent browsing, or content extraction
 - integration path: API, SDK, MCP, CLI, self-hosted, or hybrid

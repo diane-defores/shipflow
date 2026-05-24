@@ -85,7 +85,7 @@ Use `fresh-docs conflict` when current Sentry docs contradict local docs, alert 
 
 ## Common Project-Local Fields
 
-A project using Sentry should maintain `<project>/shipflow_data/technical/platforms/sentry.md` with:
+A project using Sentry should maintain `<governance-root>/shipflow_data/technical/platforms/sentry.md` with:
 
 - Sentry project/org slug, if safe
 - SDK/framework and package versions

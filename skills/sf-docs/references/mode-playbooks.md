@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.3.0"
+artifact_version: "0.4.0"
 project: ShipFlow
 created: "2026-05-16"
 updated: "2026-05-24"
@@ -20,13 +20,14 @@ linked_systems:
   - shipflow_data/workflow/specs/
 depends_on:
   - artifact: "skills/sf-docs/references/core-governance.md"
-    artifact_version: "0.3.0"
+    artifact_version: "0.4.0"
     required_status: "draft"
 supersedes: []
 evidence:
   - "Extracted from sf-docs SKILL.md during compact-skill pilot."
-  - "Technical docs mode extended with global external platform corpus and project-local platform usage docs."
-  - "Operator decision on 2026-05-24: project-local provider usage notes are risk-driven, not mandatory per technology."
+  - "Technical docs mode extended with global external platform corpus and governance-root platform usage docs."
+  - "Operator decision on 2026-05-24: provider usage notes are risk-driven, not mandatory per technology."
+  - "Operator decision on 2026-05-24: monorepo documentation uses the root shipflow_data corpus with scoped app/package entries."
 next_review: "2026-06-16"
 next_step: "/sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -42,26 +43,28 @@ next_step: "/sf-verify Compact ShipFlow Skill Instructions"
 
 ## TECHNICAL DOCS MODE
 
-Load `skills/references/technical-docs-corpus.md`, then read project `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/code-docs-map.md`).
+Load `skills/references/technical-docs-corpus.md`, then read the governance-root `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/code-docs-map.md`).
 
 Use mode variants:
 
 - bootstrap: missing technical layer
 - audit: verify layer coherency
 - update-plan: changed code paths require documentation update plan
+- monorepo audit: verify that one root `shipflow_data/` covers app/package scopes and nested copies are treated as migration debt
 
 Minimum checks:
 
 - mapped code areas have primary docs or explicit non-coverage
 - technical docs contain `Purpose`, `Owned Files`, `Entrypoints`, `Invariants`, `Validation`, `Reader Checklist`, `Maintenance Rule`
 - `code-docs-map.md` includes path patterns, validations, triggers
+- monorepos have one root `shipflow_data/` with app/package path scopes instead of repeated nested corpora
 - external provider behavior has a global source note under `shipflow_data/technical/external-platforms/` when it is common or repeated across projects
-- projects that use an external provider have a project-local usage note under `shipflow_data/technical/platforms/` only when provider behavior affects validation, auth, deploy, runtime, SDK, storage, security, migrations, observability, compliance, production proof, or local exceptions
+- projects or monorepo surfaces that use an external provider have a governance-root usage note under `shipflow_data/technical/platforms/` only when provider behavior affects validation, auth, deploy, runtime, SDK, storage, security, migrations, observability, compliance, production proof, or local exceptions
 
 External platform docs use two layers:
 
 - global source note: `shipflow_data/technical/external-platforms/<provider>.md`
-- project-local usage note: `<project>/shipflow_data/technical/platforms/<provider>.md`
+- provider usage note: `<governance-root>/shipflow_data/technical/platforms/<provider>.md`
 
 Do not mirror vendor docs. Keep links to official sources, freshness anchors, ShipFlow decision rules, validation routes, and project-specific usage. Do not create filler project-local notes for standard, low-risk provider usage that is already clear from code/config and the global note.
 
@@ -80,7 +83,7 @@ Output update plans with fields:
 
 ## EDITORIAL GOVERNANCE MODE
 
-Load `skills/references/editorial-content-corpus.md`, then project editorial governance docs (`shipflow_data/editorial/*` fallback legacy `docs/editorial/*`).
+Load `skills/references/editorial-content-corpus.md`, then governance-root editorial governance docs (`shipflow_data/editorial/*` fallback legacy `docs/editorial/*`).
 
 Use mode variants:
 
@@ -95,6 +98,7 @@ Must check:
 - page intent map coherence
 - editorial gate expectations
 - runtime content schema compatibility
+- monorepos use the root `shipflow_data/editorial/` corpus for shared public/content surfaces, with entries scoped by app/site/package where needed
 
 If no public/editorial surfaces are detected, report `skipped - no editorial surfaces detected`.
 
@@ -170,11 +174,12 @@ Priority buckets:
 
 ## LAYOUT MIGRATION MODE
 
-Move root legacy ShipFlow artifacts into canonical `shipflow_data/` paths without destructive overwrite.
+Move root legacy ShipFlow artifacts and nested monorepo `shipflow_data/` copies into canonical governance-root `shipflow_data/` paths without destructive overwrite.
 
 Rules:
 
 - classify each source as moveable/collision/external-root-ok/tracker/runtime-content
+- classify nested monorepo corpora as migrate/collision/standalone-exception
 - prefer `git mv` inside git repos
 - do not overwrite collisions silently
 - run metadata lint and legacy path grep checks

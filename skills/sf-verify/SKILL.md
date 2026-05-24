@@ -59,6 +59,7 @@ Mandatory explicit checks:
 - `Success Behavior` pass/partial/fail/not demonstrated
 - `Error Behavior` pass/partial/fail/not demonstrated
 - `Proof Path Fit` pass/partial/fail/not chosen: test-first, regression-first, scenario-first, evidence-first, or exception-with-proof matches the changed surface
+- `Flutter Mobile Proof Ladder` pass/partial/fail/not applicable: widget tests -> agent-run Flutter Web smoke through `sf-browser`/`sf-auth-debug` -> APK/device proof order is respected for Flutter mobile UI work
 - `Bug Gate` (clear/partial-risk/blocks ship/not assessed)
 - project development mode and validation surface
 - fresh external docs verdict (`fresh-docs checked|not needed|gap|conflict`)

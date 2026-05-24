@@ -86,7 +86,7 @@ Use `fresh-docs conflict` when current Firebase docs contradict local docs, rule
 
 ## Common Project-Local Fields
 
-A project using Firebase should maintain `<project>/shipflow_data/technical/platforms/firebase.md` with:
+A project using Firebase should maintain `<governance-root>/shipflow_data/technical/platforms/firebase.md` with:
 
 - Firebase project ID or safe alias
 - services used: Auth, Firestore, Hosting, Functions, Storage, App Hosting, Analytics, Messaging

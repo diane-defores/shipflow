@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.6.0"
+artifact_version: "1.7.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-24"
@@ -31,6 +31,7 @@ evidence:
   - "Convex, Clerk, Firebase, and Google Cloud global platform notes added for common ShipFlow project stacks."
   - "Supabase, Sentry, and Astro global platform notes added for common auth/database, observability, and public-site stacks."
   - "Python, Bash, and Gum global platform notes added for ShipFlow tooling, shell runtime, and Gum TUI scripts."
+  - "CrewAI global platform note added for agent orchestration, tools, memory, structured outputs, and dependency freshness."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -77,6 +78,7 @@ This layer complements the existing docs:
 | `external-platforms/vercel.md` | Vercel deployment, environment, CLI, logs, preview/production, and hosted proof assumptions |
 | `external-platforms/firecrawl.md` | Firecrawl API, SDK, MCP, scraping, parsing, release, retention, and web-data freshness assumptions |
 | `external-platforms/convex.md` | Convex deployments, generated APIs, auth, Clerk integration, indexes, actions, and scheduled functions |
+| `external-platforms/crewai.md` | CrewAI agents, crews, tasks, flows, tools, memory, structured outputs, LiteLLM/OpenRouter, and dependency migrations |
 | `external-platforms/clerk.md` | Clerk SDKs, middleware, hooks, webhooks, JWT templates, Convex integration, and hosted auth proof |
 | `external-platforms/firebase.md` | Firebase Auth, Firestore Security Rules, Admin SDK boundaries, CLI deploys, and Hosting |
 | `external-platforms/google-cloud.md` | Google Cloud IAM, ADC, service accounts, Workload Identity Federation, Cloud Run identity, and CI credentials |

@@ -89,7 +89,7 @@ Use `fresh-docs conflict` when current Convex docs contradict local docs, deploy
 
 ## Common Project-Local Fields
 
-A project using Convex should maintain `<project>/shipflow_data/technical/platforms/convex.md` with:
+A project using Convex should maintain `<governance-root>/shipflow_data/technical/platforms/convex.md` with:
 
 - project and deployment names, excluding secrets
 - local/dev/preview/prod deployment strategy

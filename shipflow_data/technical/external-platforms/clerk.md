@@ -87,7 +87,7 @@ Use `fresh-docs conflict` when current Clerk docs contradict local docs, route a
 
 ## Common Project-Local Fields
 
-A project using Clerk should maintain `<project>/shipflow_data/technical/platforms/clerk.md` with:
+A project using Clerk should maintain `<governance-root>/shipflow_data/technical/platforms/clerk.md` with:
 
 - Clerk SDK/framework and package versions
 - publishable-key env var names and secret-key env var names, never values

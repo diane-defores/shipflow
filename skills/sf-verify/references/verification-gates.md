@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-05-16"
 updated: "2026-05-16"
@@ -28,6 +28,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from sf-verify SKILL.md during compact-skill pilot."
+  - "User decision 2026-05-24: Flutter mobile UI proof should use widget tests and Flutter Web smoke before APK/device testing."
 next_review: "2026-06-16"
 next_step: "/sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -45,9 +46,10 @@ next_step: "/sf-verify Compact ShipFlow Skill Instructions"
 7. Verify completeness (tasks, acceptance criteria, expected files).
 8. Verify bug gate from `bugs/*.md` (+ optional `BUGS.md` index).
 9. Verify correctness against code/tests/invariants/linked consequences.
-10. Verify coherence (project patterns, language doctrine, docs coherence).
-11. Verify dependency, risk, and quick technical checks.
-12. Report verdict with next command and chantier block.
+10. Verify Flutter mobile proof ladder when Flutter UI or APK/device evidence is in scope.
+11. Verify coherence (project patterns, language doctrine, docs coherence).
+12. Verify dependency, risk, and quick technical checks.
+13. Report verdict with next command and chantier block.
 
 ## Development Mode Gate
 
@@ -153,6 +155,20 @@ Run quick checks only (no local build by default):
 
 - lint/typecheck/tests where available and relevant
 - if required checks fail -> `critical`
+
+## Flutter Mobile Proof Ladder Gate
+
+When scope touches Flutter mobile UI or asks the operator to test an APK, verify the evidence order:
+
+1. Widget/unit tests for ordinary Flutter UI behavior when practical.
+2. Agent-run Flutter Web smoke for shared UI surfaces that can run without native-only behavior. Use `sf-browser` for non-auth UI objectives and `sf-auth-debug` for auth/session/callback/protected-route objectives.
+3. APK/device proof only for native-only behavior or remaining device-specific risk.
+
+Common Web-smoke candidates: manual clipboard add, edit, cancel, save without change, save with change, search, pin/unpin, onboarding visuals, and settings visuals.
+
+APK/device proof remains required for IME/keyboard behavior, permissions, overlays, notifications, background/foreground services, native plugins, platform channels, file pickers, camera/mic, storage, install/update behavior, or real-device performance.
+
+If a Flutter UI change skipped widget tests and agent-run Flutter Web smoke without a concrete exception, mark verification `partial` or `not verified` before asking for manual APK proof.
 
 ## Reporting Contract (Required Blocks)
 

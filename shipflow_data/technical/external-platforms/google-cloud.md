@@ -88,7 +88,7 @@ Use `fresh-docs conflict` when current Google Cloud docs contradict local docs, 
 
 ## Common Project-Local Fields
 
-A project using Google Cloud should maintain `<project>/shipflow_data/technical/platforms/google-cloud.md` with:
+A project using Google Cloud should maintain `<governance-root>/shipflow_data/technical/platforms/google-cloud.md` with:
 
 - project ID(s), environments, and resource families used
 - auth path: ADC, attached service account, WIF, impersonation, or key fallback

@@ -83,7 +83,7 @@ Use `fresh-docs conflict` when current Gum docs contradict local menu assumption
 
 ## Common Project-Local Fields
 
-A project using Gum should maintain `<project>/shipflow_data/technical/platforms/gum.md` when Gum is a material UI dependency, with:
+A project using Gum should maintain `<governance-root>/shipflow_data/technical/platforms/gum.md` when Gum is a material UI dependency, with:
 
 - Gum install source and version policy
 - scripts using Gum

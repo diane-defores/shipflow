@@ -92,7 +92,7 @@ Use `fresh-docs conflict` when current Supabase docs contradict local docs, key 
 
 ## Common Project-Local Fields
 
-A project using Supabase should maintain `<project>/shipflow_data/technical/platforms/supabase.md` with:
+A project using Supabase should maintain `<governance-root>/shipflow_data/technical/platforms/supabase.md` with:
 
 - project URL/key env var names, never secret values
 - services used: Auth, Database, Storage, Realtime, Edge Functions, Cron, Queues

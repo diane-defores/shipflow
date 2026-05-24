@@ -84,7 +84,7 @@ Use `fresh-docs conflict` when current Python/PyPA docs contradict local docs, i
 
 ## Common Project-Local Fields
 
-A project using Python should maintain `<project>/shipflow_data/technical/platforms/python.md` when Python is part of its runtime/tooling contract, with:
+A project using Python should maintain `<governance-root>/shipflow_data/technical/platforms/python.md` when Python is part of its runtime/tooling contract, with:
 
 - Python version policy and runtime source
 - package manager or virtual environment strategy

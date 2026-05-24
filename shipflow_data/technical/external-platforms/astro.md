@@ -83,7 +83,7 @@ Use `fresh-docs conflict` when current Astro docs contradict local docs, deploy 
 
 ## Common Project-Local Fields
 
-A project using Astro should maintain `<project>/shipflow_data/technical/platforms/astro.md` with:
+A project using Astro should maintain `<governance-root>/shipflow_data/technical/platforms/astro.md` with:
 
 - Astro version and package manager
 - rendering mode: static, server, hybrid, or adapter-specific

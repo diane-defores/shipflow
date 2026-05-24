@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.3.0"
+artifact_version: "0.5.0"
 project: ShipFlow
 created: "2026-05-24"
 updated: "2026-05-24"
@@ -27,6 +27,8 @@ evidence:
   - "Operator decision on 2026-05-24: maintain a global source corpus for Freshness Gate and project-local usage docs for precise project adoption."
   - "Initial common provider set added: Vercel, Firecrawl, Convex, Clerk, Firebase, Google Cloud, Supabase, Sentry, Astro, Python, Bash, and Gum."
   - "Operator decision on 2026-05-24: project-local provider usage notes are conditional on local risk/complexity, not mandatory per technology."
+  - "Operator decision on 2026-05-24: provider usage notes resolve from the governance root, which is the monorepo root for monorepos."
+  - "CrewAI global platform note added for agent orchestration, tools, memory, structured outputs, and dependency freshness."
 next_review: "2026-06-24"
 next_step: "/sf-docs technical audit"
 ---
@@ -39,18 +41,20 @@ This directory is the global ShipFlow technical source layer for external platfo
 
 It is not a mirror of vendor documentation. Each platform note is a short, source-backed operational cheat sheet that tells agents where to verify current behavior and how that provider usually affects ShipFlow decisions.
 
-## Global vs Project-Local
+## Global vs Governance-Root Usage
 
 Use two layers:
 
 - Global platform note: `shipflow_data/technical/external-platforms/<provider>.md`
-- Project-local usage note: `<project>/shipflow_data/technical/platforms/<provider>.md`
+- Governance-root usage note: `<governance-root>/shipflow_data/technical/platforms/<provider>.md`
 
-The global note records official sources, freshness anchors, recurring risks, command/tool routing, and ShipFlow decision rules. The project-local note records how one project actually uses the provider: environment, domains, validation surface, integrations, secrets locations by name only, and known exceptions.
+The global note records official sources, freshness anchors, recurring risks, command/tool routing, and ShipFlow decision rules. The governance-root usage note records how a project, monorepo, app, or package actually uses the provider: environment, domains, validation surface, integrations, secrets locations by name only, and known exceptions.
 
-Project-local notes are not mandatory for every technology. Create one only when the project's usage materially affects agent decisions: auth, deployment, runtime behavior, SDK/API assumptions, storage, migrations, security, compliance, secrets handling, observability, production proof, or local exceptions. If usage is standard and fully clear from code/config plus the global note, report `not needed - standard usage covered by code/config and global note`.
+Usage notes are not mandatory for every technology. Create one only when the local usage materially affects agent decisions: auth, deployment, runtime behavior, SDK/API assumptions, storage, migrations, security, compliance, secrets handling, observability, production proof, or local exceptions. If usage is standard and fully clear from code/config plus the global note, report `not needed - standard usage covered by code/config and global note`.
 
-Do not put project secrets, private deployment URLs, tokens, raw logs, or account-specific identifiers in either layer. Project-local notes may name expected environment variable keys, provider features, and validation commands, but not secret values.
+For monorepos, keep usage notes at the monorepo-root `shipflow_data/technical/platforms/` and scope them by app/package inside the note. Do not duplicate provider notes under each app/site/lab/package.
+
+Do not put project secrets, private deployment URLs, tokens, raw logs, or account-specific identifiers in either layer. Usage notes may name expected environment variable keys, provider features, and validation commands, but not secret values.
 
 ## When Agents Should Read This Corpus
 
@@ -62,7 +66,7 @@ Read the relevant global platform note when a task depends on:
 - dependency upgrades where release notes may imply code or configuration changes
 - an `sf-deps`, `sf-audit-code`, `sf-migrate`, `sf-prod`, `sf-auth-debug`, `sf-verify`, or future `sf-tech-watch` decision
 
-Then read the project-local usage note if one exists or if project-specific provider behavior affects the decision. If the project clearly needs a local note but has none, report a documentation gap and recommend creating one from `templates/artifacts/project_platform_usage.md`.
+Then read the governance-root usage note if one exists or if project-specific provider behavior affects the decision. If the project clearly needs a local note but has none, report a documentation gap and recommend creating one from `templates/artifacts/project_platform_usage.md`.
 
 ## Freshness Policy
 
@@ -95,6 +99,7 @@ Each provider note should include:
 - `bash.md`
 - `clerk.md`
 - `convex.md`
+- `crewai.md`
 - `firebase.md`
 - `firecrawl.md`
 - `google-cloud.md`
@@ -106,4 +111,4 @@ Each provider note should include:
 
 ## Maintenance Rule
 
-Update this index when a global provider note is added, renamed, removed, or when the project-local usage template changes.
+Update this index when a global provider note is added, renamed, removed, or when the governance-root usage template changes.

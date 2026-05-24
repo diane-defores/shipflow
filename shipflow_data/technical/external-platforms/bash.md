@@ -81,7 +81,7 @@ Use `fresh-docs conflict` when Bash manual behavior contradicts local assumption
 
 ## Common Project-Local Fields
 
-A project using Bash as a real runtime/tooling surface should maintain `<project>/shipflow_data/technical/platforms/bash.md` with:
+A project using Bash as a real runtime/tooling surface should maintain `<governance-root>/shipflow_data/technical/platforms/bash.md` with:
 
 - Bash version or OS support policy
 - script entrypoints and destructive commands

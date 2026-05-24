@@ -1,10 +1,10 @@
 ---
 artifact: decision_record
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: "shipflow"
 created: "2026-05-11"
-updated: "2026-05-11"
+updated: "2026-05-24"
 status: reviewed
 source_skill: sf-docs
 scope: "project-governance-layout"
@@ -13,12 +13,13 @@ confidence: high
 risk_level: high
 security_impact: yes
 docs_impact: yes
-decision: "ShipFlow governance artifacts must live under project-local shipflow_data/ subdirectories, not as root Markdown files."
-rationale: "Root ShipFlow docs created confusion across projects and made compliance ambiguous. A strict layout makes artifacts discoverable, lintable, migratable, and easier to explain publicly."
-consequences: "Legacy root governance files become migration sources only. Skills, linter, docs, and the public site must route to shipflow_data/ canonical paths."
+decision: "ShipFlow governance artifacts must live under the canonical governance-root shipflow_data/: repo root for simple projects, monorepo root for monorepos."
+rationale: "Root ShipFlow docs created confusion across projects and nested shipflow_data copies create the same ambiguity inside monorepos. A strict governance-root layout makes artifacts discoverable, lintable, migratable, and easier to explain publicly."
+consequences: "Legacy root governance files and nested monorepo app/package shipflow_data copies become migration sources only unless a standalone-project exception is documented. Skills, linter, docs, and the public site must route to governance-root shipflow_data canonical paths."
 evidence:
   - "User clarified on 2026-05-11 that root ShipFlow Markdown artifacts are not compliant."
   - "Local scan found root legacy governance files in shipflow_app, tubeflow_expo, socialflow, gocharbon, and other project folders."
+  - "User clarified on 2026-05-24 that monorepos should keep one shipflow_data corpus at the monorepo root instead of repeating it in each subproject."
 depends_on:
   - artifact: "shipflow_data/technical/architecture.md"
     artifact_version: "1.1.0"
@@ -42,7 +43,11 @@ Project roots should keep only files that are true entrypoints for humans or ext
 - `CLAUDE.md` when the project explicitly uses it as repository guidance
 - `CHANGELOG.md` when maintained as a public or project changelog
 
-ShipFlow governance artifacts must live under project-local `shipflow_data/`.
+ShipFlow governance artifacts must live under the canonical governance-root `shipflow_data/`.
+
+For a simple single-project repository, the governance root is the repository root.
+
+For a monorepo, the governance root is the monorepo root. Do not create a full `shipflow_data/` corpus inside every app, site, lab, package, or worker subdirectory.
 
 ## Canonical Layout
 
@@ -91,6 +96,37 @@ shipflow_data/
 
 Optional registries are compliant when absent. If present, they must live at the canonical path and pass metadata lint.
 
+## Monorepo Layout
+
+Use one governance corpus at the monorepo root:
+
+```text
+monorepo/
+  shipflow_data/
+    business/
+    technical/
+      code-docs-map.md
+      apps/
+      packages/
+      platforms/
+    editorial/
+    workflow/
+
+  apps/
+  packages/
+  site/
+```
+
+Scope app/package docs inside the root corpus instead of duplicating the corpus:
+
+- `shipflow_data/technical/code-docs-map.md` maps app/package paths to primary docs.
+- `shipflow_data/technical/apps/<app>.md` or equivalent primary docs cover subproject-specific behavior.
+- `shipflow_data/technical/platforms/<provider>.md` can cover one or more apps when provider usage affects validation or proof.
+- `shipflow_data/editorial/*` scopes public surfaces by app/site/package.
+- `shipflow_data/workflow/specs/*` scopes chantiers by path or subproject name.
+
+Nested `apps/foo/shipflow_data/` or sibling `foo_app/shipflow_data/` directories are migration debt by default. They are allowed only when that subdirectory is intentionally a standalone project with separate clone, lifecycle, ship process, and documented exception.
+
 ## Legacy Root Mapping
 
 | Legacy root file | Canonical destination |
@@ -118,9 +154,9 @@ Optional registries are compliant when absent. If present, they must live at the
 
 | Skill | Responsibility |
 | --- | --- |
-| `sf-init` | Create new project governance files directly in `shipflow_data/`; never create legacy root governance files. |
-| `sf-docs update` | Audit canonical docs and report root legacy artifacts as layout violations. |
-| `sf-docs migrate-layout` | Move root legacy artifacts into `shipflow_data/`, resolve collisions, update references, then run metadata lint. |
+| `sf-init` | Create new project governance files directly in governance-root `shipflow_data/`; never create legacy root governance files or nested monorepo corpora. |
+| `sf-docs update` | Audit canonical docs and report root legacy artifacts or nested monorepo `shipflow_data/` copies as layout violations. |
+| `sf-docs migrate-layout` | Move root legacy artifacts and nested monorepo governance copies into governance-root `shipflow_data/`, resolve collisions, update references, then run metadata lint. |
 | `sf-docs metadata` | Validate metadata only after layout classification; root legacy governance files are not compliant even with valid frontmatter. |
 | `sf-start` / `sf-verify` | Prefer canonical `shipflow_data/` dependencies; treat root references in old specs as legacy context and flag migration debt. |
 | `sf-content` / `sf-repurpose` | Read `shipflow_data/editorial/content-map.md` and optional business registries; recommend `sf-docs migrate-layout` when public content depends on root legacy docs. |
@@ -130,9 +166,10 @@ Optional registries are compliant when absent. If present, they must live at the
 ## Compliance Rules
 
 - A root legacy governance file is non-compliant even if it has valid ShipFlow frontmatter.
+- A nested monorepo `shipflow_data/` is non-compliant unless it has a documented standalone-project exception.
 - Fallback reads are allowed only to support migration or old-spec verification.
-- Duplicate root and `shipflow_data/` copies are not allowed as parallel sources of truth.
-- Operational trackers are not decision contracts and do not need ShipFlow frontmatter, but their project-local compliant location is `shipflow_data/workflow/`.
+- Duplicate root, monorepo-root, and nested `shipflow_data/` copies are not allowed as parallel sources of truth.
+- Operational trackers are not decision contracts and do not need ShipFlow frontmatter, but their governance-root compliant location is `shipflow_data/workflow/`.
 - Root `TASKS.md` and `AUDIT_LOG.md` are legacy project tracker locations unless an external project tool explicitly requires them.
 - Runtime content must keep its application schema and must not be forced into ShipFlow metadata.
 
@@ -141,11 +178,12 @@ Optional registries are compliant when absent. If present, they must live at the
 Before moving files, `sf-docs migrate-layout` must:
 
 1. Inventory root legacy artifacts.
-2. Detect destination collisions.
-3. Preserve user changes and avoid overwriting existing canonical files.
-4. Update internal references from root names to canonical paths where safe.
-5. Run the metadata linter on the project.
-6. Report unresolved collisions separately from completed moves.
+2. Inventory nested monorepo `shipflow_data/` directories.
+3. Detect destination collisions.
+4. Preserve user changes and avoid overwriting existing canonical files.
+5. Update internal references from root or nested names to canonical governance-root paths where safe.
+6. Run the metadata linter on the governance root.
+7. Report unresolved collisions separately from completed moves.
 
 ## Consequences
 

@@ -62,6 +62,8 @@ Do not treat this skill as a generic "run tests" command. It is guided manual QA
 
 For one-off browser proof that does not need a guided manual QA campaign, `TEST_LOG.md`, bug files, or optional `BUGS.md` triage, route to `/sf-browser [URL or objective]`. Keep `sf-test` for scenario planning, human confirmation, durable test logs, retests, and bug records.
 
+For Flutter mobile work, do not default to asking the user to install an APK. First check whether the flow is ordinary shared Flutter UI that should be covered by widget tests and an agent-run Flutter Web smoke test. Use `sf-browser` for non-auth UI proof and `sf-auth-debug` for auth/session/callback/protected-route proof when a Web target is available. Use APK/device testing only for native-only proof such as IME/keyboard behavior, permissions, overlays, notifications, background/foreground services, native plugins, platform channels, file pickers, camera/mic, storage, install/update behavior, or real-device performance.
+
 ## Core Rule
 
 Never invent test results.
@@ -157,6 +159,12 @@ For auth, OAuth, callbacks, protected routes, cookies, or session persistence:
 - include browser-level steps
 - include reload and direct protected-route checks when relevant
 - if the test fails, route to `sf-auth-debug` unless the bug is obviously unrelated to auth configuration or browser state
+
+For Flutter app UI:
+- first ask for or run the relevant widget/unit checks when practical
+- then prefer agent-run Flutter Web smoke for shared UI flows such as clipboard manual add, edit, cancel, save without change, save with change, search, pin/unpin, onboarding visuals, and settings visuals
+- route the Web proof to `sf-browser` for non-auth UI and `sf-auth-debug` for auth/session/callback/protected-route behavior before asking the operator to test an APK
+- use APK/device scenarios only for native-only behavior or after Web smoke passes and the remaining risk is device-specific
 
 For production:
 - keep steps read-only or reversible by default
