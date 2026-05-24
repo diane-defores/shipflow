@@ -37,7 +37,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - GLOBAL MODE: load `references/seo-audit-workflow.md` and audit project-level SEO infrastructure and content architecture.
 - PAGE MODE: load `references/seo-audit-workflow.md` and audit the named page, URL, or route.

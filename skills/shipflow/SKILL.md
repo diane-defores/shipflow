@@ -46,6 +46,8 @@ Before classifying a non-trivial instruction, load `$SHIPFLOW_ROOT/skills/refere
 
 Use that reference as the canonical routing matrix. Do not duplicate specialist internals here.
 
+Before choosing a route, answer, or fallback, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Routing must prefer the owner path that preserves correctness, security, performance, maintainability, durability, and proof quality; do not route to the fastest or easiest owner when that would weaken the work.
+
 ## Mission
 
 `shipflow` is the primary natural-language entrypoint for non-technical operators.
@@ -56,7 +58,7 @@ It answers one question:
 What should ShipFlow do with this instruction, and which existing skill should own it?
 ```
 
-The goal is not to create a new mega-master. The goal is to keep the operator from memorizing the skill taxonomy while preserving the gates, delegation rules, evidence rules, and ship rules owned by existing skills.
+The goal is not to create a new mega-master or the shortest route. The goal is to keep the operator from memorizing the skill taxonomy while preserving the quality bar, gates, delegation rules, evidence rules, and ship rules owned by existing skills.
 
 ## Mode Detection
 

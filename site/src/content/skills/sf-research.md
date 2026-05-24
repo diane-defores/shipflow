@@ -2,7 +2,7 @@
 title: "sf-research"
 slug: "sf-research"
 tagline: "Research a topic deeply enough that you can make a better product or GTM decision afterward."
-summary: "A structured web-research skill for gathering, organizing, and summarizing evidence around a topic."
+summary: "A structured research skill for gathering evidence, checking current-source freshness, and saving reusable workflow reports."
 category: "Research & Grow"
 audience:
   - "Founders exploring a market, feature area, or strategic question"
@@ -19,6 +19,7 @@ what_you_give:
   - "Any constraints about audience, scope, or output style"
 what_you_get:
   - "A research synthesis"
+  - "A saved report under the project workflow research corpus"
   - "A stronger evidence base for product or content work"
   - "A better starting point for specs, pages, or GTM decisions"
 example_prompts:
@@ -28,6 +29,7 @@ example_prompts:
 limits:
   - "Research improves judgment, not certainty"
   - "Weakly framed questions will still produce weakly useful findings"
+  - "Public-content follow-up still goes through the content lifecycle and declared editorial surfaces"
 related_skills:
   - "sf-market-study"
   - "sf-enrich"

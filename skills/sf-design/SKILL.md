@@ -78,7 +78,7 @@ intake
 
 ## Design Intent Routing
 
-Choose the smallest safe owner. Do not ask the user to choose a specialist when the request clearly names an intent.
+Choose the smallest safe owner under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: the bounded professional route that preserves design quality, accessibility, performance, maintainability, and proof. Do not ask the user to choose a specialist when the request clearly names an intent.
 
 | Intent | Route |
 | --- | --- |
@@ -263,7 +263,7 @@ Agent/handoff mode may add the routing matrix decision, owned surfaces, forbidde
 
 - Be the design entrypoint; do not become the implementation of every design specialist.
 - Route through owner skills and lifecycle gates.
-- Prefer the smallest safe route when the request is narrow.
+- Prefer the smallest safe route when the request is narrow, using the decision-quality definition rather than shortcut quality.
 - Use spec-first for broad design implementation and token migration.
 - Always surface the token implementation handoff when centralization exists but site consumption is incomplete.
 - Verify visual claims with visible proof and specialist evidence, not only code scans.

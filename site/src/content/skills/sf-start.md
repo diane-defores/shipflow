@@ -20,7 +20,7 @@ what_you_give:
 what_you_get:
   - "An implementation start path"
   - "Either direct execution or a reroute to stronger contract work"
-  - "A model and topology choice before coding, with small subagents on GPT-5.4-mini, GPT-5.3-Codex favored for long implementation, GPT-5.5 favored for ambiguous governance work, and faster models preserved for micro-edits"
+  - "A model and topology choice before coding, with lighter models used only when quality-equivalent, GPT-5.3-Codex favored for long implementation, and GPT-5.5 favored for ambiguous governance work"
   - "A chantier trace when a unique spec-first workstream is in scope"
   - "Focused validation tied to the task being built"
   - "A route to sf-browser when non-auth browser evidence is needed"
@@ -31,6 +31,7 @@ example_prompts:
 limits:
   - "It is an execution entrypoint, not a substitute for unresolved product decisions"
   - "High-risk work may still require spec and readiness gates first"
+  - "Direct execution still follows the decision-quality bar; it is not a license for the fastest patch"
 related_skills:
   - "sf-spec"
   - "sf-ready"

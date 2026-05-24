@@ -2,7 +2,7 @@
 title: "sf-priorities"
 slug: "sf-priorities"
 tagline: "Reorder the backlog by impact and effort before momentum turns into scattered activity."
-summary: "A prioritization skill for sorting active and pending work with a more explicit impact-versus-effort lens."
+summary: "A local-first prioritization skill for sorting active and pending work with a more explicit impact-versus-effort lens."
 category: "Plan & Decide"
 audience:
   - "Founders with too many plausible next tasks"
@@ -16,6 +16,7 @@ when_to_use:
   - "When you want a more deliberate impact-effort sort"
 what_you_give:
   - "A backlog or list of candidate tasks"
+  - "A project-local workflow tracker, or an explicit portfolio scope"
   - "Some notion of current business or product goals"
 what_you_get:
   - "A clearer priority ordering"

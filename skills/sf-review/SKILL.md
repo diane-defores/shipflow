@@ -16,12 +16,23 @@ Process role: `pilotage`.
 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` when this run is attached to a spec-first chantier. If exactly one active `specs/*.md` chantier is identified, append the current run to `Skill Run History`, update `Current Chantier Flow` when the run changes the chantier state, and include a final `Chantier` block. If no unique chantier is identified, do not write to any spec; report `Chantier: non applicable` or `Chantier: non trace` with the reason.
 
+## Report Modes
+
+Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
+
+Default to `report=user`: concise review outcome, evidence limits, tracker/docs impact, and compact chantier block when applicable. Use `report=agent` for detailed review reports, tracker anchors, or handoff state.
+
+## Required References
+
+- Load `$SHIPFLOW_ROOT/skills/references/question-contract.md` before asking project, review-period, closure, or risk-framing questions.
+- Load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` before creating or mutating task operational records in `TASKS.md`.
+
 
 ## Context
 
 - Current directory: !`pwd`
-- **Master TASKS.md** (multi-project dashboard): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
-- Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
+- Project workflow TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project TASKS.md"`
+- External control-plane TASKS.md (portfolio coordination only): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No control-plane TASKS.md"`
 - Recent commits (last 10): !`git log --oneline --date=short --pretty=format:"%h %ad %s" -10 2>/dev/null || echo "Not a git repo"`
 - Files changed recently: !`git diff --name-status HEAD~5..HEAD 2>/dev/null || echo "N/A"`
 - Current branch: !`git branch --show-current 2>/dev/null`
@@ -29,20 +40,22 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 - CHANGELOG.md (last 30 lines): !`tail -30 CHANGELOG.md 2>/dev/null || echo "No CHANGELOG.md"`
 - Workspace CLAUDE.md: !`head -20 $HOME/CLAUDE.md 2>/dev/null || echo "N/A"`
 
-## Multi-project tracking system
+## Operational tracker model
 
-**CRITICAL**: This workspace tracks 12 projects from a single master file at `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`.
+Review bookkeeping is local-first for project work.
 
-- **Always update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** as part of the review — check off completed tasks, update the Dashboard table, and refresh the "Last updated" date
-- When reviewing from a sub-project directory, also consider the master-level cross-project concerns
-- The review summary should reference which project(s) were worked on and how the master Dashboard changed
-- When planning next session, suggest tasks from the master file's highest-priority items across all projects
+- For a selected project, update `[project]/shipflow_data/workflow/TASKS.md` when review evidence justifies tracker changes.
+- Root `TASKS.md` is a legacy project tracker location; read it as a migration/fallback source only when canonical workflow tasks are absent.
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is the external control plane. Use `PROJECTS.md` for project discovery and `TASKS.md` only for explicit full-workspace or portfolio coordination.
+- When reviewing from a sub-project directory, consider portfolio concerns only as context unless the user asked for a portfolio review.
+- The review summary should reference which project(s) were worked on and, for portfolio-scoped runs only, how the external Dashboard changed.
+- When planning next session, suggest tasks from the selected project's local workflow tracker, or from the external control plane only for portfolio-scoped runs.
 
 ## Shared tracking file write protocol
 
 - Before creating or mutating task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and preserve that format for new `TASKS.md` writes.
 - Treat the TASKS snapshots loaded at skill start as informational only.
-- Right before editing the master or local TASKS file, re-read the target from disk and use that version as authoritative.
+- Right before editing the project or portfolio TASKS file, re-read the target from disk and use that version as authoritative.
 - Apply a minimal targeted edit to the relevant dashboard rows and project sections; never rewrite the whole file from stale context.
 - If the expected anchor moved or changed, re-read once and recompute.
 - If it is still ambiguous after the second read, stop and ask the user instead of forcing the write.
@@ -54,7 +67,7 @@ This is a review and closure aid, not a truth machine. Commits, changed files, u
 
 ### Workspace root detection
 
-If the current directory has no `.git` directory (not a git repo) BUT contains multiple project subdirectories — you are at the **workspace root**. Use **AskUserQuestion**:
+If the current directory has no `.git` directory (not a git repo) BUT contains multiple project subdirectories, you are at the workspace root. Load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask:
 - Question: "Which project(s) should I review?"
 - `multiSelect: true`
 - One option per project: label = project name, description = recent commit count (run `git -C [path] log --oneline --since="7 days" 2>/dev/null | wc -l` for each)
@@ -62,7 +75,7 @@ If the current directory has no `.git` directory (not a git repo) BUT contains m
 
 ### Steps
 
-1. **Determine review scope** — if `$ARGUMENTS` is empty, use **AskUserQuestion**:
+1. **Determine review scope** — if `$ARGUMENTS` is empty, load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask:
    - Question: "What time scope for this review?"
    - `multiSelect: false`
    - Options:
@@ -74,7 +87,7 @@ If the current directory has no `.git` directory (not a git repo) BUT contains m
    If `$ARGUMENTS` is provided (daily/weekly/sprint/release), skip the prompt and use it directly.
 
 2. **Analyze what was accomplished**:
-   - Review completed tasks in TASKS.md
+   - Review completed tasks in the selected project's `shipflow_data/workflow/TASKS.md`, or the external control-plane tracker only for portfolio reviews
    - Examine git commits for actual changes
    - Identify files modified (from git diff)
    - Note any deployed changes or releases
@@ -128,13 +141,13 @@ If the current directory has no `.git` directory (not a git repo) BUT contains m
    - **Metrics**: Commits, files changed, tests added, etc.
 
 6. **Plan next session**:
-   - Review remaining tasks in TASKS.md
+   - Review remaining tasks in the selected project's `shipflow_data/workflow/TASKS.md`, or the external control-plane tracker only for portfolio reviews
    - Identify what should be prioritized next
    - Note any blockers that need addressing
    - Suggest 1-3 tasks for immediate focus
    - Flag anything that needs discussion/decisions
 
-7. **Update TASKS.md**:
+7. **Update the selected TASKS.md**:
    - Archive completed tasks to a "Recently Completed" section
    - Add completion dates
    - Move old completed tasks to CHANGELOG or separate archive
@@ -157,7 +170,7 @@ Examples:
 - "The feature behavior changed but docs were not clearly updated. Should I keep that as an open task?"
 
 8. **Create review report**:
-   - Save to `REVIEW-[DATE].md` in project root or docs folder
+   - Save to `shipflow_data/workflow/reviews/REVIEW-[DATE].md` when the project uses the canonical workflow corpus, otherwise use the nearest existing review/docs folder.
    - Start the report with YAML frontmatter:
      ```yaml
      ---
@@ -183,7 +196,8 @@ Examples:
 
 ### Important
 
-- **Always update the master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — check off completed tasks, update Dashboard statuses, refresh "Last updated" date
+- Default to the selected project's `shipflow_data/workflow/TASKS.md` for review bookkeeping.
+- Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` only for full-workspace or explicit portfolio coordination.
 - Be honest about progress - if less was done than planned, say why
 - Focus on outcomes, not just activity
 - Keep outcome claims tied to evidence; distinguish shipped, reviewed, verified, and assumed
@@ -197,4 +211,4 @@ Examples:
 - Update CHANGELOG.md for user-facing changes only
 - Archive old completed tasks to keep TASKS.md manageable
 - Suggest process improvements if patterns emerge (e.g., always missing tests)
-- When planning next session, pull top priorities from the master Dashboard across all 12 projects
+- When planning next session, pull top priorities from the selected project's local workflow tracker, or from the external Dashboard only for portfolio-scoped runs.

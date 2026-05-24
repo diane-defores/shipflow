@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-05-24"
 status: reviewed
 source_skill: sf-start
 scope: claim-register
@@ -26,6 +26,7 @@ linked_systems:
   - BRANDING.md
   - GTM.md
   - README.md
+  - skills/references/decision-quality-contract.md
   - site/src/pages/
 depends_on:
   - artifact: "BUSINESS.md"
@@ -43,6 +44,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Business, product, brand, and GTM contracts define public promise boundaries."
+  - "Decision-quality contract defines the public-safe wording boundary for quality-first execution claims."
 next_review: "2026-06-01"
 next_step: "/sf-verify ShipFlow Editorial Content Governance Layer for AI Agents"
 ---
@@ -71,6 +73,7 @@ This register gives agents a safe boundary for sensitive public claims. It does 
 | Privacy | ShipFlow can describe avoiding publication of private URLs, credentials, tokens, sensitive logs, and internal-only details. It must not claim privacy compliance or data protection guarantees. | `GUIDELINES.md`, public/private boundary docs | `allowed with caveat` | Docs, FAQ, remote MCP guide | Block compliance-style privacy claims without reviewed legal/security evidence |
 | Compliance | ShipFlow has no compliance program claim. | No reviewed compliance contract | `blocked` | Any public surface | Block SOC2, GDPR, HIPAA, enterprise compliance, or audit-ready claims |
 | AI reliability | ShipFlow can say it reduces ambiguity, strengthens handoffs, and gives agents clearer contracts. It must not promise agent correctness or fully autonomous reliability. | `PRODUCT.md`, `BRANDING.md`, `shipflow-spec-driven-workflow.md` | `allowed with caveat` | Landing, skills, FAQ, docs | Block guaranteed correctness, autonomous genius, or "agents always know what to do" claims |
+| Decision quality | ShipFlow can say it directs agents to prioritize correctness, security posture, maintainability, relevant performance, and proof before speed, cost, or convenience. It must not imply guaranteed code quality, guaranteed security, or measured performance improvement without proof. | `skills/references/decision-quality-contract.md`, `shipflow-spec-driven-workflow.md`, `README.md` | `allowed with caveat` | Landing, docs, FAQ, skills, why-not-prompts | Block "maximum security", "maximum performance", "bug-free", "always best practice", or quantified gains without evidence |
 | Automation | ShipFlow can say it orchestrates workflows and provides skills for execution, verification, docs, audits, and ship preparation. It must not imply unattended production shipping without gates. | `PRODUCT.md`, `specs/sf-build-autonomous-master-skill.md`, skill contracts | `allowed with caveat` | Skills hub, docs, README | Block "hands-free shipping" unless the exact gate sequence and limitations are stated |
 | Speed | ShipFlow can say it reduces context reconstruction and handoff overhead. It must not state quantified speed gains without measured evidence. | `BUSINESS.md`, `PRODUCT.md`, repo workflow design | `needs proof` for numbers; `allowed with caveat` for qualitative wording | Landing, pricing, FAQ | Block percentage/time-saved claims without measurement |
 | Savings | ShipFlow can discuss lower ambiguity and fewer weak handoffs. It must not claim cost savings or revenue impact without proof. | `BUSINESS.md`, `GTM.md` | `needs proof` | Pricing, landing | Block cost reduction, revenue lift, or ROI claims without data |

@@ -9,7 +9,7 @@ audience:
   - "Teams that care about user-story correctness and residual risk"
 problem: "Technical checks can pass while the work still misses the actual promise, leaves docs stale, or hides risky edge cases."
 outcome: "You get a more honest readiness call before the changes move into closure or release, with open bug records folded into the decision when relevant."
-founder_angle: "This skill matters because finished code is not the same thing as finished work. It asks whether the outcome is actually safe and complete enough to trust, including whether unresolved bugs still block the story."
+founder_angle: "This skill matters because finished code is not the same thing as finished work. It asks whether the outcome is actually safe, complete, maintainable, and proven enough to trust, including whether unresolved bugs still block the story."
 when_to_use:
   - "After implementation is done"
   - "When the task touched meaningful behavior, data, or user-facing outcomes"
@@ -20,6 +20,7 @@ what_you_give:
 what_you_get:
   - "A behavior-aware readiness judgment"
   - "Findings around completeness, risk, and regressions"
+  - "A decision-quality check for correctness, security, relevant performance, maintainability, and proof"
   - "A verification result in the spec's chantier flow when a unique spec is in scope"
   - "A callout for linked open bug records when they affect the scope"
   - "A route to sf-browser when non-auth browser evidence is missing"

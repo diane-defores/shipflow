@@ -10,7 +10,7 @@ audience:
   - "Teams using ShipFlow specs as durable chantier memory"
 problem: "Non-trivial work often stalls because the user has to remember when to spec, verify, update docs, close trackers, and ship."
 outcome: "You get a single high-level entrypoint that routes the work through the right ShipFlow gates and reports the result without hiding proof gaps."
-founder_angle: "This skill is the normal launch point when the outcome matters more than the individual commands. It keeps the user in business decisions while ShipFlow handles execution sequence, evidence, and closure."
+founder_angle: "This skill is the normal launch point when the outcome matters more than the individual commands. It keeps the user in business decisions while ShipFlow handles execution sequence, evidence, closure, and the quality bar."
 when_to_use:
   - "When you want a feature, bug fix, site update, docs change, or product improvement handled as a complete workstream"
   - "When the task may need spec, readiness, implementation, verification, docs alignment, and ship routing"
@@ -22,6 +22,7 @@ what_you_give:
   - "Optional report mode only when you need detailed agent handoff evidence"
 what_you_get:
   - "A routed ShipFlow lifecycle instead of a pile of manual commands"
+  - "A route that optimizes for correctness, security, maintainability, relevant performance, and proof before speed"
   - "A clear agents status when delegated execution is requested or materially affects trust"
   - "Spec and readiness handling when the task is non-trivial"
   - "Implementation, verification, docs alignment, and closure routing"
@@ -46,6 +47,7 @@ argument_modes:
     consequence: "Useful for another agent or blocked run, but noisier than the default user report."
 limits:
   - "It does not skip safeguards; it reduces manual command-chaining"
+  - "It does not choose the fastest path when the professional path needs stronger proof or preparation"
   - "It asks a business-framed numbered question when a decision changes behavior, risk, permissions, security, proof, or ship posture"
   - "It proceeds by default only when the default is clear, context-safe, reversible, and verifiable"
   - "It should not ship unrelated dirty files without explicit user approval"

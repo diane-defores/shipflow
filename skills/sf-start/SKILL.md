@@ -36,6 +36,7 @@ Default to `report=user`: concise, outcome-first, and using the compact chantier
 Load only the references needed for the active run:
 
 - `references/execution-workflow.md`: detailed task identification, scope triage, execution contract, model/delegation choice, implementation loop, validation, spec trace, and final report rules.
+- `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: required before selecting direct mode, model, topology, implementation path, or fallback. Bounded implementation is allowed; shortcut quality is not.
 - `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`: required before creating or mutating task, audit, or `spec:` operational records in `TASKS.md`, `AUDIT_LOG.md`, or spec summary sections.
 - `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`: required before implementation when the task changes behavior, fixes a bug, changes a skill contract, or needs a proof path. Choose `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof` before editing and report the chosen proof path.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`: required only when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
@@ -56,6 +57,7 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 - `sf-start` implements; it should not stop at planning when a valid execution contract exists.
 - Preserve the user story outcome over task-checkbox completion.
 - Preserve the spec or mini-contract as the source of truth; tests and evidence prove the contract, they do not redefine it.
+- Follow the decision-quality contract: choose bounded professional implementation, not the fastest/easiest patch. Speed, cost, and local convenience are secondary after correctness, security, performance, maintainability, durability, and proof quality.
 - For testable behavior, prefer a `test-first` proof path. For skill/governance changes, use `scenario-first`. For UI/docs/auth/deploy/operational work, use `evidence-first`. If the strongest path is impractical, record `exception-with-proof` and the alternate evidence.
 - Read only the files needed for the execution contract and linked systems that can change correctness.
 - Prefer fresh-context execution for non-trivial spec-first work when available, but keep the main thread responsible for integration, validation, and user-facing truth.

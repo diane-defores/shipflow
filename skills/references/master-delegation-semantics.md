@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.2"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-18"
+updated: "2026-05-24"
 status: active
 source_skill: sf-build
 scope: master-delegation-semantics
@@ -23,11 +23,15 @@ linked_systems:
   - skills/sf-deploy/SKILL.md
   - skills/sf-bug/SKILL.md
   - skills/sf-audit/SKILL.md
+  - skills/references/decision-quality-contract.md
   - skills/references/spec-driven-development-discipline.md
   - docs/technical/skill-runtime-and-lifecycle.md
   - shipflow-spec-driven-workflow.md
   - README.md
-depends_on: []
+depends_on:
+  - artifact: "skills/references/decision-quality-contract.md"
+    artifact_version: "1.0.0"
+    required_status: active
 supersedes: []
 evidence:
   - "User decision 2026-05-04: the primary `shipflow` router should use direct main-thread handoff to selected master skills, not nested master-skill subagents."
@@ -36,6 +40,7 @@ evidence:
   - "User decision 2026-05-04: short natural-language confirmations continue the current chantier in delegated sequential mode after diagnosis or proposal; they are interpreted by intent, not exact keyword."
   - "User decision 2026-05-06: sf-design joins the master/orchestrator topology set."
   - "User decision 2026-05-14: an `agents` argument should explicitly validate delegated sequential execution; parallelism remains spec-gated through `Execution Batches`, not an `agents parallel` shortcut."
+  - "User decision 2026-05-24: delegated execution must optimize for quality, security, performance, and durability before speed or cost."
 next_review: "2026-06-04"
 next_step: "/sf-verify master delegation semantics"
 ---
@@ -47,6 +52,8 @@ next_step: "/sf-verify master delegation semantics"
 This reference defines how ShipFlow master and orchestrator skills choose execution topology without duplicating delegation doctrine in every skill contract.
 
 The goal is a clean master conversation: the master skill owns decisions, routing, status, integration, and final reporting, while bounded execution contexts handle routine file work, validation, closure preparation, and ship preparation when the runtime supports them.
+
+Load `skills/references/decision-quality-contract.md` before choosing topology, model fallbacks, or delegated mission boundaries. Delegation is an execution-quality tool, not a shortcut around professional engineering standards.
 
 ## Applies To
 
@@ -72,7 +79,7 @@ Use one bounded subagent at a time. A small scope may use a mini-contract, but s
 
 When a master skill accepts an `agents` argument, treat it as a strict delegated sequential request for the current work item. If file work, validation, closure preparation, or ship preparation proceeds without a bounded subagent, the run must stop or report `degraded: subagents unavailable/not applied` with the reason. `agents` never means parallel execution.
 
-For Codex/OpenAI subagents, the default bounded mission model is `gpt-5.4-mini`. Escalate only when the mission profile requires it: `gpt-5.3-codex-spark` for micro-code or targeted UI/local edits, `gpt-5.3-codex` for long implementation or multi-file code work, and `gpt-5.5` for transverse audits, risky arbitration, architecture/product decisions, or business-risk synthesis.
+For Codex/OpenAI subagents, the default bounded mission model is the smallest quality-equivalent model for the mission. Use `gpt-5.4-mini` only for low-risk bounded work where it can meet the quality bar. Escalate when the mission profile requires it: `gpt-5.3-codex-spark` for quality-equivalent micro-code or targeted UI/local edits, `gpt-5.3-codex` for long implementation or multi-file code work, and `gpt-5.5` for transverse audits, risky arbitration, architecture/product decisions, or business-risk synthesis.
 
 Each delegated mission must include:
 
@@ -83,7 +90,7 @@ Each delegated mission must include:
 - forbidden files or surfaces
 - selected model or alias
 - reasoning effort, or the Claude alias behavior when using Claude Code
-- fast or cheap fallback when the selected model is unavailable or too costly
+- fast or cheap fallback only when it remains quality-equivalent for the mission risk
 - model application status: `override applied`, `recommended only`, or `not supported by runtime`
 - validation commands
 - expected proof path when the mission changes behavior, fixes a bug, changes a skill contract, or gathers completion evidence

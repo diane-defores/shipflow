@@ -2,7 +2,7 @@
 title: "sf-status"
 slug: "sf-status"
 tagline: "Get a fast git-based project dashboard instead of manually checking every repo by hand."
-summary: "A status skill for seeing branches, changes, sync state, and recent activity across the current project or workspace."
+summary: "A read-only status skill for seeing branches, changes, sync state, and recent activity across the current project or workspace."
 category: "Operate & Ship"
 audience:
   - "Founders managing several repositories or worktrees"
@@ -27,6 +27,7 @@ example_prompts:
   - "/sf-status current workspace"
 limits:
   - "It reports state; it does not resolve the state for you"
+  - "It does not mutate project trackers or external control-plane files"
   - "The output is only as useful as the underlying git hygiene"
 related_skills:
   - "sf-review"

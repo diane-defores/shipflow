@@ -37,6 +37,8 @@ Before resolving lifecycle gates, load `$SHIPFLOW_ROOT/skills/references/master-
 
 Use the shared skeleton for intake, work item resolution, readiness, model/topology routing, execution through owner skills, validation, verification, and post-verify closure/ship. Local sections below define `sf-build` routes and stop conditions only.
 
+Before choosing a route, model, topology, mini-contract, or implementation path, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. `sf-build` must optimize for correctness, security, performance, maintainability, durability, and professional best practices before speed, cost, or convenience.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -56,7 +58,7 @@ It must keep user interaction high level (decisions and status) while executing 
 
 `intake -> existing chantier check -> spec/readiness loop -> governance corpus gate -> model routing gate -> start -> verify -> end -> ship`
 
-The objective is not fewer safeguards. The objective is fewer manual commands and fewer technical detours for the user.
+The objective is not fewer safeguards or the shortest path. The objective is a professional lifecycle that removes manual detours while preserving quality, security, performance, durability, and proof.
 
 ## Execution Modes
 
@@ -133,7 +135,7 @@ For non-trivial work:
 4. Stop after a bounded loop (default max 3 readiness iterations) with `blocked` or a user decision.
 5. Do not run `sf-start` until the spec is `ready`.
 
-For trivial and local work that is safe without a full spec, allow a direct mini-contract and continue in `delegated sequential` mode.
+For trivial and local work that is safe without a full spec, allow a direct mini-contract and continue in `delegated sequential` mode only when the decision-quality contract is satisfied. A mini-contract reduces process overhead, not engineering quality.
 
 ## Fresh Context Handling
 

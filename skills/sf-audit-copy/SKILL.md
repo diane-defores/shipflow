@@ -37,7 +37,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - GLOBAL MODE: load `references/copy-audit-workflow.md` for project-wide voice, hierarchy, and conversion copy review.
 - PAGE MODE: load the workflow reference and audit or rewrite the named page or copy file.

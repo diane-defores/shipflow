@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.15.0"
+artifact_version: "1.16.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-18"
+updated: "2026-05-24"
 status: reviewed
 source_skill: sf-start
 scope: skill-runtime-and-lifecycle
@@ -32,6 +32,7 @@ linked_systems:
   - skills/sf-docs/SKILL.md
   - skills/references/reporting-contract.md
   - skills/references/master-workflow-lifecycle.md
+  - skills/references/decision-quality-contract.md
   - skills/references/spec-driven-development-discipline.md
   - skills/references/question-contract.md
   - skills/references/sentry-observability.md
@@ -43,7 +44,7 @@ linked_systems:
   - docs/editorial/
 depends_on:
   - artifact: "shipflow-spec-driven-workflow.md"
-    artifact_version: "0.17.0"
+    artifact_version: "0.18.0"
     required_status: draft
   - artifact: "skills/references/technical-docs-corpus.md"
     artifact_version: "1.3.0"
@@ -82,6 +83,7 @@ evidence:
   - "Pilot compaction applied to sf-docs, sf-audit-design, and sf-verify while preserving chantier/reporting/security/doc-update gates."
   - "Skill taxonomy description audit applied compact routing descriptions across 61 skills while preserving names, trace categories, process roles, and runtime visibility."
   - "sf-verify aligned stale dependency metadata during the skill taxonomy description verification."
+  - "Decision quality contract added: ShipFlow optimizes for correctness, security, performance, maintainability, durability, professional best practices, and proof quality before speed, cost, or convenience."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -132,6 +134,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/<skill>/references/*.md` | Skill-local heavy checklists, mode playbooks, and report matrices | Keep top-level SKILL focused on activation and gates |
 | `skills/references/master-delegation-semantics.md` | Shared master/orchestrator delegation, subagent, short-approval, and parallelism doctrine | Load before master skills choose execution topology |
 | `skills/references/master-workflow-lifecycle.md` | Shared master/orchestrator lifecycle skeleton and work item model | Load before master skills resolve intake, readiness, model/topology, validation, verification, closure, or ship/deploy routes |
+| `skills/references/decision-quality-contract.md` | Shared high-quality decision doctrine: correctness, security, performance, maintainability, durability, best practices, and proof before speed/cost/convenience | Load before routing, model/fallback selection, implementation, fixes, skill-contract changes, verification, or recommended defaults |
 | `skills/references/spec-driven-development-discipline.md` | Shared spec-first/proof-first discipline | Load before execution or verification when behavior, bug, skill contract, UI/docs/auth/deploy, operational, or integration work needs a proof path |
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
 | `skills/references/sentry-observability.md` | Shared Sentry runtime evidence, PM2/Doppler fallback evidence, release/environment correlation, redaction, and performance-overhead doctrine | Load when runtime behavior, crashes, 5xx, event IDs, deploy confidence, auth/payment/data failures, jobs, webhooks, verification, audits, or perf checks depend on observability |
@@ -207,7 +210,7 @@ intake
   -> bounded ship/deploy/release routing
 ```
 
-Model routing is a lifecycle gate, not a promise that the active conversation can switch its own runtime model. Master skills use `skills/sf-model/references/model-routing.md` for the policy. In Codex/OpenAI, `gpt-5.4-mini` is the default for small bounded subagent missions; `gpt-5.3-codex-spark` fits micro-code or targeted UI/local edits; `gpt-5.3-codex` is the default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` is the premium default for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. Delegated subagent missions should include model, reasoning or alias behavior, fallback, and model application status when the runtime supports or rejects overrides.
+Model routing is a lifecycle gate, not a promise that the active conversation can switch its own runtime model. Master skills use `skills/sf-model/references/model-routing.md` for the policy and `skills/references/decision-quality-contract.md` for the quality boundary. In Codex/OpenAI, `gpt-5.4-mini` fits small bounded low-risk missions; `gpt-5.3-codex-spark` fits micro-code or targeted UI/local edits when it does not replace needed reasoning; `gpt-5.3-codex` is the default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` is the premium default for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. Delegated subagent missions should include model, reasoning or alias behavior, quality-equivalent fallback, and model application status when the runtime supports or rejects overrides.
 
 Release confidence flow:
 
@@ -273,6 +276,7 @@ sf-content
 - Shared files are sequential by default.
 - Master/orchestrator skills load `skills/references/master-delegation-semantics.md` before choosing execution topology. Delegated sequential subagents are the default for file, validation, closure, and ship work when subagents are available; `sf-build agents` makes that delegated sequential path a strict validation gate; parallelism means simultaneous subagents and requires ready `Execution Batches`.
 - Master/orchestrator skills load `skills/references/master-workflow-lifecycle.md` before resolving lifecycle flow. The shared skeleton is intake, work item resolution, readiness, model/topology routing, owner-skill execution, validation/evidence, verification, post-verify closure, and bounded ship/deploy/release routing.
+- Skills load `skills/references/decision-quality-contract.md` before quality-sensitive routing, model/fallback choice, implementation, fix, verification, or recommendations. The shortest path is acceptable only when it is also the complete professional path for the risk.
 - Skills should load `skills/references/question-contract.md` before user-facing questions. They ask only when the answer changes route, scope, risk, validation, closure, ship posture, public claims, or technical/product/editorial direction; otherwise they proceed by the best-practice default only when it is clear, low-risk, reversible, context-compatible, and verifiable.
 - When long skill bodies are compacted, keep required section labels (`Canonical Paths`, `Trace category`, `Process role`, `Report Modes`) in top-level `SKILL.md`; move only heavy detail to references.
 - Bug work uses one Markdown bug file under `bugs/*.md` as the durable source of truth. `BUGS.md`, when present, is an optional compact/generated/triage view and must not override the bug file.

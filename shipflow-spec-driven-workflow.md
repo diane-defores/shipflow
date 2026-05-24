@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.17.0"
+artifact_version: "0.18.0"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-05-11"
+updated: "2026-05-24"
 status: draft
 source_skill: sf-docs
 scope: spec-driven-workflow
@@ -23,6 +23,7 @@ linked_systems:
   - skills/sf-browser/SKILL.md
   - skills/sf-bug/SKILL.md
   - skills/references/entrypoint-routing.md
+  - skills/references/decision-quality-contract.md
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
   - skills/references/canonical-paths.md
@@ -137,7 +138,7 @@ Optional model-selection entrypoint before execution:
 sf-model -> choose model / reasoning / fallbacks before sf-start
 ```
 
-`sf-model` chooses a model policy, not a guaranteed mid-thread runtime switch. In Codex/OpenAI, use `gpt-5.4-mini` by default for small bounded subagent missions, `gpt-5.3-codex-spark` for micro-code or targeted UI/local edits, `gpt-5.3-codex` for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution, and `gpt-5.5` for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. When subagents are available and the runtime accepts model overrides, each bounded mission should state the model, reasoning effort, fallback, and whether the override is applied or only recommended.
+`sf-model` chooses a model policy, not a guaranteed mid-thread runtime switch. Model choice follows `skills/references/decision-quality-contract.md`: speed, cost, and latency are fallbacks only when quality-equivalent for the risk. In Codex/OpenAI, use `gpt-5.4-mini` for small bounded low-risk missions, `gpt-5.3-codex-spark` for micro-code or targeted UI/local edits when it does not replace needed reasoning, `gpt-5.3-codex` for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution, and `gpt-5.5` for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. When subagents are available and the runtime accepts model overrides, each bounded mission should state the model, reasoning effort, quality-equivalent fallback, and whether the override is applied or only recommended.
 
 Primary non-technical router entrypoint:
 
@@ -195,13 +196,13 @@ For expert manual control, the default non-trivial flow remains:
 sf-explore -> exploration_report -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
 ```
 
-For small, explicit, local fixes, the fast path remains:
+For small, explicit, local fixes, the bounded path remains:
 
 ```text
 sf-start -> sf-verify -> sf-end
 ```
 
-The goal is not to remove iteration. The goal is to move ambiguity reduction before coding, then let verification close the loop when implementation or spec drift appears without turning the workflow into iterative prompt repair.
+The goal is not to remove iteration or pursue the shortest route. The goal is to move ambiguity reduction before coding, then let verification close the loop when implementation or spec drift appears without turning the workflow into iterative prompt repair. Small scope is an edit-safety discipline; it never lowers the quality bar.
 
 ## Technical Documentation Layer
 
@@ -275,6 +276,7 @@ Technical governance applies to code projects by default. Editorial governance a
 - `shipflow <instruction>` is the primary non-technical router; it hands off directly in the main thread to the selected skill and asks one numbered question when the route is ambiguous.
 - `sf-build` is the master orchestrator for end users and should prefer bounded delegated sequential execution over manual command chaining.
 - Master/orchestrator skills must load `skills/references/master-workflow-lifecycle.md` for the shared skeleton: intake, work item resolution, readiness, model/topology routing, owner execution, validation, verification, post-verify closure, and ship/deploy routing.
+- Skills must load `skills/references/decision-quality-contract.md` before quality-sensitive routing, model choice, fallback choice, implementation, fix, verification, or recommendation. ShipFlow optimizes first for correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality.
 - Master/orchestrator skills must load `skills/references/master-delegation-semantics.md` before choosing execution topology. The reference defines delegation, subagents, short approvals, degradation, and spec/batch-gated parallelism.
 - User-facing questions follow `skills/references/question-contract.md`: ask only when the answer changes route, scope, risk, proof, closure, ship posture, public claims, or technical/product/editorial direction.
 - `sf-build` planning questions should be decision briefs for business operators: explain the root problem, business stakes, practical options, and the best-practice recommendation before asking for the decision.

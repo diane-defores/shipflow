@@ -39,12 +39,14 @@ Use bug language, not session language.
 - be fixed directly now, or
 - go through a spec-first path before implementation.
 
-Goal: close small, clear bugs quickly without breaking the user promise, product coherence, or security posture.
+Goal: close small, clear bugs efficiently without breaking the user promise, product coherence, security posture, performance expectations, maintainability, or durability.
 
 Before any fix attempt, load `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md` and choose a bug proof path:
 - `regression-first` when reproduction and a practical failing regression test exist.
 - `evidence-first` when the only reliable proof is browser/manual/runtime evidence.
 - `exception-with-proof` when automated regression is impractical; record why, the root cause hypothesis, and the alternate proof.
+
+Also load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` before deciding between direct fix and spec-first. A direct fix must be a bounded professional repair, not the fastest patch that makes the symptom disappear.
 
 ### Routing rule
 
@@ -162,6 +164,7 @@ During triage, verify these things before choosing `direct`:
 - **Fresh external docs**: if the fix depends on external documented behavior, current official docs support the chosen path, or the task is rerouted/flagged as `fresh-docs gap` or `fresh-docs conflict`
 - **Security impact**: the fix does not rely on UI-only protection or create a gap in auth, authz, validation, or data exposure
 - **Blast radius**: linked systems and regressions are still local enough for a direct fix
+- **Decision quality**: the proposed repair satisfies correctness, security, performance, maintainability, durability, and evidence needs; speed or convenience is not the deciding reason
 
 If the bug touches browser authentication, protected routes, OAuth redirects, Clerk or Supabase session state, callback handling, or "works in code but fails in browser" behavior:
 - prefer using `sf-auth-debug` as the diagnostic layer before or during the fix
@@ -196,6 +199,7 @@ If classification confidence is low (mixed signals), use **AskUserQuestion**:
 If `direct`:
 - implement the fix directly
 - start from reproduction and a root cause hypothesis; prefer a failing regression test when practical before patching
+- choose the smallest safe path: a complete professional fix with bounded blast radius, not a shortcut workaround
 - ensure the bug is attached to durable project memory before ending the run:
   - reuse an existing `BUG-ID` when the bug already exists
   - otherwise create `bugs/BUG-ID.md` and optional `BUGS.md` triage pointer unless a justified minor exception applies

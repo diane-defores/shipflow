@@ -33,7 +33,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - DRAFTING: load `references/redaction-workflow.md` before planning, researching, drafting, optimizing, or quality checking long-form content.
 - PUBLIC SURFACE: load editorial and technical corpus references before choosing or changing public content surfaces.

@@ -2,7 +2,7 @@
 title: "sf-backlog"
 slug: "sf-backlog"
 tagline: "Capture ideas without letting them hijack the current execution thread."
-summary: "A backlog management skill for parking non-urgent work while keeping active delivery focused."
+summary: "A local-first backlog management skill for parking non-urgent work while keeping active delivery focused."
 category: "Plan & Decide"
 audience:
   - "Solo founders with too many ideas landing mid-task"
@@ -19,6 +19,7 @@ what_you_give:
   - "The current project context"
 what_you_get:
   - "A cleaner distinction between active work and deferred work"
+  - "Project-local workflow tracking, with portfolio coordination only when requested"
   - "Less execution drift inside the current task"
   - "A more durable backlog habit"
 example_prompts:

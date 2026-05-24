@@ -32,12 +32,13 @@ Default to `report=user`: concise, spec-path first, next-step oriented, and usin
 Load only the references needed for the active run:
 
 - `references/spec-creation-workflow.md`: detailed context gathering, user-story reconstruction, investigation, spec template, validation, metadata, acceptance criteria, and final report rules.
+- `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: required before choosing direct routing, spec scope, recommendations, or implementation-quality language.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`: required only when the spec depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
 - Supabase, Sentry, development-mode, or other shared references only when the workflow reference triggers their gate.
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe path.
+Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe path as defined by `decision-quality-contract`: the smallest complete professional contract, not the fastest/easiest route.
 
 - New non-trivial work or a `Chantier potentiel` intake: load `references/spec-creation-workflow.md` and create or update a durable spec.
 - Small/local work where a spec would add no useful contract: report `Chantier: non applicable` and route directly to the owner skill.
@@ -47,6 +48,7 @@ Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe pa
 
 - A ready spec must be autonomous enough for a fresh agent: user story, minimal behavior contract, success/error behavior, scope, tasks, acceptance criteria, risks, linked systems, documentation impact, and run history.
 - Specs are written for implementation, not brainstorming; avoid placeholders, vague tasks, and undocumented assumptions.
+- Specs must preserve the decision-quality bar: correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality before speed or convenience.
 - `sf-spec` creates or updates the durable chantier spec only; it does not edit `TASKS.md`, `AUDIT_LOG.md`, or `PROJECTS.md`.
 - Before creating or mutating a `spec:` operational summary line, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and keep the durable spec body separate from that one-line traffic-first record.
 - External-doc freshness, security, auth, tenant, data, money, destructive, and public-claim ambiguities must be resolved before the spec is called ready.

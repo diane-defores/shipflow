@@ -16,17 +16,27 @@ Process role: `helper`.
 
 This skill does not write to chantier specs. If invoked inside a spec-first flow, do not modify `Skill Run History`; include `Chantier: non applicable` or `Chantier: non trace` in the final report when useful, with the reason and the next lifecycle command if one is obvious.
 
+## Report Modes
+
+Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
+
+Default to `report=user`: concise dashboard, attention items, limits, and `Chantier: non applicable` only when useful. Use `report=agent` when another skill needs the full project matrix, skipped paths, and command evidence.
+
+## Required References
+
+- Load `$SHIPFLOW_ROOT/skills/references/question-contract.md` before asking for dashboard view mode.
+
 
 ## Context
 
 - Current directory: !`pwd`
-- PROJECTS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md 2>/dev/null | head -20`
+- External control-plane PROJECTS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md 2>/dev/null | head -20`
 
 ## Flow
 
 ### Step 0: Choose view mode
 
-If `$ARGUMENTS` is empty, use **AskUserQuestion**:
+If `$ARGUMENTS` is empty, load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask:
 - Question: "Quelle vue du dashboard veux-tu ?"
 - `multiSelect: false`
 - Options:
@@ -41,7 +51,9 @@ If `$ARGUMENTS` is provided, map:
 
 ### Step 1: Read project registry
 
-Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` to get the list of all projects with their paths. Also include ShipFlow itself (`${SHIPFLOW_ROOT:-$HOME/shipflow}`).
+Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` as the external control-plane registry to get the list of projects with their paths. Also include ShipFlow itself (`${SHIPFLOW_ROOT:-$HOME/shipflow}`).
+
+`sf-status` must not read the external registry as project governance truth. It is a dashboard input only; per-project governance remains under each project's local `shipflow_data/{business,technical,editorial,workflow}` corpus and is not mutated here.
 
 ### Step 2: Gather git status for each project
 
@@ -113,7 +125,8 @@ Only show NEEDS ATTENTION if there are issues. Issues to flag:
 ## Important
 
 - **READ-ONLY** — never modify any files or run git commands that change state.
-- `PROJECTS.md` is read-only here; never edit shared tracking files from `sf-status`.
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` is read-only here; never edit shared tracking files from `sf-status`.
+- Do not update project-local `shipflow_data/workflow/TASKS.md` or external control-plane trackers from `sf-status`; route follow-up work to `sf-tasks`, `sf-backlog`, `sf-priorities`, `sf-review`, or `sf-ship`.
 - Prefer storing home-scoped project paths in `PROJECTS.md` as `~/...` so the registry stays portable across usernames and servers.
 - Include ShipFlow repo itself in the dashboard.
 - Skip projects whose paths don't exist on disk.

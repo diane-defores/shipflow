@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.2"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-18"
+updated: "2026-05-24"
 status: active
 source_skill: sf-skill-build
 scope: master-workflow-lifecycle
@@ -24,17 +24,21 @@ linked_systems:
   - skills/sf-audit/SKILL.md
   - skills/references/master-delegation-semantics.md
   - skills/references/spec-driven-development-discipline.md
+  - skills/references/decision-quality-contract.md
   - skills/references/question-contract.md
   - skills/references/chantier-tracking.md
   - docs/technical/skill-runtime-and-lifecycle.md
   - shipflow-spec-driven-workflow.md
   - README.md
 depends_on:
+  - artifact: "skills/references/decision-quality-contract.md"
+    artifact_version: "1.0.0"
+    required_status: active
   - artifact: "skills/references/master-delegation-semantics.md"
-    artifact_version: "1.2.2"
+    artifact_version: "1.3.0"
     required_status: active
   - artifact: "skills/references/question-contract.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: active
   - artifact: "skills/references/chantier-tracking.md"
     artifact_version: "0.4.4"
@@ -46,6 +50,7 @@ evidence:
   - "User decision 2026-05-04: user-facing questions should share a numbered, context-aware question/default contract."
   - "User decision 2026-05-06: sf-design joins the master lifecycle set."
   - "User decision 2026-05-08: sf-bug is a lifecycle executor through owner skills and bounded subagents, not a simple next-command router."
+  - "User decision 2026-05-24: ShipFlow optimizes first for performance, security, excellence, durability, and professional best practices; speed and convenience are secondary tie-breakers only."
 next_review: "2026-06-04"
 next_step: "/sf-verify master workflow lifecycle reference"
 ---
@@ -57,6 +62,8 @@ next_step: "/sf-verify master workflow lifecycle reference"
 This reference defines the shared lifecycle skeleton for ShipFlow master and orchestrator skills.
 
 It does not redefine delegation, subagent, short-confirmation, or parallelism semantics. Load `skills/references/master-delegation-semantics.md` for execution topology.
+
+Before choosing a lifecycle route, model, topology, owner skill, mini-contract, or direct execution path, load `skills/references/decision-quality-contract.md`. The lifecycle must choose bounded professional work, not the fastest or easiest path. Speed, cost, and convenience are tie-breakers only after correctness, security, performance, maintainability, durability, and evidence are already sufficient for the risk.
 
 Spec-first is the outer lifecycle contract: it defines user story, scope, success/error behavior, dependencies, risks, and source of truth. Proof-first is the implementation discipline: execution must choose `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof` from `skills/references/spec-driven-development-discipline.md` before claiming completion.
 
@@ -130,17 +137,19 @@ Use a full spec when the work is non-trivial, cross-file, cross-surface, risky, 
 
 Use a bug file when the work is a concrete defect, regression, failed test, retest, bug closure, or bug ship-risk question.
 
-Use a mini-contract only when the work is narrow, local, low-risk, and verifiable in the current run.
+Use a mini-contract only when the work is narrow, local, low-risk, verifiable in the current run, and still satisfies the decision-quality contract. A mini-contract reduces process weight, not solution quality.
 
 Do not start implementation from a draft, ambiguous, or contradictory work item.
 
 ### 4. Model And Topology Routing
 
-Before expensive or risky execution, choose the model profile using `sf-model` guidance or the relevant local model-routing reference.
+Before expensive or risky execution, choose the model profile using `sf-model` guidance or the relevant local model-routing reference, bounded by `skills/references/decision-quality-contract.md`.
 
 Before file work, validation, closure preparation, or ship preparation, choose topology using `skills/references/master-delegation-semantics.md`.
 
 Record the choice when it affects trust, cost, evidence, or handoff.
+
+Do not select a smaller, cheaper, faster, or more convenient model/topology if it materially weakens expected correctness, security, performance, maintainability, or proof quality.
 
 The model decision has two runtime layers:
 

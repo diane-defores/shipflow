@@ -37,7 +37,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - INTAKE: load `references/auth-debug-workflow.md` to consume existing evidence and choose repro strategy.
 - PROVIDER ROUTING: load the workflow reference, then load only the provider-specific references it selects.

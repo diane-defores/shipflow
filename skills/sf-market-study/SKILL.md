@@ -37,7 +37,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - STUDY: load `references/market-study-workflow.md` before demand, competition, sizing, monetization, or go/no-go analysis.
 - MCP/DATA: load the workflow reference before choosing DataForSEO or complementary tools.

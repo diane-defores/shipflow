@@ -33,7 +33,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - Detect whether the request is a new project bootstrap, existing project governance refresh, MCP/server setup, or bootstrap audit.
 - For any mode, load `references/bootstrap-workflow.md` before creating or updating project files.

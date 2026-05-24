@@ -160,12 +160,14 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - files owned by each group
   - shared files that must stay with the main agent
   - groups that can run in parallel vs groups that must wait
+- Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/decision-quality-contract.md` before selecting direct mode, model, topology, implementation path, or fallback
 - Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/sf-model/references/model-routing.md` before choosing execution model(s)
 - If the spec is missing any of the above, stop and route back to `/sf-ready` or `/sf-spec`
 - If a non-trivial spec lacks `Minimal Behavior Contract`, `Success Behavior`, `Error Behavior`, implementation approach, adversarial gaps, or explicit constraints, stop and route back to `/sf-ready` or `/sf-spec`
 - If the spec is missing required metadata/version context, treat it as a contract gap. Continue only for trivial/local work where the missing metadata cannot change product or security semantics; otherwise route back to `/sf-ready`.
 - If the spec names root legacy governance files such as `BUSINESS.md`, `CONTEXT.md`, or `GUIDELINES.md`, treat them as legacy references and add a layout migration note. Do not create new root governance files.
 - If the implementation path would satisfy the listed tasks but miss the user story outcome, stop and reroute instead of coding the wrong thing efficiently
+- If the implementation path is merely the fastest/easiest patch and would weaken correctness, security, performance, maintainability, durability, or proof quality, stop and choose the bounded professional path instead
 - If the remaining ambiguity is product-meaningful or security-meaningful, ask the user instead of "picking a sensible default"
 - Read only the files needed to implement plus the linked systems that must be sanity-checked
 - Include associated tests or entry points
@@ -184,7 +186,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
 
 Choose the execution model before coding.
 
-Use `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/sf-model/references/model-routing.md` as the shared provider-aware source of truth.
+Use `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/sf-model/references/model-routing.md` as the shared provider-aware source of truth, bounded by `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/decision-quality-contract.md`.
 
 Pick:
 - `Runtime/provider` (`Codex/OpenAI` or `Claude Code`)
@@ -193,15 +195,15 @@ Pick:
 - optional `Per-group model overrides`
 
 Prefer simple Codex/OpenAI defaults:
-- `gpt-5.4-mini` for small, clear, local work
+- `gpt-5.4-mini` for small, clear, local, low-risk work where it remains quality-equivalent
 - `gpt-5.3-codex` as the default for long agentic implementation, multi-file coding, refactors, hard debugging, and terminal-heavy execution
 - `gpt-5.5` for ambiguity, architecture, cross-project governance, transverse audits, task prioritization, prompt/docs migrations, business-risk synthesis, and high error cost
 - `gpt-5.4` for bounded premium architecture or tradeoffs where `gpt-5.5` is likely overkill
-- `gpt-5.3-codex-spark` for highly local fast-iteration work, especially UI-focused deltas
-- `gpt-5.4-mini` as the default for small bounded subagent missions unless the mission profile calls for a specialized model
+- `gpt-5.3-codex-spark` for highly local fast-iteration work, especially UI-focused deltas, when it does not replace necessary reasoning
+- `gpt-5.4-mini` as the default for small bounded subagent missions only when the mission risk is low enough for the quality bar
 
 Prefer simple Claude Code defaults:
-- `haiku` for tiny triage, classification, and cheap side work
+- `haiku` for tiny triage, classification, and quality-equivalent side work
 - `sonnet` for daily coding, debugging, and balanced implementation
 - `opusplan` for plan-heavy tasks that should execute efficiently after planning
 - `opus` for high-risk reasoning, architecture, security, or adversarial review
@@ -210,7 +212,7 @@ Prefer simple Claude Code defaults:
 Only use per-group overrides when:
 - the task is materially non-trivial
 - groups have clearly different profiles
-- the gain in speed, cost, or reliability is obvious
+- the gain in speed, cost, or reliability is obvious and the lower-cost route remains quality-equivalent
 
 If the task is simple, keep one model and continue.
 
@@ -258,6 +260,7 @@ Execute the changes directly.
 
 Implementation constraints:
 - implement the user story outcome, not a narrow proxy metric
+- implement the smallest safe path: the smallest complete, professional, best-practice implementation that satisfies the contract and preserves security, performance, maintainability, and future evolution
 - make successful actions observable to the user/operator unless the contract explicitly justifies silent success and provides another verification path
 - make failures observable or recoverable unless the contract explicitly justifies silent failure and provides a recovery/observation path
 - preserve Sentry/error instrumentation when the project has it; do not swallow exceptions only to report them, and do not remove release/environment/user-safe context needed for runtime diagnosis

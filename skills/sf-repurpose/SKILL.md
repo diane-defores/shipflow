@@ -34,7 +34,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - Read-Only Delegation: if subagents are used for source reading, they must not edit files, mutate trackers, or create content surfaces.
 - Execution contract: first reconstruct source truth, then decide justified outputs, then build only the requested or warranted output pack.

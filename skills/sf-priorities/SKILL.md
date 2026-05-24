@@ -16,30 +16,43 @@ Process role: `pilotage`.
 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` when this run is attached to a spec-first chantier. If exactly one active `specs/*.md` chantier is identified, append the current run to `Skill Run History`, update `Current Chantier Flow` when the run changes the chantier state, and include a final `Chantier` block. If no unique chantier is identified, do not write to any spec; report `Chantier: non applicable` or `Chantier: non trace` with the reason.
 
+## Report Modes
+
+Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
+
+Default to `report=user`: concise priority recommendation, tracker changes, proof gaps, and compact chantier block when applicable. Use `report=agent` for detailed scoring matrices, tracker anchors, or handoff state.
+
+## Required References
+
+- Load `$SHIPFLOW_ROOT/skills/references/question-contract.md` before asking project or prioritization-scope questions.
+- Load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` before creating or mutating task operational records in `TASKS.md`.
+
 
 ## Context
 
 - Current directory: !`pwd`
-- **Master TASKS.md** (multi-project dashboard): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
-- Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
+- Project workflow TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project TASKS.md"`
+- External control-plane TASKS.md (portfolio coordination only): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No control-plane TASKS.md"`
 - Git branch and status: !`git status --short --branch 2>/dev/null || echo "Not a git repo"`
 - Recent commits: !`git log --oneline -5 2>/dev/null || echo "N/A"`
 - Project CLAUDE.md: !`head -40 CLAUDE.md 2>/dev/null || echo "No CLAUDE.md"`
 - Workspace CLAUDE.md: !`head -20 $HOME/CLAUDE.md 2>/dev/null || echo "N/A"`
 
-## Multi-project tracking system
+## Operational tracker model
 
-**CRITICAL**: This workspace tracks 12 projects from a single master file at `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`.
+Prioritization is local-first for project work.
 
-- **Always prioritize within `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — this is the single source of truth
-- The master file has a Dashboard table and per-project sections — prioritize across ALL projects, not just the current directory
-- When re-ranking, update the Dashboard table's "Top Priority" column to reflect the new P0 for each project
-- If the user specifies a project name as argument, focus prioritization on that project's section only
+- For a selected project, prioritize within `[project]/shipflow_data/workflow/TASKS.md`.
+- Root `TASKS.md` is a legacy project tracker location; read it as a migration/fallback source only when canonical workflow tasks are absent.
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is the external control plane. Use `PROJECTS.md` for project discovery and `TASKS.md` only for explicit full-workspace or portfolio coordination.
+- When re-ranking portfolio work, update the external Dashboard table only if that dashboard exists and the run is explicitly portfolio-scoped.
+- If the user specifies a project name as argument, focus prioritization on that project's local workflow tracker unless they explicitly ask for portfolio coordination.
 
 ## Shared tracking file write protocol
 
+- Before creating or mutating task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`.
 - Treat the TASKS snapshots loaded at skill start as informational only.
-- Right before editing the master or local TASKS file, re-read the target from disk and use that version as authoritative.
+- Right before editing the project or portfolio TASKS file, re-read the target from disk and use that version as authoritative.
 - Apply a minimal targeted edit to the relevant dashboard rows and task sections; never rewrite the whole file from stale context.
 - If the expected anchor moved or changed, re-read once and recompute.
 - If it is still ambiguous after the second read, stop and ask the user instead of forcing the write.
@@ -50,18 +63,18 @@ Analyze all tasks and reorganize them by priority using a smart prioritization f
 
 ### Workspace root detection
 
-If the current directory has no project markers (no `package.json`, no `src/` dir) BUT contains multiple project subdirectories — you are at the **workspace root**. Use **AskUserQuestion**:
+If the current directory has no project markers (no `package.json`, no `src/` dir) BUT contains multiple project subdirectories, you are at the workspace root. Load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask:
 - Question: "Which project(s) should I prioritize?"
 - `multiSelect: true`
 - Options:
-  - **All projects** — "Re-prioritize across the entire workspace" (Recommended)
+  - **All projects** — "Re-prioritize across the external portfolio control plane" (Recommended)
   - One option per project with active tasks: label = project name, description = number of open tasks
 - Read project list from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
 
 ### Steps
 
 1. **Parse existing tasks**:
-   - Read all tasks from TASKS.md (shown in context)
+   - Read all tasks from the selected project's `shipflow_data/workflow/TASKS.md`, or from the external control-plane `TASKS.md` only for full-workspace runs
    - Categorize by status: completed, in progress, todo
    - Identify task dependencies and blockers
 
@@ -85,7 +98,7 @@ If the current directory has no project markers (no `package.json`, no `src/` di
    - `quick-wins` / `high-roi`: Focus on high-impact, bounded-effort tasks
    - If no argument, use balanced approach
 
-5. **Update TASKS.md** with priority sections:
+5. **Update the selected TASKS.md** with priority sections:
    ```markdown
    # Tasks
 
@@ -117,12 +130,13 @@ If the current directory has no project markers (no `package.json`, no `src/` di
 
 ### Important
 
-- **Always update the master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — even when working in a sub-project directory
-- Use Edit tool to update TASKS.md with priority markers
+- Default to the selected project's `shipflow_data/workflow/TASKS.md` for project priority edits.
+- Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` only for full-workspace or explicit portfolio coordination.
+- Use Edit tool to update the target TASKS.md with priority markers
 - Be realistic about impact/effort assessments
 - Consider technical debt alongside features
 - Flag tasks with missing context as needing refinement
 - Explain your prioritization reasoning clearly
 - If tasks seem equally important, break ties by effort without letting ease of execution outrank strategic value
 - Update "Priority last updated" timestamp
-- Update the master Dashboard table's "Top Priority" column to reflect the new highest-priority task per project
+- Update the external Dashboard table's "Top Priority" column only when the run is portfolio-scoped and the dashboard exists.

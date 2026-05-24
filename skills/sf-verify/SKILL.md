@@ -25,6 +25,8 @@ Verification semantics:
 - Never downgrade completed `sf-start` implementation semantics only because verification evidence is incomplete.
 - Keep the distinction explicit: `sf-start: implemented` vs `sf-verify: partial`.
 
+Before judging implementation quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Verification must fail or report partial when the work merely takes the fastest/easiest path and leaves correctness, security, performance, maintainability, durability, or proof quality below the accepted contract.
+
 ## Report Modes
 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
@@ -62,6 +64,7 @@ Mandatory explicit checks:
 - fresh external docs verdict (`fresh-docs checked|not needed|gap|conflict`)
 - documentation coherence verdict
 - language doctrine verdict for ShipFlow artifacts
+- decision quality verdict: pass/partial/fail for the primary metrics in `decision-quality-contract.md`
 
 ## Required References
 
@@ -71,6 +74,7 @@ Always load:
 2. `$SHIPFLOW_ROOT/skills/references/project-development-mode.md`
 3. `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`
 4. `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`
+5. `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`
 
 Load on demand:
 
@@ -105,12 +109,13 @@ Report `not verified` or `blocked` when:
 - required validation surface is missing for `vercel-preview-push`/`hybrid` scope
 - completion evidence does not match the chosen proof path, or no proof path was chosen for behavioral, bug, skill-contract, UI/docs/auth/deploy, or operational work
 - critical security/data/workflow risk is unproven or failing
+- the implementation is a shortcut that violates the decision-quality contract
 
 ## Validation
 
 Run focused checks based on scope and diff:
 
 ```bash
-rg -n "Trace category|Process role|Success Behavior|Error Behavior|Proof Path Fit|proof path|evidence-first|test-first|scenario-first|fresh-docs|Chantier" skills/sf-verify/SKILL.md
+rg -n "Trace category|Process role|Success Behavior|Error Behavior|Proof Path Fit|decision quality|proof path|evidence-first|test-first|scenario-first|fresh-docs|Chantier" skills/sf-verify/SKILL.md
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 ```

@@ -33,9 +33,11 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 The canonical `Chantier Registry` doctrine lives in `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md`; this skill only summarizes it for help output.
 
+The canonical decision-quality doctrine lives in `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`; this skill summarizes it when users ask about quality, minimal changes, shortcuts, model choice, best practices, security, performance, or engineering standards.
+
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode as defined by `decision-quality-contract`: bounded and professional, never shortcut quality.
 
 - If the user asks a direct help question, answer concisely from the top-level route and `references/help-catalog.md` as needed.
 - If the user needs full skill taxonomy, workflow cheat sheets, or quick answers, load `references/help-catalog.md`.

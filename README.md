@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.10.0"
+artifact_version: "0.11.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-11"
+updated: "2026-05-24"
 status: draft
 source_skill: sf-docs
 scope: readme
@@ -26,6 +26,7 @@ linked_systems:
   - skills/sf-browser/SKILL.md
   - skills/sf-bug/SKILL.md
   - skills/shipflow/SKILL.md
+  - skills/references/decision-quality-contract.md
   - skills/references/question-contract.md
   - site/src/content/skills/shipflow.md
   - shipflow_data/technical
@@ -99,6 +100,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [shipflow_data/technical/README.md](./shipflow_data/technical/README.md) — internal technical documentation layer for code-proximate subsystem docs
 - [shipflow_data/technical/code-docs-map.md](./shipflow_data/technical/code-docs-map.md) — map from code paths to primary docs, validations, and documentation update triggers
 - [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
+- [skills/references/decision-quality-contract.md](./skills/references/decision-quality-contract.md) — shared doctrine for high-quality decisions, code, model routing, and fallback choices
 - [skills/references/master-delegation-semantics.md](./skills/references/master-delegation-semantics.md) — shared execution-topology doctrine for master/orchestrator skills
 - [skills/references/master-workflow-lifecycle.md](./skills/references/master-workflow-lifecycle.md) — shared lifecycle skeleton and work item model for master/orchestrator skills
 - [shipflow_data/business/business.md](./shipflow_data/business/business.md) — target audience, value proposition, business assumptions, and market framing
@@ -369,7 +371,9 @@ shipflow <instruction>
 
 Use `shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `sf-build`, upkeep to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
 
-Question/default rule: ShipFlow skills should not ask just because several choices exist. They proceed by default only when the answer is clear from the request and project context, low-risk, reversible, inside the accepted scope, compatible with the current technical/product/editorial context, aligned with current best practices, and verifiable in the current run. Otherwise they ask a numbered decision question with why, a responsible recommendation when one exists, and practical options.
+Decision-quality rule: ShipFlow optimizes first for correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality. Speed, cost, token economy, local convenience, or the shortest path are tie-breakers only after that quality bar is already satisfied. "Smallest safe path" means the smallest complete professional implementation, never the fastest patch that merely works.
+
+Question/default rule: ShipFlow skills should not ask just because several choices exist. They proceed by default only when the answer is clear from the request and project context, low-risk, reversible, inside the accepted scope, compatible with the current technical/product/editorial context, aligned with current best practices, quality-equivalent under the decision-quality rule, and verifiable in the current run. Otherwise they ask a numbered decision question with why, a responsible recommendation when one exists, and practical options.
 
 ShipFlow is now optimized for **one-pass execution**.
 
@@ -439,7 +443,7 @@ Optional model-selection step:
 sf-model -> choose model / reasoning / fallbacks before execution
 ```
 
-`sf-model` is advisory for the active conversation and prescriptive for delegated missions when the runtime supports model overrides. In Codex/OpenAI, `gpt-5.4-mini` is the default for small bounded subagent missions; `gpt-5.3-codex-spark` fits micro-code or targeted UI/local edits; `gpt-5.3-codex` is the default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` is the premium choice for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. The active main thread must not claim it can always switch its own model mid-run: it can recommend a next-run model, route through `sf-model`, or pass a selected model to a subagent when that override is actually supported.
+`sf-model` is advisory for the active conversation and prescriptive for delegated missions when the runtime supports model overrides. Model choice follows the decision-quality contract first: faster or cheaper fallbacks are allowed only when quality-equivalent for the risk. In Codex/OpenAI, `gpt-5.4-mini` fits small bounded low-risk missions; `gpt-5.3-codex-spark` fits micro-code or targeted UI/local edits when it does not replace needed reasoning; `gpt-5.3-codex` is the default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` is the premium choice for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. The active main thread must not claim it can always switch its own model mid-run: it can recommend a next-run model, route through `sf-model`, or pass a selected model to a subagent when that override is actually supported.
 
 Direct build entrypoint for non-trivial feature/code/docs work:
 

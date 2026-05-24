@@ -18,7 +18,7 @@ This skill is useful when you want more than a git summary. It helps you reconst
 
 - when you want a daily, weekly, sprint, or release review
 - when a session touched multiple files and you need a clean handoff
-- when you want to update `TASKS.md` and `CHANGELOG.md` based on evidence
+- when you want to update the project workflow tracker and `CHANGELOG.md` based on evidence
 - when you need next-step priorities after a burst of shipping
 
 ## What You Give It
@@ -29,8 +29,8 @@ This skill is useful when you want more than a git summary. It helps you reconst
 
 ## What You Get Back
 
-- a review report saved as `REVIEW-[DATE].md`
-- updated task tracking in the master `TASKS.md` and local tracker when relevant
+- a review report saved under the project workflow review corpus when available
+- updated task tracking in the project-local `shipflow_data/workflow/TASKS.md`, with external portfolio updates only for workspace-scoped reviews
 - changelog updates for user-facing work
 - a concise summary of completed, in-progress, blocked, and risky work
 - 1-3 recommended next tasks

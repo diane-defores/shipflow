@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.1.1"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-04"
+updated: "2026-05-24"
 status: reviewed
 source_skill: sf-start
 scope: page-intent-map
@@ -23,6 +23,7 @@ linked_systems:
   - site/src/pages/
   - site/src/components/
   - site/src/content/skills/
+  - skills/references/decision-quality-contract.md
 depends_on:
   - artifact: "BUSINESS.md"
     artifact_version: "1.1.0"
@@ -40,6 +41,7 @@ supersedes: []
 evidence:
   - "Inventory of current Astro pages and shared public components."
   - "Skill modes route expanded into a launch cheatsheet for master and supporting skill modes."
+  - "Decision-quality positioning added to landing, docs, FAQ, why-not-prompts, skill modes, and selected public skill pages."
   - "docs/skill-launch-cheatsheet.md added as the Markdown reference behind the public skill modes route."
 next_review: "2026-06-01"
 next_step: "/sf-verify ShipFlow Editorial Content Governance Layer for AI Agents"
@@ -55,11 +57,11 @@ This map states the job of each public Astro page so agents can update copy with
 
 | Route | File | Audience | Job | Primary CTA | Source of truth | Update trigger | Shared-file risk |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/` | `site/src/pages/index.astro` plus homepage components | Solo founders and autonomous technical builders evaluating ShipFlow | Explain the unified framework: server delivery plus agent execution discipline | Skills hub, docs, pricing, GitHub | `BUSINESS.md`, `PRODUCT.md`, `GTM.md`, `BRANDING.md` | Offer, audience, workflow, proof, pricing, FAQ, or claim changes | High: homepage components are reused and claim-heavy |
+| `/` | `site/src/pages/index.astro` plus homepage components | Solo founders and autonomous technical builders evaluating ShipFlow | Explain the unified framework: server delivery plus agent execution discipline and quality-first routing | Skills hub, docs, pricing, GitHub | `BUSINESS.md`, `PRODUCT.md`, `GTM.md`, `BRANDING.md`, `skills/references/decision-quality-contract.md` | Offer, audience, workflow, proof, pricing, FAQ, quality positioning, or claim changes | High: homepage components are reused and claim-heavy |
 | `/about` | `site/src/pages/about.astro` | Visitors asking why the product exists | Ground the mission and trust posture | Docs or GitHub | `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md` | Mission, audience, positioning, proof posture | Medium |
 | `/contact` | `site/src/pages/contact.astro` | Visitors who want a direct next step | Give a simple contact path without inventing support promises | Contact method or GitHub | `GTM.md`, `BRANDING.md` | Sales/support channel changes | Low |
-| `/docs` | `site/src/pages/docs.astro` | Public evaluators and operators orienting in docs | Explain context docs, decision contracts, public skills, and governance without exposing internal-only detail | Skills hub and GitHub docs | `README.md`, `shipflow-spec-driven-workflow.md`, `CONTENT_MAP.md`, `docs/editorial/README.md` | New artifact, content governance, technical docs layer, workflow doctrine, or docs routing changes | High: public/private boundary |
-| `/faq` | `site/src/pages/faq.astro` | Visitors with recurring objections or scope questions | Answer common questions directly and safely | Skill modes, docs | `PRODUCT.md`, `GTM.md`, `BRANDING.md`, `README.md` | New objection, product scope change, pricing/support claim, skill behavior change | High: compact claims can drift |
+| `/docs` | `site/src/pages/docs.astro` | Public evaluators and operators orienting in docs | Explain context docs, decision contracts, public skills, and governance without exposing internal-only detail | Skills hub and GitHub docs | `README.md`, `shipflow-spec-driven-workflow.md`, `CONTENT_MAP.md`, `docs/editorial/README.md`, `skills/references/decision-quality-contract.md` | New artifact, content governance, technical docs layer, workflow doctrine, quality positioning, or docs routing changes | High: public/private boundary |
+| `/faq` | `site/src/pages/faq.astro` | Visitors with recurring objections or scope questions | Answer common questions directly and safely | Skill modes, docs | `PRODUCT.md`, `GTM.md`, `BRANDING.md`, `README.md`, `skills/references/decision-quality-contract.md` | New objection, product scope change, pricing/support claim, quality positioning, skill behavior change | High: compact claims can drift |
 | `/pricing` | `site/src/pages/pricing.astro` | Visitors evaluating commercial fit | Present pricing as a current hypothesis, not a settled model | Docs, BUSINESS.md | `BUSINESS.md`, `GTM.md`, `BRANDING.md` | Business model, packaging, paid offer, proof, or pricing claim changes | High: pricing claims are sensitive |
 | `/remote-mcp-oauth-tunnel` | `site/src/pages/remote-mcp-oauth-tunnel.astro` | Operators dealing with remote Codex and local OAuth callbacks | Explain why local callback routing needs a temporary SSH path | Local guide and repo docs | `local/README.md`, `README.md`, `specs/local-mcp-oauth-tunnel-login.md`, `docs/technical/local-tunnels-and-mcp-login.md` | Tunnel behavior, OAuth callback, local install, security boundary, or MCP docs changes | High: security/privacy wording |
 | `/skill-modes` | `site/src/pages/skill-modes.astro` | Operators choosing skill entrypoints or confused by skill arguments | Explain which master/support skill to launch and how plain task arguments differ from mode switches | Skills hub, relevant skill pages | `docs/skill-launch-cheatsheet.md`, `shipflow-spec-driven-workflow.md`, `skills/*/SKILL.md`, `README.md` | Skill inventory, argument modes, mode detection, lifecycle routing | Medium |

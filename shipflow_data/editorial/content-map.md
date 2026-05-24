@@ -1,10 +1,10 @@
 ---
 artifact: content_map
 metadata_schema_version: "1.0"
-artifact_version: "0.7.1"
+artifact_version: "0.8.0"
 project: ShipFlow
 created: "2026-04-26"
-updated: "2026-05-23"
+updated: "2026-05-24"
 status: draft
 source_skill: manual
 scope: content-map
@@ -40,6 +40,7 @@ evidence:
   - "sf-content added as the master content lifecycle entrypoint."
   - "Project governance layout decision added and public docs page must explain root-vs-shipflow_data placement."
   - "Terminal TUI documentation added as an internal technical contract plus a public docs overview section."
+  - "Decision-quality positioning added to public surfaces so users understand that ShipFlow optimizes quality before speed or convenience."
 linked_artifacts:
   - "README.md"
   - "shipflow_data/business/product.md"
@@ -52,6 +53,7 @@ linked_artifacts:
   - "site/src/pages/docs.astro"
   - "site/src/pages/skill-modes.astro"
   - "skills/references/canonical-paths.md"
+  - "skills/references/decision-quality-contract.md"
 depends_on:
   - artifact: "shipflow_data/business/product.md"
     artifact_version: "1.2.0"

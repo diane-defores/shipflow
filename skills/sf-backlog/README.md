@@ -4,7 +4,7 @@
 
 ## What It Does
 
-`sf-backlog` manages the ShipFlow backlog across projects. It helps capture new ideas, defer non-urgent work, review what should be promoted next, and clean out stale items before the backlog turns into noise.
+`sf-backlog` manages project-local ShipFlow backlog files and can coordinate a portfolio backlog when explicitly asked. It helps capture new ideas, defer non-urgent work, review what should be promoted next, and clean out stale items before the backlog turns into noise.
 
 The core value is focus: active work stays small, while future work remains searchable and structured.
 
@@ -24,11 +24,11 @@ The core value is focus: active work stays small, while future work remains sear
 
 - an optional mode such as `add`, `defer`, `review`, or `clean`
 - a project context if the idea belongs to a specific product
-- an existing ShipFlow workspace with `TASKS.md` tracking
+- an existing ShipFlow project with `shipflow_data/workflow/TASKS.md` or `shipflow_data/workflow/BACKLOG.md` tracking
 
 ## What You Get Back
 
-- backlog entries added or reorganized in the correct tracking location
+- backlog entries added or reorganized in the selected project's workflow tracker, or in the external portfolio tracker only for workspace-level coordination
 - a cleaner separation between now, later, and probably never
 - recommendations on what to activate or discard
 

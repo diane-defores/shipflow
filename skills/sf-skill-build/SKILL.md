@@ -35,6 +35,8 @@ Before resolving skill-maintenance phases, load `$SHIPFLOW_ROOT/skills/reference
 
 Use the shared skeleton for intake, skill-maintenance work item resolution, readiness, model/topology routing, owner-skill execution, validation, verification, and post-verify docs/help plus ship routing. Local sections below define skill placement, runtime visibility, and public-surface gates only.
 
+Before editing skill contracts or shared references, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Skill maintenance must preserve professional quality, security, performance, durability, and discoverability before optimizing for speed or convenience.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -53,7 +55,7 @@ It must orchestrate this sequence for one target skill:
 
 `sf-explore when needed -> sf-spec -> edit/create SKILL.md -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship`
 
-The goal is not writing a skill body fast. The goal is shipping a coherent skill contract that remains discoverable, validated, and aligned across internal and public surfaces.
+The goal is not writing a skill body fast or choosing the shortest text change. The goal is shipping a coherent, high-quality skill contract that remains discoverable, validated, and aligned across internal and public surfaces.
 
 ## Scope Gate
 

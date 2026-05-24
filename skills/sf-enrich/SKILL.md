@@ -33,7 +33,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - CONTENT ENRICHMENT: load `references/enrichment-workflow.md` before research, rewrite, enrichment, or quality checks.
 - PUBLIC CONTENT: load editorial and technical corpus references before changing public pages, claims, schemas, or mapped docs.

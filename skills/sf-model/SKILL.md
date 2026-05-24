@@ -29,12 +29,14 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 
 Choisir un modèle avant une exécution ShipFlow, que la session tourne dans Codex/OpenAI ou dans Claude Code, sans transformer cette étape en débat interminable.
 
+Avant toute recommandation, charger `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. La sélection de modèle optimise d'abord la fiabilité, la sécurité, la performance attendue, la maintenabilité et la qualité de preuve. Les alternatives rapides ou moins chères ne sont valides que si elles restent équivalentes sur ces axes pour le risque réel.
+
 Le but de `sf-model` est de répondre à six questions :
 - quel runtime/provider est concerné maintenant ?
 - quel modèle prendre maintenant ?
 - quel niveau de reasoning ou alias Claude choisir ?
-- quelle alternative plus rapide existe ?
-- quelle alternative moins chère existe ?
+- quelle alternative plus rapide existe sans baisser la qualité attendue ?
+- quelle alternative moins chère existe sans baisser la qualité attendue ?
 - à partir de quand il faut arrêter d'optimiser et juste lancer `/sf-start` ?
 
 Lire `references/model-routing.md` avant de décider.
@@ -72,9 +74,9 @@ Si une spec existe pour ce scope, l'utiliser comme source principale.
 Classer le travail selon la dimension dominante :
 - `architecture` : cadrage, arbitrages, ambiguïtés, contrats
 - `agentic-code` : implémentation longue, multi-fichiers, refacto, debugging
-- `fast-iteration` : petits deltas, triage, exploration, boucles rapides
+- `fast-iteration` : petits deltas, triage, exploration, boucles rapides quand la qualité reste équivalente
 - `ui-focus` : ajustements front ciblés, itérations visuelles locales
-- `economy` : tâche claire mais budget/latence prioritaires
+- `economy` : tâche claire où budget/latence peuvent arbitrer seulement après satisfaction du contrat qualité
 
 Puis estimer :
 - complexité : `low` / `medium` / `high`
@@ -106,9 +108,9 @@ Règles de décision Codex/OpenAI :
 - préférer `gpt-5.5` pour audits transverses, priorisation automatique de tâches, migrations prompts/docs, synthèse de risques business, et mises à jour cohérentes de trackers/fiches projets
 - préférer `gpt-5.4` quand il faut rester premium mais avec un meilleur contrôle du coût
 - préférer `gpt-5.3-codex` par défaut pour les implémentations longues, multi-fichiers, les refactors, le debugging difficile et les longues boucles agentiques terminal/code
-- préférer `gpt-5.4-mini` pour les boucles rapides, le triage, les petites modifs, l'exploration et les tâches répétitives
-- utiliser `gpt-5.4-mini` comme défaut des petites missions bornées en sous-agent, sauf si le profil demande `gpt-5.3-codex-spark`, `gpt-5.3-codex`, ou `gpt-5.5`
-- préférer `gpt-5.3-codex-spark` pour les itérations UI ciblées ou les modifications locales qui doivent aller vite
+- préférer `gpt-5.4-mini` pour les boucles rapides, le triage, les petites modifs, l'exploration et les tâches répétitives uniquement quand le coût d'erreur est bas et que la qualité attendue reste suffisante
+- utiliser `gpt-5.4-mini` comme défaut des petites missions bornées en sous-agent seulement si la mission est low-risk et quality-equivalent; sinon escalader vers `gpt-5.3-codex-spark`, `gpt-5.3-codex`, ou `gpt-5.5`
+- préférer `gpt-5.3-codex-spark` pour les itérations UI ciblées ou les modifications locales quand il reste quality-equivalent; ne pas l'utiliser pour éviter une analyse nécessaire
 - éviter `gpt-5.2` par défaut sauf besoin explicite de continuité ou préférence empirique utilisateur
 
 Règles de décision Claude Code :
@@ -121,7 +123,7 @@ Règles de décision Claude Code :
 ### Step 5 — Calibrer le reasoning
 
 Pour Codex/OpenAI :
-- `low` : tâche claire, locale, réversible
+- `low` : tâche claire, locale, réversible, low-risk et quality-equivalent
 - `medium` : valeur par défaut pour la plupart des tâches de dev
 - `high` : problème ambigu, cross-system, ou besoin de prudence
 - `xhigh` : seulement si le coût d'erreur est élevé et que la vitesse importe peu
@@ -136,7 +138,7 @@ Ne pas sur-utiliser les options lourdes sur les tâches faciles.
 ### Step 6 — Décider s'il faut vraiment router
 
 Si la tâche est petite, claire et locale, éviter d'ajouter du process :
-- recommander directement le modèle rapide/économique du runtime
+- recommander directement le modèle le plus léger qui respecte le contrat qualité
 - dire explicitement de lancer `/sf-start`
 
 Si la tâche est non triviale :
@@ -156,8 +158,8 @@ Why:
 - [reason 1]
 - [reason 2]
 
-Fast fallback: [model or alias]
-Cheap fallback: [model or alias]
+Fast fallback: [model or alias, quality-equivalent only]
+Cheap fallback: [model or alias, quality-equivalent only]
 
 Freshness check:
 - [OpenAI Docs MCP used / not needed / unavailable fallback]
@@ -183,5 +185,5 @@ Runtime application:
 - Considérer `gpt-5.5` comme disponible dans Codex si la doc OpenAI officielle courante le confirme
 - Si l'utilisateur demande le "latest" ou une comparaison actuelle OpenAI, vérifier la doc OpenAI officielle via MCP avant d'affirmer
 - Pour Claude Code, recommander les aliases stables plutôt que des slugs datés sauf demande explicite
-- Préférer une décision assez bonne tout de suite à une optimisation obsessionnelle
-- Si deux modèles sont proches, arbitrer surtout sur latence, coût, nature agentique et risque d'erreur
+- Préférer une décision professionnelle suffisamment étayée à une optimisation obsessionnelle; ne pas abaisser le contrat qualité pour éviter le débat
+- Si deux modèles sont proches et qualité-équivalents, arbitrer sur latence, coût, nature agentique et risque d'erreur

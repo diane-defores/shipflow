@@ -72,7 +72,7 @@ Quick reference for the skill system, modes, and workflows.
 | `/sf-auth-debug` | Browser-auth diagnosis for Clerk, Supabase Auth, OAuth, Google/YouTube, Convex, sessions, callbacks | `<bug/URL/flow>` |
 | `/sf-browser` | General browser verification for public UI, visual state, console/network evidence, screenshots, and page-level assertions | `<URL or route> <objective>` |
 | `/sf-test` | Guided manual QA: prompts the user through real flow tests, logs evidence, and opens bug records | `[feature]`, `--retest BUG-ID`, `--prod` |
-| `/sf-model` | Choose model, reasoning level, and fast/cheap fallback before execution | `<task description>` or `<spec path>` |
+| `/sf-model` | Choose model, reasoning level, and quality-equivalent fallbacks before execution | `<task description>` or `<spec path>` |
 | `/sf-tasks` | Track work, check off items, suggest next | `[focus area]` |
 | `/sf-priorities` | Re-rank by impact/effort matrix | `impact`, `effort`, `blockers`, `high-roi` / `quick-wins` |
 | `/sf-backlog` | Capture ideas, defer non-urgent | `add "idea"`, `defer`, `review`, `clean` |
@@ -215,7 +215,7 @@ Report rule: every applicable report ends with a `Chantier` block. Conditional s
 
 | Skill | Purpose | Arguments |
 |-------|---------|-----------|
-| `/sf-research` | Deep web research → saved report | `<topic>` |
+| `/sf-research` | Deep web/local research → saved workflow report | `<topic>` |
 | `/sf-docs` | Generate/update docs from code | `@file`, `readme`, `api`, `components` |
 | `/sf-enrich` | Web research + content upgrade | `@file` or `folder/` |
 
@@ -242,7 +242,7 @@ Report rule: every applicable report ends with a `Chantier` block. Conditional s
 /sf-audit-seo global
 ```
 
-**Domain applicability**: Not all audits apply to all projects. Global mode reads `~/shipflow_data/PROJECTS.md` (or local equivalent) and skips inapplicable domains (e.g., no SEO for `my-robots`, no Deps for `BuildFlowz`).
+**Domain applicability**: Not all audits apply to all projects. Global mode may read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` as the external control-plane registry and domain matrix, then uses each selected project's local governance corpus for business, technical, editorial, and workflow context.
 
 **8 domains**: Code, Design, Copy, SEO, GTM, Translate, Deps, Perf.
 
@@ -310,6 +310,13 @@ Run any skill from `~/` (no project markers) and it asks **"Which project(s)?"**
 - Skills should verify coherence across user story, UI behavior, permissions, data lifecycle, failure handling, and linked systems.
 - If a requested change conflicts with the existing product model, the skill should surface the conflict explicitly instead of normalizing it silently.
 
+### Decision quality
+- Canonical reference: `skills/references/decision-quality-contract.md`.
+- ShipFlow optimizes first for correctness, reliability, security/data safety, performance where relevant, maintainability, durability, professional best practices, and proof quality.
+- Speed, cost, token economy, local convenience, or the shortest path are tie-breakers only after the primary quality bar is already met.
+- "Smallest safe path" means the smallest complete professional implementation that satisfies the product contract and preserves security, performance, maintainability, and future evolution.
+- Minimal targeted edits are allowed as file-safety discipline: update the intended row, section, module, or file without whole-file rewrites from stale context. They never lower solution quality.
+
 ### Documentation coherence
 - When a feature behavior changes, active docs must stay aligned: README, docs, guides, examples, FAQ, onboarding, pricing, changelog, support copy, screenshots, and public pages when relevant.
 - Specs should name impacted docs or state `None, because ...`.
@@ -329,7 +336,7 @@ Run any skill from `~/` (no project markers) and it asks **"Which project(s)?"**
 - Do not hide uncertainty. If proof is partial, metadata should say `confidence: medium|low`, `status: draft|partial|reviewed`, or `risk_level: medium|high`.
 - Application content keeps its project schema. This includes `src/content/**`, blog posts, SEO pages, framework docs, MDX content, and any file parsed by the app runtime.
 - Existing ShipFlow artifacts without metadata should be migrated to the standard schema during adoption or the next time the relevant skill touches them.
-- `shipflow_data` is the control plane for trackers and registry files. Per-project business, brand, guideline, spec, research, and decision docs should live in the project-local governance folders inside `shipflow_data` unless a project explicitly documents an exception.
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is the external control plane for cross-project registry and optional master trackers. Per-project business, brand, guideline, spec, research, and decision docs live inside each project's local `shipflow_data/{business,technical,editorial,workflow}` unless a project explicitly documents an exception.
 
 ### Honest closure and shipping
 - `sf-end`, `sf-review`, and `sf-ship` must distinguish "work tracked and summarized" from "product actually validated".
@@ -345,14 +352,14 @@ Run any skill from `~/` (no project markers) and it asks **"Which project(s)?"**
 - A `ready` spec must let a fresh agent implement without reading the chat history.
 - A `ready` spec must also make the user outcome and the security posture understandable without hidden assumptions.
 - Specs now need explicit dependencies, linked systems / consequences, and execution notes.
-- `sf-start` should choose a primary execution model before coding, using the shared `sf-model` routing reference.
+- `sf-start` should choose a primary execution model before coding, using the shared `sf-model` routing reference and the decision-quality contract.
 - For non-trivial work, `sf-start` may choose `single-agent` or `multi-agent`; if `multi-agent` is chosen, write ownership and integration responsibility must be explicit.
 - When a skill launches agents, the prompt should already include relevant context files and a no-follow-up rule.
 - If the next step should run on fresh context and the environment cannot spawn it cleanly, the skill must ask the user to open a new thread.
 - If that context cannot be made explicit, route back to `/sf-spec` or `/sf-ready` instead of coding.
 
 ### Shared tracking file protocol
-- Shared files such as `~/shipflow_data/TASKS.md`, `~/shipflow_data/AUDIT_LOG.md`, `~/shipflow_data/PROJECTS.md`, and persistent workspace notes must never be edited from stale context.
+- Shared control-plane files such as `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`, `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`, `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`, and persistent workspace notes must never be edited from stale context.
 - A read at skill start is informative only.
 - Right before each write, the skill must re-read the target file from disk and use that version as authoritative.
 - The write must be minimal and targeted to the intended row or subsection, never a whole-file rewrite.
@@ -376,10 +383,16 @@ Provide explicit arguments and prompts don't appear:
 ```
 ~/TASKS.md              # Optional legacy symlink (cross-project coordinator)
 ~/AUDIT_LOG.md          # Audit history (symlink to shipflow_data)
-~/shipflow_data/
-├── TASKS.md            # Cross-project coordination view (optional)
-├── AUDIT_LOG.md        # Cross-project audit scores
-└── PROJECTS.md         # Project registry + domain matrix (8 domains)
+${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/
+├── TASKS.md            # External cross-project coordination view (optional)
+├── AUDIT_LOG.md        # External cross-project audit scores
+└── PROJECTS.md         # External project registry + domain matrix (8 domains)
+
+project/shipflow_data/
+├── business/           # Project-local business and product truth
+├── technical/          # Project-local architecture and implementation truth
+├── editorial/          # Project-local content map, claims, and surfaces
+└── workflow/           # Project-local specs, tasks, audits, research, bugs, reviews
 ```
 
 ### Rules

@@ -10,6 +10,7 @@ const coreDocs = [
   ["shipflow_data/technical/terminal-tui.md", "How the optional terminal cockpit stays read-only, local, and separate from skill execution."],
   ["shipflow_data/editorial/content-map.md", "Where content lives: docs, landing pages, semantic clusters, public surfaces, and repurposing destinations."],
   ["shipflow_data/editorial/README.md", "How public content, claims, page intent, and Astro content schema boundaries stay aligned."],
+  ["skills/references/decision-quality-contract.md", "Why ShipFlow chooses correctness, security, maintainability, relevant performance, and proof before speed or convenience."],
   ["docs/skill-launch-cheatsheet.md", "Markdown reference for master skills, supporting skills, and argument modes."],
   ["README.md (compat)", "Public overview, positioning, onboarding, and high-level framework story."],
   ["shipflow-spec-driven-workflow.md", "The execution doctrine behind sf-spec, sf-ready, sf-start, and sf-verify."]
@@ -35,6 +36,7 @@ const decisionDocs = [
   ["shipflow_data/business/product.md", "What the product does, which workflows matter, and which non-goals should stay out."],
   ["shipflow_data/business/branding.md", "How the product should sound, what it can claim, and how trust is earned."],
   ["shipflow_data/business/gtm.md", "How the product is presented publicly, which objections matter, and what proof supports it."],
+  ["skills/references/decision-quality-contract.md", "The default quality bar for routing, model choice, implementation, fixes, and verification."],
   ["shipflow_data/technical/architecture.md", "How the system is organized, where boundaries sit, and which invariants hold."],
   ["shipflow_data/technical/guidelines.md", "How contributors should work inside the repo and which technical rules stay stable."]
 ];
@@ -98,6 +100,19 @@ const editorialPath = "/docs#editorial-governance";
 
     <section class="section">
       <div class="doc-grid">
+        <article class="doc-card">
+          <h3>Quality is a contract, not a mood</h3>
+          <p>
+            ShipFlow now carries an explicit decision-quality contract. Agents
+            should prefer bounded professional work over shortcuts, and treat
+            speed or cost as tie-breakers only after correctness, security,
+            maintainability, relevant performance, and proof are already safe.
+          </p>
+          <a class="doc-action" href={decisionDocsPath}>
+            Read the decision contracts
+          </a>
+        </article>
+
         <article class="doc-card">
           <h3>Skill launch cheatsheet</h3>
           <p>

@@ -4,14 +4,14 @@
 
 ## What It Does
 
-`sf-priorities` reviews open tasks and reorders them using impact, effort, blockers, dependencies, and delivery risk. It is designed for ShipFlow workspaces that track multiple projects, but it is still useful inside a single repo.
+`sf-priorities` reviews open tasks and reorders them using impact, effort, blockers, dependencies, and delivery risk. It defaults to the selected project's local `shipflow_data/workflow/TASKS.md` and uses the external portfolio tracker only when the run is workspace-scoped.
 
 The point is not to create a perfect roadmap. The point is to stop a founder from spending a day on low-value work while the real blocker sits untouched.
 
 ## Who It's For
 
 - Solo founders juggling several products or experiments
-- Operators managing a shared `TASKS.md`
+- Operators managing local project trackers and optional portfolio coordination
 - Teams that need a clearer P0 before starting a new work session
 
 ## When To Use It
@@ -22,7 +22,7 @@ The point is not to create a perfect roadmap. The point is to stop a founder fro
 
 ## What You Give It
 
-- a ShipFlow workspace or project with tracked tasks
+- a ShipFlow project with `shipflow_data/workflow/TASKS.md`, or an explicit workspace/portfolio scope
 - optionally, a prioritization angle such as `impact`, `effort`, `blockers`, or `high-roi` / `quick-wins`
 - optionally, a project name when you do not want a workspace-wide pass
 

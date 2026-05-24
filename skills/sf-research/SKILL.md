@@ -20,16 +20,32 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the findings reveal non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/sf-spec ...` command, and next step. If the work is only a direct local fix or already belongs to the current chantier, state `Chantier potentiel: non` with the concrete reason.
 
+## Report Modes
+
+Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
+
+Default to `report=user`: concise, outcome-first, with saved report path, source count, key finding, recommendation, and chantier potential when relevant. Use `report=agent`, `handoff`, `verbose`, or `full-report` only when an orchestrator needs source lists, assumptions, confidence limits, validation details, or downstream action framing.
+
+## Required References
+
+Load only the references required by the active run:
+
+- `$SHIPFLOW_ROOT/skills/references/question-contract.md` before asking for a missing topic, scope, source set, market, audience, or output-shape decision.
+- `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when research depends on current framework, SDK, provider, security, browser, accessibility, SEO, platform, regulation, or API behavior.
+- `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` before turning research into blog, article, newsletter, public-docs, public-skill-page, public claim, or other public-content recommendations.
+- `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` before the final report.
+
 
 ## Context
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -40 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
+- Project-local governance: !`find shipflow_data -maxdepth 3 -type f 2>/dev/null | sort | head -80 || echo "no project-local shipflow_data"`
 
 ## Mode detection
 
 - **`$ARGUMENTS` is provided** → Research that topic.
-- **`$ARGUMENTS` is empty** → Use AskUserQuestion to ask what to research.
+- **`$ARGUMENTS` is empty** → Load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask what to research.
 
 ---
 
@@ -37,7 +53,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 
 ### Step 1: Parse topic
 
-If `$ARGUMENTS` is empty, use **AskUserQuestion**:
+If `$ARGUMENTS` is empty, load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then use **AskUserQuestion** or the runtime's equivalent numbered question:
 - Question: "What topic should I research?"
 - Options:
   - **Library comparison** — "Compare libraries/tools for a specific need"
@@ -46,6 +62,15 @@ If `$ARGUMENTS` is empty, use **AskUserQuestion**:
   - **Architecture** — "Architecture patterns for a specific use case"
 
 Then ask for the specific topic via a second question.
+
+### Step 1.5: Project governance context
+
+Use project-local context for project-specific recommendations:
+
+- Read `shipflow_data/business/`, `shipflow_data/technical/`, `shipflow_data/editorial/`, and `shipflow_data/workflow/` when they exist and the topic is project-specific.
+- Treat `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` as an external control plane for cross-project registry/tracker coordination only. Do not use it as the business, editorial, or technical source of truth for a project.
+- If project-local governance is missing, continue with lower confidence and report the context gap.
+- If recommendations touch public content or claims, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` and route follow-up writing through `sf-content` / `sf-repurpose`; do not invent a blog/article/newsletter surface.
 
 ### Step 2: Multi-source research
 
@@ -58,6 +83,8 @@ Use multiple tools to gather comprehensive information:
 5. **WebFetch** — specific URLs found in search results that need deeper reading
 
 Run searches in parallel where possible (multiple WebSearch + Exa calls in one message).
+
+When the topic depends on current external behavior, load `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` before relying on examples, versions, APIs, policy, rankings, security posture, or provider behavior. Prefer official docs and primary sources for technical, legal, security, financial, medical, platform, or provider claims; flag older or secondary sources as lower confidence.
 
 ### Step 3: Synthesize report
 
@@ -126,12 +153,14 @@ next_step: "[recommended action]"
 ### Step 4: Save report
 
 Determine save location:
-- If inside a project directory: save to `research/[topic-slug].md` (create `research/` dir if needed)
-- If at workspace root (`~/`): save to `~/shipflow/research/[topic-slug].md`
+- If inside a project directory: save to `shipflow_data/workflow/research/[topic-slug].md` (create `shipflow_data/workflow/research/` if needed).
+- If the research is about ShipFlow itself or spans the whole portfolio from a workspace/control-plane context: save to `$SHIPFLOW_ROOT/shipflow_data/workflow/research/[topic-slug].md`.
 
 Generate a URL-safe slug from the topic: lowercase, hyphens, no special chars.
 
 ### Step 5: Report
+
+Apply `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
 
 ```
 RESEARCH COMPLETE: [topic]
@@ -151,7 +180,9 @@ Recommendation:     [one-line recommendation]
 - **Prefer recent sources** (2024-2026). Flag older sources as potentially outdated.
 - **Verify code examples** against current API versions. Don't copy deprecated patterns.
 - **Save reports** — don't just print them. Reports are reusable reference material.
+- **Use canonical workflow research paths**: `shipflow_data/workflow/research/`, not legacy root research folders.
 - If researching a library: always check Context7 first for official docs.
 - If the topic is project-specific (e.g., "best auth for Astro"), include the project's stack context.
+- If the output implies a blog post, article, newsletter, public docs, claim, or public skill page, route through `sf-content` / `sf-repurpose` and the editorial corpus before creating follow-up content.
 - Be honest about uncertainty. If sources conflict, present both views.
 - Keep code examples in the project's language/framework when possible.

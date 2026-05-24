@@ -4,6 +4,122 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-24 — decision-quality-contract
+
+**Added:**
+- [reference] New `skills/references/decision-quality-contract.md` for quality-first decisions, implementation, model routing, fallbacks, fixes, verification, and recommendations
+- [doctrine] "Smallest safe path" now means the smallest complete professional implementation, not the fastest/easiest patch
+
+**Updated:**
+- [lifecycle] `master-workflow-lifecycle`, `spec-driven-development-discipline`, `master-delegation-semantics`, and `question-contract` now load or depend on the decision-quality contract
+- [models] `sf-model` and `model-routing.md` now treat fast/cheap fallbacks as valid only when quality-equivalent for the risk
+- [execution] Core build/start/fix/verify/skill-build/router/help/spec/design and repeated "smallest safe mode" language now point to bounded professional scope, never shortcut quality
+- [docs] README, workflow docs, runtime lifecycle docs, and help catalog now expose the doctrine
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
+## 2026-05-23 — sf-backlog
+
+**Added:**
+- [reporting] Report modes through `reporting-contract.md`
+- [questions] `question-contract` before project/scope/deletion/promotion questions
+- [records] `operational-record-format` before task/backlog record mutation
+
+**Updated:**
+- [paths] Project backlog work now defaults to `shipflow_data/workflow/BACKLOG.md` and `shipflow_data/workflow/TASKS.md`
+- [control plane] External `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is portfolio coordination only, not project truth
+- [docs] README and public skill page now describe local-first backlog behavior
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
+## 2026-05-23 — sf-priorities
+
+**Added:**
+- [reporting] Report modes through `reporting-contract.md`
+- [questions] `question-contract` before project/prioritization scope questions
+- [records] `operational-record-format` before task record mutation
+
+**Updated:**
+- [paths] Project prioritization now defaults to local `shipflow_data/workflow/TASKS.md`
+- [control plane] External Dashboard updates are limited to explicit portfolio-scoped runs
+- [docs] README and public skill page now describe local-first prioritization
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
+## 2026-05-23 — sf-review
+
+**Added:**
+- [reporting] Report modes through `reporting-contract.md`
+- [questions] `question-contract` before project/period/closure/risk questions
+- [records] `operational-record-format` before task record mutation
+
+**Updated:**
+- [paths] Review bookkeeping defaults to project-local `shipflow_data/workflow/TASKS.md`
+- [reports] Review artifacts prefer `shipflow_data/workflow/reviews/`
+- [docs] README and public skill page now describe local workflow state updates
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
+## 2026-05-23 — sf-status
+
+**Added:**
+- [reporting] Report modes through `reporting-contract.md`
+- [questions] `question-contract` before dashboard view questions
+
+**Updated:**
+- [control plane] `PROJECTS.md` is read as an external registry input only
+- [safety] Read-only rule now explicitly forbids project-local and external tracker mutation
+- [docs] README and public skill page now describe read-only/control-plane limits
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
+## 2026-05-23 — sf-research
+
+**Added:**
+- [reporting] Report modes through `reporting-contract.md`
+- [questions] `question-contract` before topic/scope/source questions
+- [freshness] `documentation-freshness-gate` for current external behavior and primary-source research
+- [paths] Canonical `shipflow_data/workflow/research/` output path
+
+**Updated:**
+- [context] Project-specific recommendations now use project-local `shipflow_data/` governance; external `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is registry/tracker only
+- [content] Public-content recommendations route through `sf-content` / `sf-repurpose` and editorial governance
+- [public docs] Public skill page now names saved workflow reports and content lifecycle limits
+
+**New phases:**
+- Step 1.5 — Project governance context
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
+## 2026-05-23 — sf-help
+
+**Added:**
+- [help catalog] Explicit external control-plane vs project-local governance explanation
+- [research docs] `sf-research` described as saving workflow reports
+
+**Updated:**
+- [paths] Replaced stale `~/shipflow_data` help text with `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` control-plane wording
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
 ## 2026-05-22 — sf-veille
 
 **Added:**

@@ -2,7 +2,7 @@
 title: "sf-review"
 slug: "sf-review"
 tagline: "Review recent work and the session state before you lose the thread of what changed."
-summary: "A review skill for summarizing recent changes, identifying remaining gaps, and preparing the next session cleanly."
+summary: "A review skill for summarizing recent changes, identifying remaining gaps, and updating local workflow state cleanly."
 category: "Plan & Decide"
 audience:
   - "Founders wrapping a meaningful work block"
@@ -20,6 +20,7 @@ what_you_give:
 what_you_get:
   - "A clearer summary of what changed"
   - "A better view of what remains open"
+  - "Evidence-based local tracker updates when the review justifies them"
   - "A stronger handoff into the next session"
 example_prompts:
   - "/sf-review"

@@ -5,6 +5,8 @@ Claude Code aliases checked against official Anthropic Claude Code model configu
 
 This reference must stay short. If a question depends on "latest", exact availability, default model, pricing, or a recent change, revalidate against official provider docs before answering.
 
+Before applying this matrix, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Model routing optimizes first for reliability, security, performance relevance, maintainability, and proof quality. Speed, cost, and latency are tie-breakers only between quality-equivalent options.
+
 ## Freshness sources
 
 - OpenAI: use `mcp__openaiDeveloperDocs__fetch_openai_doc` for `https://developers.openai.com/api/docs/guides/latest-model.md` before making latest/current/default model claims.
@@ -21,12 +23,12 @@ This reference must stay short. If a question depends on "latest", exact availab
   - premium balanced option when `gpt-5.5` is likely overkill or cost control matters
   - good fit for bounded architecture and important tradeoffs
 - `gpt-5.4-mini`
-  - speed/cost/quality entry point for small and medium tasks
-  - good for triage, exploration, sub-tasks, and repeated iterations
+  - lightweight quality-equivalent entry point for small and medium low-risk tasks
+  - good for triage, exploration, sub-tasks, and repeated iterations when the cost of error is low
 - `gpt-5.3-codex`
   - default Codex/OpenAI choice for long implementation, refactors, hard debugging, multi-file coding, and terminal-heavy agentic work
 - `gpt-5.3-codex-spark`
-  - fastest local iteration path, especially for UI deltas or tightly scoped edits
+  - fastest quality-equivalent local iteration path, especially for UI deltas or tightly scoped edits
 - `gpt-5.2`
   - previous generation; avoid by default except continuity or explicit user preference
 
@@ -38,8 +40,8 @@ This reference must stay short. If a question depends on "latest", exact availab
 | Transverse audit, task prioritization, prompt/docs migration, business-risk synthesis | `gpt-5.5` | `medium` or `high` | `gpt-5.4` | `gpt-5.4-mini` |
 | Bounded premium architecture or tradeoff | `gpt-5.4` | `medium` or `high` | `gpt-5.4-mini` | `gpt-5.4-mini` |
 | Long implementation, multi-file implementation, refactor, hard bug | `gpt-5.3-codex` | `medium` or `high` | `gpt-5.3-codex-spark` | `gpt-5.4-mini` |
-| Small feature, local fix, triage | `gpt-5.4-mini` | `low` or `medium` | `gpt-5.3-codex-spark` | `gpt-5.4-mini` |
-| Targeted UI iteration | `gpt-5.3-codex-spark` | `low` or `medium` | `gpt-5.4-mini` | `gpt-5.4-mini` |
+| Small feature, local fix, triage with low error cost | `gpt-5.4-mini` | `low` or `medium` | `gpt-5.3-codex-spark` when quality-equivalent | `gpt-5.4-mini` |
+| Targeted UI iteration with bounded risk | `gpt-5.3-codex-spark` | `low` or `medium` | `gpt-5.4-mini` when quality-equivalent | `gpt-5.4-mini` |
 | Long terminal-heavy agentic loop | `gpt-5.3-codex` | `medium` | `gpt-5.5` | `gpt-5.4-mini` |
 
 ## Claude Code map
@@ -55,7 +57,7 @@ This reference must stay short. If a question depends on "latest", exact availab
   - Sonnet with extended context for very long sessions or large codebase context
   - use only when context length is the main constraint
 - `haiku`
-  - fast and efficient alias for simple tasks, triage, classification, and cheap side work
+  - fast and efficient alias for simple low-risk tasks, triage, classification, and quality-equivalent side work
 
 ## Claude Code routing matrix
 
@@ -65,24 +67,24 @@ This reference must stay short. If a question depends on "latest", exact availab
 | High-risk reasoning, review, security, product arbitration | `opus` | maximum reasoning quality | `opusplan` | `sonnet` |
 | Daily multi-file coding or debugging | `sonnet` | balanced execution | `haiku` for side tasks | `haiku` |
 | Very long Claude Code session/context | `sonnet[1m]` | extended context Sonnet | `sonnet` | `haiku` |
-| Small local fix, triage, classification | `haiku` | fastest/cheapest | `sonnet` | `haiku` |
+| Small local fix, triage, classification with low error cost | `haiku` | fastest quality-equivalent alias | `sonnet` | `haiku` |
 
 ## Default heuristics
 
-- If the task is simple, local, and reversible, use the runtime's fast model: `gpt-5.4-mini`/`gpt-5.3-codex-spark` in Codex, `haiku` or `sonnet` in Claude Code.
+- If the task is simple, local, reversible, and low-risk, use the runtime's lightest quality-equivalent model: `gpt-5.4-mini`/`gpt-5.3-codex-spark` in Codex, `haiku` or `sonnet` in Claude Code.
 - If the task is long implementation or implementation-heavy, prefer `gpt-5.3-codex` in Codex and `sonnet` in Claude Code.
 - If the task is ambiguous, cross-project, governance-heavy, or high-error-cost, prefer `gpt-5.5` in Codex and `opusplan` or `opus` in Claude Code.
 - If the user already ran `sf-spec` and `sf-ready`, the clearer contract usually reduces the need for the largest model.
-- If two choices are close, choose by latency, cost, agentic execution fit, and how costly a wrong decision would be.
+- If two choices are close and quality-equivalent, choose by latency, cost, agentic execution fit, and how costly a wrong decision would be.
 
 ## Subagent defaults
 
-When ShipFlow delegates bounded work to subagents, use the smallest model that fits the delegated mission:
+When ShipFlow delegates bounded work to subagents, use the smallest quality-equivalent model that fits the delegated mission:
 
 | Subagent mission | Codex/OpenAI default | Reasoning |
 | --- | --- | --- |
-| Default small bounded mission, triage, read, docs check, lightweight validation | `gpt-5.4-mini` | `low` or `medium` |
-| Micro-code or targeted UI/local edit | `gpt-5.3-codex-spark` | `low` or `medium` |
+| Default small bounded mission, triage, read, docs check, lightweight validation with low error cost | `gpt-5.4-mini` | `low` or `medium` |
+| Micro-code or targeted UI/local edit with bounded risk | `gpt-5.3-codex-spark` | `low` or `medium` |
 | Long implementation, multi-file coding, refactor, hard debugging, terminal-heavy execution | `gpt-5.3-codex` | `medium` or `high` |
 | Transverse audit, risky arbitration, product/architecture decision, business-risk synthesis | `gpt-5.5` | `medium` or `high` |
 

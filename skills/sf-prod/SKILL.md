@@ -37,7 +37,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode.
+Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - DEPLOYMENT CHECK: load `references/production-verification-workflow.md` to verify deploy status and choose preview/production target.
 - RUNTIME EVIDENCE: load the workflow reference before health checks, logs, Sentry, PM2, Vercel, or Blacksmith evidence.

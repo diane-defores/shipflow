@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-05"
-updated: "2026-05-05"
+updated: "2026-05-24"
 status: active
 source_skill: sf-skill-build
 scope: skill-question-contract
@@ -16,15 +16,20 @@ docs_impact: yes
 linked_systems:
   - skills/*/SKILL.md
   - skills/references/master-workflow-lifecycle.md
+  - skills/references/decision-quality-contract.md
   - skills/references/entrypoint-routing.md
   - skills/references/reporting-contract.md
   - docs/technical/skill-runtime-and-lifecycle.md
   - shipflow-spec-driven-workflow.md
-depends_on: []
+depends_on:
+  - artifact: "skills/references/decision-quality-contract.md"
+    artifact_version: "1.0.0"
+    required_status: active
 supersedes: []
 evidence:
   - "User request 2026-05-04: skill questions should be numbered, explain why, include helpful icons, and identify the recommended answer."
   - "User clarification 2026-05-04: a default is acceptable only when it is compatible with the current technical/product/editorial context and current best practices."
+  - "User decision 2026-05-24: recommended defaults must optimize for performance, security, excellence, durability, and high-quality code before speed or convenience."
 next_review: "2026-06-05"
 next_step: "/sf-verify shared question contract"
 ---
@@ -36,6 +41,8 @@ next_step: "/sf-verify shared question contract"
 This reference defines how ShipFlow skills ask user-facing questions.
 
 The goal is to keep questions rare, useful, and easy to answer by number. A question is a decision brief: it tells the operator why the decision matters, which answer ShipFlow recommends by default when a responsible default exists, and why that recommendation fits the current context.
+
+Load `skills/references/decision-quality-contract.md` before recommending a default. The recommended answer must preserve ShipFlow's quality bar; do not recommend the fastest, cheapest, or easiest route unless it is also quality-equivalent and professionally correct.
 
 ## Applies To
 
@@ -121,8 +128,8 @@ Prefer recommendations that:
 - match the current spec, product contract, and repo conventions
 - respect technical docs, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, editorial governance, and public claim boundaries when applicable
 - follow current best practices for the stack, provider, security model, and deployment mode
-- minimize cost or public exposure unless the user explicitly wants that tradeoff
-- keep implementation scope small enough to verify
+- minimize cost or public exposure only after correctness, security, performance, maintainability, and durability are satisfied
+- keep implementation scope bounded enough to verify without lowering solution quality
 - avoid premature shipping when proof is missing
 
 Name the condition that would make another option better when that matters.
