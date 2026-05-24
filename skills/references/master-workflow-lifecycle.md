@@ -63,7 +63,7 @@ This reference defines the shared lifecycle skeleton for ShipFlow master and orc
 
 It does not redefine delegation, subagent, short-confirmation, or parallelism semantics. Load `skills/references/master-delegation-semantics.md` for execution topology.
 
-Before choosing a lifecycle route, model, topology, owner skill, mini-contract, or direct execution path, load `skills/references/decision-quality-contract.md`. The lifecycle must choose bounded professional work, not the fastest or easiest path. Speed, cost, and convenience are tie-breakers only after correctness, security, performance, maintainability, durability, and evidence are already sufficient for the risk.
+Before choosing a lifecycle route, model, topology, owner skill, mini-contract, or direct execution path, load `skills/references/decision-quality-contract.md`. The lifecycle must choose bounded professional work, not the fastest or easiest path. Speed, cost, and convenience are tie-breakers only after correctness, security, performance, maintainability, durability, excellence, and evidence are already sufficient for the risk.
 
 Spec-first is the outer lifecycle contract: it defines user story, scope, success/error behavior, dependencies, risks, and source of truth. Proof-first is the implementation discipline: execution must choose `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof` from `skills/references/spec-driven-development-discipline.md` before claiming completion.
 
@@ -137,7 +137,7 @@ Use a full spec when the work is non-trivial, cross-file, cross-surface, risky, 
 
 Use a bug file when the work is a concrete defect, regression, failed test, retest, bug closure, or bug ship-risk question.
 
-Use a mini-contract only when the work is narrow, local, low-risk, verifiable in the current run, and still satisfies the decision-quality contract. A mini-contract reduces process weight, not solution quality.
+Use a mini-contract only when the work is narrow, local, low-risk, verifiable in the current run, and still satisfies the decision-quality contract. A mini-contract reduces process weight, not solution quality or excellence.
 
 Do not start implementation from a draft, ambiguous, or contradictory work item.
 
@@ -149,7 +149,7 @@ Before file work, validation, closure preparation, or ship preparation, choose t
 
 Record the choice when it affects trust, cost, evidence, or handoff.
 
-Do not select a smaller, cheaper, faster, or more convenient model/topology if it materially weakens expected correctness, security, performance, maintainability, or proof quality.
+Do not select a smaller, cheaper, faster, or more convenient model/topology if it materially weakens expected correctness, security, performance, maintainability, excellence, or proof quality.
 
 The model decision has two runtime layers:
 

@@ -6,7 +6,7 @@ project: "ShipFlow"
 created: "2026-05-24"
 created_at: "2026-05-24 08:44:23 UTC"
 updated: "2026-05-24"
-updated_at: "2026-05-24 09:03:02 UTC"
+updated_at: "2026-05-24 11:26:04 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -73,7 +73,7 @@ En tant qu'operatrice ShipFlow, je veux que les agents privilegient performance,
 
 # Minimal Behavior Contract
 
-ShipFlow decisions must optimize first for correctness, reliability, security and data safety, performance where relevant, maintainability, durability, operator trust, and current professional best practices. Speed, cost, token economy, local convenience, and the shortest path are secondary tie-breakers only after the primary quality bar is already satisfied.
+ShipFlow decisions must optimize first for correctness, reliability, security and data safety, performance where relevant, maintainability, durability, excellence, operator trust, and current professional best practices. Speed, cost, token economy, local convenience, and the shortest path are secondary tie-breakers only after the primary quality bar is already satisfied.
 
 The phrase "smallest safe path" must mean the smallest complete, professional, best-practice implementation that satisfies the product contract and preserves security, performance, maintainability, and future evolution. It must never mean the fastest hack, the easiest patch, or the least ambitious acceptable workaround.
 
@@ -149,6 +149,30 @@ Scope added for `sf-content`:
 
 Claim boundary: public wording may say ShipFlow prioritizes correctness, security posture, maintainability, relevant performance, and proof before speed, cost, or convenience. It must not claim guaranteed security, guaranteed performance, bug-free output, or quantified gains without evidence.
 
+# Instruction Excellence Extension
+
+User clarification 2026-05-24: excellence must be explicit especially in agent instructions. Public positioning may mention quality, but the durable requirement belongs first in the operational contracts that guide routing, model choice, implementation, fixes, verification, questions, and skill maintenance.
+
+Scope added for instruction-level reinforcement:
+
+- `skills/references/decision-quality-contract.md`
+- `skills/references/master-workflow-lifecycle.md`
+- `skills/references/spec-driven-development-discipline.md`
+- `skills/references/master-delegation-semantics.md`
+- `skills/references/question-contract.md`
+- `skills/sf-build/SKILL.md`
+- `skills/sf-start/SKILL.md`
+- `skills/sf-start/references/execution-workflow.md`
+- `skills/sf-fix/SKILL.md`
+- `skills/sf-verify/SKILL.md`
+- `skills/sf-skill-build/SKILL.md`
+- `skills/shipflow/SKILL.md`
+- `skills/sf-spec/SKILL.md`
+- `skills/sf-model/SKILL.md`
+- `skills/sf-model/references/model-routing.md`
+
+Acceptance: these instruction surfaces must name excellence as part of the decision bar, not leave it implied inside generic quality wording.
+
 # Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
@@ -158,6 +182,8 @@ Claim boundary: public wording may say ShipFlow prioritizes correctness, securit
 | 2026-05-24 08:52:06 UTC | sf-verify | GPT-5 Codex | Verified scenario-first acceptance criteria with metadata lint, budget audit, runtime sync, focused rg checks, diff check, and site build. | verified | `no commit or push requested` |
 | 2026-05-24 09:02:22 UTC | sf-content | GPT-5 Codex | Applied public positioning copy across declared site and skill-page surfaces. | implemented | `/sf-verify decision-quality-contract` |
 | 2026-05-24 09:03:02 UTC | sf-verify | GPT-5 Codex | Verified public content updates with editorial metadata lint, claim scan, leak scan, diff check, and Astro build. | verified | `no commit or push requested` |
+| 2026-05-24 11:25:02 UTC | sf-skill-build | GPT-5 Codex | Reinforced excellence explicitly in instruction-level decision contracts and core execution/router/model skills. | implemented | `/sf-verify decision-quality-contract` |
+| 2026-05-24 11:26:04 UTC | sf-verify | GPT-5 Codex | Verified instruction-level excellence reinforcement with metadata lint, skill budget audit, runtime sync checks, focused rg, and diff check. | verified | `no commit or push requested` |
 
 # Current Chantier Flow
 
@@ -168,6 +194,6 @@ Claim boundary: public wording may say ShipFlow prioritizes correctness, securit
 | sf-skill-build | implemented | Contract, shared references, core skills, docs, help, and refresh log updated. |
 | sf-skills-refresh | completed | Refresh log records the decision-quality update. |
 | sf-content | implemented | Public positioning copy and editorial governance updates applied. |
-| sf-verify | passed | Public content validation passed; Astro build succeeded with duplicate-id warnings on touched skill pages. |
+| sf-verify | passed | Instruction-level excellence reinforcement validated. |
 | sf-end | pending | Not started. |
 | sf-ship | pending | Not started; no commit/push requested. |

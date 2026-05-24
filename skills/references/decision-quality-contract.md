@@ -43,6 +43,8 @@ next_step: "/sf-verify decision-quality-contract"
 
 This reference defines the default decision quality bar for ShipFlow agents, skills, model routing, implementation, fixes, audits, documentation, and verification.
 
+Excellence is an instruction-level requirement, not a public slogan. It means the agent should choose the strongest professional path that fits the product contract, risk, and evidence needs, even when a faster acceptable-looking shortcut exists.
+
 ShipFlow must not optimize for ease, speed, token economy, local convenience, or the shortest path for their own sake. Those factors are secondary tie-breakers only after the primary quality bar is satisfied.
 
 ## Primary Decision Metrics
@@ -53,9 +55,9 @@ Optimize first for:
 2. Security, privacy, permission boundaries, tenant isolation, data safety, and abuse resistance.
 3. Performance and operational robustness when the affected surface can impact latency, throughput, resource use, reliability, or user trust.
 4. Maintainability, clarity, durability, upgradeability, and future evolution.
-5. Professional excellence: current best practices, proven modern tools, appropriate libraries or engines, coherent architecture, and evidence that matches the risk.
+5. Professional excellence: current best practices, proven modern tools, appropriate libraries or engines, coherent architecture, high-quality code, careful UX/API ergonomics, and evidence that matches the risk.
 
-Speed, cost, latency, token use, local simplicity, or implementation convenience may decide only between options that are already equivalent on correctness, security, performance, maintainability, and evidence.
+Speed, cost, latency, token use, local simplicity, or implementation convenience may decide only between options that are already equivalent on correctness, security, performance, maintainability, durability, excellence, and evidence.
 
 ## Forbidden Optimizations
 
@@ -66,6 +68,7 @@ Do not choose an option because it is:
 - the cheapest model or tool
 - the shortest path through the workflow
 - enough to make a check green while leaving the product contract weak
+- adequate but below the professional excellence bar for the risk
 - less ambitious than the best professional implementation
 - convenient for the agent but worse for durability, security, or operator trust
 
@@ -88,7 +91,7 @@ Minimal targeted edits are allowed only as an edit-safety discipline:
 - avoid unrelated refactors and metadata churn
 - keep the diff reviewable and connected to the contract
 
-This does not lower the solution bar. A targeted edit must still satisfy the primary decision metrics, proof path, and documentation/security gates.
+This does not lower the solution bar. A targeted edit must still satisfy the primary decision metrics, excellence bar, proof path, and documentation/security gates.
 
 ## Best Practices And Tools
 
@@ -113,7 +116,7 @@ Model, subagent, and tool choices must follow the same order:
 
 - choose the model or tool that is reliable enough for the risk
 - use cheaper or faster fallbacks only when they remain quality-equivalent for the task
-- escalate reasoning, model strength, validation, or specialist tools when the cost of error is high
+- escalate reasoning, model strength, validation, specialist tools, or implementation scope when excellence or the cost of error requires it
 - report degraded execution when the available runtime cannot meet the quality bar
 
 ## Reporting Language

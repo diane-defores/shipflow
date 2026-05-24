@@ -25,7 +25,7 @@ Verification semantics:
 - Never downgrade completed `sf-start` implementation semantics only because verification evidence is incomplete.
 - Keep the distinction explicit: `sf-start: implemented` vs `sf-verify: partial`.
 
-Before judging implementation quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Verification must fail or report partial when the work merely takes the fastest/easiest path and leaves correctness, security, performance, maintainability, durability, or proof quality below the accepted contract.
+Before judging implementation quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Verification must fail or report partial when the work merely takes the fastest/easiest path and leaves correctness, security, performance, maintainability, durability, excellence, or proof quality below the accepted contract.
 
 ## Report Modes
 
@@ -64,7 +64,7 @@ Mandatory explicit checks:
 - fresh external docs verdict (`fresh-docs checked|not needed|gap|conflict`)
 - documentation coherence verdict
 - language doctrine verdict for ShipFlow artifacts
-- decision quality verdict: pass/partial/fail for the primary metrics in `decision-quality-contract.md`
+- decision quality and excellence verdict: pass/partial/fail for the primary metrics in `decision-quality-contract.md`
 
 ## Required References
 

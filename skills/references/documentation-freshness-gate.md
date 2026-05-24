@@ -1,3 +1,30 @@
+---
+artifact: technical_guidelines
+metadata_schema_version: "1.0"
+artifact_version: "1.0.0"
+project: ShipFlow
+created: "2026-05-18"
+updated: "2026-05-24"
+status: active
+source_skill: sf-docs
+scope: documentation-freshness-gate
+owner: Diane
+confidence: high
+risk_level: high
+security_impact: yes
+docs_impact: yes
+linked_systems:
+  - shipflow_data/technical/external-platforms/
+  - shipflow_data/technical/platforms/
+  - skills/references/technical-docs-corpus.md
+depends_on: []
+supersedes: []
+evidence:
+  - "Frontmatter added when the external platform corpus became the global source-map layer for Freshness Gate decisions."
+next_review: "2026-06-24"
+next_step: "/sf-docs technical audit"
+---
+
 # Documentation Freshness Gate
 
 Use this gate when a decision depends on behavior outside the local codebase and that behavior may have changed.
@@ -16,15 +43,17 @@ The gate is not required for clearly local changes where existing project code f
 ## Source Order
 
 1. Read the local repo first: installed versions, lockfiles, config, wrappers, adapters, and adjacent project patterns.
-2. Use Context7 first for official current documentation when the dependency is covered.
-3. If Context7 is unavailable or incomplete for the needed point, use official web documentation from the vendor/project.
-4. Use changelogs, release notes, GitHub issues, blogs, or Q&A only as secondary evidence for symptoms or known issues, not as the contract to implement.
+2. Read the global provider note under `shipflow_data/technical/external-platforms/<provider>.md` when it exists, then read the project-local usage note under `shipflow_data/technical/platforms/<provider>.md` when the project uses that provider.
+3. Use Context7 first for official current documentation when the dependency is covered.
+4. If Context7 is unavailable or incomplete for the needed point, use official web documentation from the vendor/project.
+5. Use changelogs, release notes, GitHub issues, blogs, or Q&A only as secondary evidence for symptoms or known issues, not as the contract to implement.
 
 ## Evidence To Capture
 
 When the gate changes or confirms the decision, record:
 - dependency/service name and local version when discoverable
 - documentation source consulted: Context7 library id or official docs URL/title
+- global provider note and project-local usage note consulted when available
 - the specific rule, API, constraint, migration note, or behavior that affects the decision
 - whether the local code follows, intentionally diverges from, or must be changed to match that source
 
@@ -38,3 +67,7 @@ When the gate changes or confirms the decision, record:
 ## Reporting
 
 Mention the documentation verdict in the final report when it materially affects the fix, spec, implementation, readiness, or verification.
+
+## Maintenance Rule
+
+Update this gate when the source order, evidence requirements, verdict semantics, external platform corpus, or project-local usage note contract changes.

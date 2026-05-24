@@ -46,7 +46,7 @@ Before any fix attempt, load `$SHIPFLOW_ROOT/skills/references/spec-driven-devel
 - `evidence-first` when the only reliable proof is browser/manual/runtime evidence.
 - `exception-with-proof` when automated regression is impractical; record why, the root cause hypothesis, and the alternate proof.
 
-Also load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` before deciding between direct fix and spec-first. A direct fix must be a bounded professional repair, not the fastest patch that makes the symptom disappear.
+Also load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` before deciding between direct fix and spec-first. A direct fix must be a bounded excellent professional repair, not the fastest patch that makes the symptom disappear.
 
 ### Routing rule
 
@@ -164,7 +164,7 @@ During triage, verify these things before choosing `direct`:
 - **Fresh external docs**: if the fix depends on external documented behavior, current official docs support the chosen path, or the task is rerouted/flagged as `fresh-docs gap` or `fresh-docs conflict`
 - **Security impact**: the fix does not rely on UI-only protection or create a gap in auth, authz, validation, or data exposure
 - **Blast radius**: linked systems and regressions are still local enough for a direct fix
-- **Decision quality**: the proposed repair satisfies correctness, security, performance, maintainability, durability, and evidence needs; speed or convenience is not the deciding reason
+- **Decision quality and excellence**: the proposed repair satisfies correctness, security, performance, maintainability, durability, excellence, and evidence needs; speed or convenience is not the deciding reason
 
 If the bug touches browser authentication, protected routes, OAuth redirects, Clerk or Supabase session state, callback handling, or "works in code but fails in browser" behavior:
 - prefer using `sf-auth-debug` as the diagnostic layer before or during the fix

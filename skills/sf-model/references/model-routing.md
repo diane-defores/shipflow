@@ -5,7 +5,7 @@ Claude Code aliases checked against official Anthropic Claude Code model configu
 
 This reference must stay short. If a question depends on "latest", exact availability, default model, pricing, or a recent change, revalidate against official provider docs before answering.
 
-Before applying this matrix, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Model routing optimizes first for reliability, security, performance relevance, maintainability, and proof quality. Speed, cost, and latency are tie-breakers only between quality-equivalent options.
+Before applying this matrix, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Model routing optimizes first for reliability, security, performance relevance, maintainability, excellence, and proof quality. Speed, cost, and latency are tie-breakers only between quality- and excellence-equivalent options.
 
 ## Freshness sources
 

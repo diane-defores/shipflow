@@ -53,7 +53,7 @@ This reference defines how ShipFlow master and orchestrator skills choose execut
 
 The goal is a clean master conversation: the master skill owns decisions, routing, status, integration, and final reporting, while bounded execution contexts handle routine file work, validation, closure preparation, and ship preparation when the runtime supports them.
 
-Load `skills/references/decision-quality-contract.md` before choosing topology, model fallbacks, or delegated mission boundaries. Delegation is an execution-quality tool, not a shortcut around professional engineering standards.
+Load `skills/references/decision-quality-contract.md` before choosing topology, model fallbacks, or delegated mission boundaries. Delegation is an execution-quality and excellence tool, not a shortcut around professional engineering standards.
 
 ## Applies To
 
@@ -79,7 +79,7 @@ Use one bounded subagent at a time. A small scope may use a mini-contract, but s
 
 When a master skill accepts an `agents` argument, treat it as a strict delegated sequential request for the current work item. If file work, validation, closure preparation, or ship preparation proceeds without a bounded subagent, the run must stop or report `degraded: subagents unavailable/not applied` with the reason. `agents` never means parallel execution.
 
-For Codex/OpenAI subagents, the default bounded mission model is the smallest quality-equivalent model for the mission. Use `gpt-5.4-mini` only for low-risk bounded work where it can meet the quality bar. Escalate when the mission profile requires it: `gpt-5.3-codex-spark` for quality-equivalent micro-code or targeted UI/local edits, `gpt-5.3-codex` for long implementation or multi-file code work, and `gpt-5.5` for transverse audits, risky arbitration, architecture/product decisions, or business-risk synthesis.
+For Codex/OpenAI subagents, the default bounded mission model is the smallest quality-equivalent model for the mission. Use `gpt-5.4-mini` only for low-risk bounded work where it can meet the quality and excellence bar. Escalate when the mission profile requires it: `gpt-5.3-codex-spark` for quality-equivalent micro-code or targeted UI/local edits, `gpt-5.3-codex` for long implementation or multi-file code work, and `gpt-5.5` for transverse audits, risky arbitration, architecture/product decisions, or business-risk synthesis.
 
 Each delegated mission must include:
 
@@ -90,7 +90,7 @@ Each delegated mission must include:
 - forbidden files or surfaces
 - selected model or alias
 - reasoning effort, or the Claude alias behavior when using Claude Code
-- fast or cheap fallback only when it remains quality-equivalent for the mission risk
+- fast or cheap fallback only when it remains quality- and excellence-equivalent for the mission risk
 - model application status: `override applied`, `recommended only`, or `not supported by runtime`
 - validation commands
 - expected proof path when the mission changes behavior, fixes a bug, changes a skill contract, or gathers completion evidence

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-11"
+updated: "2026-05-24"
 status: active
 source_skill: sf-start
 scope: technical-docs-corpus
@@ -16,6 +16,8 @@ docs_impact: yes
 linked_systems:
   - shipflow_data/technical/
   - shipflow_data/technical/code-docs-map.md
+  - shipflow_data/technical/external-platforms/
+  - templates/artifacts/project_platform_usage.md
   - templates/artifacts/technical_module_context.md
   - skills/sf-docs/SKILL.md
 depends_on:
@@ -26,6 +28,7 @@ supersedes: []
 evidence:
   - "Ready spec requires a skill-facing reference for technical docs loading."
   - "sf-docs first-run bootstrap and update adoption now treat missing code-docs maps as recoverable bootstrap state."
+  - "External platform corpus added for global Freshness Gate source notes and project-local provider usage docs."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -43,6 +46,7 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 3. Load only the primary technical doc and necessary secondary docs.
 4. Produce a `Documentation Update Plan` after every code-changing execution wave and again during end verification.
 5. Keep shared docs sequential unless the ready spec assigns disjoint ownership.
+6. When a task depends on an external provider, SDK, framework, hosting platform, API, or toolchain behavior, read the matching global note under `shipflow_data/technical/external-platforms/` when it exists, then read the project-local usage note under `shipflow_data/technical/platforms/` when the project uses that provider.
 
 ## `sf-docs` Technical Mode Contract
 
@@ -54,6 +58,8 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 - verify that every major code area in `code-docs-map.md` has a primary technical doc or explicit non-coverage reason
 - scaffold missing subsystem docs from `templates/artifacts/technical_module_context.md`
 - check stale path references, missing validations, missing `Maintenance Rule` sections, and missing Reader triggers
+- check global external platform notes when provider behavior is part of the documented technical contract
+- report a project-local platform usage gap when code/config/docs show a provider is used but `shipflow_data/technical/platforms/<provider>.md` is missing
 - verify that `technical_module_context` files pass `tools/shipflow_metadata_lint.py`
 - fail or report a blocking gap when a mapped code area changed but no impacted doc appears in the `Documentation Update Plan`
 
@@ -63,11 +69,20 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 
 Use the format defined in `shipflow_data/technical/code-docs-map.md`. The owner role is usually `executor` for the subsystem doc and `integrator` for shared files such as `code-docs-map.md`, `AGENT.md`, `shipflow_data/technical/context.md`, `shipflow_data/technical/guidelines.md`, and `shipflow-spec-driven-workflow.md`.
 
+## External Platform Corpus
+
+Global provider notes live under `shipflow_data/technical/external-platforms/`. They preserve source maps and ShipFlow decision rules for the Freshness Gate, but they must not duplicate vendor documentation.
+
+Project-local provider usage lives under each project at `shipflow_data/technical/platforms/<provider>.md`. These files document actual adoption: environments, validation surface, domains/callback expectations, env var keys, MCP/CLI evidence route, and local exceptions. Create them from `templates/artifacts/project_platform_usage.md` when a project uses a provider and no local note exists.
+
+Use the global note to decide what current external sources to check. Use the project-local note to decide whether local, preview, production, MCP, CLI, browser, or manual proof is authoritative for that project.
+
 ## Safety Rules
 
 - The Reader diagnoses impact; it does not silently edit docs unless explicitly assigned.
 - `shipflow_data/technical/` is internal-only in v1.
 - Do not copy secrets, tokens, private URLs, raw logs, cookies, or credentials into technical docs.
+- Do not copy vendor documentation into the corpus; keep source links, operational rules, freshness evidence, and project-specific adoption details.
 - Do not add per-file `last_verified_against` fields in v1.
 - If `AGENTS.md` exists, it must be a symlink to `AGENT.md`.
 

@@ -167,7 +167,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
 - If the spec is missing required metadata/version context, treat it as a contract gap. Continue only for trivial/local work where the missing metadata cannot change product or security semantics; otherwise route back to `/sf-ready`.
 - If the spec names root legacy governance files such as `BUSINESS.md`, `CONTEXT.md`, or `GUIDELINES.md`, treat them as legacy references and add a layout migration note. Do not create new root governance files.
 - If the implementation path would satisfy the listed tasks but miss the user story outcome, stop and reroute instead of coding the wrong thing efficiently
-- If the implementation path is merely the fastest/easiest patch and would weaken correctness, security, performance, maintainability, durability, or proof quality, stop and choose the bounded professional path instead
+- If the implementation path is merely the fastest/easiest patch and would weaken correctness, security, performance, maintainability, durability, excellence, or proof quality, stop and choose the bounded professional path instead
 - If the remaining ambiguity is product-meaningful or security-meaningful, ask the user instead of "picking a sensible default"
 - Read only the files needed to implement plus the linked systems that must be sanity-checked
 - Include associated tests or entry points
@@ -260,7 +260,7 @@ Execute the changes directly.
 
 Implementation constraints:
 - implement the user story outcome, not a narrow proxy metric
-- implement the smallest safe path: the smallest complete, professional, best-practice implementation that satisfies the contract and preserves security, performance, maintainability, and future evolution
+- implement the smallest safe path: the smallest complete, excellent, professional, best-practice implementation that satisfies the contract and preserves security, performance, maintainability, and future evolution
 - make successful actions observable to the user/operator unless the contract explicitly justifies silent success and provides another verification path
 - make failures observable or recoverable unless the contract explicitly justifies silent failure and provides a recovery/observation path
 - preserve Sentry/error instrumentation when the project has it; do not swallow exceptions only to report them, and do not remove release/environment/user-safe context needed for runtime diagnosis

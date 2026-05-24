@@ -14,6 +14,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 - [lifecycle] `master-workflow-lifecycle`, `spec-driven-development-discipline`, `master-delegation-semantics`, and `question-contract` now load or depend on the decision-quality contract
 - [models] `sf-model` and `model-routing.md` now treat fast/cheap fallbacks as valid only when quality-equivalent for the risk
 - [execution] Core build/start/fix/verify/skill-build/router/help/spec/design and repeated "smallest safe mode" language now point to bounded professional scope, never shortcut quality
+- [instructions] Excellence is now explicit in the instruction-level decision bar for shared contracts and core routing/execution/model skills, not left as implied quality wording
 - [docs] README, workflow docs, runtime lifecycle docs, and help catalog now expose the doctrine
 
 **New phases:**

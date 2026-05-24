@@ -48,13 +48,13 @@ ShipFlow stays spec-driven at the lifecycle level. Specs, bug files, release sco
 
 Use this reference when a ShipFlow skill modifies behavior, fixes a bug, changes a skill contract, or verifies a completion claim.
 
-Before implementation, also load `skills/references/decision-quality-contract.md`. Proof-first discipline must prove a professional solution against the quality bar; it must not be used to justify the smallest change that merely makes a local check pass.
+Before implementation, also load `skills/references/decision-quality-contract.md`. Proof-first discipline must prove a professional solution against the quality and excellence bar; it must not be used to justify the smallest change that merely makes a local check pass.
 
 ## Core Rule
 
 Before implementation, name the proof path that fits the changed surface:
 
-- `test-first`: for behavior with a reasonable automated test surface. Start with a failing or focused test, then implement the smallest complete professional change that makes it pass without weakening security, performance, maintainability, or product coherence.
+- `test-first`: for behavior with a reasonable automated test surface. Start with a failing or focused test, then implement the smallest complete excellent professional change that makes it pass without weakening security, performance, maintainability, product coherence, or future evolution.
 - `regression-first`: for bugs. Capture reproduction and cause-root hypothesis first; add a failing regression test when practical.
 - `scenario-first`: for skill, prompt, routing, or governance contract changes. Define pressure scenarios or mechanical checks before editing the contract.
 - `evidence-first`: for UI, docs, auth, deployment, operational, visual, content, and integration work where automated TDD is not the right proof. Name concrete evidence before claiming completion.
@@ -73,6 +73,7 @@ Stop, reroute, or report `partial`/`not verified` when:
 - evidence-first work names no concrete evidence surface
 - proof collection would expose secrets, cookies, tokens, credentials, private payloads, production PII, or sensitive screenshots
 - the proposed implementation is merely the fastest/easiest patch and does not satisfy the decision-quality contract
+- the proposed implementation is adequate but visibly below the excellence bar for the risk
 
 ## Reporting
 

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-05-16"
+updated: "2026-05-24"
 status: draft
 source_skill: sf-start
 scope: sf-docs-mode-playbooks
@@ -25,6 +25,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from sf-docs SKILL.md during compact-skill pilot."
+  - "Technical docs mode extended with global external platform corpus and project-local platform usage docs."
 next_review: "2026-06-16"
 next_step: "/sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -53,6 +54,15 @@ Minimum checks:
 - mapped code areas have primary docs or explicit non-coverage
 - technical docs contain `Purpose`, `Owned Files`, `Entrypoints`, `Invariants`, `Validation`, `Reader Checklist`, `Maintenance Rule`
 - `code-docs-map.md` includes path patterns, validations, triggers
+- external provider behavior has a global source note under `shipflow_data/technical/external-platforms/` when it is common or repeated across projects
+- projects that use an external provider have a project-local usage note under `shipflow_data/technical/platforms/` when provider behavior affects validation, auth, deploy, runtime, SDK, storage, or security decisions
+
+External platform docs use two layers:
+
+- global source note: `shipflow_data/technical/external-platforms/<provider>.md`
+- project-local usage note: `<project>/shipflow_data/technical/platforms/<provider>.md`
+
+Do not mirror vendor docs. Keep links to official sources, freshness anchors, ShipFlow decision rules, validation routes, and project-specific usage.
 
 Output update plans with fields:
 

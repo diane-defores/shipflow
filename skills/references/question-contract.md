@@ -42,7 +42,7 @@ This reference defines how ShipFlow skills ask user-facing questions.
 
 The goal is to keep questions rare, useful, and easy to answer by number. A question is a decision brief: it tells the operator why the decision matters, which answer ShipFlow recommends by default when a responsible default exists, and why that recommendation fits the current context.
 
-Load `skills/references/decision-quality-contract.md` before recommending a default. The recommended answer must preserve ShipFlow's quality bar; do not recommend the fastest, cheapest, or easiest route unless it is also quality-equivalent and professionally correct.
+Load `skills/references/decision-quality-contract.md` before recommending a default. The recommended answer must preserve ShipFlow's quality and excellence bar; do not recommend the fastest, cheapest, or easiest route unless it is also quality-equivalent, excellence-equivalent, and professionally correct.
 
 ## Applies To
 
@@ -128,7 +128,7 @@ Prefer recommendations that:
 - match the current spec, product contract, and repo conventions
 - respect technical docs, `docs/technical/code-docs-map.md`, `CONTENT_MAP.md`, editorial governance, and public claim boundaries when applicable
 - follow current best practices for the stack, provider, security model, and deployment mode
-- minimize cost or public exposure only after correctness, security, performance, maintainability, and durability are satisfied
+- minimize cost or public exposure only after correctness, security, performance, maintainability, durability, and excellence are satisfied
 - keep implementation scope bounded enough to verify without lowering solution quality
 - avoid premature shipping when proof is missing
 

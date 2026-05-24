@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-05-16"
+updated: "2026-05-24"
 status: draft
 source_skill: sf-start
 scope: sf-docs-core-governance
@@ -29,6 +29,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from sf-docs SKILL.md during compact-skill pilot."
+  - "Governance corpus now distinguishes global external provider notes from project-local provider usage docs."
 next_review: "2026-06-16"
 next_step: "/sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -81,6 +82,8 @@ Preferred governance locations:
 
 - `shipflow_data/business/*`
 - `shipflow_data/technical/*`
+- `shipflow_data/technical/external-platforms/*` for global external provider source notes
+- `shipflow_data/technical/platforms/*` inside a project for project-local provider usage
 - `shipflow_data/editorial/*`
 - `shipflow_data/workflow/specs/*`
 

@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.6.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-11"
+updated: "2026-05-24"
 status: reviewed
 source_skill: sf-start
 scope: technical-docs-index
@@ -26,6 +26,11 @@ supersedes: []
 evidence:
   - "Spec defines shipflow_data/technical as the internal code-proximate documentation layer."
   - "Blacksmith technical note added for CI observability and APK build operations."
+  - "External platform corpus added for global Freshness Gate source notes and project-local provider usage contracts."
+  - "Firecrawl global platform note added with official docs, changelog, MCP, and GitHub release sources."
+  - "Convex, Clerk, Firebase, and Google Cloud global platform notes added for common ShipFlow project stacks."
+  - "Supabase, Sentry, and Astro global platform notes added for common auth/database, observability, and public-site stacks."
+  - "Python, Bash, and Gum global platform notes added for ShipFlow tooling, shell runtime, and Gum TUI scripts."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -41,6 +46,7 @@ This layer complements the existing docs:
 - `shipflow_data/technical/architecture.md` stays the global system view.
 - `shipflow_data/technical/context.md` stays the compact operational map.
 - `shipflow_data/technical/guidelines.md` stays the general engineering doctrine.
+- `shipflow_data/technical/external-platforms/` stores global external provider notes used by the Freshness Gate.
 - `shipflow_data/workflow/specs/*.md` stay chantier contracts and run history.
 - `shipflow_data/technical/*.md` documents durable subsystem behavior near the code.
 
@@ -67,6 +73,19 @@ This layer complements the existing docs:
 | `decisions.md` | ADR-style decisions, `decision_record` templates, durable decision routing |
 | `blacksmith.md` | Blacksmith CI runners, APK build observability, logs, SSH debugging, monitors, metrics, cache, Testboxes |
 | `firebase-firestore-oidc-ci-playbook.md` | Firebase/Firestore CI setup with GitHub OIDC/WIF, step-by-step wiring and troubleshooting matrix |
+| `external-platforms/README.md` | Global provider/source corpus, Freshness Gate source policy, project-local platform usage template |
+| `external-platforms/vercel.md` | Vercel deployment, environment, CLI, logs, preview/production, and hosted proof assumptions |
+| `external-platforms/firecrawl.md` | Firecrawl API, SDK, MCP, scraping, parsing, release, retention, and web-data freshness assumptions |
+| `external-platforms/convex.md` | Convex deployments, generated APIs, auth, Clerk integration, indexes, actions, and scheduled functions |
+| `external-platforms/clerk.md` | Clerk SDKs, middleware, hooks, webhooks, JWT templates, Convex integration, and hosted auth proof |
+| `external-platforms/firebase.md` | Firebase Auth, Firestore Security Rules, Admin SDK boundaries, CLI deploys, and Hosting |
+| `external-platforms/google-cloud.md` | Google Cloud IAM, ADC, service accounts, Workload Identity Federation, Cloud Run identity, and CI credentials |
+| `external-platforms/supabase.md` | Supabase Auth, Postgres/RLS, Storage, SSR sessions, CLI, migrations, and database advisors |
+| `external-platforms/sentry.md` | Sentry SDKs, environments, releases, source maps, Debug IDs, monitors, alerts, and PII-safe incident proof |
+| `external-platforms/astro.md` | Astro content collections, schemas, env vars, static/on-demand rendering, deploys, and major upgrades |
+| `external-platforms/python.md` | Python runtime, stdlib tooling, virtual environments, packaging, subprocess, parsing, and script validation |
+| `external-platforms/bash.md` | Bash shell behavior, error handling, traps, pipelines, quoting, installers, and destructive-command safety |
+| `external-platforms/gum.md` | Charmbracelet Gum commands, install sources, TUI output/exit behavior, prompt cancellation, and Bash menu validation |
 
 ## Non-Coverage
 

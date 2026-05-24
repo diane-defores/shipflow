@@ -29,7 +29,7 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 
 Choisir un modèle avant une exécution ShipFlow, que la session tourne dans Codex/OpenAI ou dans Claude Code, sans transformer cette étape en débat interminable.
 
-Avant toute recommandation, charger `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. La sélection de modèle optimise d'abord la fiabilité, la sécurité, la performance attendue, la maintenabilité et la qualité de preuve. Les alternatives rapides ou moins chères ne sont valides que si elles restent équivalentes sur ces axes pour le risque réel.
+Avant toute recommandation, charger `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. La sélection de modèle optimise d'abord la fiabilité, la sécurité, la performance attendue, la maintenabilité, l'excellence et la qualité de preuve. Les alternatives rapides ou moins chères ne sont valides que si elles restent équivalentes sur ces axes pour le risque réel.
 
 Le but de `sf-model` est de répondre à six questions :
 - quel runtime/provider est concerné maintenant ?
