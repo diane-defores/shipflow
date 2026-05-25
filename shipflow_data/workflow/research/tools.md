@@ -215,3 +215,23 @@ Plateforme API-first pour agents vocaux IA. 500K+ devs, latence <500ms, 100+ lan
 - Les chèques cadeaux (ANCV, Illicado) nécessitent des conventions spécifiques avec les émetteurs.
 
 **Quand revisiter :** Quand PlaisirSurprise abordera l'intégration paiements et la rédaction des mentions légales.
+
+---
+
+## Essay Grader AI — pattern de notation éditoriale par rubriques
+
+**Lien :** https://betalist.com/startups/essay-grader-ai?utm_campaign=issue&utm_medium=email&utm_source=newsletter%2Fissue_mailer
+**Date de veille :** 2026-05-24
+**Business :** ShipFlow / contentglowz_lab (7/10)
+
+**Pourquoi c'est intéressant :**
+- Le produit illustre un pattern réutilisable pour nos contenus : grille de critères, score par axe, feedback actionnable et revue par lots avant publication.
+- ShipFlow peut en tirer une brique commune pour `sf-content`, `sf-repurpose`, `sf-audit-copy` ou `sf-verify`, sans créer une skill par projet.
+- Les critères spécifiques doivent venir du corpus de gouvernance de chaque projet : business, product, branding, GTM, content-map, claim-register et surfaces éditoriales déclarées.
+
+**Précautions :**
+- Ne pas calquer le domaine scolaire : l'intérêt est le mécanisme de notation, pas la correction d'essais.
+- Éviter un score générique qui ignorerait les objectifs projet ; un article GoCharbon, Quit Coke, Nantes Gratuit ou ContentGlowz ne doit pas être jugé avec la même pondération.
+- Les critères sensibles doivent respecter les limites de claims, notamment santé/addiction, finance, conformité, IA fiable et promesses business.
+
+**Quand revisiter :** Lors du cadrage d'une grille de notation éditoriale partagée pour les skills contenu.

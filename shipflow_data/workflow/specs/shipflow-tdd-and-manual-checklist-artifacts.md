@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5.5 Codex"
 scope: workflow
 owner: Diane
-user_story: "En tant qu'operatrice ShipFlow, je veux que les specs et le TDD generent des checklists de test durables que je peux remplir en PASS/FAIL/BLOCKED dans un fichier, afin d'eviter les copier-coller de chat et de donner aux agents une vraie source de suivi."
+user_story: "En tant qu'operatrice ShipFlow, je veux que les specs et le TDD generent des contrats de preuve stack-agnostic et des checklists de test durables que je peux remplir en PASS/FAIL/BLOCKED dans un fichier, afin d'eviter les copier-coller de chat et de donner aux agents une vraie source de suivi."
 confidence: high
 risk_level: high
 security_impact: yes
@@ -43,7 +43,8 @@ supersedes: []
 evidence:
   - "User decision 2026-05-24: TDD should be integrated into ShipFlow skills, not handled as ad hoc chat instructions."
   - "User decision 2026-05-24: manual checklists should be generated during spec or TDD as files that the operator can fill with PASS/FAIL/BLOCKED."
-  - "User decision 2026-05-24: agents should use widget tests and agent-run Flutter Web smoke via sf-browser/sf-auth-debug before asking for APK/device testing."
+  - "User decision 2026-05-24: ShipFlow proof rules should be technology-agnostic by default, with stack profiles for Flutter, Astro, Python, APIs, auth, and provider/device surfaces."
+  - "User decision 2026-05-24: validation must be proportional; small low-risk edits should not trigger heavy stack checks such as full Flutter analysis/tests by default."
 next_step: "/sf-ready ShipFlow TDD and Manual Checklist Artifacts"
 ---
 
@@ -59,11 +60,11 @@ draft
 
 ## User Story
 
-En tant qu'operatrice ShipFlow, je veux que les specs et le TDD generent des checklists de test durables que je peux remplir en PASS/FAIL/BLOCKED dans un fichier, afin d'eviter les copier-coller de chat et de donner aux agents une vraie source de suivi.
+En tant qu'operatrice ShipFlow, je veux que les specs et le TDD generent des contrats de preuve stack-agnostic et des checklists de test durables que je peux remplir en PASS/FAIL/BLOCKED dans un fichier, afin d'eviter les copier-coller de chat et de donner aux agents une vraie source de suivi.
 
 ## Minimal Behavior Contract
 
-ShipFlow must extend its spec-driven lifecycle with a test-driven contract layer: specs and execution skills define automated proof first, then generate a durable manual checklist file only for proof that remains human/device-only. The operator can edit that file directly by marking scenarios `PASS`, `FAIL`, `BLOCKED`, `N/A`, or leaving `NOT_RUN`, with optional observed notes and evidence pointers. `sf-test` must consume that file as source of truth, write compact `TEST_LOG.md` entries, and create or update `bugs/BUG-ID.md` for failing scenarios. The easy edge case is generating a large checklist that becomes another dead document; required scenarios must be scoped, statused, and consumed mechanically by the skills.
+ShipFlow must extend its spec-driven lifecycle with a stack-agnostic test-driven contract layer: specs and execution skills define the strongest practical proof ladder for the detected surface, choose a validation level proportional to the change risk, prioritize automated and agent-run proof, then generate a durable manual checklist file only for proof that remains human, provider-specific, environment-specific, or device-only. The operator can edit that file directly by marking scenarios `PASS`, `FAIL`, `BLOCKED`, `N/A`, or leaving `NOT_RUN`, with optional observed notes and evidence pointers. `sf-test` must consume that file as source of truth, write compact `TEST_LOG.md` entries, and create or update `bugs/BUG-ID.md` for failing scenarios. The easy edge case is hard-coding the lifecycle to one technology, running heavy checks for trivial edits, or generating a large checklist that becomes another dead document; required scenarios must be scoped, statused, stack-aware, and consumed mechanically by the skills.
 
 ## Success Behavior
 
@@ -79,7 +80,8 @@ ShipFlow must extend its spec-driven lifecycle with a test-driven contract layer
 - Expected failures: checklist missing, malformed status, duplicate scenario IDs, missing expected result, failing scenario without observed behavior, evidence path escaping repo root, or manual checklist not linked from the spec.
 - User/operator response: The responsible skill reports the exact checklist issue and asks for only the missing field or routes to regenerate the checklist.
 - System effect: Do not mark tests passed, do not close bugs, and do not claim verification while required checklist scenarios are `FAIL`, `BLOCKED`, or `NOT_RUN`.
-- Must never happen: invented PASS results, overwritten operator notes, raw secrets in observed/evidence fields, full logs pasted into checklist tables, or APK/device testing requested before cheaper proofs are attempted.
+- Must never happen: invented PASS results, overwritten operator notes, raw secrets in observed/evidence fields, full logs pasted into checklist tables, stack-specific proof forced onto unrelated projects, or manual/device/provider testing requested before cheaper proofs are attempted.
+- Heavy-check overuse must also be avoided: do not run full analysis, full test suites, device builds, or broad browser campaigns for a tiny low-risk copy/style/config edit unless the changed surface or project contract makes that check relevant.
 - Silent failure: Not allowed. Invalid or incomplete checklists must produce an explicit `partial`, `blocked`, or `not verified` verdict.
 
 ## Problem
@@ -94,15 +96,17 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 
 - Add `templates/artifacts/manual_test_checklist.md`.
 - Define a canonical project path for generated checklists: `shipflow_data/workflow/test-checklists/<scope>.md`.
-- Update spec creation rules so non-trivial specs include a `Test Contract` and link to a checklist when manual proof is expected.
+- Update spec creation rules so non-trivial specs include a stack-agnostic `Test Contract` and link to a checklist when manual proof is expected.
 - Update `sf-start` execution rules so TDD/test-first work creates or updates checklist artifacts when human/device-only proof remains.
 - Update `sf-test` to read checklist files, normalize statuses, write compact `TEST_LOG.md`, and create/update bug records for failed rows.
 - Update `sf-verify` to treat required checklist scenarios as verification evidence and block/partial when required rows are unresolved.
-- Preserve Flutter mobile proof ladder: widget tests, agent-run Flutter Web smoke via `sf-browser`/`sf-auth-debug`, then APK/device-only checklist rows.
+- Define a generic proof ladder plus stack profiles for common ShipFlow surfaces such as Flutter apps, Astro sites, Python services/scripts, API contracts, auth/browser flows, provider integrations, and device/native behavior.
+- Add validation proportionality rules so small low-risk edits can use targeted checks or explicit no-impact reasoning instead of automatic full-stack checks.
+- Add CI path-filter rules so pushes trigger only the GitHub Actions workflows owned by the changed surface, with manual dispatch for forced runs.
 
 ## Scope Out
 
-- No full test runner implementation for Flutter, Patrol, Maestro, Firebase Test Lab, or Playwright in this spec.
+- No full test runner implementation for Flutter, Astro, Python, Playwright, Patrol, Maestro, Firebase Test Lab, Pact, CodeRabbit, Semgrep, or CodeQL in this spec.
 - No migration of historical `TEST_LOG.md` entries.
 - No replacement of `bugs/BUG-ID.md`; checklists point to bug files, they do not become bug dossiers.
 - No automatic mutation of production data during checklist execution.
@@ -112,6 +116,8 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 - The checklist must be easy for the operator to edit by hand.
 - The checklist must be machine-readable enough for agents to parse with simple Markdown/table logic.
 - Agents must preserve operator-entered notes and statuses.
+- Validation must be proportional to risk, changed surface, and project contract; heavier checks need a reason, not habit.
+- CI must be proportional too: app, site, backend, docs, skills, and workflow checks should be split by path filters instead of one push triggering every expensive job.
 - `TEST_LOG.md` remains compact; full failed context belongs in `bugs/BUG-ID.md`.
 - Sensitive evidence must be redacted and stored by pointer, not pasted raw.
 - Existing dirty worktree changes must not be reverted or overwritten during implementation.
@@ -128,19 +134,22 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 - A checklist row cannot be considered passing unless an operator or agent observed the result.
 - Failed checklist rows must link to a bug file or a concrete next action.
 - Required checklist rows with `FAIL`, `BLOCKED`, or `NOT_RUN` prevent a clean `sf-verify` verdict.
-- APK/device manual rows are only required after cheaper proof surfaces are attempted or ruled out.
+- Manual/device/provider rows are only required after cheaper proof surfaces are attempted or ruled out for the detected stack.
+- Trivial or low-risk edits may use targeted proof, such as a focused file read, snapshot expectation, type-local check, targeted test, or explicit `no functional impact` note, instead of broad analysis/test runs.
+- GitHub Actions workflows should use positive `paths` filters for their owned surfaces and `workflow_dispatch` for manual override. Branch protection must not require a path-filtered job in contexts where it will be skipped, unless a separate always-on meta/status workflow handles required checks.
 
 ## Links & Consequences
 
 - Upstream systems: `sf-spec`, `sf-ready`, `sf-start`, `sf-test`, `sf-verify`, bug lifecycle, spec-driven development discipline.
 - Downstream systems: `TEST_LOG.md`, `bugs/BUG-ID.md`, `test-evidence/BUG-ID/`, final ship readiness, operator workflow.
 - Cross-cutting checks: redaction, path safety, metadata lint, skill runtime sync, public skill docs if behavior promises change.
+- CI consequences: `.github/workflows/**` may need surface-specific path filters, required-check review, and workflow dispatch support so docs/spec/skill pushes do not trigger app builds or APK jobs.
 
 ## Documentation Coherence
 
 - Update `sf-test` README and public skill page if they describe manual QA prompts but not checklist files.
 - Update `sf-help` catalog if it describes `sf-test` as chat-only guided manual QA.
-- Update `spec-driven-development-discipline.md` to include checklist artifacts as part of proof-first/TDD.
+- Update `spec-driven-development-discipline.md` to include stack-agnostic proof ladders and checklist artifacts as part of proof-first/TDD.
 - Update `templates/artifacts/spec.md` or `sf-spec` workflow so future specs know where `Test Contract` and checklist links belong.
 
 ## Edge Cases
@@ -151,7 +160,11 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 - Checklist contains optional exploratory rows; unresolved optional rows should not block verification.
 - Checklist references an evidence path outside the repo; `sf-test` must reject or ask for a safe pointer.
 - Auth flow row belongs to `sf-auth-debug`, not generic `sf-browser`.
-- Flutter UI row is Web-testable but checklist jumps straight to APK; verification must flag the proof order gap.
+- Astro/public-site row skips build/content-schema/browser proof and jumps to human review; verification must flag the proof order gap.
+- Python/API row skips unit/contract tests and jumps to manual verification; verification must flag the proof order gap.
+- Flutter UI row is Web-testable but checklist jumps straight to APK; verification must flag the stack-profile proof order gap.
+- Tiny text/style-only row triggers full Flutter analysis/test suite without changed behavior or risk; verification should flag the validation as overbroad and recommend a proportional check policy.
+- Docs/spec/skills-only push triggers app/APK CI because workflows lack path filters; verification should flag CI as overbroad and route to workflow filtering.
 
 ## Implementation Tasks
 
@@ -171,9 +184,9 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
   - Validate with: `python3 tools/shipflow_metadata_lint.py templates/artifacts/manual_test_checklist.md`
   - Notes: Do not lint `TEST_LOG.md`.
 
-- [ ] Task 3: Add Test Contract and checklist generation rules to spec creation
+- [ ] Task 3: Add stack-agnostic Test Contract and checklist generation rules to spec creation
   - File: `skills/sf-spec/references/spec-creation-workflow.md`
-  - Action: Require a `Test Contract` section for non-trivial specs: automated tests, agent-run browser/auth proof, manual checklist path, device-only proof, and explicit exceptions.
+  - Action: Require a `Test Contract` section for non-trivial specs: detected stack/surface, automated tests, agent-run browser/auth proof, contract/integration proof, provider/device proof, manual checklist path, and explicit exceptions.
   - User story link: Makes TDD part of the spec, not an afterthought.
   - Depends on: Task 1
   - Validate with: `rg -n "Test Contract|manual_test_checklist|test-checklists|PASS|FAIL|BLOCKED" skills/sf-spec/references/spec-creation-workflow.md`
@@ -181,7 +194,7 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 
 - [ ] Task 4: Update spec template with Test Contract placeholder
   - File: `templates/artifacts/spec.md`
-  - Action: Add `Test Contract` after `Acceptance Criteria` or before `Test Strategy`, with manual checklist link and proof ladder fields.
+  - Action: Add `Test Contract` after `Acceptance Criteria` or before `Test Strategy`, with manual checklist link and stack-agnostic proof ladder fields.
   - User story link: Makes future specs mechanically consistent.
   - Depends on: Task 3
   - Validate with: `rg -n "Test Contract|Manual checklist|Proof ladder" templates/artifacts/spec.md`
@@ -189,19 +202,35 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 
 - [ ] Task 5: Update TDD/proof discipline reference
   - File: `skills/references/spec-driven-development-discipline.md`
-  - Action: Define checklist artifacts as part of proof-first TDD when manual proof remains after automated/browser/auth evidence.
+  - Action: Define stack-agnostic proof ladders, validation proportionality, and checklist artifacts as part of proof-first TDD when manual proof remains after automated/browser/auth/provider evidence.
   - User story link: Aligns checklist files with the core lifecycle doctrine.
   - Depends on: Task 1
   - Validate with: `rg -n "manual checklist|test-checklists|manual_test_checklist|proof-first" skills/references/spec-driven-development-discipline.md`
-  - Notes: Preserve the Flutter mobile proof ladder.
+  - Notes: Flutter, Astro, Python, API, auth, provider, and device profiles must be examples beneath the generic doctrine, not the core doctrine.
 
 - [ ] Task 6: Update execution workflow
   - File: `skills/sf-start/references/execution-workflow.md`
-  - Action: When implementation leaves manual/device-only proof, generate or update the linked checklist before reporting completion.
+  - Action: Choose a proportional validation level before editing; when implementation leaves manual/device/provider-specific proof, generate or update the linked checklist before reporting completion.
   - User story link: Ensures the checklist exists during TDD/development, not only after verification fails.
   - Depends on: Tasks 3 and 5
-  - Validate with: `rg -n "manual checklist|test-checklists|sf-test|Flutter Web smoke|APK" skills/sf-start/references/execution-workflow.md`
+  - Validate with: `rg -n "manual checklist|test-checklists|sf-test|proof ladder|stack|proportional|sf-browser|sf-auth-debug" skills/sf-start/references/execution-workflow.md`
   - Notes: Do not create filler checklists for fully automated scopes.
+
+- [ ] Task 6.5: Update check selection policy
+  - File: `skills/sf-check/SKILL.md`
+  - Action: Add a proportional check-selection rule: quick tiny edits use targeted checks or no-impact reasoning; broad analysis/test/build commands are reserved for behavior, imports, generated code, dependencies, shared components, risky config, or pre-ship verification.
+  - User story link: Prevents agents from running expensive or annoying checks at every tiny edit.
+  - Depends on: Task 5
+  - Validate with: `rg -n "proportional|targeted checks|no functional impact|full suite|tiny edit|broad checks" skills/sf-check/SKILL.md`
+  - Notes: Flutter `flutter analyze`/full test runs are examples, not the only target.
+
+- [ ] Task 6.6: Add proportional CI path-filter policy
+  - File: `skills/references/spec-driven-development-discipline.md`, `skills/sf-ship/SKILL.md`, `skills/sf-ci-build/SKILL.md` if present, and relevant project workflow docs
+  - Action: Define that GitHub Actions workflows should use positive `paths` filters by surface, plus `workflow_dispatch`; document required-check caveats when branch protection expects skipped path-filtered workflows.
+  - User story link: Prevents docs/spec/skill pushes from triggering expensive app/APK jobs.
+  - Depends on: Task 6.5
+  - Validate with: `rg -n "paths:|paths-ignore|workflow_dispatch|required checks|path-filter|surface" skills shipflow_data/technical .github/workflows 2>/dev/null || true`
+  - Notes: Prefer positive `paths` filters over broad `paths-ignore` because ownership is clearer.
 
 - [ ] Task 7: Update sf-test checklist consumption
   - File: `skills/sf-test/SKILL.md`
@@ -237,23 +266,31 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 
 ## Acceptance Criteria
 
-- [ ] AC 1: Given a non-trivial spec has manual/device-only proof, when `sf-spec` completes, then the spec contains a `Test Contract` with automated proof, agent-run browser/auth proof, manual checklist path, and unresolved proof gaps.
+- [ ] AC 1: Given a non-trivial spec has manual/device/provider-only proof, when `sf-spec` completes, then the spec contains a stack-agnostic `Test Contract` with detected surface, automated proof, agent-run browser/auth proof, contract/integration proof when relevant, manual checklist path, and unresolved proof gaps.
 - [ ] AC 2: Given a checklist file is generated, when metadata lint runs, then the checklist template and any generated sample pass lint or have a documented tracker exception.
 - [ ] AC 3: Given the operator fills a required row as `PASS`, when `sf-test` consumes the checklist, then it records a compact `TEST_LOG.md` pass pointer without asking for duplicate chat input.
 - [ ] AC 4: Given the operator fills a required row as `FAIL`, when `sf-test` consumes the checklist, then it creates or updates `bugs/BUG-ID.md`, writes a compact `TEST_LOG.md` pointer, and links the bug ID in the checklist or report.
 - [ ] AC 5: Given a required row is `BLOCKED` or `NOT_RUN`, when `sf-verify` runs, then verification is `partial`, `not verified`, or `blocked` with a concrete next action.
-- [ ] AC 6: Given a Flutter UI checklist includes APK rows but no widget/Web proof row or exception, when `sf-verify` runs, then it flags the proof ladder gap.
+- [ ] AC 6: Given a checklist jumps to manual/device/provider proof while cheaper stack-appropriate proof is available, when `sf-verify` runs, then it flags the proof ladder gap.
 - [ ] AC 7: Given all required checklist rows are `PASS` and automated/browser proof passed, when `sf-verify` runs, then manual proof does not require chat copy-paste and can be cited from the checklist.
 - [ ] AC 8: Given a checklist row includes raw secrets or an unsafe evidence path, when `sf-test` reads it, then it refuses to persist unsafe evidence and asks for a redacted pointer.
-- [ ] AC 9: Given public `sf-test` docs are changed, when `npm --prefix site run build` runs, then the site build passes.
-- [ ] AC 10: Given skills are changed, when skill checks run, then `skill_budget_audit` and `shipflow_sync_skills.sh --check --all` pass or report only accepted non-blocking risks.
+- [ ] AC 9: Given a tiny low-risk text/style-only edit, when an execution skill chooses validation, then it must not run broad full-stack checks by default and must record targeted proof or `no functional impact`.
+- [ ] AC 10: Given behavior, imports, generated code, shared component, dependency, risky config, auth, data, provider, or pre-ship scope changes, when validation is selected, then the skill must choose the relevant heavier check and explain why.
+- [ ] AC 11: Given a push changes only docs/specs/skills outside the app path, when GitHub Actions evaluates workflows, then app/APK workflows are skipped by path filters and only relevant docs/skills checks run.
+- [ ] AC 12: Given a push changes an app/site/backend path, when GitHub Actions evaluates workflows, then the matching surface workflow runs and unrelated expensive workflows stay skipped unless explicitly forced.
+- [ ] AC 13: Given a workflow is path-filtered, when branch protection requires checks, then required-check behavior is reviewed so skipped workflows do not block unrelated PRs.
+- [ ] AC 14: Given public `sf-test` docs are changed, when `npm --prefix site run build` runs, then the site build passes.
+- [ ] AC 15: Given skills are changed, when skill checks run, then `skill_budget_audit` and `shipflow_sync_skills.sh --check --all` pass or report only accepted non-blocking risks.
 
 ## Test Contract
 
 - Automated tests first: implementation should include focused tests for any parser/normalizer introduced for checklist statuses and evidence paths.
 - Agent-run proof: use `rg`, metadata lint, skill budget audit, and runtime sync checks for skill/template changes.
 - Manual checklist artifact: this spec should produce no operator checklist yet; it defines the system for future generated checklists.
-- Flutter proof ladder: preserve the existing rule that widget tests and agent-run Flutter Web smoke come before APK/device testing.
+- Stack-agnostic proof ladder: preserve the generic rule that cheaper automated/agent-run proof comes before manual, provider, production, or device proof.
+- Stack profiles: include examples for Flutter, Astro, Python, API contracts, auth/browser flows, provider integrations, and device/native behavior without making any one technology the default.
+- Proportional validation: include a risk tier so tiny edits do not trigger full suites by habit, while meaningful behavior/risk changes still get strong evidence.
+- Proportional CI: include path-filter expectations so a push only triggers workflows relevant to changed surfaces, with `workflow_dispatch` for deliberate full runs.
 - Exception policy: if checklist parsing is intentionally kept manual in v1, document why and keep `sf-test` consumption rules unambiguous.
 
 ## Test Strategy
@@ -272,7 +309,7 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 
 - Read first: `skills/sf-test/SKILL.md`, `skills/sf-spec/references/spec-creation-workflow.md`, `skills/sf-start/references/execution-workflow.md`, `skills/sf-verify/SKILL.md`, `skills/sf-verify/references/verification-gates.md`, `templates/artifacts/spec.md`, `templates/artifacts/bug_record.md`, `tools/shipflow_metadata_lint.py`.
 - Validate with: metadata lint for changed artifacts, `rg` checks in tasks, `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`, `tools/shipflow_sync_skills.sh --check --all`, and site build if public content changes.
-- Stop conditions: unclear checklist path, inability to preserve operator edits, unsafe evidence handling, manual checklist replacing automated tests, or Flutter/APK proof ladder weakened.
+- Stop conditions: unclear checklist path, inability to preserve operator edits, unsafe evidence handling, manual checklist replacing automated tests, validation or CI becoming either too weak for risk or too heavy by habit, branch protection conflicting with skipped path-filtered workflows, or stack-agnostic proof ladder weakened.
 
 ## Open Questions
 
