@@ -41,7 +41,7 @@ Always load these before browser work:
 - `$SHIPFLOW_ROOT/skills/references/canonical-paths.md`
 - `$SHIPFLOW_ROOT/skills/references/playwright-mcp-runtime.md`
 
-Load `references/browser-evidence.md` when the request involves console/network evidence, screenshots, production data, redaction, sensitive output, uncertain verdicts, or localized report wording.
+Load `$SHIPFLOW_ROOT/skills/sf-browser/references/browser-evidence.md` when the request involves console/network evidence, screenshots, production data, redaction, sensitive output, uncertain verdicts, or localized report wording. This is a skill-local reference, not a global `$SHIPFLOW_ROOT/skills/references/*` file.
 
 Load `$SHIPFLOW_ROOT/skills/references/sentry-observability.md` when the browser check sees a crash, error boundary, 5xx, unhandled console exception, or visible Sentry/support event ID. Skills do not have direct Sentry dashboard access; use only visible/supplied issue or event pointers.
 
@@ -77,8 +77,9 @@ Stop browser proof when:
 - Playwright MCP config is stale or unsafe.
 - Linux ARM64 config falls back to Google Chrome stable or `/opt/google/chrome/chrome`.
 - Config is correct but the current MCP process still reports `/opt/google/chrome/chrome`.
+- A reference required for the requested objective is missing from its canonical ShipFlow path.
 
-In those cases, do not diagnose the app. Report the runtime blocker and route to `/sf-fix BUG-2026-05-02-001` or request a Codex/MCP reload as the runtime reference requires.
+In those cases, do not diagnose the app. Report the runtime or ShipFlow installation blocker. For Playwright runtime blockers, route to `/sf-fix BUG-2026-05-02-001` or request a Codex/MCP reload as the runtime reference requires. For missing ShipFlow references, report the missing canonical path and route to `/sf-skill-build` or `/sf-fix` instead of continuing with partial local memory.
 
 ## Verification Flow
 

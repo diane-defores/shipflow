@@ -30,7 +30,7 @@ Default to `report=user`: concise dashboard, attention items, limits, and `Chant
 ## Context
 
 - Current directory: !`pwd`
-- External control-plane PROJECTS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md 2>/dev/null | head -20`
+- Derived project registry (primary): `find`-style scan of workspace roots for directories containing `shipflow_data/` (project-local governance roots). Legacy fallback: `cat local project discovery (`shipflow_data/` markers)` (legacy mode only).
 
 ## Flow
 
@@ -51,7 +51,7 @@ If `$ARGUMENTS` is provided, map:
 
 ### Step 1: Read project registry
 
-Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` as the external control-plane registry to get the list of projects with their paths. Also include ShipFlow itself (`${SHIPFLOW_ROOT:-$HOME/shipflow}`).
+Derive project paths by scanning workspace roots and project-local markers (`shipflow_data/`), then include ShipFlow itself (`${SHIPFLOW_ROOT:-$HOME/shipflow}`). Use `local project discovery (`shipflow_data/` markers)` only as legacy compatibility fallback when local discovery is unavailable.
 
 `sf-status` must not read the external registry as project governance truth. It is a dashboard input only; per-project governance remains under each project's local `shipflow_data/{business,technical,editorial,workflow}` corpus and is not mutated here.
 
@@ -125,9 +125,9 @@ Only show NEEDS ATTENTION if there are issues. Issues to flag:
 ## Important
 
 - **READ-ONLY** — never modify any files or run git commands that change state.
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` is read-only here; never edit shared tracking files from `sf-status`.
-- Do not update project-local `shipflow_data/workflow/TASKS.md` or external control-plane trackers from `sf-status`; route follow-up work to `sf-tasks`, `sf-backlog`, `sf-priorities`, `sf-review`, or `sf-ship`.
-- Prefer storing home-scoped project paths in `PROJECTS.md` as `~/...` so the registry stays portable across usernames and servers.
+- `local project discovery (`shipflow_data/` markers)` is legacy-only read-only input here; do not treat it as active truth.
+- Do not update project-local `shipflow_data/workflow/TASKS.md` or any legacy control-plane trackers from `sf-status`; route follow-up work to `sf-tasks`, `sf-backlog`, `sf-priorities`, `sf-review`, or `sf-ship`.
+- Prefer storing home-scoped project paths as `~/...` in local project metadata for portability across usernames and servers.
 - Include ShipFlow repo itself in the dashboard.
 - Skip projects whose paths don't exist on disk.
 - Skip SocialFlowz if it has no git repo.

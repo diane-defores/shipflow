@@ -330,7 +330,7 @@ source skill -> Chantier potentiel -> sf-spec -> sf-ready -> sf-start -> sf-veri
 
 When a source skill finds non-trivial future work without one unique chantier, it must not write into a guessed spec. It should add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, proposed title, reason, severity, scope, evidence, and a recommended `/sf-spec ...` command. `sf-spec` then consumes that block and turns it into the durable chantier contract.
 
-No skill should create a separate chantier registry in `TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`, or `shipflow_data`. If a spec cannot be identified or multiple specs match, the skill must stop or report non-trace instead of guessing.
+No skill should create a separate chantier registry in `TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md` (legacy), `shipflow_data`, or `shipflow_data/workflow/specs` registry. If a spec cannot be identified or multiple specs match, the skill must stop or report non-trace instead of guessing.
 
 ## Artifact Doctrine
 
@@ -367,13 +367,13 @@ Operational tracking files are not ShipFlow decision artifacts and do not requir
 
 - `TASKS.md` tracks active work and backlog items.
 - `AUDIT_LOG.md` tracks audit history.
-- `PROJECTS.md` tracks project registry and domain applicability.
+- `PROJECTS.md` is legacy registry context (historical/migration) and not active project governance.
 
 Do not migrate those files just to satisfy the artifact schema. If they contain durable decisions, extract those decisions into separate versioned artifacts and leave the tracker readable.
 
 Location rule:
 
-- `shipflow_data` is the control plane for cross-project tracking (`TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`).
+- `shipflow_data` is the local project workflow corpus (`TASKS.md`, `AUDIT_LOG.md`) and not a central control plane.
 - The master tracker is not a direct substitute for a local project `TASKS.md`.
 - Always distinguish between:
   - the master tracker

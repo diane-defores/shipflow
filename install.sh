@@ -55,41 +55,6 @@ warning() {
     shipflow_log "WARN" "WARN: $1"
 }
 
-warn_data_restore_before_work() {
-    local user_home=""
-    local user_data_dir=""
-
-    if [ -n "${INVOKING_USER:-}" ] && [ "$INVOKING_USER" != "root" ]; then
-        user_home="$(getent passwd "$INVOKING_USER" 2>/dev/null | cut -d: -f6)"
-    fi
-
-    if [ -n "$user_home" ]; then
-        user_data_dir="$user_home/shipflow_data"
-    else
-        user_data_dir="$HOME/shipflow_data"
-    fi
-
-    echo ""
-    echo -e "${YELLOW}╔══════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${YELLOW}║  IMPORTANT : restaure tes données ShipFlow avant usage   ║${NC}"
-    echo -e "${YELLOW}╚══════════════════════════════════════════════════════════╝${NC}"
-    echo -e "${YELLOW}ShipFlow écrit son suivi dans :${NC} ${CYAN}$user_data_dir${NC}"
-    echo -e "${YELLOW}Si tu as déjà un dépôt GitHub ou une sauvegarde de shipflow_data,${NC}"
-    echo -e "${YELLOW}clone/restaure ce dossier AVANT de commencer à travailler.${NC}"
-    echo -e "${YELLOW}Sinon l'install créera des fichiers de départ vides et les skills${NC}"
-    echo -e "${YELLOW}peuvent écrire dedans, ce qui rend le merge avec ton historique pénible.${NC}"
-    echo ""
-    echo -e "Exemple : ${CYAN}git clone git@github.com:<owner>/shipflow_data.git \"$user_data_dir\"${NC}"
-    echo ""
-    shipflow_log "WARN" "User warned to restore existing shipflow_data from GitHub/backup before starting work. Expected data dir: $user_data_dir"
-
-    if [ -t 0 ] && [ "${CI:-}" != "true" ] && [ "${SHIPFLOW_SKIP_DATA_RESTORE_WARNING:-0}" != "1" ]; then
-        echo -e "${YELLOW}Appuie sur une touche pour continuer, ou Ctrl+C pour restaurer tes données maintenant.${NC}"
-        read -rsn1 _
-        echo ""
-    fi
-}
-
 warn_flutter_android_ci_policy() {
     local arch
     arch="$(uname -m 2>/dev/null || echo unknown)"
@@ -187,7 +152,6 @@ shipflow_capture_status
 # Remember who invoked sudo so we configure their account too
 INVOKING_USER="${SUDO_USER:-}"
 
-warn_data_restore_before_work
 warn_flutter_android_ci_policy
 
 echo -e "${BLUE}🔍 Vérification des dépendances...${NC}"
@@ -1422,7 +1386,6 @@ configure_shipflow_environment() {
 
 # >>> ShipFlow environment >>>
 export SHIPFLOW_ROOT='$SHIPFLOW_DIR'
-export SHIPFLOW_DATA_DIR='$target_home/shipflow_data'
 
 if [ -d "\$HOME/.local/bin" ]; then
   export PATH="\$HOME/.local/bin:\$PATH"
@@ -1520,17 +1483,6 @@ install_shipflow_tui_for_user() {
 
     echo -e "  ${GREEN}✅ ShipFlow TUI installée :${NC} tui, sftui, sf-tui, shipflow-tui"
     return 0
-}
-
-# Create shipflow_data for a user
-configure_data() {
-    local data_dir="$1/shipflow_data"
-    if [ ! -d "$data_dir" ]; then
-        mkdir -p "$data_dir"
-        echo "# Tasks" > "$data_dir/TASKS.md"
-        echo "# Audit Log" > "$data_dir/AUDIT_LOG.md"
-        echo "# Projects" > "$data_dir/PROJECTS.md"
-    fi
 }
 
 ensure_user_local_npm_bootstrap() {
@@ -1701,13 +1653,11 @@ setup_user() {
     configure_shipflow_environment "$user_home"
     configure_aliases "$user_home"
     install_shipflow_tui_for_user "$user_home" "$username" || setup_failed=1
-    configure_data "$user_home"
 
     # Fix ownership — everything we created must belong to the user
     if [ "$username" != "root" ]; then
         chown -hR "$username:$username" "$user_home/.claude" 2>/dev/null || true
         chown -hR "$username:$username" "$user_home/.codex" 2>/dev/null || true
-        chown -R "$username:$username" "$user_home/shipflow_data" 2>/dev/null || true
     fi
 
     if [ "$setup_failed" -eq 0 ]; then

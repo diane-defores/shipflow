@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-24"
+updated: "2026-05-26"
 status: reviewed
 source_skill: sf-start
 scope: code-docs-map
@@ -28,6 +28,7 @@ evidence:
   - "Project governance layout decision moved root governance docs to canonical shipflow_data/ paths."
   - "ShipFlow remote bootstrap script added to installer mapping."
   - "External platform corpus and project platform usage template added for Freshness Gate source retention."
+  - "GitHub Actions workflow files mapped to CI cost, cache, monorepo trigger, deploy, and artifact guardrails."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -61,6 +62,7 @@ Shared files in this map are sequential integration files. Do not assign concurr
 | `AGENT.md`, `AGENTS.md` | Agent entrypoint | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `shipflow_data/technical/README.md` | `test ! -e AGENTS.md || { test -L AGENTS.md && test "$(readlink AGENTS.md)" = "AGENT.md"; }` | Agent routing, technical docs pointer, or compatibility alias changes |
 | `shipflow_data/technical/context.md`, `shipflow_data/technical/context-function-tree.md` | Context layer | `shipflow_data/technical/runtime-cli.md` | `shipflow_data/technical/README.md` | Metadata lint; path existence review | Entrypoint, hotspot, file role, or code navigation changes |
 | `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, `shipflow_data/technical/decisions/**` | Global technical contracts | `shipflow_data/technical/decisions.md` | `shipflow_data/technical/README.md` | Metadata lint; dependency version review | Invariant, architecture, technical doctrine, decision, or doc-maintenance rule changes |
+| `.github/workflows/**` | CI and deploy workflows | `shipflow_data/technical/github-actions.md` | `shipflow_data/technical/blacksmith.md`, provider-specific deployment docs such as `shipflow_data/technical/firebase-firestore-oidc-ci-playbook.md` | Workflow YAML parse when practical; `git diff --check`; local checks allowed by repository guardrails | Workflow trigger, job topology, cache, runner, artifact, secret, OIDC, deploy, or monorepo path behavior changes |
 | `shipflow_data/technical/external-platforms/**` | External platform source corpus | `shipflow_data/technical/external-platforms/README.md` | `skills/references/documentation-freshness-gate.md`, provider-specific project usage docs | Metadata lint; provider source link review | Global provider source, Freshness Gate rule, provider risk, validation route, or project-local usage template changes |
 | `templates/artifacts/project_platform_usage.md` | Project platform usage template | `shipflow_data/technical/external-platforms/README.md` | `skills/references/technical-docs-corpus.md`, `shipflow_data/technical/README.md` | Metadata lint for template and generated usage docs | Project-local provider usage structure, security fields, validation fields, or Freshness Gate handoff changes |
 | `shipflow_data/workflow/specs/**` | Chantiers | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `shipflow_data/technical/decisions.md` | Metadata lint for changed spec; chantier flow review | Workflow, linked system, validation, or docs impact requirements change |

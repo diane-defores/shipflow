@@ -32,7 +32,7 @@ Default to `report=user`: concise review outcome, evidence limits, tracker/docs 
 
 - Current directory: !`pwd`
 - Project workflow TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project TASKS.md"`
-- External control-plane TASKS.md (portfolio coordination only): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No control-plane TASKS.md"`
+- Project-local TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project-local TASKS.md"`
 - Recent commits (last 10): !`git log --oneline --date=short --pretty=format:"%h %ad %s" -10 2>/dev/null || echo "Not a git repo"`
 - Files changed recently: !`git diff --name-status HEAD~5..HEAD 2>/dev/null || echo "N/A"`
 - Current branch: !`git branch --show-current 2>/dev/null`
@@ -46,7 +46,7 @@ Review bookkeeping is local-first for project work.
 
 - For a selected project, update `[project]/shipflow_data/workflow/TASKS.md` when review evidence justifies tracker changes.
 - Root `TASKS.md` is a legacy project tracker location; read it as a migration/fallback source only when canonical workflow tasks are absent.
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is the external control plane. Use `PROJECTS.md` for project discovery and `TASKS.md` only for explicit full-workspace or portfolio coordination.
+- Legacy central archives are migration evidence only. Use `shipflow_data/workflow/TASKS.md` for per-project discovery and local task state.
 - When reviewing from a sub-project directory, consider portfolio concerns only as context unless the user asked for a portfolio review.
 - The review summary should reference which project(s) were worked on and, for portfolio-scoped runs only, how the external Dashboard changed.
 - When planning next session, suggest tasks from the selected project's local workflow tracker, or from the external control plane only for portfolio-scoped runs.
@@ -87,7 +87,7 @@ If the current directory has no `.git` directory (not a git repo) BUT contains m
    If `$ARGUMENTS` is provided (daily/weekly/sprint/release), skip the prompt and use it directly.
 
 2. **Analyze what was accomplished**:
-   - Review completed tasks in the selected project's `shipflow_data/workflow/TASKS.md`, or the external control-plane tracker only for portfolio reviews
+   - Review completed tasks in the selected project's `shipflow_data/workflow/TASKS.md`, or the legacy external-control-plane tracker only for portfolio reviews
    - Examine git commits for actual changes
    - Identify files modified (from git diff)
    - Note any deployed changes or releases
@@ -141,7 +141,7 @@ If the current directory has no `.git` directory (not a git repo) BUT contains m
    - **Metrics**: Commits, files changed, tests added, etc.
 
 6. **Plan next session**:
-   - Review remaining tasks in the selected project's `shipflow_data/workflow/TASKS.md`, or the external control-plane tracker only for portfolio reviews
+   - Review remaining tasks in the selected project's `shipflow_data/workflow/TASKS.md`, or the legacy external-control-plane tracker only for portfolio reviews
    - Identify what should be prioritized next
    - Note any blockers that need addressing
    - Suggest 1-3 tasks for immediate focus
@@ -197,7 +197,7 @@ Examples:
 ### Important
 
 - Default to the selected project's `shipflow_data/workflow/TASKS.md` for review bookkeeping.
-- Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` only for full-workspace or explicit portfolio coordination.
+- Update project-local `shipflow_data/workflow/TASKS.md` only when review changes local workflow state.
 - Be honest about progress - if less was done than planned, say why
 - Focus on outcomes, not just activity
 - Keep outcome claims tied to evidence; distinguish shipped, reviewed, verified, and assumed

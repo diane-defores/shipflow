@@ -34,6 +34,7 @@ Default to `report=user`: concise, findings-first for audits and failures, outco
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/copy-audit-workflow.md`: Copy audit modes, business/brand context checks, page/project checklists, rewrite rules, scoring, and reporting details.
+- `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md`: shared rubric for comparable score and feedback structuré across content owner skills.
 
 ## Mode Detection
 
@@ -46,6 +47,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve claim evidence, business/brand fit, trust, clarity, friction, conversion, and documentation corpus gates.
+- For rubric-driven audits, use `content-quality-rubric.md` as the only scoring contract and return structured feedback with explicit `needs revision` or `blocked` when applicable.
 - Evaluate `Chantier potentiel` for multi-page conversion, legal, trust, or positioning work.
 - Do not invent proof, guarantees, pricing, testimonials, customer facts, or legal claims.
 

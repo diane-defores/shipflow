@@ -29,8 +29,6 @@ assert_ok() {
 tmp_root="$(mktemp -d)"
 trap 'rm -rf "$tmp_root"' EXIT
 
-export SHIPFLOW_DATA_DIR="$tmp_root/shipflow_data"
-
 project_dir="$tmp_root/stale_symlink_project"
 real_tasks_project_dir="$tmp_root/real_tasks_project"
 clean_project_dir="$tmp_root/clean_project"
@@ -47,10 +45,10 @@ assert_ok "fixture has a broken TASKS.md symlink" test -L "$project_dir/TASKS.md
 assert_ok "fixture symlink target is missing" bash -lc "test ! -e '$project_dir/TASKS.md'"
 assert_ok "shipflow_init_project removes stale ShipFlow TASKS.md symlink" shipflow_init_project "stale-symlink-project" "$project_dir"
 assert_ok "stale project TASKS.md symlink was removed" test ! -e "$project_dir/TASKS.md"
-assert_ok "ShipFlow-owned TASKS.md exists in shipflow_data" test -f "$SHIPFLOW_DATA_DIR/projects/stale-symlink-project/TASKS.md"
+assert_ok "shipflow_init_project does not create central tracking root" test ! -e "$tmp_root/shipflow_data"
 assert_ok "shipflow_init_project does not create project TASKS.md symlink" shipflow_init_project "clean-project" "$clean_project_dir"
 assert_ok "clean project has no local TASKS.md" test ! -e "$clean_project_dir/TASKS.md"
-assert_ok "clean project tracking exists only in shipflow_data" test -f "$SHIPFLOW_DATA_DIR/projects/clean-project/TASKS.md"
+assert_ok "clean project still has no central tracking root" test ! -e "$tmp_root/shipflow_data"
 assert_ok "shipflow_init_project leaves real project TASKS.md untouched" shipflow_init_project "real-tasks-project" "$real_tasks_project_dir"
 assert_ok "real project TASKS.md remains a regular file" test -f "$real_tasks_project_dir/TASKS.md"
 assert_ok "real project TASKS.md content is preserved" grep -q "App-owned tasks" "$real_tasks_project_dir/TASKS.md"

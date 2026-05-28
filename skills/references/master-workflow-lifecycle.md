@@ -94,7 +94,7 @@ The work item decides source of truth:
 - Bug triage view: `BUGS.md`, when present, is only a compact optional/generated/triage index that points to bug files. It is not mandatory and must not override a bug file.
 - Mini-contract work: the final report or active handoff contract is the source until the work either closes or is promoted to a spec or bug file.
 
-Do not create separate source-of-truth registries in `TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`, `shipflow_data`, or `BUGS.md`.
+Do not create separate source-of-truth registries in `TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md` (legacy/compat only), `shipflow_data`, or `BUGS.md`.
 
 ## Shared Skeleton
 

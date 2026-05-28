@@ -102,7 +102,7 @@ Full audit of ALL projects across ALL applicable domains — the most comprehens
 
 ### Step 1: Build the audit plan
 
-Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`. Use the **Domain Applicability** table to determine which domains apply to each project.
+Read discovered project-local corpora (`shipflow_data/` markers). Use the **Domain Applicability** table to determine which domains apply to each project.
 
 ### Step 2: Let the user choose
 
@@ -110,7 +110,7 @@ Use **AskUserQuestion** with TWO questions in a single call:
 
 - **Q1** — "Which projects should I audit?"
   - `multiSelect: true`
-  - One option per project: label = project name, description = stack from PROJECTS.md
+- One option per project: label = project name, description = stack inferred from project-local markers
   - All projects pre-listed
 
 - **Q2** — "Which domains should I run?"
@@ -118,7 +118,7 @@ Use **AskUserQuestion** with TWO questions in a single call:
   - Options: Code, Design, Copy, SEO, GTM, Translate, Deps, Perf
   - Description for each: one-line summary of what it checks
 
-Only launch (project × domain) pairs where: user selected the project AND user selected the domain AND the domain applies to that project per PROJECTS.md.
+Only launch (project × domain) pairs where: user selected the project AND user selected the domain AND the domain applies to that project from project-local evidence or explicit operator selection.
 
 ### Step 3: Read domain checklists
 
@@ -191,8 +191,8 @@ Total: X critical, Y high, Z medium
 
 ### Step 6: Update global tracking
 
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** — one traffic-first audit record per project with all domain scores.
-2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** — update each project's audit subsections.
+1. **Project-local `shipflow_data/workflow/AUDIT_LOG.md`** — one traffic-first audit record per project with all domain scores.
+2. **Project-local `shipflow_data/workflow/TASKS.md`** — update each project's audit subsections.
 
 ### Step 7: Ask about fixes
 
@@ -215,7 +215,7 @@ Use **AskUserQuestion**:
 - `multiSelect: true`
 - Options:
   - **All projects** — "Run global audit across every project" (Recommended)
-  - One option per project from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`: label = project name, description = stack
+- One option per project from discovered project-local corpora (`shipflow_data/` markers): label = project name, description = stack
 
 Then proceed to **GLOBAL MODE** with the selected projects (or all if "All projects" was chosen).
 
@@ -369,7 +369,7 @@ Rules for consolidation:
 
 ### Shared file write protocol
 
-Before editing `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`, project-local `AUDIT_LOG.md`, or either `TASKS.md` file:
+Before editing project-local `shipflow_data/workflow/AUDIT_LOG.md`, project-local `AUDIT_LOG.md`, or either `TASKS.md` file:
 - Load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; new audit and task records must follow its traffic-first grammar.
 - Treat the snapshots loaded earlier in the skill as informational only.
 - Right before each write, re-read the target file from disk and use that version as authoritative.
@@ -381,7 +381,7 @@ Before editing `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`, project
 
 Update **two** audit logs. Never delete previous rows — this is the history.
 
-**1. Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** — cross-project dashboard.
+**1. Project-local `shipflow_data/workflow/AUDIT_LOG.md`** — cross-project dashboard.
 
 **2. Project-local `./AUDIT_LOG.md`** — project-scoped audit log.
 
@@ -398,7 +398,7 @@ Add audit findings as tasks. Two files to update:
 - Use the traffic marker as the severity signal and preserve unknown fields when updating existing records.
 - Treat existing legacy audit sections as migration input; do not add new legacy task tables.
 
-**2. Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**:
+**2. Project-local `shipflow_data/workflow/TASKS.md`**:
 - Find the section for the current project.
 - Mirror the same traffic-first `task:` records for coordination.
 - Update any dashboard summary only when that surface still exists and critical issues take precedence.

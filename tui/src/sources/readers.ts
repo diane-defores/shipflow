@@ -1,12 +1,15 @@
 import { readdir } from "node:fs/promises";
 import path from "node:path";
-import { SourcePolicy } from "./sourcePolicy.ts";
+import { SourcePolicy, type SourceReadResult } from "./sourcePolicy.ts";
 import type { DashboardData, Diagnostic, ProjectItem, SpecItem, TextSummary } from "../types/models.ts";
 
 export interface ReaderConfig {
   projectRoot: string;
-  shipflowDataRoot: string;
+  workspaceRoots?: string[];
   shipflowRepoRoot: string;
+  projectDiscoveryDepth?: number;
+  projectDiscoveryDirectoryEntriesLimit?: number;
+  projectDiscoveryMaxProjects?: number;
 }
 
 type CanonicalKind = "task" | "audit" | "spec";
@@ -71,33 +74,185 @@ function addDedupDiagnostic(
   });
 }
 
-function parseProjects(content: string, source: string): ProjectItem[] {
-  const projectsFromBullets = content
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith("- "))
-    .map((line) => ({ name: line.replace(/^-\s+/, ""), source }));
+const DEFAULT_PROJECT_DISCOVERY_DEPTH = 4;
+const DEFAULT_PROJECT_DISCOVERY_DIRECTORY_ENTRIES_LIMIT = 2500;
+const DEFAULT_PROJECT_DISCOVERY_MAX_PROJECTS = 200;
 
-  const projectsFromRegistryTable: ProjectItem[] = [];
-  let inRegistry = false;
-  for (const rawLine of content.split("\n")) {
-    const line = rawLine.trim();
-    if (line.startsWith("## ")) {
-      inRegistry = line.toLowerCase() === "## project registry";
+interface ProjectCandidate {
+  name: string;
+  path: string;
+  source: string;
+  stack?: string;
+}
+
+interface QueueNode {
+  dir: string;
+  depth: number;
+}
+
+function parseMetadataValue(content: string | undefined, key: string): string | undefined {
+  const match = content?.match(new RegExp(`^${key}:\\s*"?([^\\n"]+?)"?\\s*$`, "m"));
+  return match?.[1]?.trim().replace(/^["']|["']$/g, "");
+}
+
+function projectNameFromMetadata(content: string | undefined): string | undefined {
+  return parseMetadataValue(content, "project");
+}
+
+function projectStackFromMetadata(content: string | undefined): string | undefined {
+  return parseMetadataValue(content, "stack");
+}
+
+function hasProjectMarkers(entries: string[]): boolean {
+  const markers = new Set([
+    "AGENT.md",
+    "CLAUDE.md",
+    "package.json",
+    "pyproject.toml",
+    "Cargo.toml",
+    "go.mod",
+    "pubspec.yaml"
+  ]);
+  return entries.some((entry) => markers.has(entry));
+}
+
+function disambiguateProjectNames(items: ProjectCandidate[]): ProjectItem[] {
+  const counts = new Map<string, number>();
+  return items.map((item) => {
+    const normalized = normalizedProjectKey(item.name);
+    const existing = counts.get(normalized) ?? 0;
+    counts.set(normalized, existing + 1);
+    const name = existing === 0 ? item.name : `${item.name} (${path.basename(item.path)})`;
+    return { name, path: item.path, stack: item.stack, source: item.source };
+  });
+}
+
+async function discoverLocalProjects(config: {
+  projectRoot: string;
+  workspaceRoots?: string[];
+  policy: SourcePolicy;
+  discoveryDepth: number;
+  directoryEntriesLimit: number;
+  maxProjects: number;
+  diagnostics: Diagnostic[];
+}): Promise<ProjectCandidate[]> {
+  const roots = Array.from(new Set(
+    [config.projectRoot, ...(config.workspaceRoots ?? []), path.dirname(config.projectRoot)]
+      .filter(Boolean)
+      .map((root) => path.resolve(root))
+  ));
+  const nodes: QueueNode[] = roots.map((root) => ({ dir: root, depth: 0 }));
+  const visited = new Set<string>();
+  const candidates: ProjectCandidate[] = [];
+
+  while (nodes.length) {
+    if (candidates.length >= config.maxProjects) {
+      break;
+    }
+
+    const node = nodes.shift();
+    if (!node) {
+      break;
+    }
+    if (node.depth > config.discoveryDepth) {
       continue;
     }
-    if (!inRegistry || !line.startsWith("|")) {
+
+    let entries: Array<{ name: string; isDirectory: boolean; isSymbolicLink: boolean; }>;
+    try {
+      const dirEntries = await readdir(node.dir, { withFileTypes: true });
+      entries = dirEntries.map((entry) => ({
+        name: entry.name,
+        isDirectory: entry.isDirectory(),
+        isSymbolicLink: entry.isSymbolicLink()
+      }));
+    } catch {
+      config.diagnostics.push({
+        code: "PROJECT_DISCOVERY_DIR_UNREADABLE",
+        severity: "warning",
+        message: "Project discovery directory unreadable",
+        source: config.policy.redactPath(node.dir)
+      });
       continue;
     }
-    const cells = line.split("|").map((cell) => cell.trim()).filter(Boolean);
-    const [name, projectPath, stack] = cells;
-    if (!name || name.toLowerCase() === "name" || /^-+$/.test(name)) {
+
+    const childNames = entries.map((entry) => entry.name);
+    if (entries.length > config.directoryEntriesLimit) {
+      config.diagnostics.push({
+        code: "PROJECT_DISCOVERY_DIR_TOO_LARGE",
+        severity: "warning",
+        message: "Skipping directory scan because too many entries",
+        source: config.policy.redactPath(node.dir)
+      });
       continue;
     }
-    projectsFromRegistryTable.push({ name, path: projectPath, stack, source });
+
+    const shipflowDataEntry = entries.find((entry) => entry.name === "shipflow_data" && entry.isDirectory && !entry.isSymbolicLink);
+    if (shipflowDataEntry) {
+      if (path.basename(node.dir) !== "shipflow_data" && path.basename(node.dir) !== ".git") {
+        const markerEntries = childNames;
+        if (hasProjectMarkers(markerEntries)) {
+          const sourceMarker = path.join(node.dir, "AGENT.md");
+          const localAgentResult = await config.policy.safeRead(sourceMarker);
+          const localClaudeResult = await config.policy.safeRead(path.join(node.dir, "CLAUDE.md"));
+          const localProjectName = localAgentResult.ok
+            ? parseMetadataValue(localAgentResult.content, "project")
+            : parseMetadataValue(localClaudeResult.ok ? localClaudeResult.content : undefined, "project");
+          const projectName = localProjectName || path.basename(node.dir);
+          const stack = projectStackFromMetadata(
+            localAgentResult.ok
+              ? localAgentResult.content
+              : localClaudeResult.ok
+                ? localClaudeResult.content
+                : undefined
+          );
+
+          const candidate: ProjectCandidate = {
+            name: projectName,
+            path: node.dir,
+            source: localAgentResult.ok
+              ? (localAgentResult.realPath ?? sourceMarker)
+              : localClaudeResult.ok
+                ? (localClaudeResult.realPath ?? path.join(node.dir, "CLAUDE.md"))
+                : node.dir,
+            stack
+          };
+          if (!candidates.some((item) => normalizedProjectKey(item.path) === normalizedProjectKey(candidate.path))) {
+            candidates.push(candidate);
+          }
+        }
+      }
+    }
+
+    if (node.depth === config.discoveryDepth) {
+      continue;
+    }
+
+    for (const name of childNames) {
+      const entry = entries.find((item) => item.name === name);
+      if (!entry || !entry.isDirectory || entry.isSymbolicLink) {
+        continue;
+      }
+      if (name.startsWith(".") || name === "node_modules" || name === ".git" || name === "dist" || name === "build") {
+        continue;
+      }
+      const next = path.join(node.dir, name);
+      if (visited.has(next)) {
+        continue;
+      }
+      if (name.toLowerCase() === "shipflow_data") {
+        continue;
+      }
+      const normalizedPath = path.resolve(next);
+      if (visited.has(normalizedPath)) {
+        continue;
+      }
+      visited.add(normalizedPath);
+      nodes.push({ dir: normalizedPath, depth: node.depth + 1 });
+    }
   }
 
-  return projectsFromRegistryTable.length ? projectsFromRegistryTable : projectsFromBullets;
+  return candidates;
 }
 
 function normalizedProjectKey(value: string | undefined): string {
@@ -720,14 +875,15 @@ function trafficFromAudit(overall: string | undefined, issues: string | undefine
   return "🟢";
 }
 
-function projectNameFromMetadata(content: string | undefined): string | undefined {
-  return content?.match(/^project:\s*"?(.+?)"?$/m)?.[1]?.trim().replace(/^["']|["']$/g, "");
-}
-
 export async function readDashboardData(config: ReaderConfig): Promise<DashboardData> {
   const diagnostics: Diagnostic[] = [];
+  const discoveryDepth = config.projectDiscoveryDepth ?? DEFAULT_PROJECT_DISCOVERY_DEPTH;
+  const directoryEntriesLimit = config.projectDiscoveryDirectoryEntriesLimit ?? DEFAULT_PROJECT_DISCOVERY_DIRECTORY_ENTRIES_LIMIT;
+  const maxProjects = config.projectDiscoveryMaxProjects ?? DEFAULT_PROJECT_DISCOVERY_MAX_PROJECTS;
+  const workspaceRoots = config.workspaceRoots ? config.workspaceRoots.filter(Boolean) : [];
+  const skillsRoot = path.join(config.shipflowRepoRoot, "skills");
   const policy = new SourcePolicy({
-    roots: [config.projectRoot, config.shipflowDataRoot, config.shipflowRepoRoot]
+    roots: [config.projectRoot, ...workspaceRoots, config.shipflowRepoRoot]
   });
 
   const read = async (filePath: string) => {
@@ -738,67 +894,119 @@ export async function readDashboardData(config: ReaderConfig): Promise<Dashboard
     return result;
   };
   const readOptional = async (filePath: string) => policy.safeRead(filePath);
+  const readFirstExisting = async (filePaths: string[], reportMissing = false): Promise<SourceReadResult | undefined> => {
+    for (const filePath of filePaths) {
+      const result = await policy.safeRead(filePath);
+      if (result.ok) {
+        return result;
+      }
+      if (reportMissing && result.diagnostic) {
+        diagnostics.push(result.diagnostic);
+      }
+    }
+    return undefined;
+  };
+  const summarizeTopLines = (label: string, values: string[], max = 12): TextSummary =>
+    values.length ? { label, lines: values.slice(0, max) } : topLines(label, "", max);
 
-  const projectsResult = await read(path.join(config.shipflowDataRoot, "PROJECTS.md"));
+  const discoveredProjects = await discoverLocalProjects({
+    projectRoot: config.projectRoot,
+    workspaceRoots,
+    policy,
+    discoveryDepth,
+    directoryEntriesLimit,
+    maxProjects,
+    diagnostics
+  });
+
+  const normalizedNameCount = new Map<string, number>();
+  for (const candidate of discoveredProjects) {
+    const count = normalizedNameCount.get(normalizedProjectKey(candidate.name)) ?? 0;
+    normalizedNameCount.set(normalizedProjectKey(candidate.name), count + 1);
+  }
+  for (const [normalized, count] of normalizedNameCount.entries()) {
+    if (count > 1) {
+      const duplicateCandidates = discoveredProjects.filter((candidate) => normalizedProjectKey(candidate.name) === normalized);
+      for (const duplicate of duplicateCandidates.slice(1)) {
+        diagnostics.push({
+          code: "PROJECT_NAME_DUPLICATE",
+          severity: "warning",
+          source: policy.redactPath(duplicate.path),
+          message: `Duplicate project name "${duplicate.name}" detected; keeping separate entries by path`
+        });
+      }
+    }
+  }
+
+  const projects = disambiguateProjectNames(discoveredProjects).map((project) => ({
+    name: project.name,
+    path: project.path ?? config.projectRoot,
+    stack: project.stack ?? undefined,
+    source: project.source
+  }));
+
   const localAgentResult = await readOptional(path.join(config.projectRoot, "AGENT.md"));
   const localClaudeResult = localAgentResult.ok
     ? undefined
     : await readOptional(path.join(config.projectRoot, "CLAUDE.md"));
-  const masterTasksResult = await read(path.join(config.shipflowDataRoot, "TASKS.md"));
-  const localTasksResult = await read(path.join(config.projectRoot, "shipflow_data/workflow/TASKS.md"));
-  const masterAuditsResult = await read(path.join(config.shipflowDataRoot, "AUDIT_LOG.md"));
-  const localAuditsResult = await read(path.join(config.projectRoot, "shipflow_data/workflow/AUDIT_LOG.md"));
-  const opsResult = await read(path.join(config.shipflowDataRoot, "OPERATIONS_LOG.md"));
-  const depsResult = await read(path.join(config.shipflowDataRoot, "DEPENDENCY_LOG.md"));
-  const skillsRoot = path.join(config.shipflowRepoRoot, "skills");
-
-  const projects = projectsResult.ok && projectsResult.content
-    ? parseProjects(projectsResult.content, projectsResult.realPath ?? "PROJECTS.md")
-    : [];
-  const localProjectName =
+  const localProjectFallbackName =
     projectNameFromMetadata(localAgentResult.ok ? localAgentResult.content : undefined) ??
     projectNameFromMetadata(localClaudeResult?.ok ? localClaudeResult.content : undefined) ??
     path.basename(config.projectRoot);
-  if (!projects.some((project) =>
-    normalizedProjectKey(project.name) === normalizedProjectKey(localProjectName) ||
-    normalizedProjectKey(project.path) === normalizedProjectKey(config.projectRoot)
-  )) {
+    if (!projects.some((project) => normalizedProjectKey(project.path) === normalizedProjectKey(config.projectRoot))) {
     projects.push({
-      name: localProjectName,
+      name: localProjectFallbackName,
       path: config.projectRoot,
+      stack: undefined,
       source: localAgentResult.ok ? localAgentResult.realPath ?? "AGENT.md" : config.projectRoot
     });
   }
 
-  const specs: SpecItem[] = [];
-  const specsRoot = path.join(config.projectRoot, "shipflow_data/workflow/specs");
-  const seenSpecs = new Map<string, DedupEntry>();
-  try {
-    const entries = await readdir(specsRoot, { withFileTypes: true });
-    for (const entry of entries) {
-      if (!entry.isFile() || !entry.name.endsWith(".md")) {
-        continue;
-      }
-      const specPath = path.join(specsRoot, entry.name);
-      const specResult = await read(specPath);
-      if (!specResult.ok || !specResult.content) {
-        continue;
-      }
-      const spec = parseSpecs(specResult.content, specPath, diagnostics);
-      const specPathForDedupe = spec.path;
-      const dedupeKey = specDedupeKey(spec.project ?? "", undefined, specPathForDedupe, spec.title);
-      if (!registerDedupe(seenSpecs, dedupeKey, "spec", policy.redactPath(specPath), 1, "canonical", diagnostics)) {
-        continue;
-      }
-      specs.push(spec);
+  const dedupedProjects: Array<{ name: string; path: string; stack: string | undefined; source: string }> = [];
+  const seenProjectPaths = new Set<string>();
+  for (const project of projects) {
+    const projectPath = project.path ?? config.projectRoot;
+    const normalizedPath = path.resolve(projectPath).toLowerCase();
+    if (seenProjectPaths.has(normalizedPath)) {
+      continue;
     }
-  } catch {
-    diagnostics.push({
-      code: "SPECS_DIR_UNREADABLE",
-      severity: "warning",
-      message: "Specs directory missing or unreadable",
-      source: policy.redactPath(specsRoot)
-    });
+    seenProjectPaths.add(normalizedPath);
+    dedupedProjects.push(project);
+  }
+  projects.splice(0, projects.length, ...dedupedProjects);
+
+  const specs: SpecItem[] = [];
+  const seenSpecs = new Map<string, DedupEntry>();
+  for (const project of projects) {
+    const projectPath = project.path ?? config.projectRoot;
+    const specsRoot = path.join(projectPath, "shipflow_data/workflow/specs");
+    try {
+      const entries = await readdir(specsRoot, { withFileTypes: true });
+      for (const entry of entries) {
+        if (!entry.isFile() || !entry.name.endsWith(".md")) {
+          continue;
+        }
+        const specPath = path.join(specsRoot, entry.name);
+        const specResult = await read(specPath);
+        if (!specResult.ok || !specResult.content) {
+          continue;
+        }
+        const spec = parseSpecs(specResult.content, specPath, diagnostics);
+        const specPathForDedupe = spec.path;
+        const dedupeKey = specDedupeKey(spec.project ?? "", undefined, specPathForDedupe, spec.title);
+        if (!registerDedupe(seenSpecs, dedupeKey, "spec", policy.redactPath(specPath), 1, "canonical", diagnostics)) {
+          continue;
+        }
+        specs.push(spec);
+      }
+    } catch {
+      diagnostics.push({
+        code: "SPECS_DIR_UNREADABLE",
+        severity: "warning",
+        message: "Specs directory missing or unreadable",
+        source: policy.redactPath(specsRoot)
+      });
+    }
   }
 
   const skills: string[] = [];
@@ -818,49 +1026,77 @@ export async function readDashboardData(config: ReaderConfig): Promise<Dashboard
     });
   }
 
-  const taskSources: TaskSource[] = [
-    localTasksResult.ok && localTasksResult.content
-      ? {
-          content: localTasksResult.content,
-          defaultProject: localProjectName,
-          sourcePath: localTasksResult.realPath ?? path.join(config.projectRoot, "shipflow_data/workflow/TASKS.md"),
-          redactedSourcePath: policy.redactPath(localTasksResult.realPath ?? path.join(config.projectRoot, "shipflow_data/workflow/TASKS.md"))
-        }
-      : undefined,
-    masterTasksResult.ok && masterTasksResult.content
-      ? {
-          content: masterTasksResult.content,
-          sourcePath: masterTasksResult.realPath ?? path.join(config.shipflowDataRoot, "TASKS.md"),
-          redactedSourcePath: policy.redactPath(masterTasksResult.realPath ?? path.join(config.shipflowDataRoot, "TASKS.md"))
-        }
-      : undefined
-  ].filter((source): source is TaskSource => Boolean(source?.content));
+  const taskSources: TaskSource[] = [];
+  for (const project of projects) {
+    const projectPath = project.path ?? config.projectRoot;
+    const fallback = await readFirstExisting([
+      path.join(projectPath, "shipflow_data/workflow/TASKS.md"),
+      path.join(projectPath, "shipflow_data/TASKS.md")
+    ]);
+    if (!fallback?.ok || !fallback.content) {
+      continue;
+    }
+    const sourcePath = fallback.realPath ?? path.join(projectPath, "shipflow_data/workflow/TASKS.md");
+    taskSources.push({
+      content: fallback.content,
+      defaultProject: project.name,
+      sourcePath,
+      redactedSourcePath: policy.redactPath(sourcePath)
+    });
+  }
 
-  const auditSources: TaskSource[] = [
-    localAuditsResult.ok && localAuditsResult.content
-      ? {
-          content: localAuditsResult.content,
-          defaultProject: localProjectName,
-          sourcePath: localAuditsResult.realPath ?? path.join(config.projectRoot, "shipflow_data/workflow/AUDIT_LOG.md"),
-          redactedSourcePath: policy.redactPath(localAuditsResult.realPath ?? path.join(config.projectRoot, "shipflow_data/workflow/AUDIT_LOG.md"))
-        }
-      : undefined,
-    masterAuditsResult.ok && masterAuditsResult.content
-      ? {
-          content: masterAuditsResult.content,
-          sourcePath: masterAuditsResult.realPath ?? path.join(config.shipflowDataRoot, "AUDIT_LOG.md"),
-          redactedSourcePath: policy.redactPath(masterAuditsResult.realPath ?? path.join(config.shipflowDataRoot, "AUDIT_LOG.md"))
-        }
-      : undefined
-  ].filter((source): source is TaskSource => Boolean(source?.content));
+  const auditSources: TaskSource[] = [];
+  for (const project of projects) {
+    const projectPath = project.path ?? config.projectRoot;
+    const fallback = await readFirstExisting([
+      path.join(projectPath, "shipflow_data/workflow/AUDIT_LOG.md"),
+      path.join(projectPath, "shipflow_data/AUDIT_LOG.md")
+    ]);
+    if (!fallback?.ok || !fallback.content) {
+      continue;
+    }
+    const sourcePath = fallback.realPath ?? path.join(projectPath, "shipflow_data/workflow/AUDIT_LOG.md");
+    auditSources.push({
+      content: fallback.content,
+      defaultProject: project.name,
+      sourcePath,
+      redactedSourcePath: policy.redactPath(sourcePath)
+    });
+  }
+
+  const operationLines: string[] = [];
+  const dependencyLines: string[] = [];
+  for (const project of projects) {
+    const projectPath = project.path ?? config.projectRoot;
+    const ops = await readFirstExisting([
+      path.join(projectPath, "shipflow_data/workflow/OPERATIONS_LOG.md"),
+      path.join(projectPath, "shipflow_data/OPERATIONS_LOG.md")
+    ]);
+    if (ops?.ok && ops.content) {
+      operationLines.push(...ops.content.split("\n").map((line) => line.trim()).filter(Boolean));
+    }
+    const deps = await readFirstExisting([
+      path.join(projectPath, "shipflow_data/workflow/DEPENDENCY_LOG.md"),
+      path.join(projectPath, "shipflow_data/DEPENDENCY_LOG.md")
+    ]);
+    if (deps?.ok && deps.content) {
+      dependencyLines.push(...deps.content.split("\n").map((line) => line.trim()).filter(Boolean));
+    }
+  }
+
+  const taskLines = summarizeTasks(taskSources, diagnostics);
+  const auditLines = summarizeAudits(auditSources, diagnostics);
+
+  const opsLines = summarizeTopLines("Operations", operationLines);
+  const depLines = summarizeTopLines("Dependencies", dependencyLines);
 
   return {
     projects,
     specs,
-    tasks: summarizeTasks(taskSources, diagnostics),
-    audits: summarizeAudits(auditSources, diagnostics),
-    operations: topLines("Operations", opsResult.ok ? opsResult.content ?? "" : ""),
-    dependencies: topLines("Dependencies", depsResult.ok ? depsResult.content ?? "" : ""),
+    tasks: taskLines,
+    audits: auditLines,
+    operations: opsLines,
+    dependencies: depLines,
     skills: topLines("Skills", skills.join("\n")),
     diagnostics
   };

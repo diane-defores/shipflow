@@ -27,7 +27,7 @@ example_prompts:
   - "/sf-status current workspace"
 limits:
   - "It reports state; it does not resolve the state for you"
-  - "It does not mutate project trackers or external control-plane files"
+  - "It does not mutate project trackers or legacy archive files"
   - "The output is only as useful as the underlying git hygiene"
 related_skills:
   - "sf-review"

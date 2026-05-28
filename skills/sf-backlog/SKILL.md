@@ -33,7 +33,7 @@ Default to `report=user`: concise backlog outcome, files touched, remaining risk
 - Current directory: !`pwd`
 - Project workflow TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project TASKS.md"`
 - Project workflow BACKLOG.md: !`cat shipflow_data/workflow/BACKLOG.md 2>/dev/null || cat BACKLOG.md 2>/dev/null || echo "No project BACKLOG.md"`
-- External control-plane TASKS.md (portfolio coordination only): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No control-plane TASKS.md"`
+- Project-local TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project-local TASKS.md"`
 - Project CLAUDE.md: !`head -30 CLAUDE.md 2>/dev/null || echo "No CLAUDE.md"`
 - Workspace CLAUDE.md: !`head -20 $HOME/CLAUDE.md 2>/dev/null || echo "N/A"`
 - Code TODOs: !`rg -n "TODO|FIXME" -g "*.ts" -g "*.tsx" -g "*.js" -g "*.jsx" -g "*.py" -g "*.sh" . 2>/dev/null | head -20 || echo "No TODOs found"`
@@ -44,8 +44,8 @@ Project backlog work is local-first.
 
 - For a selected project, use `[project]/shipflow_data/workflow/BACKLOG.md` as the primary backlog and `[project]/shipflow_data/workflow/TASKS.md` as the active task tracker.
 - Root `BACKLOG.md` and `TASKS.md` are legacy project tracker locations; read them as migration/fallback sources only when canonical workflow files are absent.
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is the external control plane. Use its `PROJECTS.md` for project discovery and its `TASKS.md` only for explicit portfolio-level coordination or when the user asks for the full workspace.
-- When writing to the external control-plane `TASKS.md`, keep project identity explicit and treat the edit as a portfolio mirror/coordination update, not project business truth.
+- Legacy central archives are migration evidence only. Prefer project discovery from local `shipflow_data/` markers and write backlog changes to project-local workflow files.
+- Do not write backlog updates to a central control-plane `TASKS.md`.
 
 ## Shared tracking file write protocol
 
@@ -66,7 +66,7 @@ If the current directory has no project markers (not inside a specific project),
 - Question: "Which project's backlog should I manage?"
 - `multiSelect: false`
 - Options:
-  - **Full workspace** — "Manage the portfolio backlog through the external control plane" (Recommended)
+  - **Full workspace** — "Inspect local project backlogs through project discovery" (Recommended)
   - One option per project: label = project name, description = backlog item count
 
 ### Steps
@@ -80,7 +80,7 @@ If the current directory has no project markers (not inside a specific project),
 
 2. **If adding to backlog**:
    - Create `shipflow_data/workflow/BACKLOG.md` if it doesn't exist for the selected project.
-   - Use `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` only when the selected scope is full workspace or explicit portfolio coordination.
+  - Use `shipflow_data/workflow/TASKS.md` for the selected project.
    - Add the idea with context, date, and category
    - Acknowledge addition and ask if it should be active now
 
@@ -142,7 +142,7 @@ If the current directory has no project markers (not inside a specific project),
 ### Important
 
 - Default to project-local `shipflow_data/workflow/BACKLOG.md` and `shipflow_data/workflow/TASKS.md` for project work.
-- Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` only for full-workspace or explicit portfolio coordination.
+- Update project-local `shipflow_data/workflow/TASKS.md` only when backlog triage changes active project tasks.
 - Prefix portfolio backlog items with the project name (e.g., `- tubeflow: Native app feature parity`).
 - Keep each project's active tracker focused (5-10 items max).
 - Portfolio backlog sections can be larger (20-50 items across all projects).

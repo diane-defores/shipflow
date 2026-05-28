@@ -39,8 +39,7 @@ This reference preserves the detailed lifecycle workflow for `sf-spec`. Load it 
 - Project name: !`basename $(pwd)`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - CLAUDE.md (constraints): !`head -60 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null | head -40 || echo "No master TASKS.md"`
-- Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null | head -30 || echo "No local TASKS.md"`
+- Project-local TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null | head -40 || cat TASKS.md 2>/dev/null | head -30 || echo "No project-local TASKS.md"`
 - Project structure: !`find . -maxdepth 3 -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.astro" -o -name "*.vue" -o -name "*.py" -o -name "*.sh" \) 2>/dev/null | grep -v node_modules | grep -v .git | grep -v dist | sort | head -30`
 
 ## Your task
@@ -76,7 +75,7 @@ Une spec est prête UNIQUEMENT si :
 - **Autonome** : un agent frais peut implémenter sans lire l'historique de conversation
 
 Les snapshots de `TASKS.md` lus ici sont informatifs seulement.
-`sf-spec` n'édite jamais `TASKS.md`, `AUDIT_LOG.md` ou `PROJECTS.md` ; la skill produit une spec, pas du tracking.
+`sf-spec` n'édite jamais `TASKS.md`, `AUDIT_LOG.md` ou legacy `PROJECTS.md` ; la skill produit une spec, pas du tracking.
 Avant de créer ou modifier une ligne opérationnelle `spec:`, charger `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`; cette ligne est un résumé raw-scan, pas le contrat complet de la spec.
 
 ---

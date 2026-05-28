@@ -75,8 +75,7 @@ Regles de redaction avant persistance:
 - Current directory: !`pwd`
 - Project name: !`basename $(pwd)`
 - CLAUDE.md (constraints): !`head -40 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null | head -40 || echo "No master TASKS.md"`
-- Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null | head -30 || echo "No local TASKS.md"`
+- Project-local TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null | head -40 || cat TASKS.md 2>/dev/null | head -30 || echo "No project-local TASKS.md"`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 
 ---
@@ -149,7 +148,7 @@ Au démarrage, regarde rapidement :
 Utilise ce contexte pour ancrer la réflexion dans la réalité du projet, pas dans l'abstrait.
 
 Les snapshots de `TASKS.md` lus ici sont informatifs seulement.
-`sf-explore` ne doit jamais modifier `TASKS.md`, `AUDIT_LOG.md` ou `PROJECTS.md`.
+`sf-explore` ne doit jamais modifier `TASKS.md`, `AUDIT_LOG.md` ou legacy `PROJECTS.md`.
 
 ---
 

@@ -68,7 +68,7 @@ Then ask for the specific topic via a second question.
 Use project-local context for project-specific recommendations:
 
 - Read `shipflow_data/business/`, `shipflow_data/technical/`, `shipflow_data/editorial/`, and `shipflow_data/workflow/` when they exist and the topic is project-specific.
-- Treat `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` as an external control plane for cross-project registry/tracker coordination only. Do not use it as the business, editorial, or technical source of truth for a project.
+- Treat legacy `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` as historical or compatibility input only. Do not use it as the business, editorial, technical, workflow, registry, or tracker source of truth for a project.
 - If project-local governance is missing, continue with lower confidence and report the context gap.
 - If recommendations touch public content or claims, load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` and route follow-up writing through `sf-content` / `sf-repurpose`; do not invent a blog/article/newsletter surface.
 

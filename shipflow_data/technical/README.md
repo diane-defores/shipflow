@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.7.0"
+artifact_version: "1.8.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-24"
+updated: "2026-05-26"
 status: reviewed
 source_skill: sf-start
 scope: technical-docs-index
@@ -32,6 +32,7 @@ evidence:
   - "Supabase, Sentry, and Astro global platform notes added for common auth/database, observability, and public-site stacks."
   - "Python, Bash, and Gum global platform notes added for ShipFlow tooling, shell runtime, and Gum TUI scripts."
   - "CrewAI global platform note added for agent orchestration, tools, memory, structured outputs, and dependency freshness."
+  - "GitHub Actions technical note added for CI cost, cache, monorepo trigger, and workflow topology guardrails."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit"
 ---
@@ -72,6 +73,7 @@ This layer complements the existing docs:
 | `public-site-and-content-runtime.md` | `site/`, `shipflow_data/editorial/content-map.md`, public/private doc boundaries |
 | `installer-and-user-scope.md` | `install.sh`, root/user setup, aliases, skill links, MCP config |
 | `decisions.md` | ADR-style decisions, `decision_record` templates, durable decision routing |
+| `github-actions.md` | GitHub Actions workflow cost, caches, monorepo triggers, job topology, deploy guards, and artifacts |
 | `blacksmith.md` | Blacksmith CI runners, APK build observability, logs, SSH debugging, monitors, metrics, cache, Testboxes |
 | `firebase-firestore-oidc-ci-playbook.md` | Firebase/Firestore CI setup with GitHub OIDC/WIF, step-by-step wiring and troubleshooting matrix |
 | `external-platforms/README.md` | Global provider/source corpus, Freshness Gate source policy, project-local platform usage template |

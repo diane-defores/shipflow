@@ -46,12 +46,12 @@ If the current directory has no project markers (no `package.json`, no `requirem
 - Question: "Which project(s) should I check?"
 - `multiSelect: true`
 - One option per project: label = project name, description = stack
-- Read project list from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
+- Read project list from local project discovery (`shipflow_data/` markers); use old registry files only as manually supplied migration evidence.
 
 Then run checks for each selected project sequentially.
 
 Shared tracking files are read-only in this skill:
-- `PROJECTS.md` is only used to discover projects when running from the workspace root.
+- `PROJECTS.md` is legacy/migration evidence only; it is not required for workspace checks.
 - Never edit `TASKS.md`, `AUDIT_LOG.md`, or `PROJECTS.md` from `sf-check`.
 
 ### Step 0: Choose which checks to run

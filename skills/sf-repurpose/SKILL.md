@@ -31,6 +31,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 - `references/repurpose-workflow.md`: Source reconstruction, output selection, diffusion map, transformation catalog, safety pass, and owner handoff rules.
 - `references/output-pack.md`: Standard structured output pack used during Phase 3.
+- `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md`: shared rubric and structured feedback schema when producing a final repurposed content quality score.
 
 ## Mode Detection
 
@@ -47,6 +48,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 
 - Stay source-faithful: do not invent claims, proof, product promises, legal statements, or article surfaces.
 - Preserve copyright, claim-register, editorial surface, and output-placement constraints.
+- When a final quality gate is requested, emit structured feedback and score via `content-quality-rubric.md` and keep `needs revision` or `blocked` when blocking criteria fail.
 - Do not originate a chantier unless the user explicitly asks to formalize the follow-up work.
 
 ## Stop Conditions

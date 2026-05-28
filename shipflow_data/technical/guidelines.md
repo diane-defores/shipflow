@@ -121,7 +121,7 @@ This file defines stable engineering and documentation rules for working inside 
 
 ## Tracker Boundaries
 
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` is the master cross-project tracker.
+- Project-local `shipflow_data/workflow/TASKS.md` is the active project task tracker. Legacy `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` paths are migration evidence only.
 - `shipflow_data/workflow/TASKS.md` is the local repo tracker.
 - `shipflow_data/workflow/AUDIT_LOG.md` is the local audit index/log.
 - Root `TASKS.md` and `AUDIT_LOG.md` are legacy project tracker locations unless an external project tool explicitly requires them.

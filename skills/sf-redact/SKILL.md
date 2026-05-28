@@ -30,6 +30,7 @@ Default to `report=user`: concise, findings-first for audits and failures, outco
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/redaction-workflow.md`: Long-form drafting workflow, identity absorption, planning, research, drafting, optimization, quality control, metadata, and report details.
+- `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md`: shared rubric for final draft quality score and structured feedback.
 
 ## Mode Detection
 
@@ -42,6 +43,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve brand voice, source evidence, public-claim, editorial surface, copyright, disclosure, and quality gates.
+- When requested to score a near-final draft, use `content-quality-rubric.md` for rubric status and structured feedback; do not claim `ready` if blocked criteria remain.
 - Do not originate a chantier unless the user explicitly asks to formalize follow-up work.
 - Do not invent facts, quotes, legal claims, performance claims, pricing, or customer proof.
 

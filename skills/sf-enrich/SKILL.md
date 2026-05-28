@@ -30,6 +30,7 @@ Default to `report=user`: concise, findings-first for audits and failures, outco
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/enrichment-workflow.md`: Content enrichment workflow, research, rewrite, AI visibility, conversion layer, quality checks, metadata, and reporting details.
+- `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md`: shared rubric for enriched-content quality score and structured feedback.
 
 ## Mode Detection
 
@@ -42,6 +43,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve source, claim, editorial surface, AI visibility, conversion, and quality gates.
+- When enrichment ends with a quality gate, score with `content-quality-rubric.md`; keep `needs revision` or `blocked` when required evidence or criteria fail.
 - Do not originate a chantier unless the user explicitly asks to formalize follow-up work.
 - Do not invent facts, metrics, public claims, comparisons, or external recommendations.
 

@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.8.0"
 project: ShipFlow
 created: "2026-04-26"
-updated: "2026-05-24"
+updated: "2026-05-26"
 status: draft
 source_skill: manual
 scope: content-map
@@ -19,6 +19,7 @@ content_surfaces:
   - repo_docs
   - terminal_tui_docs
   - decision_contracts
+  - content_quality_rubric
   - canonical_path_policy
   - editorial_governance
   - claim_register
@@ -54,6 +55,7 @@ linked_artifacts:
   - "site/src/pages/skill-modes.astro"
   - "skills/references/canonical-paths.md"
   - "skills/references/decision-quality-contract.md"
+  - "skills/references/content-quality-rubric.md"
 depends_on:
   - artifact: "shipflow_data/business/product.md"
     artifact_version: "1.2.0"
@@ -90,6 +92,7 @@ For public-content governance details, use `shipflow_data/editorial/` after this
 | Workflow doctrine | `shipflow-spec-driven-workflow.md` | Explain ShipFlow V3 work doctrine and artifact rules | Markdown artifact | Active skills, templates, linter behavior | Workflow or artifact doctrine changes |
 | Canonical path policy | `skills/references/canonical-paths.md` | Define how skills resolve ShipFlow-owned tools, references, templates, and project-local artifacts | Markdown reference artifact | ShipFlow install root and skill execution behavior | A skill, tool, template, or reference path rule changes |
 | Editorial governance | `shipflow_data/editorial/` | Govern public-content impact, claims, page intent, Astro runtime schema boundaries, and missing blog/article surfaces | Markdown governance artifacts | `shipflow_data/editorial/content-map.md`, business/product/brand/GTM contracts, site routes, content schema | A public surface, public claim, content schema policy, or editorial gate changes |
+| Content quality rubric | `skills/references/content-quality-rubric.md` | Shared project-aware content quality score, blocked reason codes, and structured feedback schema for content owner skills | Markdown reference artifact | Business/product/brand/GTM contracts and editorial corpus revisions | Content scoring rules, blocked codes, evaluator allowlist, or verification gate semantics change |
 | Editorial Reader role | `skills/references/subagent-roles/editorial-reader.md` | Diagnose public-content and claim impact without editing files | Markdown role contract | `skills/references/editorial-content-corpus.md`, `shipflow_data/editorial/` | Reader output format, public-content gate, or role boundaries change |
 | Content lifecycle skill | `skills/sf-content/SKILL.md` | Orchestrate content strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing | Skill contract | `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/`, specialist content skills | Content-management lifecycle, owner-skill routing, or public content validation gates change |
 | Product contract | `shipflow_data/business/product.md` | Define user problem, scope, workflows, non-goals, and risks | Markdown artifact | Product decisions and repo evidence | Product scope or core workflows change |
@@ -108,6 +111,7 @@ For public-content governance details, use `shipflow_data/editorial/` after this
 | Remote agent operations | `site/src/pages/remote-mcp-oauth-tunnel.astro` | `site/src/pages/docs.astro`, `README.md`, `local/README.md`, `shipflow_data/workflow/specs/local-mcp-oauth-tunnel-login.md` | Understand why remote agents need local callback routing for OAuth MCP login | Dedicated guide owns the SEO topic; docs overview points to it; repo docs point operators to the local guided setup | live |
 | Terminal operator cockpit | `site/src/pages/docs.astro#terminal-tui` | `tui/README.md`, `shipflow_data/technical/terminal-tui.md`, `README.md`, `shipflow_data/workflow/specs/shipflow-terminal-tui-v1.md` | Understand the optional read-only TUI and how it fits with skills, Gum, and Flutter | Public docs state the boundary; repo docs and technical contract carry setup, keys, source policy, and validation | live |
 | Content lifecycle and repurposing | `shipflow_data/editorial/content-map.md`, `site/src/content/skills/sf-content.md` | `skills/sf-content/SKILL.md`, `skills/sf-repurpose/SKILL.md`, `skills/sf-redact/SKILL.md`, `skills/sf-enrich/SKILL.md`, `shipflow_data/editorial/`, future public docs section | Manage content strategy, source reuse, drafting, enrichment, audits, and ship validation without inventing undeclared surfaces | `sf-content` starts with this map and the editorial layer, then routes to specialist content skills such as `sf-repurpose` | live |
+| Content quality scoring | `skills/references/content-quality-rubric.md` | `skills/sf-content/SKILL.md`, `skills/sf-repurpose/SKILL.md`, `skills/sf-redact/SKILL.md`, `skills/sf-enrich/SKILL.md`, `skills/sf-audit-copy/SKILL.md`, `skills/sf-audit-copywriting/SKILL.md`, `skills/sf-audit-seo/SKILL.md`, `skills/sf-verify/SKILL.md` | Keep project-aware scoring and blocked criteria consistent across owner skills | Owner skills must consume one rubric output schema; `sf-verify` rejects stale/recoverable score states as proof | live |
 | Editorial governance | `shipflow_data/editorial/README.md` | `shipflow_data/editorial/public-surface-map.md`, `shipflow_data/editorial/page-intent-map.md`, `shipflow_data/editorial/claim-register.md`, `shipflow_data/editorial/editorial-update-gate.md`, `shipflow_data/editorial/astro-content-schema-policy.md`, `shipflow_data/editorial/blog-and-article-surface-policy.md` | Keep public pages, README, FAQ, skill pages, claims, and future articles aligned with product truth | Public-content work starts at `shipflow_data/editorial/content-map.md`, then uses the editorial layer for gates and evidence | live |
 
 ## Page Roles

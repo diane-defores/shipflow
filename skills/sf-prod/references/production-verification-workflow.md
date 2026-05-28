@@ -73,7 +73,7 @@ Si le déploiement ou le build passe par GitHub Actions sur Blacksmith runners, 
 
 Lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md` quand le projet expose Sentry ou quand le signal prod dépend d'une erreur runtime, d'un 5xx, d'un crash, d'un flow auth/paiement/données, d'un job, d'un webhook, ou d'une erreur visible après déploiement.
 
-Le registry `PROJECTS.md` est en lecture seule dans cette skill.
+Les anciens registres `PROJECTS.md` sont des artefacts legacy/migration.
 `sf-prod` ne doit jamais modifier `TASKS.md`, `AUDIT_LOG.md` ou `PROJECTS.md`.
 
 Lire `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` avant de choisir la cible. Si le projet est en mode `vercel-preview-push`, `sf-prod` vérifie le déploiement Vercel correspondant au dernier commit poussé et renvoie l'URL de preview prête pour les tests. Dans ce mode, le mot "prod" désigne le gate post-push, pas forcément le domaine de production custom.
@@ -88,7 +88,7 @@ Si `$ARGUMENTS` est fourni, l'utiliser comme nom de projet ou URL.
 
 Sinon, utiliser le répertoire courant. Si pas de git remote, utiliser **AskUserQuestion** :
 - Question : "Quel projet vérifier ?"
-- Options depuis `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
+- Options depuis la découverte locale des projets (`shipflow_data/` et marqueurs projet)
 
 **Extraire le owner/repo** depuis le git remote :
 ```bash

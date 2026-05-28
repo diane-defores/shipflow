@@ -86,7 +86,7 @@ Les deux scripts doivent etre complementaires, pas concurrents.
 - Claude Code / Codex install policy or validation.
 - `~/.claude`, `~/.codex`, skills, MCP servers, statusline, agent settings.
 - ShipFlow aliases and active workflow entrypoints (`shipflow`, `sf`, optional `co` if Codex is in scope).
-- `~/shipflow_data` and active development metadata.
+- project-local `shipflow_data` corpora and active development metadata.
 - AI/code CLIs when they are part of the ShipFlow workflow: `claude`, `codex`, MCP helper CLIs, agent-specific tooling.
 - explicit user targeting for profiles that receive AI/code configuration.
 

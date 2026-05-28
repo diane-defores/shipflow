@@ -68,7 +68,7 @@ Execution:
 
 Audit multiple workspace projects:
 
-1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`.
+1. Read discovered project-local corpora (`shipflow_data/` markers).
 2. Select applicable design projects.
 3. Run one read-only audit mission per selected project.
 4. Consolidate cross-project patterns + severity rollup + top improvements.
@@ -94,9 +94,9 @@ Before writing `AUDIT_LOG.md` or `TASKS.md`:
 Use this for:
 
 - local `./AUDIT_LOG.md`
-- global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`
+- project-local `shipflow_data/workflow/AUDIT_LOG.md`
 - local `TASKS.md`
-- global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`
+- legacy project-local aggregate `shipflow_data/workflow/TASKS.md`
 
 ## Reporting Contract
 

@@ -40,9 +40,8 @@ This reference preserves the detailed lifecycle workflow for `sf-start`. Load it
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "Not a git repo"`
 - ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
-- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
-- Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
-- Available specs: !`find docs specs -maxdepth 2 -type f -name "*.md" 2>/dev/null | sort | head -40`
+- Project-local TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project-local TASKS.md"`
+- Available specs: !`find shipflow_data/workflow/specs docs specs -maxdepth 2 -type f -name "*.md" 2>/dev/null | sort | head -40`
 
 ## Your task
 
@@ -176,7 +175,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
 - If the task touches non-auth browser behavior, visual state, console errors, network failures, or page-level assertions, include the minimum routes and validation objective needed for `sf-browser`
 - If the task touches Flutter UI that can run on Web, include agent-run Flutter Web smoke scenarios before APK testing; use `sf-browser` for non-auth UI objectives and `sf-auth-debug` for auth/session/callback/protected-route objectives. Reserve APK/device proof for IME, permissions, overlays, native plugins, platform channels, notifications, storage, install/update, or real-device performance
 - If the task touches Supabase, include the matching schema/policy/migration files, storage path conventions, and the exact client split (`browser`, `server`, `service-role`) in the read-first set
-- Update task tracking to `🔄 in progress` in master TASKS.md
+- Update task tracking to `🔄 in progress` in legacy master TASKS.md when explicit coordination mode is enabled.
 - Update local TASKS.md too when present
 - Before creating or mutating task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and follow its traffic-first writer obligations.
 - Treat the TASKS content loaded in Context as informational only.

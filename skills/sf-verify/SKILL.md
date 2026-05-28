@@ -66,6 +66,7 @@ Mandatory explicit checks:
 - documentation coherence verdict
 - language doctrine verdict for ShipFlow artifacts
 - decision quality and excellence verdict: pass/partial/fail for the primary metrics in `decision-quality-contract.md`
+- editorial score gate verdict when a spec/workflow requires content quality proof
 
 ## Required References
 
@@ -76,12 +77,23 @@ Always load:
 3. `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`
 4. `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`
 5. `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`
+6. `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md` when scope includes an editorial score or content quality gate.
 
 Load on demand:
 
 - `$SHIPFLOW_ROOT/skills/references/sentry-observability.md` when runtime failures/observability/deployed behavior are in scope.
 - `/sf-auth-debug` evidence for auth/session/callback/protected-route proof.
 - `/sf-browser` evidence for non-auth browser proof.
+
+## Editorial Score Gate
+
+When a chantier asks for an editorial score or content quality gate:
+
+- Validate the rubric schema from `content-quality-rubric.md`: `schema_version`, `run_id`, `run_signature`, `project_id`, `surface`, `evaluator`, `input_refs`, `applied_rules_revision`, `scores`, `weights`, `status`, `blocked_reasons`, `evidence`, `recommendations`, `confidence`, `expires_at_utc`.
+- Reject stale or mismatched signatures with `stale_or_mismatched_score`.
+- Reject recoverable/non-final statuses as verification proof: `needs retry`, `duplicate_in_progress`, `conflicting_score_state`, `stale_or_mismatched_score`.
+- Accept only final statuses: `ready`, `needs revision`, `blocked`, `publishable with caveats`.
+- Treat any blocking criterion or blocking code as non-verified for ship-readiness.
 
 ## Skill Coherence Check (when scope touches ShipFlow skills)
 

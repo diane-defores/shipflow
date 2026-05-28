@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.16.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-24"
+updated: "2026-05-26"
 status: reviewed
 source_skill: sf-start
 scope: skill-runtime-and-lifecycle
@@ -34,6 +34,7 @@ linked_systems:
   - skills/references/master-workflow-lifecycle.md
   - skills/references/decision-quality-contract.md
   - skills/references/spec-driven-development-discipline.md
+  - skills/references/content-quality-rubric.md
   - skills/references/question-contract.md
   - skills/references/sentry-observability.md
   - specs/sf-build-autonomous-master-skill.md
@@ -136,6 +137,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/references/master-workflow-lifecycle.md` | Shared master/orchestrator lifecycle skeleton and work item model | Load before master skills resolve intake, readiness, model/topology, validation, verification, closure, or ship/deploy routes |
 | `skills/references/decision-quality-contract.md` | Shared high-quality decision doctrine: correctness, security, performance, maintainability, durability, best practices, and proof before speed/cost/convenience | Load before routing, model/fallback selection, implementation, fixes, skill-contract changes, verification, or recommended defaults |
 | `skills/references/spec-driven-development-discipline.md` | Shared spec-first/proof-first discipline | Load before execution or verification when behavior, bug, skill contract, UI/docs/auth/deploy, operational, or integration work needs a proof path |
+| `skills/references/content-quality-rubric.md` | Shared project-aware content quality scoring schema and blocked-code contract | Load when content owner skills or `sf-verify` produce/consume editorial quality gates |
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
 | `skills/references/sentry-observability.md` | Shared Sentry runtime evidence, PM2/Doppler fallback evidence, release/environment correlation, redaction, and performance-overhead doctrine | Load when runtime behavior, crashes, 5xx, event IDs, deploy confidence, auth/payment/data failures, jobs, webhooks, verification, audits, or perf checks depend on observability |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
@@ -159,6 +161,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 - `sf-build`: user-facing orchestrator that consumes the governance corpus gate before implementation, closure, and ship.
 - `sf-deploy`: release confidence orchestrator (`sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog`).
 - `sf-content`: master content lifecycle (`CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> sf-verify -> sf-ship`).
+- `skills/references/content-quality-rubric.md`: shared editorial scoring contract used by content owner skills and verification gates.
 - `sf-design`: master design lifecycle (`design intent -> specialist audit/token/playground route -> spec-first implementation when needed -> checks/browser proof -> sf-verify -> sf-ship`).
 - `sf-design-from-scratch`: design-system creation skill for extracting an existing UI into a complete professional token system before playground or token audit work.
 - `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-explore when needed -> sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
@@ -297,6 +300,7 @@ sf-content
 - `sf-bug` owns bug lifecycle execution through owner skills and bounded subagents; phase skills still own bug record mutation, diagnosis, retest evidence, verification, and shipping internals.
 - `sf-maintain` owns the maintenance lifecycle; bugs, dependencies, docs, checks, audits, migrations, tasks, security review, repair, verification, and ship still run through their specialist owner skills and gates.
 - `sf-content` owns content-management orchestration; repurposing, drafting, enrichment, copy audit, copywriting audit, SEO audit, docs, veille, market study, browser proof, verification, and ship still run through their specialist owner skills and gates.
+- Content owner skills (`sf-content`, `sf-repurpose`, `sf-redact`, `sf-enrich`, `sf-audit-copy`, `sf-audit-copywriting`, `sf-audit-seo`) and `sf-verify` must use one shared rubric contract from `skills/references/content-quality-rubric.md`; recoverable score states (`needs retry`, `duplicate_in_progress`, `conflicting_score_state`, `stale_or_mismatched_score`) are never valid verification proof.
 - `sf-design` owns design lifecycle orchestration; UI/UX audits, token audits, component audits, accessibility audits, playground tooling, design-system creation, browser proof, implementation, verification, and ship still run through their specialist owner skills and gates.
 - `sf-design-from-scratch` owns design-system creation from existing UI values; playground tooling, token audits, component audits, accessibility audits, and general design routing stay with their specialist or master skills.
 - `sf-skill-build` owns skill-maintenance orchestration and must route to `sf-explore` before `sf-spec` when skill intent, placement, public promise, or governance policy is too fuzzy for one targeted question to settle.

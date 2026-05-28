@@ -44,12 +44,12 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 
 Audit performance across ALL projects in the workspace.
 
-1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the Perf column.
+1. Read `discovered project-local corpora (`shipflow_data/` markers)` — check the **Domain Applicability** table. Identify projects with ✓ in the Perf column.
 
 2. Use **AskUserQuestion** to let the user choose:
    - Question: "Which projects should I audit for performance?"
    - `multiSelect: true`
-   - One option per applicable project: label = project name, description = stack from PROJECTS.md
+   - One option per applicable project: label = project name, description = stack inferred from project-local markers
 
 3. Use the **Task tool** to launch one agent per **selected** project — ALL IN A SINGLE MESSAGE (parallel). Each agent: `subagent_type: "general-purpose"`.
 
@@ -80,7 +80,7 @@ Audit performance across ALL projects in the workspace.
    ═══════════════════════════════════════
    ```
 
-5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one traffic-first audit record per project, Perf column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: Perf` subsection).
+5. Update project-local `shipflow_data/workflow/AUDIT_LOG.md` (one traffic-first audit record per project, Perf column) and project-local `shipflow_data/workflow/TASKS.md` (each project's `### Audit: Perf` subsection).
 
 6. Ask: **"Which projects should I fix?"** — list projects with scores. Fix only approved projects, one at a time.
 
@@ -157,7 +157,7 @@ Use **AskUserQuestion**:
 - `multiSelect: true`
 - Options:
   - **All projects** — "Run performance audit across every project" (Recommended)
-  - One option per project from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`: label = project name, description = stack
+  - One option per project from `discovered project-local corpora (`shipflow_data/` markers)`: label = project name, description = stack
 
 Then proceed to **GLOBAL MODE** with the selected projects.
 
@@ -384,7 +384,7 @@ After generating the report and applying fixes:
 
 Create or update traffic-first audit operational records in the target audit logs:
 
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: create or update a traffic-first `audit:` record for the Perf audit.
+1. **Project-local `shipflow_data/workflow/AUDIT_LOG.md`**: create or update a traffic-first `audit:` record for the Perf audit.
 2. **Project-local `./AUDIT_LOG.md`**: same project-explicit traffic-first record; keep the required `[project]` token.
 
 Create either file if missing with a short heading and traffic-first audit records per the shared operational record format.
@@ -392,7 +392,7 @@ Create either file if missing with a short heading and traffic-first audit recor
 ### Update TASKS.md
 
 1. **Local TASKS.md** (project root): create or update traffic-first task records for the Perf audit findings.
-2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project section and mirror the same traffic-first task records.
+2. **Project-local `shipflow_data/workflow/TASKS.md`**: create or update the same traffic-first task records.
 
 ---
 

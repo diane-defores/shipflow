@@ -31,7 +31,7 @@ Default to `report=user`: concise, outcome-first, and using the compact chantier
 - Git diff stat: !`git diff HEAD --stat 2>/dev/null || echo "no changes"`
 - Recent commits (this session): !`git log --oneline -10 2>/dev/null || echo "no commits"`
 - ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
-- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- Project-local TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project-local TASKS.md"`
 - Local TASKS.md (if exists): !`cat TASKS.md 2>/dev/null || echo "No local TASKS.md"`
 - Existing CHANGELOG: !`head -30 CHANGELOG.md 2>/dev/null || echo "no CHANGELOG.md"`
 
@@ -83,7 +83,7 @@ Using the master TASKS.md from context:
 - Mark completed items: `🔄 in progress` → `✅ done` and `📋 todo` → `✅ done`
 - Mark partially done items: `📋 todo` → `🔄 in progress` with a note
 - Add new tasks discovered during the work
-- Update master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` — always
+- Update project-local `shipflow_data/workflow/TASKS.md` when task closure changes local workflow state.
 - If a local `TASKS.md` also exists, update both
 - Treat the TASKS content loaded in Context as informational only.
 - Immediately before editing either TASKS file, re-read it from disk and use that version as authoritative.

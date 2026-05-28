@@ -40,7 +40,7 @@ next_step: "/sf-docs technical audit installer"
 
 ## Purpose
 
-This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read it before changing system dependencies, global binaries, aliases, skill links, Codex/Claude config, MCP registration, or `~/shipflow_data` bootstrap behavior.
+This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read it before changing system dependencies, global binaries, aliases, skill links, Codex/Claude config, MCP registration, or project-local `shipflow_data` bootstrap behavior.
 
 ## Owned Files
 

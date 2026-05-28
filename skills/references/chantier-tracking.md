@@ -44,7 +44,7 @@ next_step: "/sf-verify Specs as chantier registry"
 
 # Chantier Tracking Doctrine
 
-`shipflow_data/workflow/specs/` is the global registry for spec-first chantiers. Do not create a separate registry in `TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`, or root `specs/`.
+`shipflow_data/workflow/specs/` is the global registry for spec-first chantiers. Do not create a separate registry in `TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md` (legacy/compat only), or root `specs/`.
 
 ## Two-Axis Classification
 

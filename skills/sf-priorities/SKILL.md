@@ -32,7 +32,7 @@ Default to `report=user`: concise priority recommendation, tracker changes, proo
 
 - Current directory: !`pwd`
 - Project workflow TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project TASKS.md"`
-- External control-plane TASKS.md (portfolio coordination only): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No control-plane TASKS.md"`
+- Project-local TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || cat TASKS.md 2>/dev/null || echo "No project-local TASKS.md"`
 - Git branch and status: !`git status --short --branch 2>/dev/null || echo "Not a git repo"`
 - Recent commits: !`git log --oneline -5 2>/dev/null || echo "N/A"`
 - Project CLAUDE.md: !`head -40 CLAUDE.md 2>/dev/null || echo "No CLAUDE.md"`
@@ -44,8 +44,8 @@ Prioritization is local-first for project work.
 
 - For a selected project, prioritize within `[project]/shipflow_data/workflow/TASKS.md`.
 - Root `TASKS.md` is a legacy project tracker location; read it as a migration/fallback source only when canonical workflow tasks are absent.
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is the external control plane. Use `PROJECTS.md` for project discovery and `TASKS.md` only for explicit full-workspace or portfolio coordination.
-- When re-ranking portfolio work, update the external Dashboard table only if that dashboard exists and the run is explicitly portfolio-scoped.
+- Legacy central archives are migration evidence only. Prefer local project discovery (`shipflow_data/` markers) and project-local trackers.
+- When re-ranking portfolio work, report a derived view from local trackers; do not update a central Dashboard table.
 - If the user specifies a project name as argument, focus prioritization on that project's local workflow tracker unless they explicitly ask for portfolio coordination.
 
 ## Shared tracking file write protocol
@@ -67,14 +67,14 @@ If the current directory has no project markers (no `package.json`, no `src/` di
 - Question: "Which project(s) should I prioritize?"
 - `multiSelect: true`
 - Options:
-  - **All projects** — "Re-prioritize across the external portfolio control plane" (Recommended)
+- **All projects** — "Re-prioritize across discovered local projects" (Recommended)
   - One option per project with active tasks: label = project name, description = number of open tasks
-- Read project list from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
+- Read local project list from project-local discovery (`shipflow_data/` markers).
 
 ### Steps
 
 1. **Parse existing tasks**:
-   - Read all tasks from the selected project's `shipflow_data/workflow/TASKS.md`, or from the external control-plane `TASKS.md` only for full-workspace runs
+- Read all tasks from the selected project's `shipflow_data/workflow/TASKS.md`, or root `TASKS.md` only as legacy project fallback.
    - Categorize by status: completed, in progress, todo
    - Identify task dependencies and blockers
 
@@ -131,7 +131,7 @@ If the current directory has no project markers (no `package.json`, no `src/` di
 ### Important
 
 - Default to the selected project's `shipflow_data/workflow/TASKS.md` for project priority edits.
-- Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` only for full-workspace or explicit portfolio coordination.
+- Update project-local `shipflow_data/workflow/TASKS.md` for selected project priority changes.
 - Use Edit tool to update the target TASKS.md with priority markers
 - Be realistic about impact/effort assessments
 - Consider technical debt alongside features

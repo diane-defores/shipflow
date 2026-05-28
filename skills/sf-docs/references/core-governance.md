@@ -104,7 +104,7 @@ Do not enforce frontmatter on operational trackers:
 
 - `shipflow_data/workflow/TASKS.md`
 - `shipflow_data/workflow/AUDIT_LOG.md`
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
+- Legacy central `PROJECTS.md` files are migration evidence only.
 - `TEST_LOG.md`
 - `BUGS.md`
 

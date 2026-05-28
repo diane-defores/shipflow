@@ -20,7 +20,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 ## Context
 
 - Current directory: !`pwd`
-- **Master TASKS.md** (multi-project dashboard): !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null || echo "No master TASKS.md"`
+- Project-local dashboard (primary): !`cat shipflow_data/workflow/TASKS.md 2>/dev/null || echo "No local project TASKS.md"`
+- Legacy cross-project dashboard fallback: disabled; use project-local trackers or explicit migration evidence only.
 - Local project tracker (if exists): !`cat TASKS.md 2>/dev/null || cat shipflow_data/workflow/TASKS.md 2>/dev/null || echo "No local project TASKS.md"`
 - Recent git status: !`git status --short 2>/dev/null || echo "Not a git repository"`
 - Current branch: !`git branch --show-current 2>/dev/null || echo "N/A"`
@@ -29,21 +30,19 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Multi-project tracking system
 
-**CRITICAL**: This workspace tracks projects across a master file at `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` and per-project local files. In this architecture phase, local project trackers are the active source of truth.
+**CRITICAL**: This workspace tracks projects through local project trackers (`shipflow_data/workflow/TASKS.md`). Local project trackers are the active source of truth.
 
 - `TASKS.md` is an operational tracker, not a ShipFlow decision artifact. Do not add YAML frontmatter or metadata schema fields to `TASKS.md`.
 - If a task contains a durable decision, spec, business rule, research conclusion, or product contract, keep the task entry concise and extract the durable content into a separate metadata-bearing artifact via `/sf-docs`, `/sf-spec`, `/sf-research`, or the relevant skill.
 - **Prioritize local tracker updates** (`TASKS.md` or `shipflow_data/workflow/TASKS.md`) as the operational source of truth.
-- If this workspace uses the cross-project master, update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` after local updates for coordination.
-- The master file has a Dashboard table, per-project task sections, cross-project concerns, and a backlog
-- When checking off tasks in the master file, also update the Dashboard status column if the project phase changed
+- Do not update a central master tracker during normal task work. Treat old master files as migration evidence only.
 
 ## Shared tracking file write protocol
 
 - Before creating or mutating task operational records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and follow its traffic-first grammar for new `TASKS.md` entries.
 - Treat the TASKS snapshots loaded at skill start as informational only.
-- Right before editing the master or local TASKS file, re-read the target from disk and use that version as authoritative.
-- Apply the smallest possible patch to the relevant dashboard row, project section, or backlog block; never rewrite the whole file from stale context.
+- Right before editing the project-local TASKS file, re-read the target from disk and use that version as authoritative.
+- Apply the smallest possible patch to the relevant project section or backlog block; never rewrite the whole file from stale context.
 - If the expected anchor moved or changed, re-read once and recompute.
 - If it is still ambiguous after the second read, stop and ask the user instead of forcing the write.
 - If the file is still missing after that authoritative re-read, create it from the canonical format.
@@ -51,18 +50,18 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 ## Tracker synchronization rules
 
 - Distinguish clearly between:
-  - the master tracker (`${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`)
-  - a project section inside the master tracker for coordination
-  - the local `TASKS.md` file inside the current repo, or `shipflow_data/workflow/TASKS.md` in this architecture phase
-- The master tracker is the cross-project coordination source, not a direct substitute for local project tracker files.
-- The local tracker (`TASKS.md` or `shipflow_data/workflow/TASKS.md`) should represent the active project backlog and may include a small `Historical completed work` section when older project work exists only in the master tracker.
-- Completed historical entries from the master tracker must not be copied into the local active backlog.
-- If a local `TASKS.md` is created after project work already exists in the master tracker, first audit the existing project entries in the master tracker, then split them into:
+  - the project-local `shipflow_data/workflow/TASKS.md` file
+  - legacy root `TASKS.md` files inside old projects
+  - archived central trackers used only as migration evidence
+- There is no active central master tracker for normal task updates.
+- The local tracker (`TASKS.md` or `shipflow_data/workflow/TASKS.md`) should represent the active project backlog and may include a small `Historical completed work` section when older project work exists only in the legacy master.
+- Completed historical entries from archived central trackers must not be copied into the local active backlog.
+- If a local `TASKS.md` is created after project work already exists in the legacy master tracker, first audit the existing project entries there, then split them into:
   - active backlog
   - historical completed context
 - Do not claim that a tracker "did not exist" without specifying whether you mean:
-  - the master tracker
-  - the project section in the master tracker
+  - the legacy master tracker
+  - the project section in the legacy master tracker
   - the local `TASKS.md` file
 
 ## Your task
@@ -71,7 +70,7 @@ Intelligently manage the TASKS.md file by:
 1. Checking off completed tasks
 2. Adding remaining tasks to be done
 3. Suggesting the next priority action
-4. **Keeping local and master trackers in sync** (`shipflow_data/workflow/TASKS.md` primary, master optional)
+4. **Keeping local and legacy master trackers in sync** (`shipflow_data/workflow/TASKS.md` primary, legacy master optional)
 
 ### Workspace root detection
 
@@ -80,7 +79,7 @@ If the current directory has no project markers (not inside a specific project) 
 - `multiSelect: true`
 - Options:
   - **All projects** — "Review and update tasks across the full workspace" (Recommended)
-  - One option per project: label = project name, description = number of open tasks in master TASKS.md
+  - One option per project: label = project name, description = number of open tasks in local project tracker
 
 ### Steps
 
@@ -103,7 +102,7 @@ If the current directory has no project markers (not inside a specific project) 
 
 4. **Update TASKS.md**:
    - **Always check if TASKS.md exists first.** If it does not exist, create it using a concise project heading plus task operational records that follow `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` — do NOT create a bare-minimum file.
-   - If project work already exists in the master tracker for this repo, import only the still-active items into the local active backlog. Historical `done` items may be copied into a short context section, but never into the active backlog.
+  - If project work already exists in the legacy master tracker for this repo, import only the still-active items into the local active backlog. Historical `done` items may be copied into a short context section, but never into the active backlog.
    - If TASKS.md doesn't exist, create it with this compact structure (adapt section titles to the detected project):
      ```markdown
      # Tasks — [Project Name]
@@ -118,7 +117,7 @@ If the current directory has no project markers (not inside a specific project) 
 
      ## Historical completed work
 
-     Optional. Use only when older project work already exists in the master tracker and would otherwise be lost locally.
+    Optional. Use only when older project work already exists in the legacy master tracker and would otherwise be lost locally.
 
      ---
 
@@ -165,8 +164,8 @@ If the current directory has no project markers (not inside a specific project) 
 
 ### Important
 
-- **If configured, update the master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** after local updates for cross-project visibility.
-- If a local project TASKS.md also exists (e.g., `winflowz/TASKS.md`), keep it as the execution source and sync status to master for coordination only.
+- Do not update legacy central trackers for cross-project visibility; use local project discovery and project-local files.
+- If a root project `TASKS.md` also exists (e.g., `winflowz/TASKS.md`), treat it as a legacy project tracker and prefer `shipflow_data/workflow/TASKS.md` when available.
 - Use the Edit tool to update existing TASKS.md or Write tool to create a new one
 - Be intelligent about what's "done" - check actual evidence, don't just guess
 - Keep task descriptions clear and actionable

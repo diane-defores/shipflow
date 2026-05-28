@@ -182,7 +182,7 @@ Never leave the section with pipe-delimited placeholders after init. Pick the co
 
 **Architecture**: In this phase, the active project backlog is local under the project umbrella.
 - primary source of truth: `shipflow_data/workflow/TASKS.md`
-- optional master aggregate: `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (cross-project view)
+- no central master aggregate is created; cross-project views are derived from local project trackers.
 - do not point project operators to master files as a task source of truth.
 
 `TASKS.md` is an operational tracker, not a metadata-bearing decision artifact. Do not add ShipFlow YAML frontmatter to generated `TASKS.md` files. Durable business, brand, guideline, spec, research, audit, review, or decision content belongs in separate artifacts with metadata.
@@ -249,27 +249,11 @@ Never create a bare placeholder — populate with real tasks detected in Step 1:
 
 Populate the initial tasks intelligently from what was detected in Step 1 (stack, framework, existing files, package.json scripts). Do not leave placeholder text like `[First critical task]` — replace with real tasks for this project.
 
-### Step 4: Register in PROJECTS.md
+### Step 4: Derive project discovery metadata
 
-Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` and add a row to both tables:
+Do not register the project in a central `PROJECTS.md`. Project discovery is derived from the project path, local `shipflow_data/`, and root markers such as `AGENT.md`, `CLAUDE.md`, `package.json`, `pyproject.toml`, or equivalent stack files.
 
-Before editing `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` here, or `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` later in Step 6:
-- Treat the snapshots loaded earlier in the skill as informational only.
-- Right before editing the shared file, re-read it from disk and use that version as authoritative.
-- Apply a minimal targeted row or section insert/update; never rewrite the whole file from stale context.
-- If the expected table, project row, or section moved, re-read once and recompute.
-- If it is still ambiguous after the second read, stop and ask the user instead of forcing the write.
-
-**Project Registry table**:
-```
-| [name] | [path] | [stack summary] |
-```
-
-Path rule:
-- If the project lives under the current user's home directory, store the path as `~/...` in `PROJECTS.md`, not `/home/<user>/...`.
-- Keep absolute paths only for locations outside the current home directory.
-
-**Domain Applicability table** — auto-detect defaults:
+**Domain Applicability defaults** — auto-detect and report:
 - Code: ✓ (always)
 - Design: ✓ if has UI
 - Copy: ✓ if has user-facing content
@@ -489,14 +473,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 **Local audit log** — create or update `[project_dir]/shipflow_data/workflow/AUDIT_LOG.md` when an audit index is needed. Do not create root `AUDIT_LOG.md`; if it exists, treat it as layout migration debt unless an external project tool requires it.
 
-**Master TASKS.md (optional)** — when cross-project sync is enabled, add a section to `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`:
-
-```markdown
-## [project name]
-
-**Stack**: [summary] | **Phase**: Setup
-```
-
 ### Step 7: Configure MCP servers
 
 Always configure the Shipflow codebase MCP server, Context7 MCP, and OpenAI Docs MCP for this project by writing (or updating) `.claude/settings.json`.
@@ -705,7 +681,7 @@ Use **AskUserQuestion**:
 - Pre-select based on auto-detection from Step 4
 - Description for each: what was detected (or "not detected — opt in manually")
 
-Update PROJECTS.md with the user's confirmed selection.
+Record the user's confirmed domain selection in the local init report or project-local governance notes when needed; do not write central `PROJECTS.md`.
 
 ### Step 9: Report
 
@@ -728,7 +704,7 @@ AGENTS.md:   [symlink created / symlink ok / absent / compatibility conflict]
 shipflow_data/technical: [created / already existed / skipped - no code areas detected / needs audit / blocked]
 shipflow_data/editorial: [created / already existed / skipped - no editorial surfaces detected / needs audit / blocked]
 MCP:         [configured / skipped]
-PROJECTS:    [registered / already registered]
+Project discovery: [local markers present / needs AGENT.md or shipflow_data marker / blocked]
 Domains:     [list of applicable domains]
 ═══════════════════════════════════
 Next steps:
@@ -745,6 +721,6 @@ Next steps:
 
 - Never overwrite an existing CLAUDE.md without asking.
 - Never overwrite an existing root `TASKS.md` or root `AUDIT_LOG.md`; migrate with `/sf-docs migrate-layout` after collision checks.
-- If the project is already in PROJECTS.md, update the row instead of adding a duplicate.
+- Do not create or update a central `PROJECTS.md`.
 - Detect the stack from actual files, not just project name.
 - The generated CLAUDE.md should match the style of existing project CLAUDE.md files in the workspace.

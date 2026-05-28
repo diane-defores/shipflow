@@ -137,15 +137,16 @@ If the current shell cannot find Bun after install, run `export BUN_INSTALL="$HO
 
 ## Data Sources (read-only)
 
-- `/home/claude/shipflow_data/PROJECTS.md`
-- `/home/claude/shipflow_data/TASKS.md`
-- `/home/claude/shipflow_data/AUDIT_LOG.md`
-- `/home/claude/shipflow/shipflow_data/workflow/TASKS.md`
-- `/home/claude/shipflow/shipflow_data/workflow/AUDIT_LOG.md`
-- `/home/claude/shipflow_data/OPERATIONS_LOG.md`
-- `/home/claude/shipflow_data/DEPENDENCY_LOG.md`
-- `/home/claude/shipflow/shipflow_data/workflow/specs/*.md`
+- Local project corpsora discovered from configured workspace roots (project-local `shipflow_data/` folders):
+  - `./shipflow_data/workflow/TASKS.md`
+  - `./shipflow_data/workflow/AUDIT_LOG.md`
+  - `./shipflow_data/workflow/OPERATIONS_LOG.md`
+  - `./shipflow_data/workflow/DEPENDENCY_LOG.md`
+  - `./shipflow_data/workflow/specs/*.md`
+- Legacy `./shipflow_data/TASKS.md` and `./shipflow_data/AUDIT_LOG.md` are still supported as fallback reads.
 - `/home/claude/shipflow/skills/*`
+
+Workspace discovery roots can be customized with `SHIPFLOW_TUI_WORKSPACE_ROOTS` (comma-separated paths). If unset, the TUI uses its current working directory as the active root and falls back to the installed ShipFlow repo for auxiliary reads.
 
 All reads go through `src/sources/sourcePolicy.ts` with allowlisted roots, symlink escape protection, file size limit, and redacted diagnostics.
 

@@ -84,6 +84,7 @@ Rejected scope:
 4. Check `shipflow_data/editorial/claim-register.md` (or `docs/editorial/claim-register.md`), `shipflow_data/editorial/page-intent-map.md` (or `docs/editorial/page-intent-map.md`), `shipflow_data/editorial/editorial-update-gate.md` (or `docs/editorial/editorial-update-gate.md`), and `shipflow_data/editorial/astro-content-schema-policy.md` (or `docs/editorial/astro-content-schema-policy.md`) when present.
 5. If the work touches competitor comparisons, alternatives, inspiration-led positioning, affiliate links, partner recommendations, sponsorship, or disclosure, check `shipflow_data/business/project-competitors-and-inspirations.md` and `shipflow_data/business/affiliate-programs.md` when present. Their absence is acceptable; their presence requires ShipFlow metadata compliance.
 6. If no source, goal, or target can be inferred, ask one targeted question. Do not draft generic content from nothing.
+7. Load `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md` when mode includes audit, final draft, final repurpose, enrichment validation, or verification handoff with a required quality score.
 
 ## Mode Detection
 
@@ -108,6 +109,8 @@ quality unknown -> audit
 public docs/governance impacted -> docs
 changes applied -> verify/ship
 ```
+
+When an editorial quality gate is required, apply the shared rubric output schema (`ready`, `needs revision`, `blocked`, `publishable with caveats`) and pass its status plus evidence to `sf-verify`.
 
 ## Spec Gate
 
@@ -161,6 +164,8 @@ Route by owner, not convenience:
 | Ship | `sf-ship` |
 
 When calling or simulating downstream owner skills, pass `report=agent` only when the master flow needs detailed evidence. Preserve concise user reporting by default.
+
+For cross-skill consistency, use `content-quality-rubric.md` as the only source for rubric statuses, blocked codes, and structured feedback schema.
 
 ## Validation
 

@@ -62,12 +62,13 @@ ShipFlow now uses a simple split:
 
 - root-level project files are limited to `README.md`, `AGENT.md`, `AGENTS.md` as a symlink to `AGENT.md`, optional `CLAUDE.md`, and project/tool-native docs that are not ShipFlow governance artifacts
 - `shipflow_data/` inside each project is the canonical home for ShipFlow governance artifacts
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is the external control plane for cross-project tracking and registries
+- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is a legacy external path retained for historical or compatibility inputs only; active project truth is the local `shipflow_data` corpus.
 
 That means:
 
 - move business, product, brand, GTM, architecture, technical context, guidelines, specs, research reports, review reports, verification reports, and decision records under the project's `shipflow_data/` tree
-- keep `TASKS.md`, `AUDIT_LOG.md`, and `PROJECTS.md` as operational trackers, typically under the external `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` or `shipflow_data/workflow/` when project-local
+- keep `TASKS.md` and `AUDIT_LOG.md` as operational trackers, preferably under `shipflow_data/workflow/`
+- `PROJECTS.md` is not required as active project governance; treat it only as a legacy migration artifact unless a project explicitly declares an external compatibility registry.
 - do not keep duplicate root copies once the canonical `shipflow_data/` artifact exists
 
 If the external cross-project `shipflow_data` needs visibility, reference the project-local artifact. Do not create a second canonical copy.

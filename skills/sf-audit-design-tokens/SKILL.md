@@ -288,7 +288,7 @@ Skip Phase 2 (coverage matrix requires all modes), Phase 4 (dep graph requires c
 ## GLOBAL MODE
 
 Same pattern as `sf-audit-design` GLOBAL MODE:
-1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` Domain Applicability table — identify projects with Design ✓
+1. Read discovered project-local corpora (`shipflow_data/` markers) Domain Applicability table — identify projects with Design ✓
 2. Use **AskUserQuestion** to let the user select projects
 3. Launch one agent per selected project via the Task tool, all in a single message (parallel)
 4. Each agent: `subagent_type: "general-purpose"`, runs this skill's PROJECT MODE, returns the structured report
@@ -310,7 +310,7 @@ After generating the report:
 
 1. **Project-local `AUDIT_LOG.md`** : create or update a traffic-first `audit:` record for the Design Tokens audit
 2. **Local `TASKS.md`** : create or update traffic-first task records for the Design Tokens audit findings
-3. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** : find the project section and mirror the same traffic-first task records; update any dashboard summary only when that surface still exists
+3. **Project-local `shipflow_data/workflow/TASKS.md`** : create or update the same traffic-first task records.
 
 ---
 

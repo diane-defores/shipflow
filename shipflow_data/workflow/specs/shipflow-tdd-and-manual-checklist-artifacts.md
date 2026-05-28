@@ -1,18 +1,18 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "ShipFlow"
 created: "2026-05-24"
 created_at: "2026-05-24 17:23:00 UTC"
-updated: "2026-05-24"
-updated_at: "2026-05-24 17:23:00 UTC"
-status: draft
+updated: "2026-05-27"
+updated_at: "2026-05-27 09:27:19 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5.5 Codex"
 scope: workflow
 owner: Diane
-user_story: "En tant qu'operatrice ShipFlow, je veux que les specs et le TDD generent des contrats de preuve stack-agnostic et des checklists de test durables que je peux remplir en PASS/FAIL/BLOCKED dans un fichier, afin d'eviter les copier-coller de chat et de donner aux agents une vraie source de suivi."
+user_story: "En tant qu'opératrice ShipFlow, je veux que les specs et le TDD génèrent des contrats de preuve stack-agnostic et des checklists de test durables que je peux remplir en PASS/FAIL/BLOCKED dans un fichier, afin d'éviter les copier-coller de chat et de donner aux agents une vraie source de suivi."
 confidence: high
 risk_level: high
 security_impact: yes
@@ -29,6 +29,7 @@ linked_systems:
   - skills/references/spec-driven-development-discipline.md
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
+  - tools/shipflow_checklist_status.py
 depends_on:
   - artifact: "skills/references/spec-driven-development-discipline.md"
     artifact_version: "1.2.0"
@@ -45,7 +46,10 @@ evidence:
   - "User decision 2026-05-24: manual checklists should be generated during spec or TDD as files that the operator can fill with PASS/FAIL/BLOCKED."
   - "User decision 2026-05-24: ShipFlow proof rules should be technology-agnostic by default, with stack profiles for Flutter, Astro, Python, APIs, auth, and provider/device surfaces."
   - "User decision 2026-05-24: validation must be proportional; small low-risk edits should not trigger heavy stack checks such as full Flutter analysis/tests by default."
-next_step: "/sf-ready ShipFlow TDD and Manual Checklist Artifacts"
+  - "User decision 2026-05-27: generated manual checklists use the fixed canonical path shipflow_data/workflow/test-checklists/<scope>.md."
+  - "User decision 2026-05-27: implement a small checklist parser/helper so sf-test and sf-verify consume statuses mechanically instead of relying only on agent interpretation."
+  - "Fresh docs 2026-05-27: GitHub Actions official workflow syntax docs at https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions confirm paths/paths-ignore filtering, workflow_dispatch, and the caveat that workflows skipped by path/branch/message filtering leave associated checks pending when required."
+next_step: "/sf-start ShipFlow TDD And Manual Checklist Artifacts"
 ---
 
 # Spec: ShipFlow TDD And Manual Checklist Artifacts
@@ -56,11 +60,11 @@ ShipFlow TDD And Manual Checklist Artifacts
 
 ## Status
 
-draft
+ready
 
 ## User Story
 
-En tant qu'operatrice ShipFlow, je veux que les specs et le TDD generent des contrats de preuve stack-agnostic et des checklists de test durables que je peux remplir en PASS/FAIL/BLOCKED dans un fichier, afin d'eviter les copier-coller de chat et de donner aux agents une vraie source de suivi.
+En tant qu'opératrice ShipFlow, je veux que les specs et le TDD génèrent des contrats de preuve stack-agnostic et des checklists de test durables que je peux remplir en PASS/FAIL/BLOCKED dans un fichier, afin d'éviter les copier-coller de chat et de donner aux agents une vraie source de suivi.
 
 ## Minimal Behavior Contract
 
@@ -71,7 +75,7 @@ ShipFlow must extend its spec-driven lifecycle with a stack-agnostic test-driven
 - Preconditions: A spec, bug, or implementation scope has at least one behavior that cannot be fully proven by automated tests, `sf-browser`, or `sf-auth-debug`.
 - Trigger: `sf-spec`, `sf-start`, or `sf-test` determines that manual/operator confirmation is still necessary.
 - User/operator result: A Markdown checklist file is created or updated at a predictable project path, and the operator can fill status cells directly without copying results into chat.
-- System effect: `sf-test` reads the checklist, records compact test history, opens or updates bug files for failures, and leaves unresolved scenarios visible for `sf-verify`.
+- System effect: `sf-test` reads the checklist through a small parser/helper, records compact test history, opens or updates bug files for failures, and leaves unresolved scenarios visible for `sf-verify`.
 - Success proof: Metadata lint for the checklist template, skill `rg` checks proving references are wired, and a dry-run fixture or sample checklist showing `PASS`, `FAIL`, `BLOCKED`, and `NOT_RUN` interpretation.
 - Silent success: Not allowed. Checklist creation, consumed statuses, generated bug IDs, and remaining gaps must be reported.
 
@@ -115,7 +119,9 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 
 - The checklist must be easy for the operator to edit by hand.
 - The checklist must be machine-readable enough for agents to parse with simple Markdown/table logic.
+- Generated checklists must use the fixed canonical path `shipflow_data/workflow/test-checklists/<scope>.md`; v1 does not support project-specific folder overrides.
 - Agents must preserve operator-entered notes and statuses.
+- `sf-test` and `sf-verify` must rely on a small parser/helper for status normalization, required/optional row interpretation, duplicate scenario detection, and safe evidence-path checks.
 - Validation must be proportional to risk, changed surface, and project contract; heavier checks need a reason, not habit.
 - CI must be proportional too: app, site, backend, docs, skills, and workflow checks should be split by path filters instead of one push triggering every expensive job.
 - `TEST_LOG.md` remains compact; full failed context belongs in `bugs/BUG-ID.md`.
@@ -124,9 +130,10 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 
 ## Dependencies
 
-- Runtime: Markdown parsing only; no new runtime dependency required unless implementation proves it necessary.
+- Runtime: Markdown parsing through a small ShipFlow-owned parser/helper; no third-party runtime dependency required unless implementation proves it necessary.
 - Document contracts: `spec-driven-development-discipline.md`, `decision-quality-contract.md`, existing spec template, bug record template, and `sf-test` bug lifecycle.
 - Metadata gaps: `manual_test_checklist` is a new artifact type and may require `tools/shipflow_metadata_lint.py` support.
+- Fresh external docs: GitHub Actions official workflow syntax docs checked on 2026-05-27 at `https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions` for `paths`/`paths-ignore`, `workflow_dispatch`, and skipped-workflow pending check behavior.
 
 ## Invariants
 
@@ -176,9 +183,9 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
   - Validate with: `python3 tools/shipflow_metadata_lint.py templates/artifacts/manual_test_checklist.md`
   - Notes: Use statuses `NOT_RUN`, `PASS`, `FAIL`, `BLOCKED`, `N/A`.
 
-- [ ] Task 2: Teach metadata lint the new artifact type if needed
+- [ ] Task 2: Teach metadata lint the new artifact type
   - File: `tools/shipflow_metadata_lint.py`
-  - Action: Accept `artifact: manual_test_checklist` with required metadata fields, or document why the existing technical artifact schema is reused.
+  - Action: Accept `artifact: manual_test_checklist` with required metadata fields.
   - User story link: Keeps generated checklists durable and auditable.
   - Depends on: Task 1
   - Validate with: `python3 tools/shipflow_metadata_lint.py templates/artifacts/manual_test_checklist.md`
@@ -233,8 +240,8 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
   - Notes: Prefer positive `paths` filters over broad `paths-ignore` because ownership is clearer.
 
 - [ ] Task 7: Update sf-test checklist consumption
-  - File: `skills/sf-test/SKILL.md`
-  - Action: Add checklist mode: read a checklist file, normalize statuses, ask only for missing actionable details, append compact `TEST_LOG.md`, and create/update bug files for failed required rows.
+  - File: `skills/sf-test/SKILL.md`, `tools/shipflow_checklist_status.py`
+  - Action: Add checklist mode: read a checklist file through the parser/helper, normalize statuses, ask only for missing actionable details, append compact `TEST_LOG.md`, and create/update bug files for failed required rows.
   - User story link: Lets the operator fill the file and lets agents continue from it.
   - Depends on: Task 1
   - Validate with: `rg -n "manual_test_checklist|test-checklists|PASS|FAIL|BLOCKED|NOT_RUN|checklist mode" skills/sf-test/SKILL.md`
@@ -287,11 +294,13 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 - Automated tests first: implementation should include focused tests for any parser/normalizer introduced for checklist statuses and evidence paths.
 - Agent-run proof: use `rg`, metadata lint, skill budget audit, and runtime sync checks for skill/template changes.
 - Manual checklist artifact: this spec should produce no operator checklist yet; it defines the system for future generated checklists.
+- Manual checklist path: generated checklists always live under `shipflow_data/workflow/test-checklists/<scope>.md`.
+- Checklist parser/helper: v1 must include a small parser/helper so `PASS`, `FAIL`, `BLOCKED`, `NOT_RUN`, and `N/A` are consumed mechanically.
 - Stack-agnostic proof ladder: preserve the generic rule that cheaper automated/agent-run proof comes before manual, provider, production, or device proof.
 - Stack profiles: include examples for Flutter, Astro, Python, API contracts, auth/browser flows, provider integrations, and device/native behavior without making any one technology the default.
 - Proportional validation: include a risk tier so tiny edits do not trigger full suites by habit, while meaningful behavior/risk changes still get strong evidence.
 - Proportional CI: include path-filter expectations so a push only triggers workflows relevant to changed surfaces, with `workflow_dispatch` for deliberate full runs.
-- Exception policy: if checklist parsing is intentionally kept manual in v1, document why and keep `sf-test` consumption rules unambiguous.
+- Exception policy: if the helper cannot parse a checklist safely, `sf-test` must report the exact malformed row or unsafe evidence pointer instead of falling back to guessed interpretation.
 
 ## Test Strategy
 
@@ -313,22 +322,27 @@ Introduce a durable `manual_test_checklist` artifact and teach `sf-spec`, `sf-st
 
 ## Open Questions
 
-- Should generated checklists live under `shipflow_data/workflow/test-checklists/` for every project, or should projects be allowed to override the folder in `CLAUDE.md`?
-- Should v1 include a parser/helper script, or should `sf-test` parse Markdown tables directly from instructions only?
+None. Resolved on 2026-05-27:
+
+- Generated checklists live at the fixed canonical path `shipflow_data/workflow/test-checklists/<scope>.md`.
+- v1 includes a small parser/helper so checklist statuses are consumed mechanically by `sf-test` and `sf-verify`.
 
 ## Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-24 17:23:00 UTC | sf-spec | GPT-5.5 Codex | Created spec for ShipFlow TDD and manual checklist artifacts | draft | /sf-ready ShipFlow TDD and Manual Checklist Artifacts |
+| 2026-05-26 16:47:52 UTC | sf-ready | GPT-5 Codex | Reviewed readiness: structure and metadata pass, but open product/implementation questions and GitHub Actions freshness evidence gaps block implementation start | not ready | /sf-spec ShipFlow TDD and Manual Checklist Artifacts |
+| 2026-05-27 00:00:00 UTC | sf-spec | GPT-5 Codex | Resolved open decisions: fixed checklist path, parser/helper required, and GitHub Actions official docs freshness evidence recorded | draft updated | /sf-ready ShipFlow TDD and Manual Checklist Artifacts |
+| 2026-05-27 09:27:19 UTC | sf-ready | GPT-5 Codex | Re-reviewed readiness after open decisions and freshness evidence were resolved | ready | /sf-start ShipFlow TDD And Manual Checklist Artifacts |
 
 ## Current Chantier Flow
 
 - `sf-spec`: done, draft spec created.
-- `sf-ready`: not launched.
+- `sf-ready`: ready.
 - `sf-start`: not launched.
 - `sf-verify`: not launched.
 - `sf-end`: not launched.
 - `sf-ship`: not launched.
 
-Next step: `/sf-ready ShipFlow TDD and Manual Checklist Artifacts`
+Next step: `/sf-start ShipFlow TDD And Manual Checklist Artifacts`

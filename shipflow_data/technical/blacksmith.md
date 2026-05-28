@@ -300,14 +300,92 @@ For our current APK debug loop, `2vcpu` is the conservative default; `4vcpu` is 
 
 Blacksmith automatically redirects official GitHub and common third-party cache actions to its colocated cache when jobs run on Blacksmith runners. That means normal workflow cache steps such as `actions/cache`, `actions/setup-node`, `actions/setup-java`, and similar actions should benefit without changing to legacy `useblacksmith/*` forks.
 
+Cache actions reduce download/setup time inside a job. They do not reduce the cost of starting several Blacksmith jobs that repeat the same setup. For Flutter Android APK workflows, the cost-safe default is a single Blacksmith job that runs `flutter pub get`, `flutter analyze`, `flutter test`, `flutter build apk --debug`, artifact verification, and upload in one runner session. Split `analyze`, `test`, and `build` into separate Blacksmith jobs only when there is a measured wall-clock reason that justifies the extra runner starts and repeated setup.
+
 For APK builds, keep or add caches for:
 
 - Gradle caches and wrapper
+- Flutter/pub cache through `subosito/flutter-action` with `cache: true`
 - pnpm store through `actions/setup-node` and pnpm setup
 - Rust/Cargo caches through `swatinem/rust-cache` or existing Rust cache action
 - Android SDK/NDK only if setup time is proven to be a bottleneck
 
+Prefer one Gradle cache mechanism per job. `actions/setup-java` with `cache: gradle` is enough for most Flutter/Gradle APK workflows. Add a separate `actions/cache` Gradle step only when it covers paths that `setup-java` does not cover and metrics show it helps.
+
 Sticky Disks are a later optimization for very large caches such as Gradle, Cargo, or `node_modules`. They are beta, persist mounted disk state across jobs, can be much faster than downloading a large cache archive, and have storage billing. Do not add them first; prove cache download/install time is the bottleneck.
+
+## Quota And Runner-Minute Guardrails
+
+Before adding or editing an APK workflow, apply these billing guardrails:
+
+- Add workflow-level `concurrency` with `cancel-in-progress: true` so superseded pushes do not keep burning GitHub/Blacksmith minutes.
+- Use `paths` filters that exclude docs, bug notes, changelogs, and governance files from APK builds unless those files really affect the app artifact.
+- Use a `changes` job to gate expensive Blacksmith jobs and unrelated deploy jobs separately.
+- Do not deploy Firestore rules/indexes on every app-code push; run that job only when `firebase.json`, Firestore rules, indexes, or the workflow changed, plus `workflow_dispatch`.
+- Keep `workflow_dispatch` for manual full validation, but do not use it as a default debug loop when local `flutter analyze` and `flutter test` are sufficient.
+- Do not add failure keepalive, VM retention, Sticky Disks, larger runners, or static IP until logs/metrics show the need and the cost is accepted.
+
+Recommended Flutter Android shape:
+
+```yaml
+concurrency:
+  group: flutter-android-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      apk: ${{ steps.filter.outputs.apk }}
+      firestore: ${{ steps.filter.outputs.firestore }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: filter
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            apk:
+              - 'app/lib/**'
+              - 'app/test/**'
+              - 'app/android/**'
+              - 'app/pubspec.yaml'
+              - 'app/pubspec.lock'
+              - '.github/workflows/android-build.yml'
+            firestore:
+              - 'app/firebase.json'
+              - 'app/firestore.rules'
+              - 'app/firestore.indexes.json'
+              - '.github/workflows/android-build.yml'
+
+  android_ci:
+    runs-on: blacksmith-2vcpu-ubuntu-2404
+    needs: changes
+    if: github.event_name != 'pull_request' || needs.changes.outputs.apk == 'true'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+        working-directory: app
+      - run: flutter analyze
+        working-directory: app
+      - run: flutter test
+        working-directory: app
+      - run: flutter build apk --debug
+        working-directory: app
+      - run: test -f app/build/app/outputs/flutter-apk/app-debug.apk
+      - uses: actions/upload-artifact@v7
+        with:
+          name: app-debug-apk
+          path: app/build/app/outputs/flutter-apk/app-debug.apk
+```
 
 ## Test Analytics
 

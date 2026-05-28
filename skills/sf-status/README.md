@@ -4,7 +4,7 @@
 
 ## What It Does
 
-`sf-status` reads the external ShipFlow project registry as a control-plane dashboard input and inspects each repo in read-only mode. It reports branch names, local uncommitted changes, ahead/behind status, recent commit activity, and stash presence, then filters the view to the repos that matter right now.
+`sf-status` reads a legacy-compatible project registry input as dashboard context and inspects each repo in read-only mode. It reports branch names, local uncommitted changes, ahead/behind status, recent commit activity, and stash presence, then filters the view to the repos that matter right now.
 
 For a solo founder juggling multiple products, this replaces hopping repo by repo just to answer “what is dirty, behind, or waiting to be pushed?”
 
@@ -22,7 +22,7 @@ For a solo founder juggling multiple products, this replaces hopping repo by rep
 
 ## What You Give It
 
-- the external ShipFlow control-plane `PROJECTS.md`
+- the legacy ShipFlow control-plane `PROJECTS.md` only as compatibility input (project-local discovery is the default)
 - optionally a mode: `issues`, `dirty`, or `all`
 
 ## What You Get Back
@@ -41,7 +41,7 @@ For a solo founder juggling multiple products, this replaces hopping repo by rep
 
 ## Limits
 
-`sf-status` is intentionally read-only. It does not fix repo state, pull, push, edit project-local trackers, or mutate external control-plane files. It also depends on the project registry being accurate and only reports what git exposes, not whether the code itself is good.
+`sf-status` is intentionally read-only. It does not fix repo state, pull, push, edit project-local trackers, or mutate legacy archive files. It reports what local discovery and git expose, not whether the code itself is good.
 
 ## Related Skills
 

@@ -34,6 +34,7 @@ Default to `report=user`: concise, outcome-first, and in the user's active langu
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/seo-audit-workflow.md`: SEO modes, technical/on-page/content/schema/internal-linking/AI-visibility checklists, tracking, and report details.
+- `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md`: shared rubric for project-aware content quality score and blocked criteria.
 
 ## Mode Detection
 
@@ -49,6 +50,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 - Governance Corpora: use `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` and `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when SEO findings touch mapped docs, public content, claims, sitemap, robots, metadata, or schema.
 - Apply the Documentation Freshness Gate before changing external SEO/Search/OpenAI/ChatGPT doctrine.
 - Preserve structured data and AI Visibility checks by loading `references/seo-audit-workflow.md` for technical SEO, schema, internal linking, and AEO/GEO review.
+- When SEO output includes editorial scoring, use `content-quality-rubric.md` for status, score, and blocking criterion handling.
 - Evaluate `Chantier potentiel` for indexation, schema, content architecture, AI visibility, or multi-page remediation.
 
 ## Stop Conditions

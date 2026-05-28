@@ -47,9 +47,9 @@ Use the shared skeleton for intake, work item resolution, readiness, model/topol
 - Bug files: !`find bugs -maxdepth 1 -type f -name "BUG-*.md" 2>/dev/null | sort | tail -40 || echo "No bugs directory"`
 - Optional bug triage view: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`
 - Recent tests: !`tail -60 TEST_LOG.md 2>/dev/null || echo "No TEST_LOG.md"`
-- Local tasks: !`head -80 TASKS.md 2>/dev/null || echo "No local TASKS.md"`
-- Audit log: !`tail -80 AUDIT_LOG.md 2>/dev/null || tail -80 ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md 2>/dev/null || echo "No AUDIT_LOG.md"`
-- Active specs: !`find specs -maxdepth 1 -type f -name "*.md" 2>/dev/null | sort | head -60 || echo "No specs directory"`
+- Project-local tasks: !`head -80 shipflow_data/workflow/TASKS.md 2>/dev/null || head -80 TASKS.md 2>/dev/null || echo "No project-local TASKS.md"`
+- Project-local audit log: !`tail -80 shipflow_data/workflow/AUDIT_LOG.md 2>/dev/null || tail -80 AUDIT_LOG.md 2>/dev/null || echo "No project-local AUDIT_LOG.md"`
+- Active specs: !`find shipflow_data/workflow/specs specs -maxdepth 1 -type f -name "*.md" 2>/dev/null | sort | head -60 || echo "No specs directory"`
 - Docs governance: !`found=0; for f in AGENT.md AGENTS.md CLAUDE.md shipflow_data/technical/context.md shipflow_data/editorial/content-map.md shipflow_data/technical/code-docs-map.md shipflow_data/editorial/claim-register.md CONTEXT.md CONTENT_MAP.md docs/technical/code-docs-map.md docs/editorial/claim-register.md SECURITY.md .env.example; do if [ -e "$f" ]; then echo "$f"; found=1; fi; done; [ "$found" = 1 ] || echo "none"`
 
 ## Mission
@@ -120,7 +120,7 @@ Parse `$ARGUMENTS`:
 - `deps` -> run the dependency maintenance lane through `sf-deps`, remediation/migration when needed, verification, and ship routing.
 - `docs` -> run the docs/governance maintenance lane through `sf-docs`, validation, verification, and ship routing.
 - `audits` -> run the audit maintenance lane through `sf-audit` or narrower audit skills, then remediation lifecycle for findings that cross the implementation threshold.
-- `global` -> workspace maintenance dashboard using `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`, then ask which projects to inspect or execute. Do not modify multiple projects without explicit project selection.
+- `global` -> workspace maintenance dashboard using local project discovery (`shipflow_data/` markers), then ask which projects to inspect or execute. Do not modify multiple projects without explicit project selection.
 - `no-ship` -> run through verification, then stop before `sf-ship` or `sf-deploy` with a ship-ready report.
 - `report=agent`, `handoff`, `verbose`, or `full-report` -> include detailed evidence and command suggestions.
 

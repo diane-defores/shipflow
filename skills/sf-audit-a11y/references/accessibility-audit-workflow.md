@@ -365,7 +365,7 @@ Audit a single file. Apply phases 2, 3, 4, 6, 7, 8 to the component in that file
 
 ## GLOBAL MODE
 
-Standard pattern: read PROJECTS.md, AskUserQuestion for selection, parallel agents, compile cross-project a11y report.
+Standard pattern: read project-local evidence, AskUserQuestion for selection, parallel agents, compile cross-project a11y report.
 
 ---
 
@@ -381,7 +381,7 @@ Shared file write protocol for `AUDIT_LOG.md` and `TASKS.md`:
 
 - Local `AUDIT_LOG.md` : create or update a traffic-first `audit:` record for the A11y audit
 - Local `TASKS.md` : create or update traffic-first task records for the A11y audit findings
-- Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` : mirror the same traffic-first task records under the project
+- Project-local `shipflow_data/workflow/TASKS.md` : mirror the same traffic-first task records under the project
 
 ---
 

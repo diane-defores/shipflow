@@ -39,7 +39,7 @@ Load only the references required by the active run:
 ## Context
 
 - Current directory: !`pwd`
-- Control-plane project registry: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md 2>/dev/null || echo "no control-plane PROJECTS.md"`
+- Local project discovery sample: !`find "$HOME" -maxdepth 2 -type d -name shipflow_data 2>/dev/null | head -40 || echo "no local shipflow_data corpora found"`
 - Current project governance sample: !`find shipflow_data -maxdepth 3 -type f 2>/dev/null | sort | head -80 || echo "no local shipflow_data governance corpus"`
 - Memory index: !`cat ~/.claude/projects/-home-claude/memory/MEMORY.md 2>/dev/null || echo "no memory"`
 
@@ -47,12 +47,12 @@ Load only the references required by the active run:
 
 Separate control-plane files from project decision context:
 
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` is the cross-project registry used to discover candidate projects.
-- `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` is the cross-project master tracker used only when the user chooses to add portfolio tasks.
+- Candidate projects are discovered from local project `shipflow_data/` corpora and root project markers.
+- Central legacy trackers are migration evidence only and must not be used as current project truth.
 - Project-local `shipflow_data/` is the decision context for scoring a project: `business/`, `editorial/`, `technical/`, and `workflow/`.
 - Root legacy files such as `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `CONTEXT.md`, `CONTENT_MAP.md`, `TASKS.md`, and `AUDIT_LOG.md` are migration sources only unless a project explicitly has not adopted the governance corpus yet.
 
-For each relevant project from `PROJECTS.md`, read only the project-local governance files needed for the score:
+For each relevant discovered project, read only the project-local governance files needed for the score:
 
 ```
 cat [project_path]/shipflow_data/business/business.md
@@ -63,7 +63,7 @@ cat [project_path]/shipflow_data/editorial/content-map.md
 cat [project_path]/shipflow_data/technical/context.md
 ```
 
-Use `[project_path]/CLAUDE.md` or `[project_path]/AGENT.md` only as contributor guidance. If a listed project lacks local governance context, keep the score conservative and report the context gap instead of treating the control-plane registry as business truth. Load relevant memories from `~/.claude/projects/-home-claude/memory/` only as supplementary context, not as the canonical project contract.
+Use `[project_path]/CLAUDE.md` or `[project_path]/AGENT.md` only as contributor guidance. If a listed project lacks local governance context, keep the score conservative and report the context gap instead of treating the legacy control-plane registry as business truth. Load relevant memories from `~/.claude/projects/-home-claude/memory/` only as supplementary context, not as the canonical project contract.
 
 ---
 
@@ -194,7 +194,7 @@ Avant d'écrire dans un tracker ou dans le dossier de veille canonique :
 Canonical write targets:
 
 - Veille reports and tools: project-local `shipflow_data/workflow/research/` when running in a target project; for ShipFlow/global portfolio veille, `$SHIPFLOW_ROOT/shipflow_data/workflow/research/`.
-- Cross-project tasks: `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` only when the user chooses a master-tracker backlog action.
+- Cross-project tasks: do not write central master-tracker backlog actions; route project-specific work to project-local trackers.
 - Project-local tasks: `[project_path]/shipflow_data/workflow/TASKS.md` only when the target project owns its local tracker and the action is explicitly project-local.
 - Content actions: do not write article/blog/newsletter/social tasks directly when the surface is undeclared; route to `sf-content` / `sf-repurpose` through the content lifecycle, or report `surface missing: blog`.
 
@@ -307,8 +307,8 @@ Afficher un récap compact des actions effectuées :
 - **Être spécifique.** "Pourrait être utile" n'est pas une analyse. Dire exactement COMMENT et POUR QUOI.
 - **Ne pas sur-scorer.** Être honnête. Un 2/10 c'est bien.
 - **Penser cross-projets.** Un même lien peut être CREUSER pour un projet et IGNORER pour un autre. Évaluer chaque projet du registry.
-- **Source de vérité projet : `shipflow_data/` local au projet.** Le control plane `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` sert à découvrir les projets et gérer le master tracker, pas à remplacer les contrats business/editorial/techniques des projets.
+- **Source de vérité projet : `shipflow_data/` local au projet.** Les anciens fichiers centraux servent uniquement d'archives de migration, jamais comme source de vérité business/editorial/technique.
 - **4 axes, pas 5.** Contenu (web + réseaux, éducationnel + divertissant) | Architecture (apps rapides, intelligentes, un plaisir à utiliser) | Concurrence/inspiration (produit, contenu, copywriting) | Opportunité collab (partenariats, intégrations, cross-promo).
 - **Paralléliser** les fetches et analyses seulement comme lecture déléguée après chargement de `master-delegation-semantics`; aucune écriture depuis les contextes délégués.
 - **Accents français obligatoires** dans tout le rapport.
-- **Le tableau récap doit lister TOUS les projets pertinents**, pas seulement 3. Se baser sur PROJECTS.md pour connaître la liste complète.
+- **Le tableau récap doit lister TOUS les projets pertinents**, pas seulement 3. Se baser sur la découverte locale des projets pour connaître la liste complète.

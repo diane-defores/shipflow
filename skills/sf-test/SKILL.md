@@ -30,8 +30,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 - Git diff stat: !`git diff --stat 2>/dev/null || echo "no diff"`
 - ShipFlow development mode: !`rg -n "ShipFlow Development Mode|development_mode|validation_surface|ship_before_preview_test|post_ship_verification|deployment_provider" CLAUDE.md SHIPFLOW.md 2>/dev/null || echo "No project development mode documented"`
 - Recent commits: !`git log --oneline -8 2>/dev/null || echo "no commits"`
-- Master TASKS.md: !`cat ${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md 2>/dev/null | head -80 || echo "No master TASKS.md"`
-- Local TASKS.md: !`cat TASKS.md 2>/dev/null | head -80 || echo "No local TASKS.md"`
+- Project-local TASKS.md: !`cat shipflow_data/workflow/TASKS.md 2>/dev/null | head -80 || cat TASKS.md 2>/dev/null | head -80 || echo "No project-local TASKS.md"`
 - Existing test log: !`tail -80 TEST_LOG.md 2>/dev/null || echo "No TEST_LOG.md"`
 - Existing bug files: !`find bugs -maxdepth 1 -type f -name "BUG-*.md" 2>/dev/null | sort | tail -40 || echo "No bugs directory"`
 - Optional bug triage view: !`tail -80 BUGS.md 2>/dev/null || echo "No BUGS.md"`

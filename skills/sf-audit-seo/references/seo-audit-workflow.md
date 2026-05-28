@@ -150,12 +150,12 @@ Quand une page ou un corpus contient des claims sur OpenAI, ChatGPT, GPT, Codex,
 
 Audit ALL web projects in the workspace for SEO issues.
 
-1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the SEO column.
+1. Read discovered project-local corpora (`shipflow_data/` markers) — check the **Domain Applicability** table. Identify projects with ✓ in the SEO column.
 
 2. Use **AskUserQuestion** to let the user choose:
    - Question: "Which projects should I audit for SEO?"
    - `multiSelect: true`
-   - One option per applicable project: label = project name, description = stack from PROJECTS.md
+   - One option per applicable project: label = project name, description = stack inferred from project-local markers
    - All applicable projects pre-listed as options
 
 3. Use the **Task tool** to launch one agent per **selected** project — ALL IN A SINGLE MESSAGE (parallel). Each agent: `subagent_type: "general-purpose"`.
@@ -190,7 +190,7 @@ Audit ALL web projects in the workspace for SEO issues.
    ═══════════════════════════════════════
    ```
 
-5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one traffic-first audit record per project, SEO column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: SEO` subsection).
+5. Update project-local `shipflow_data/workflow/AUDIT_LOG.md` (one traffic-first audit record per project, SEO column) and project-local `shipflow_data/workflow/TASKS.md` (each project's `### Audit: SEO` subsection).
 
 6. Ask: **"Which projects should I fix?"** — list projects with scores. Fix only approved projects, one at a time.
 
@@ -332,7 +332,7 @@ Use **AskUserQuestion**:
 - `multiSelect: true`
 - Options:
   - **All projects** — "Run SEO audit across every applicable project" (Recommended)
-  - One option per SEO-applicable project from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`: label = project name, description = stack
+  - One option per SEO-applicable project from discovered project-local corpora (`shipflow_data/` markers): label = project name, description = stack
 
 Then proceed to **GLOBAL MODE** with the selected projects.
 
@@ -517,7 +517,7 @@ After generating the report and applying fixes:
 
 Create or update traffic-first audit operational records in the target audit logs:
 
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: create or update a traffic-first `audit:` record for the SEO audit.
+1. **Project-local `shipflow_data/workflow/AUDIT_LOG.md`**: create or update a traffic-first `audit:` record for the SEO audit.
 2. **Project-local `./AUDIT_LOG.md`**: same project-explicit traffic-first record; keep the required `[project]` token.
 
 Create either file if missing.
@@ -525,7 +525,7 @@ Create either file if missing.
 ### Update TASKS.md
 
 1. **Local TASKS.md** (project root): create or update traffic-first task records for the SEO audit findings.
-2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project section and mirror the same traffic-first task records; update any dashboard summary only when that surface still exists.
+2. **Project-local `shipflow_data/workflow/TASKS.md`**: find the project section and mirror the same traffic-first task records; update any dashboard summary only when that surface still exists.
 
 ---
 

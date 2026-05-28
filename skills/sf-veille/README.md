@@ -23,7 +23,7 @@ It is built for strategic scanning, not passive bookmarking.
 ## What You Give It
 
 - one or more URLs, or pasted text
-- the ShipFlow control-plane registry plus project-local `shipflow_data/` context so the skill can score relevance across projects
+- local project discovery plus project-local `shipflow_data/` context so the skill can score relevance across projects
 
 ## What You Get Back
 

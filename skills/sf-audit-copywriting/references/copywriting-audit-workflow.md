@@ -291,7 +291,7 @@ Si le répertoire courant n'a pas de marqueurs projet mais contient des sous-ré
 Utiliser **AskUserQuestion** :
 - Question : "Quel(s) projet(s) auditer en copywriting ?"
 - `multiSelect: true`
-- Options depuis `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`
+- Options depuis le discovered project-local corpora (`shipflow_data/` markers)
 
 Puis passer en **GLOBAL MODE**.
 
@@ -609,7 +609,7 @@ next_review: "[date]"
 
 ## GLOBAL MODE
 
-1. Lire `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`. Identifier les projets avec site web.
+1. Lire le registre de projets découverts via `shipflow_data/` en mode legacy compatibility. Identifier les projets avec site web.
 
 2. **AskUserQuestion** : "Quels projets auditer en copywriting ?" — `multiSelect: true`.
 
@@ -655,13 +655,13 @@ Protocole d'ecriture des fichiers partages (`AUDIT_LOG.md`, `TASKS.md`) :
 ### Log the audit
 
 Append à :
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`** : créer ou mettre à jour un enregistrement `audit:` traffic-first pour l'audit Copywriting.
+1. **Project-local `shipflow_data/workflow/AUDIT_LOG.md`** : créer ou mettre à jour un enregistrement `audit:` traffic-first pour l'audit Copywriting.
 2. **Local `./AUDIT_LOG.md`** : meme enregistrement traffic-first explicite cote projet; conserver le token `[project]` requis.
 
 ### Update TASKS.md
 
 1. **Local TASKS.md** : créer ou mettre à jour des enregistrements `task:` traffic-first pour les recommandations Copywriting.
-2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`** : même chose dans la section du projet.
+2. **Project-local `shipflow_data/workflow/TASKS.md`** : même chose dans la section du projet.
 
 ---
 

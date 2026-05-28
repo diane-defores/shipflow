@@ -36,7 +36,7 @@ The goal is not to spawn an agent every time. The goal is to choose the next use
 Gather only enough context to route correctly:
 
 - Current directory, project name, branch, and git status.
-- Local `TASKS.md` and master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` when present.
+- Project-local `shipflow_data/workflow/TASKS.md` or legacy root `TASKS.md` when present.
 - Relevant specs in `docs/` or `specs/` when the next step appears spec-driven.
 - Obvious failing command output or latest validation result if available in the conversation.
 - Existing skill instructions only when directly useful, especially `sf-start`, `sf-fix`, `sf-check`, `sf-verify`, `sf-model`, or `sf-end`.

@@ -5727,23 +5727,15 @@ EOF
         refresh_user_caddy_from_pm2 || true
     fi
 
-    # Initialize ShipFlow tracking on first start or clean up legacy tracker symlinks.
-    local project_tracking_dir="${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/projects/$env_name"
-    local should_init_tracking=false
-    if [ ! -f "$project_tracking_dir/TASKS.md" ]; then
-        should_init_tracking=true
-    elif [ -L "$project_dir/TASKS.md" ]; then
+    # Clean up legacy central-tracker symlinks without recreating central data.
+    if [ -L "$project_dir/TASKS.md" ]; then
         local project_tasks_target=""
         project_tasks_target=$(readlink "$project_dir/TASKS.md" 2>/dev/null || true)
         case "$project_tasks_target" in
             *"/shipflow_data/projects/"*"/TASKS.md")
-                should_init_tracking=true
+                shipflow_init_project "$env_name" "$project_dir"
                 ;;
         esac
-    fi
-
-    if [ "$should_init_tracking" = "true" ]; then
-        shipflow_init_project "$env_name" "$project_dir"
     fi
 }
 
@@ -7095,8 +7087,8 @@ view_environment_logs() {
 # shipflow_init_project - Initialize ShipFlow tracking files for a project
 #
 # Description:
-#   Creates TASKS.md in shipflow_data/projects/[name]/ and leaves the project
-#   directory's TASKS.md untouched. Creates CHANGELOG.md directly in the project dir.
+#   Cleans up legacy central tracker symlinks and creates CHANGELOG.md directly
+#   in the project dir.
 #   Safe to call multiple times — skips files that already exist.
 #
 # Arguments:
@@ -7104,51 +7096,13 @@ view_environment_logs() {
 #   $2 - project_dir  (e.g. "/root/myapp")
 #
 # Side Effects:
-#   - Creates shipflow_data/projects/[name]/TASKS.md
-#   - Removes legacy project TASKS.md symlinks that point into shipflow_data
+#   - Removes legacy project TASKS.md symlinks that point into central shipflow_data
 #   - Creates [project_dir]/CHANGELOG.md (if missing)
-#   - Adds entry to shipflow_data/PROJECTS.md (if missing)
 # -----------------------------------------------------------------------------
 shipflow_init_project() {
     local project_name="$1"
     local project_dir="$2"
-    local shipflow_data="${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}"
-    local project_data_dir="$shipflow_data/projects/$project_name"
     local project_tasks_file="$project_dir/TASKS.md"
-
-    # Ensure shipflow_data/projects/[name]/ exists
-    mkdir -p "$project_data_dir"
-
-    # Create TASKS.md in shipflow_data (if not already there)
-    if [ ! -f "$project_data_dir/TASKS.md" ]; then
-        cat > "$project_data_dir/TASKS.md" << TASKS_EOF
-# Tasks — $project_name
-
-> **Priority:** 🔴 P0 blocker · 🟠 P1 high · 🟡 P2 normal · 🟢 P3 low · ⚪ deferred
-> **Status:** 📋 todo · 🔄 in progress · ✅ done · ⛔ blocked · 💤 deferred
-
----
-
-## Setup
-
-| Pri | Task | Status |
-|-----|------|--------|
-| 🟠 | Review project structure and configure environment | 📋 todo |
-
----
-
-## Backlog
-
-| Pri | Task | Status |
-|-----|------|--------|
-
----
-
-## Audit Findings
-<!-- Populated by /sf-audit — dated sections added automatically -->
-TASKS_EOF
-        log INFO "Created TASKS.md for $project_name in shipflow_data"
-    fi
 
     if [ -L "$project_tasks_file" ]; then
         local current_tasks_target=""
@@ -7184,36 +7138,7 @@ CHANGELOG_EOF
         log INFO "Created CHANGELOG.md for $project_name"
     fi
 
-    # Register project in shipflow_data/PROJECTS.md (if not already listed)
-    local projects_file="$shipflow_data/PROJECTS.md"
-    if [ -f "$projects_file" ] && ! grep -q "| $project_name |" "$projects_file"; then
-        # Detect basic stack info
-        local stack="unknown"
-        if [ -f "$project_dir/package.json" ]; then
-            stack="Node.js"
-            grep -q '"next"' "$project_dir/package.json" 2>/dev/null && stack="Next.js"
-            grep -q '"astro"' "$project_dir/package.json" 2>/dev/null && stack="Astro"
-            grep -q '"nuxt"' "$project_dir/package.json" 2>/dev/null && stack="Nuxt"
-            grep -q '"vite"' "$project_dir/package.json" 2>/dev/null && stack="Vite"
-        elif [ -f "$project_dir/requirements.txt" ]; then
-            stack="Python"
-        elif ls "$project_dir"/*.sh >/dev/null 2>&1; then
-            stack="Bash"
-        fi
-        # Store home-scoped project paths in a portable form so the registry
-        # survives username changes across machines.
-        local registry_project_dir="$project_dir"
-        if [ "$registry_project_dir" = "$HOME" ]; then
-            registry_project_dir="~"
-        elif [[ "$registry_project_dir" == "$HOME/"* ]]; then
-            registry_project_dir="~/${registry_project_dir#$HOME/}"
-        fi
-
-        # Append row to Project Registry table
-        sed -i "/^| Name | Path | Stack |/,/^$/{/^$/i | $project_name | $registry_project_dir | $stack |
-}" "$projects_file" 2>/dev/null || \
-            echo "| $project_name | $registry_project_dir | $stack |" >> "$projects_file"
-    fi
+    log INFO "ShipFlow project tracking is project-local; central registry initialization skipped for $project_name"
 
     # Detect project-scoped MCP integrations from explicit project signals.
     local enable_clerk_mcp=0
@@ -9179,73 +9104,14 @@ run_menu_shortcut() {
 # action_advanced needs to be defined after ADVANCED_MENU_ITEMS
 # Each menu file (menu_gum.sh / menu_bash.sh) provides its own implementation
 show_shipflow_menu() {
-    local SHIPFLOW_DATA="${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}"
-    local TASKS_FILE="$SHIPFLOW_DATA/TASKS.md"
-    local AUDIT_FILE="$SHIPFLOW_DATA/AUDIT_LOG.md"
-
-    # First-run: create data directory with starter files if missing
-    if [ ! -d "$SHIPFLOW_DATA" ]; then
-        mkdir -p "$SHIPFLOW_DATA"
-        cat > "$SHIPFLOW_DATA/TASKS.md" << 'TASKS_EOF'
-# Master Project Tracker
-
-> **Priority:** 🔴 P0 blocker · 🟠 P1 high · 🟡 P2 normal · 🟢 P3 low · ⚪ deferred
-> **Status:** 📋 todo · 🔄 in progress · ✅ done · ⛔ blocked · 💤 deferred
-
----
-
-## Dashboard
-
-| # | Project | Phase | Status | Top Priority |
-|---|---------|-------|--------|--------------|
-
-**Legend:** 🟢 Stable · 🟡 Active · 🟠 Planning · 🔴 Blocked · ⚪ Empty
-
----
-
-## Backlog
-
-| Pri | Task | Status |
-|-----|------|--------|
-| 🟡 | Add first project with /sf-init | 📋 todo |
-TASKS_EOF
-        cat > "$SHIPFLOW_DATA/AUDIT_LOG.md" << 'AUDIT_EOF'
-# Audit Log
-
-> Populated by `/sf-audit` skills. Each entry follows the format:
-> `### Audit: [Domain] — [Project] (YYYY-MM-DD)`
-
----
-AUDIT_EOF
-        cat > "$SHIPFLOW_DATA/PROJECTS.md" << 'PROJECTS_EOF'
-# Projects
-
-## Project Registry
-
-| Name | Path | Stack |
-|------|------|-------|
-
-## Domain Applicability
-
-| Project | Code | Design | Copy | SEO | GTM | Translate | Deps | Perf |
-|---------|------|--------|------|-----|-----|-----------|------|------|
-PROJECTS_EOF
-        echo -e "${GREEN}✅ Created data directory: $SHIPFLOW_DATA${NC}"
-        sleep 1
-    fi
     local CHANGELOG_FILE="$(dirname "${BASH_SOURCE[0]}")/CHANGELOG.md"
 
     while true; do
         clear
         ui_screen_header "ShipFlow Overview"
 
-        # Mini dashboard: show project table from TASKS.md
-        if [ -f "$TASKS_FILE" ]; then
-            grep -E "^\| [0-9]+" "$TASKS_FILE" 2>/dev/null | head -12 | while IFS= read -r line; do
-                echo -e "  $line"
-            done
-            echo ""
-        fi
+        echo -e "${BLUE}Project data is read from each project's local shipflow_data/ corpus.${NC}"
+        echo ""
 
         echo -e "${GREEN}Choose:${NC}"
         echo ""
@@ -9261,36 +9127,12 @@ PROJECTS_EOF
 
         case $sf_choice in
             t)
-                if [ -f "$TASKS_FILE" ]; then
-                    less -R "$TASKS_FILE"
-                else
-                    echo -e "${RED}❌ TASKS.md not found at:${NC} $TASKS_FILE"
-                    sleep 2
-                fi
+                echo -e "${YELLOW}Open a project-local:${NC} shipflow_data/workflow/TASKS.md"
+                sleep 2
                 ;;
             p)
-                if [ -f "$TASKS_FILE" ]; then
-                    clear
-                    ui_screen_header "P0 Blockers & P1 High Priority" danger
-                    local current_project=""
-                    while IFS= read -r line; do
-                        if echo "$line" | grep -qE "^## [0-9]+\."; then
-                            current_project=$(echo "$line" | sed 's/^## //')
-                        fi
-                        if echo "$line" | grep -qE "^\| (🔴|🟠)"; then
-                            if [ -n "$current_project" ]; then
-                                echo -e "${BLUE}── $current_project${NC}"
-                                current_project=""
-                            fi
-                            echo "  $line"
-                        fi
-                    done < "$TASKS_FILE"
-                    echo ""
-                    ui_pause "Press any key to continue..."
-                else
-                    echo -e "${RED}❌ TASKS.md not found${NC}"
-                    sleep 2
-                fi
+                echo -e "${YELLOW}Priorities are project-local:${NC} shipflow_data/workflow/TASKS.md"
+                sleep 2
                 ;;
             c)
                 if [ -f "$CHANGELOG_FILE" ]; then
@@ -9301,12 +9143,8 @@ PROJECTS_EOF
                 fi
                 ;;
             a)
-                if [ -f "$AUDIT_FILE" ]; then
-                    less -R "$AUDIT_FILE"
-                else
-                    echo -e "${RED}❌ AUDIT_LOG.md not found at:${NC} $AUDIT_FILE"
-                    sleep 2
-                fi
+                echo -e "${YELLOW}Audit logs are project-local:${NC} shipflow_data/workflow/AUDIT_LOG.md"
+                sleep 2
                 ;;
             x|q)
                 ui_return_back

@@ -147,12 +147,12 @@ Ne pas corriger une page en embellissant une promesse que le produit ou la docum
 
 Audit ALL web projects in the workspace for copywriting quality.
 
-1. Read `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md` — check the **Domain Applicability** table. Identify projects with ✓ in the Copy column.
+1. Read discovered project-local corpora (`shipflow_data/` markers) — check the **Domain Applicability** table. Identify projects with ✓ in the Copy column.
 
 2. Use **AskUserQuestion** to let the user choose:
    - Question: "Which projects should I audit for copywriting?"
    - `multiSelect: true`
-   - One option per applicable project: label = project name, description = stack from PROJECTS.md
+   - One option per applicable project: label = project name, description = stack inferred from project-local markers
    - All applicable projects pre-listed as options
 
 3. Use the **Task tool** to launch one agent per **selected** project — ALL IN A SINGLE MESSAGE (parallel). Each agent: `subagent_type: "general-purpose"`.
@@ -187,7 +187,7 @@ Audit ALL web projects in the workspace for copywriting quality.
    ═══════════════════════════════════════
    ```
 
-5. Update `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md` (one traffic-first audit record per project, Copy column) and `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` (each project's `### Audit: Copy` subsection).
+5. Update project-local `shipflow_data/workflow/AUDIT_LOG.md` (one traffic-first audit record per project, Copy column) and project-local `shipflow_data/workflow/TASKS.md` (each project's `### Audit: Copy` subsection).
 
 6. Ask: **"Which projects should I fix?"** — list projects with scores. Fix only approved projects, one at a time.
 
@@ -372,7 +372,7 @@ Use **AskUserQuestion**:
 - `multiSelect: true`
 - Options:
   - **All projects** — "Run copy audit across every applicable project" (Recommended)
-  - One option per content project from `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/PROJECTS.md`: label = project name, description = stack
+  - One option per content project from discovered project-local corpora (`shipflow_data/` markers): label = project name, description = stack
 
 Then proceed to **GLOBAL MODE** with the selected projects.
 
@@ -481,7 +481,7 @@ After generating the report and applying fixes:
 
 Create or update traffic-first audit operational records in the target audit logs:
 
-1. **Global `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/AUDIT_LOG.md`**: create or update a traffic-first `audit:` record for the Copy audit.
+1. **Project-local `shipflow_data/workflow/AUDIT_LOG.md`**: create or update a traffic-first `audit:` record for the Copy audit.
 2. **Project-local `./AUDIT_LOG.md`**: same project-explicit traffic-first record; keep the required `[project]` token.
 
 Create either file if missing.
@@ -489,7 +489,7 @@ Create either file if missing.
 ### Update TASKS.md
 
 1. **Local TASKS.md** (project root): create or update traffic-first task records for the Copy audit findings.
-2. **Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md`**: find the project section and mirror the same traffic-first task records.
+2. **Project-local `shipflow_data/workflow/TASKS.md`**: find the project section and mirror the same traffic-first task records.
 
 ---
 

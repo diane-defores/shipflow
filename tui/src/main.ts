@@ -14,12 +14,23 @@ async function run(): Promise<void> {
 
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const projectRoot = path.resolve(__dirname, "../../");
+  const projectRoot = path.resolve(process.cwd());
+  const shipflowRepoRoot = path.resolve(__dirname, "../../");
+  const workspaceRoots = process.env.SHIPFLOW_TUI_WORKSPACE_ROOTS
+    ?.split(",")
+    .map((root) => root.trim())
+    .filter(Boolean)
+    .map((root) => path.resolve(root));
+  if (!workspaceRoots?.length) {
+    workspaceRoots?.push(shipflowRepoRoot);
+  } else if (!workspaceRoots.includes(shipflowRepoRoot)) {
+    workspaceRoots.push(shipflowRepoRoot);
+  }
 
   const data = await readDashboardData({
     projectRoot,
-    shipflowDataRoot: "/home/claude/shipflow_data",
-    shipflowRepoRoot: "/home/claude/shipflow"
+    workspaceRoots: workspaceRoots ?? [shipflowRepoRoot],
+    shipflowRepoRoot
   });
 
   try {

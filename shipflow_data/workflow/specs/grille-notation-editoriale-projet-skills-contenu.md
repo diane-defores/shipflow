@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "ShipFlow"
 created: "2026-05-24"
 created_at: "2026-05-24 22:15:52 UTC"
-updated: "2026-05-25"
-updated_at: "2026-05-25 09:30:10 UTC"
-status: reviewed
+updated: "2026-05-28"
+updated_at: "2026-05-28 18:26:47 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "unknown"
 scope: "content-governance-feature"
@@ -57,7 +57,7 @@ evidence:
   - "User decision 2026-05-24: integrate structured feedback and project-specific scoring rules inside content skills instead of creating one skill per project."
   - "shipflow_data/workflow/TASKS.md now tracks: cadrer une grille de notation éditoriale réutilisable par les skills contenu, avec critères communs et règles spécifiques par projet."
   - "shipflow_data/workflow/research/tools.md records Essay Grader AI as inspiration for editorial rubric scoring."
-next_step: "/sf-spec grille notation editoriale projet skills contenu"
+next_step: "/sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence"
 ---
 
 # Spec: Grille de notation éditoriale projet pour les skills contenu
@@ -68,9 +68,9 @@ Grille de notation éditoriale projet pour les skills contenu
 
 ## Status
 
-Draft.
+Ready.
 
-La direction produit est décidée : une brique commune de notation éditoriale doit être intégrée aux skills contenu, avec des règles spécifiques par projet chargées depuis le corpus de gouvernance. La spec doit encore passer `/sf-ready` avant implémentation pour confirmer les fichiers cibles et la profondeur d'intégration.
+La direction produit est décidée et la spec est prête pour `/sf-start` : une brique commune de notation éditoriale doit être intégrée aux skills contenu, avec règles spécifiques par projet chargées depuis le corpus de gouvernance, contrat machine strict, validation des entrées, modèle de sécurité, audit minimal et reprise/retry.
 
 ## User Story
 
@@ -97,6 +97,11 @@ Quand un skill contenu doit évaluer, améliorer, valider ou préparer la public
 - Si un claim sensible est détecté sans preuve suffisante, produire un `Claim Impact Plan` ou un blocage `needs proof` / `claim mismatch` / `blocked`.
 - Si le contenu obtient un score global correct mais échoue sur un critère bloquant du projet, le statut final doit rester `blocked` ou `needs revision`.
 - Si la grille ou les règles projet sont incohérentes, le skill doit expliquer la contradiction et éviter de valider le contenu.
+- Si le contexte projet est incohérent ou non autorisé, statut `blocked`, message `project context unauthorized`, aucun score final.
+- Si une évaluation est relancée sur un même contenu sans changement détectable, le skill rejette en replay et renvoie `duplicate_in_progress` avec l'identifiant du run actif.
+- Si `surface`, `project_id`, `run_signature` ou `evaluator.skill` échouent la normalisation, statut `blocked`, code `invalid_input_contract`.
+- Si une erreur partielle survient avant génération du score, statut `needs retry`; aucune sortie ne peut être consommée par `sf-verify`.
+- Si deux sorties existent pour la même signature avec des statuts incompatibles, statut `blocked`, code `conflicting_score_state`, résolution manuelle ou rerun canonique par `sf-content`.
 
 ## Problem
 
@@ -113,6 +118,95 @@ Ajouter une couche partagée de notation éditoriale qui sépare trois niveaux :
 3. Sortie standard : score global, sous-scores, statut, feedback priorisé, corrections obligatoires, preuves manquantes, et prochaine route ShipFlow.
 
 Cette couche doit être consommée par les skills contenu existants. Elle ne doit pas devenir une nouvelle skill autonome par projet.
+
+## Output Schema
+
+Toute évaluation doit produire la sortie machine suivante, utilisée par les owner skills et par `sf-verify`:
+
+```json
+{
+  "schema_version": "1.0",
+  "run_id": "<uuid-or-stable-run-id>",
+  "run_signature": "<hash of project_id + surface + content_ref + source_refs + rules_revision>",
+  "project_id": "<string>",
+  "surface": "<blog|article|doc|newsletter|social|other>",
+  "evaluator": {
+    "skill": "<sf-content|sf-repurpose|sf-redact|sf-enrich|sf-audit-copy|sf-audit-copywriting|sf-audit-seo|sf-verify>",
+    "role": "<producer|auditor|verifier>",
+    "initiated_by": "<operator|workflow|unknown>"
+  },
+  "input_refs": {
+    "content_ref": "<path|artifact|inline>",
+    "source_refs": ["<path|artifact|url|none>"]
+  },
+  "applied_rules_revision": {
+    "business": "<artifact or version>",
+    "editorial": "<artifact or version>",
+    "claim_register": "<artifact or version>"
+  },
+  "scores": {
+    "overall": 0,
+    "clarity": 0,
+    "structure": 0,
+    "source_faithfulness": 0,
+    "compliance": 0,
+    "brand_voice": 0,
+    "call_to_action": 0
+  },
+  "weights": {
+    "clarity": "<float 0-1>",
+    "structure": "<float 0-1>",
+    "source_faithfulness": "<float 0-1>",
+    "compliance": "<float 0-1>",
+    "brand_voice": "<float 0-1>",
+    "call_to_action": "<float 0-1>"
+  },
+  "status": "<ready|needs revision|blocked|publishable with caveats>",
+  "blocked_reasons": [
+    {
+      "code": "<string>",
+      "message": "<string>",
+      "required_action": "<string>"
+    }
+  ],
+  "evidence": [
+    {
+      "criterion": "<string>",
+      "source": "<file|claim|url|corpus>",
+      "state": "<pass|warning|fail>"
+    }
+  ],
+  "recommendations": [
+    "<string>"
+  ],
+  "confidence": "<float 0-1>",
+  "expires_at_utc": "<ISO8601 or null>"
+}
+```
+
+`status`, `surface`, `evaluator.skill`, `evaluator.role` et les `blocked_reasons.code` doivent être normalisés en valeurs exactes. Toute valeur inconnue, vide, mal typée ou ambiguë invalide la notation et produit `status: "blocked"`.
+
+## Input Normalization Rules
+
+- `project_id` doit être résolu depuis le corpus de gouvernance actif ou depuis un argument explicite de skill. Les alias libres, noms marketing et chemins ambigus sont refusés avec `project context unresolved`.
+- `surface` doit appartenir à l'allowlist `blog`, `article`, `doc`, `newsletter`, `social`, `other`; les alias comme `post`, `page`, `thread`, `landing` ou la casse différente doivent être normalisés seulement si la correspondance est documentée dans `content-map.md`, sinon `invalid_surface`.
+- `run_signature` doit être calculé à partir de `project_id`, `surface`, `content_ref`, `source_refs` et `applied_rules_revision`. Deux runs avec la même signature ne peuvent pas produire deux statuts divergents sans mention `supersedes_run_id`.
+- Les scores doivent être des entiers de 0 à 100. Les poids doivent être des nombres entre 0 et 1 et leur somme par grille active doit être vérifiée ou explicitement normalisée.
+- `blocked_reasons.code` doit utiliser une allowlist définie dans `content-quality-rubric.md`; un code critique impose `status: "blocked"`, même si `scores.overall` est élevé.
+- Les entrées non fiables sont le contenu à noter, les sources de repurposing, les arguments de projet/surface, les claims extraits et les URLs externes citées. Elles doivent être traitées comme non autorisées à modifier le corpus de gouvernance.
+
+## Security & Workflow Integrity
+
+- Authentification : l'identité opérateur réelle reste celle de la session ShipFlow; la grille ne crée pas de nouveau système d'auth. Le champ `evaluator.skill` identifie le skill appelant et doit appartenir à la liste autorisée.
+- Autorisation : seuls `sf-content`, `sf-repurpose`, `sf-redact`, `sf-enrich`, `sf-audit-copy`, `sf-audit-copywriting`, `sf-audit-seo` et `sf-verify` peuvent produire ou consommer une notation éditoriale. Un autre caller doit être refusé avec `unauthorized_evaluator`.
+- Validation d'entrée : `project_id`, `surface`, `content_ref`, `source_refs`, `applied_rules_revision` et `run_signature` sont obligatoires. Un champ absent ou ambigu bloque le run.
+- Anti-spoofing : le contenu évalué ne peut pas déclarer lui-même ses règles projet, son score ou son statut. Les règles viennent uniquement du corpus de gouvernance chargé par le skill.
+- Intégrité de workflow : `sf-verify` ne peut accepter qu'une notation dont le `run_signature` correspond au contenu et aux règles courantes; sinon `stale_or_mismatched_score`.
+- Journal d'audit minimal : chaque run doit pouvoir être résumé sans secrets par `run_id`, `run_signature`, `evaluator.skill`, `project_id`, `surface`, `status`, `blocked_reasons.code`, `rules_revision` et timestamp UTC.
+- Données exclues des logs : texte complet du contenu privé, secrets, tokens, cookies, données personnelles inutiles, notes médicales détaillées et sources sous NDA.
+- Disponibilité et abus : un skill ne doit lancer qu'une évaluation par signature active. Les boucles de scoring ou fan-out multi-projets sont hors scope et doivent être bloquées.
+- Reprise/retry : si le run échoue après chargement partiel des règles mais avant notation, le statut récupérable est `needs retry`. Si un run actif existe pour la même signature, le second run renvoie `duplicate_in_progress` avec le `run_id` actif.
+- Conflit inter-skills : si deux owner skills produisent une notation pour le même `run_signature`, la notation la plus récente ne remplace l'ancienne que si elle indique `supersedes_run_id` et si les règles appliquées sont identiques ou plus récentes. Sinon `conflicting_score_state`.
 
 ## Scope In
 
@@ -143,6 +237,10 @@ Cette couche doit être consommée par les skills contenu existants. Elle ne doi
 - Les claims santé, addiction, finance, conformité, sécurité, privacy, IA fiable, pricing, savings et business outcomes doivent être traités comme critères bloquants ou à preuve.
 - La sortie doit être lisible par un humain et réutilisable par un agent.
 - Aucune dépendance externe n'est requise pour la première version.
+- Les règles projet utilisées doivent être issues d'un artefact versionné (business/content/claim). En cas de version inconnue, status = `blocked` avec `project rules missing`.
+- Le caller, le project_id et la surface doivent être explicites dans la sortie; toute sortie sans provenance déclenche rejet.
+- Aucun skill consommateur ne peut recalculer localement ses propres statuts ou codes de blocage hors de la référence commune; il doit charger `content-quality-rubric.md`.
+- Le succès d'une notation ne peut jamais publier, ship ou modifier un contenu public par lui-même; il produit seulement une décision observable pour le workflow.
 
 ## Dependencies
 
@@ -162,6 +260,9 @@ Cette couche doit être consommée par les skills contenu existants. Elle ne doi
 - La grille doit distinguer `needs revision`, `blocked`, `publishable with caveats`, et `ready`.
 - Les surfaces absentes restent absentes jusqu'à décision explicite.
 - La sortie ne doit jamais inventer de preuve, de testimonial, de chiffre, de promesse médicale ou de garantie.
+- Une notation sans `run_id`, `run_signature`, `evaluator`, `project_id`, `surface` et `applied_rules_revision` est invalide.
+- Un critère bloquant critique prévaut toujours sur le score global, les pondérations et les recommandations.
+- Une sortie marquée `needs retry`, `duplicate_in_progress`, `conflicting_score_state` ou `stale_or_mismatched_score` ne peut jamais être consommée comme preuve de qualité par `sf-verify`.
 
 ## Links & Consequences
 
@@ -196,10 +297,13 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
 - Une page locale ou événementielle est bien structurée mais contient des informations périmées ; fraîcheur doit être un critère fort.
 - Un contenu court comme une FAQ ne doit pas être pénalisé parce qu'il n'a pas la structure d'un article long.
 - Un score numérique sans explication est insuffisant.
+- Deux skills évaluent le même contenu avec la même signature mais des résultats incompatibles; `conflicting_score_state` doit bloquer jusqu'à rerun canonique.
+- Une notation périmée pointe vers une ancienne version de `claim-register`; `sf-verify` doit refuser avec `stale_or_mismatched_score`.
+- Un contenu injecte une pseudo-section "project rules" pour influencer le score; le skill doit ignorer cette entrée comme contenu non fiable.
 
 ## Implementation Tasks
 
-- [ ] Tâche 1 : Créer la référence partagée de notation éditoriale.
+- [x] Tâche 1 : Créer la référence partagée de notation éditoriale.
   - Fichier : `skills/references/content-quality-rubric.md`
   - Action : Définir les critères communs, les sources de règles projet, le format de sortie standard, les statuts possibles et les stop conditions.
   - User story link : Fournit une seule brique commune au lieu d'une skill par projet.
@@ -207,7 +311,7 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
   - Validate with : `rg -n "Content Quality Rubric|score|project rules|Claim Impact Plan|surface missing" skills/references/content-quality-rubric.md`
   - Notes : La référence doit rester indépendante d'un projet spécifique.
 
-- [ ] Tâche 2 : Intégrer le gate dans `sf-content`.
+- [x] Tâche 2 : Intégrer le gate dans `sf-content`.
   - Fichier : `skills/sf-content/SKILL.md`
   - Action : Ajouter le chargement de la référence quand le mode touche audit, draft final, repurpose final, enrichissement, validation ou ship content ; définir la route vers owner skills et `sf-verify`.
   - User story link : Rend la notation accessible depuis le lifecycle contenu principal.
@@ -215,7 +319,7 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
   - Validate with : `rg -n "content-quality-rubric|quality score|rubric|needs revision|blocked" skills/sf-content/SKILL.md`
   - Notes : Ne pas faire de `sf-content` un rédacteur ou auditeur complet.
 
-- [ ] Tâche 3 : Aligner les owner skills contenu sur la sortie standard.
+- [x] Tâche 3 : Aligner les owner skills contenu sur la sortie standard.
   - Fichier : `skills/sf-repurpose/SKILL.md`, `skills/sf-redact/SKILL.md`, `skills/sf-enrich/SKILL.md`, `skills/sf-audit-copy/SKILL.md`, `skills/sf-audit-copywriting/SKILL.md`, `skills/sf-audit-seo/SKILL.md`
   - Action : Ajouter les gates précis pour charger ou produire la notation quand le mode concerne un contenu public, un brouillon final, une amélioration, un audit, ou un claim.
   - User story link : Garantit que les retours qualité sont cohérents entre skills.
@@ -223,7 +327,7 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
   - Validate with : `rg -n "content-quality-rubric|rubric|score|feedback structuré|structured feedback" skills/sf-*.md`
   - Notes : Conserver les responsabilités de chaque skill.
 
-- [ ] Tâche 4 : Ajouter la consommation côté vérification.
+- [x] Tâche 4 : Ajouter la consommation côté vérification.
   - Fichier : `skills/sf-verify/SKILL.md`
   - Action : Décrire comment `sf-verify` vérifie un score éditorial quand une spec ou un workflow déclare ce gate, et comment il bloque sur critère bloquant.
   - User story link : Permet d'utiliser la grille comme preuve de qualité avant close/ship.
@@ -231,7 +335,7 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
   - Validate with : `rg -n "content-quality-rubric|editorial score|content quality|blocking criterion" skills/sf-verify/SKILL.md`
   - Notes : Ne pas rendre le score obligatoire pour tous les ships.
 
-- [ ] Tâche 5 : Documenter la brique dans les contrats techniques/editoriaux.
+- [x] Tâche 5 : Documenter la brique dans les contrats techniques/editoriaux.
   - Fichier : `shipflow_data/editorial/content-map.md`, `shipflow_data/technical/skill-runtime-and-lifecycle.md`
   - Action : Ajouter la référence comme brique interne de gouvernance contenu, ses consommateurs et ses triggers.
   - User story link : Préserve la découvrabilité pour un agent frais.
@@ -239,7 +343,7 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
   - Validate with : `python3 tools/shipflow_metadata_lint.py shipflow_data/editorial/content-map.md shipflow_data/technical/skill-runtime-and-lifecycle.md`
   - Notes : Public docs uniquement si les pages visibles changent.
 
-- [ ] Tâche 6 : Valider l'ensemble et synchroniser les skills.
+- [x] Tâche 6 : Valider l'ensemble et synchroniser les skills.
   - Fichier : `skills/`, `skills/references/`, `shipflow_data/`
   - Action : Exécuter les audits et checks ciblés, corriger les incohérences, puis préparer le handoff vers `/sf-verify`.
   - User story link : Prouve que la nouvelle brique est utilisable et cohérente.
@@ -257,6 +361,9 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
 - [ ] CA 6 : Given une sortie de repurposing qui invente un claim non présent dans la source, when elle est notée, then source-faithfulness bloque ou demande révision.
 - [ ] CA 7 : Given une spec exige un gate de qualité éditoriale, when `sf-verify` vérifie le chantier, then il peut lire le statut de notation et bloquer sur critère bloquant.
 - [ ] CA 8 : Given les skills sont synchronisés, when les validations ShipFlow sont lancées, then budget audit, runtime sync, metadata lint et checks ciblés passent ou rapportent un blocage précis.
+- [ ] CA 9 : Given une entrée avec `surface`, `project_id`, `run_signature` ou `evaluator.skill` invalide, when la grille est invoquée, then le statut est `blocked` avec `invalid_input_contract` ou le code précis correspondant.
+- [ ] CA 10 : Given deux runs concurrents avec la même signature, when le second démarre avant la fin du premier, then il retourne `duplicate_in_progress` et ne produit pas de score concurrent.
+- [ ] CA 11 : Given une notation ancienne dont les règles projet ne correspondent plus au corpus courant, when `sf-verify` la lit, then il bloque avec `stale_or_mismatched_score`.
 
 ## Test Strategy
 
@@ -274,6 +381,9 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
 - Risque de claims sensibles : un contenu peut être convaincant mais juridiquement ou médicalement dangereux. Mitigation : claim register et familles sensibles globales.
 - Risque de complexité : trop de critères rendraient les rapports inutilisables. Mitigation : critères communs compacts + feedback priorisé.
 - Risque de gouvernance absente : certains projets n'ont pas encore de corpus complet. Mitigation : confidence downgrade + route `/sf-docs editorial` ou `/sf-init`.
+- Risque de contournement inter-skill : un owner skill pourrait produire un statut sans la grille commune. Mitigation : schéma obligatoire, `evaluator.skill` allowlist et vérification `sf-verify`.
+- Risque de replay/concurrence : deux évaluations peuvent diverger pour le même contenu. Mitigation : `run_signature`, `duplicate_in_progress`, `supersedes_run_id` et `conflicting_score_state`.
+- Risque de fuite dans les logs : les contenus ou sources sensibles pourraient être consignés. Mitigation : audit minimal sans texte complet, secrets ni données personnelles inutiles.
 
 ## Execution Notes
 
@@ -281,6 +391,10 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
 - Implémenter la référence commune avant de modifier les skills consommateurs.
 - Garder les changements de skills courts : ils doivent charger/produire la grille, pas dupliquer toute la doctrine.
 - Ne pas créer de fichier par projet. Les exemples peuvent montrer comment déduire des règles projet depuis le corpus.
+- Sécurité minimale : vérifier ordre d'exécution (`project context` -> `surface` -> `rules` -> scoring), rejeter les appels non autorisés et empêcher les doubles soumissions concurrentes.
+- Implémenter la référence comme source unique des statuts, codes de blocage, allowlists et règles de normalisation. Les owner skills ne doivent pas recopier ces listes localement.
+- Ajouter dans la référence une table des codes : `project context unresolved`, `invalid_surface`, `project rules missing`, `needs proof`, `claim mismatch`, `invalid_input_contract`, `unauthorized_evaluator`, `duplicate_in_progress`, `needs retry`, `conflicting_score_state`, `stale_or_mismatched_score`.
+- Lors de l'intégration dans `sf-verify`, refuser toute notation sans `run_signature` cohérente ou avec `status` récupérable/non final.
 - Stop condition : si l'implémentation révèle qu'un projet a besoin de nouvelles surfaces éditoriales, créer une spec dédiée plutôt que l'inclure ici.
 - Stop condition : si une page publique est modifiée, appliquer l'Editorial Update Plan et le build Astro.
 - Fresh external docs : `fresh-docs not needed`.
@@ -295,14 +409,20 @@ None
 |----------|-------|-------|--------|--------|-----------|
 | 2026-05-24 22:15:52 UTC | sf-spec | unknown | Created draft spec from sf-veille Essay Grader AI intake and operator decision to build one shared project-aware editorial scoring rubric for content skills. | draft saved | /sf-ready grille notation editoriale projet skills contenu |
 | 2026-05-25 09:30:10 UTC | sf-ready | unknown | Reviewed draft against Definition of Ready criteria. | not ready | /sf-spec grille notation editoriale projet skills contenu |
+| 2026-05-26 19:37:46 UTC | sf-ready | unknown | Re-reviewed DoR against updated schema/security constraints and task traceability requirements. | not ready | /sf-spec grille notation editoriale projet skills contenu |
+| 2026-05-26 19:40:17 UTC | sf-spec | unknown | Updated the reviewed spec to close sf-ready gaps on authz, input normalization, audit logging, retry/replay and inter-skill conflict behavior. | reviewed | /sf-ready grille notation editoriale projet skills contenu |
+| 2026-05-26 19:43:39 UTC | sf-ready | unknown | Validated readiness after schema, security, input normalization, retry/replay and inter-skill conflict behavior were specified. | ready | /sf-start grille notation editoriale projet skills contenu |
+| 2026-05-26 19:49:19 UTC | sf-start | gpt-5.3-codex | Implemented shared content quality rubric, owner-skill integration, verification consumption rules, and governance docs wiring; ran required checks. | implemented | /sf-verify grille notation editoriale projet skills contenu |
+| 2026-05-28 18:19:33 UTC | sf-verify | unknown | Verified rubric reference, owner-skill wiring, metadata, runtime skill sync, and governance docs; runtime rubric output scenarios remain unproven. | partial | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
+| 2026-05-28 18:26:47 UTC | sf-verify | unknown | Re-ran verification and confirmed mechanical checks still pass; no sample rubric run evidence was found for the runtime editorial score gate. | partial | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
 
 ## Current Chantier Flow
 
-- `sf-spec`: done, draft spec created.
-- `sf-ready`: launched, not ready.
-- `sf-start`: not launched.
-- `sf-verify`: not launched.
+- `sf-spec`: reviewed.
+- `sf-ready`: ready.
+- `sf-start`: implemented.
+- `sf-verify`: partial; mechanical contract checks pass, runtime rubric output proof missing.
 - `sf-end`: not launched.
 - `sf-ship`: not launched.
 
-Next step: `/sf-ready grille notation editoriale projet skills contenu`
+Next step: `/sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence`

@@ -313,7 +313,7 @@ Single-component audit. Apply phases 3 (god component check), 5 (abstraction qua
 
 ## GLOBAL MODE
 
-Same pattern as other audit skills: read `PROJECTS.md`, let user select projects via **AskUserQuestion**, launch parallel agents, compile cross-project report.
+Same pattern as other audit skills: discover local project corpora, let user select projects via **AskUserQuestion**, launch parallel agents, compile cross-project report.
 
 ---
 
@@ -329,7 +329,7 @@ Shared file write protocol for `AUDIT_LOG.md` and `TASKS.md`:
 
 - Local `AUDIT_LOG.md` : create or update a traffic-first `audit:` record for the Components audit
 - Local `TASKS.md` : create or update traffic-first task records for the Components audit findings
-- Master `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}/TASKS.md` : mirror the same traffic-first task records under the project
+- Project-local `shipflow_data/workflow/TASKS.md` : mirror the same traffic-first task records under the project
 
 ---
 
