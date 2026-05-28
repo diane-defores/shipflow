@@ -90,6 +90,15 @@ Based on the context above, identify the project stack and run the appropriate c
 - `bash -n` syntax check on `.sh` files
 - Run test scripts if they exist (`./test_*.sh`)
 
+### Proportional checks policy
+
+Prefer scoped checks for low-risk edits. Do not default to a full sequence when the risk and touched surface are narrow.
+
+- `bounded`: default for localized or low-risk edits (syntax/typecheck/lint where available and targeted).
+- `full`: for behavior-relevant shared code, auth/data boundary changes, dependency/build changes, or release-risky edits.
+
+Never run full framework-heavy checks purely by habit.
+
 **ShipFlow skill runtime visibility** (when the scope touches `skills/*/SKILL.md`, new/renamed skills, or reported Claude/Codex skill drift):
 - Check one skill: `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/shipflow_sync_skills.sh --check --skill <name>`
 - Check all source skills: `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/shipflow_sync_skills.sh --check --all`

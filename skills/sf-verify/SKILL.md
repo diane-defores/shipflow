@@ -54,6 +54,8 @@ Verify ship-readiness across six dimensions:
 5. Dependencies
 6. Risks
 
+7. Manual checklist gate: required rows are `PASS` or explicitly exception-handled; unresolved `NOT_RUN`/`FAIL`/`BLOCKED` required rows block clean verification.
+
 Mandatory explicit checks:
 
 - `Success Behavior` pass/partial/fail/not demonstrated

@@ -107,6 +107,7 @@ Note: `/sf-verify` now includes guided next-step prompting when verdict is not r
 Note: `/sf-auth-debug` is the required diagnostic path for auth bugs that need browser evidence before implementation.
 Note: `/sf-browser` is the generic browser evidence path for non-auth page assertions; use `/sf-auth-debug` for auth/session/provider issues, `/sf-prod` for deployment truth, and `/sf-test` for durable manual QA logs.
 Note: `/sf-test` sits after verification and before shipping when a human needs to confirm the real user flow; it writes compact `TEST_LOG.md`, durable bug files under `bugs/`, and optional compact `BUGS.md` triage views when needed.
+Note: `/sf-test` supports a `checklist-first` mode: when a spec defines `manual_test_checklist`, required scenarios from the checklist become the authoritative source for manual proof; optional rows are run only if needed.
 Note: `/sf-bug` is the recommended entrypoint when you want the whole professional bug loop executed from a `BUG-ID`, retest, closure question, or ship-risk question.
 Note: `/sf-start` now reuses the `sf-model` routing matrix and can choose `single-agent` vs `multi-agent` execution with explicit file ownership and per-group model overrides.
 Note: `/sf-spec` → `/sf-ready` → `/sf-start` → `/sf-verify` now share a `User Story` contract and should ask targeted user questions whenever behavior, scope, or security is still ambiguous.

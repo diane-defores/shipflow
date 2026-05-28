@@ -127,6 +127,30 @@ En tant que [actor], je veux [capability], afin de [value].
 - Integration: [tests or `None, because ...`]
 - Manual: [sanity checks or `None, because ...`]
 
+## Test Contract
+
+### Surface
+
+- Stack/surface: [Flutter|Astro|Python|API|auth|provider|docs|other]
+- Primary proof mode: [automated_tests|agent_browser|agent_auth|contract_only|device_only|manual_only|mixed]
+- Proof order (if applicable): [automated/agent_browser/auth/contract/provider/device]
+
+### Manual checklist
+
+- Needed: [yes|no]
+- Checklist path: `shipflow_data/workflow/test-checklists/<scope>.md`
+- Required scenario coverage: [required rows only]
+- Exception with proof: [why and what alternate evidence was used, when required]
+
+### Required evidence stack
+
+- Automated / unit / integration checks: [exact commands]
+- Agent-run browser proof: [routes/commands used, if any]
+- Auth/session proof (`sf-auth-debug`): [route/objective, if any]
+- Contract/integration proof: [API/service/doc checks]
+- Provider evidence: [tool and target, if any]
+- Device-native proof: [native-only scenario, if any]
+
 ## Risks
 
 - Security impact: [none, because ... / yes, mitigated by ... / unknown, because ...]

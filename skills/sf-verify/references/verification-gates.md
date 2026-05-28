@@ -117,6 +117,35 @@ Verdicts:
 
 Any open high/critical bug in scope blocks ready-to-ship verdict.
 
+## Manual Checklist Gate
+
+If the scope references `manual_test_checklist` artifacts, parse checklist files before the final verdict.
+
+Required rows are blocking unless:
+- status is `PASS`
+- an explicit and recorded exception was accepted in scope contract
+- scope transition moved to a more concrete proof artifact (`sf-test` produced a confirmed `Bug Link` or documented manual exception)
+
+Unresolved required rows (`NOT_RUN`, `FAIL`, `BLOCKED`) produce `partial` or `not verified` unless a safe, documented exception exists.
+
+Use `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/shipflow_checklist_status.py <checklist>` during verification.
+
+## CI Surface Gate (Path-Filtered Workflows)
+
+When workflow files exist under `.github/workflows/**`, verify CI is proportional:
+
+- doc-only or governance-only changes should route to docs/skills/workflow jobs only
+- app/site/backend changes should run only matching expensive jobs
+- unrelated expensive jobs must be skipped, not forced
+
+Before marking the CI gate clear:
+
+- ensure path filters use positive ownership scopes (`paths`), not only broad `paths-ignore`
+- ensure `workflow_dispatch` exists for forced full-surface checks
+- ensure branch-protection rules do not require a routinely skipped path-filtered workflow (or an accepted umbrella status exists)
+
+If no `.github/workflows` exists in this repo, document this as `not assessed` with reason "no local workflows to validate", and route the next step to the repository where workflow assets exist.
+
 ## Coherence Gates
 
 ### Project / Code Coherence

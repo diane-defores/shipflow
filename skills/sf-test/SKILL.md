@@ -73,6 +73,19 @@ Before generating a manual test, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/r
 
 If a scenario fails with a crash, error boundary, 5xx, visible Sentry/support event ID, or runtime exception, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md` before logging evidence.
 
+## Checklist-first mode
+
+When a spec declares a manual checklist path, `sf-test` uses that checklist as the scenario source:
+
+- parse `shipflow_data/workflow/test-checklists/<scope>.md` with
+  `${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/shipflow_checklist_status.py <path> --json`
+- convert status terms to canonical values: `PASS`, `FAIL`, `BLOCKED`, `NOT_RUN`, `N/A`
+- keep required scenario rows as blockers if unresolved
+- preserve and reuse existing `Observed`, `Evidence pointer`, and `Bug Link` columns
+- for `FAIL`/`BLOCKED` required rows, create/update `BUG-*.md` as needed and keep `Evidence pointer` or `Bug Link` filled
+
+For manual-only test campaigns, do not invent a new scenario list if a generated checklist already exists for the scope.
+
 If the project mode is `vercel-preview-push` and the requested test targets changed app behavior:
 - Do not generate a preview/manual test while the repo has dirty code changes that have not been shipped.
 - Route first to `/sf-ship [scope]`.
@@ -144,6 +157,12 @@ If the expected behavior is ambiguous in a way that changes product meaning, per
 ## Step 2 — Choose Scenario Types
 
 Generate only scenarios that match the feature.
+
+If a checklist exists for the scope, use its rows as the primary scenario set:
+
+- required rows are high-priority
+- optional rows are allowed only when clearly useful for confidence
+- unresolved required `NOT_RUN`, `FAIL`, or `BLOCKED` rows must remain visible for `sf-verify`
 
 Common scenario families:
 

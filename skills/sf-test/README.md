@@ -53,6 +53,17 @@ The skill is not meant to replace automated tests. It covers the human-facing an
 - a redacted `test-evidence/BUG-ID/` location when evidence is too large or sensitive for inline storage
 - a clean route into `sf-fix` when the bug is actionable
 
+## Checklist-first mode
+
+When a ready spec declares a manual checklist (for example `manual_test_checklist.md`), `sf-test` uses that checklist as the scenario source:
+
+- parse the checklist artifact and prioritize required rows
+- keep the existing `Observed`, `Evidence pointer`, and `Bug Link` fields in order
+- escalate unresolved required rows as blockers before marking the run clean
+- only add optional rows when they improve confidence and are clearly actionable
+
+The objective is to make manual testing deterministic and auditable: no scenario drift between run and run.
+
 ## Example: Google Auth
 
 Instead of asking "does login work?", `sf-test` should guide the actual flow:

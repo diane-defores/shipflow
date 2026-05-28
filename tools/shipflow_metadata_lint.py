@@ -123,6 +123,11 @@ ARTIFACT_REQUIRED = {
         "related_bugs",
         "related_artifacts",
     },
+    "manual_test_checklist": {
+        "target_scope",
+        "stack_profile",
+        "proof_profile",
+    },
 }
 
 SKIP_ARTIFACT_TRACKERS = {"AUDIT_LOG.md", "BUGS.md", "PROJECTS.md", "TASKS.md", "TEST_LOG.md"}

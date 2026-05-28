@@ -233,6 +233,7 @@ Utiliser ces titres de sections exacts pour que `/sf-ready` et `/sf-verify` puis
 - `Scope In`
 - `Scope Out`
 - `Constraints`
+- `Test Contract`
 - `Dependencies`
 - `Invariants`
 - `Links & Consequences`
@@ -246,6 +247,16 @@ Utiliser ces titres de sections exacts pour que `/sf-ready` et `/sf-verify` puis
 - `Open Questions`
 - `Skill Run History`
 - `Current Chantier Flow`
+
+Pour tout travail non trivial (ou dès qu'une preuve humaine/propre) est nécessaire), le `Test Contract` doit être rempli de manière explicite.
+
+Règles minimales :
+- surface/stack profile détectée (Flutter, Astro, Python, API, auth, provider, device, mixed)
+- preuve automatisée disponible (tests/typecheck/checks) et preuve non-automatisée requise
+- preuve manuelle attendue quand une vérification humaine reste nécessaire
+- chemin de preuve ordonné (automated → browser/auth → contract/integration → provider → manual/device)
+- chemin de checklist manuelle si nécessaire : `shipflow_data/workflow/test-checklists/<scope>.md`
+- justification pour chaque exception (`exception-with-proof`) quand une étape de preuve est non applicable
 
 **Tâches d'implémentation :**
 ```markdown

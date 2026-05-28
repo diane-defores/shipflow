@@ -6,7 +6,7 @@ project: "ShipFlow"
 created: "2026-05-24"
 created_at: "2026-05-24 17:23:00 UTC"
 updated: "2026-05-27"
-updated_at: "2026-05-27 09:27:19 UTC"
+updated_at: "2026-05-28 20:32:30 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5.5 Codex"
@@ -335,13 +335,15 @@ None. Resolved on 2026-05-27:
 | 2026-05-26 16:47:52 UTC | sf-ready | GPT-5 Codex | Reviewed readiness: structure and metadata pass, but open product/implementation questions and GitHub Actions freshness evidence gaps block implementation start | not ready | /sf-spec ShipFlow TDD and Manual Checklist Artifacts |
 | 2026-05-27 00:00:00 UTC | sf-spec | GPT-5 Codex | Resolved open decisions: fixed checklist path, parser/helper required, and GitHub Actions official docs freshness evidence recorded | draft updated | /sf-ready ShipFlow TDD and Manual Checklist Artifacts |
 | 2026-05-27 09:27:19 UTC | sf-ready | GPT-5 Codex | Re-reviewed readiness after open decisions and freshness evidence were resolved | ready | /sf-start ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-28 20:28:19 UTC | sf-docs | GPT-5.5 Codex | Added proportional CI path-filter policy and branch-protection guidance, plus a scope matrix for aligned path ownership when workflows exist in-repo | implemented | /sf-verify re-open ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-28 20:32:30 UTC | sf-verify | GPT-5.5 Codex | Re-verified spec with runtime checks and focused gates; implementation is substantial but not fully verified as required manual checklist and preview/manual evidence are still missing | partial | /sf-start ShipFlow TDD And Manual Checklist Artifacts |
 
 ## Current Chantier Flow
 
 - `sf-spec`: done, draft spec created.
 - `sf-ready`: ready.
 - `sf-start`: not launched.
-- `sf-verify`: not launched.
+- `sf-verify`: partial (required checklist/runtime proof not fully demonstrated).
 - `sf-end`: not launched.
 - `sf-ship`: not launched.
 

@@ -63,6 +63,46 @@ Before implementation, name the proof path that fits the changed surface:
 
 The proof path is part of the execution contract. It does not replace the source-of-truth work item.
 
+## Stack-Agnostic Test and Proof Contract
+
+For every spec or execution task that includes behavior, add a proof ladder with stack-aware order and explicit exceptions:
+
+- **Automated checks first** when the behavior is testable without external state risk.
+- **Agent-run browser/auth proof** when observable behavior includes UI, redirects, routes, session/state, or public runtime surfaces.
+- **Contract/integration proof** when service boundaries or external behavior is changed.
+- **Provider/device/manual proof** only for provider-native behavior, native-only app behavior, or irreversible user-impacting paths.
+
+For non-trivial changes, proof may be mixed: automated + agent-run proof + manual checklist only for remaining gaps.
+
+When automation and required manual evidence are both impossible, use `exception-with-proof` with:
+- what was impossible,
+- why it is justified,
+- and what alternate proof was run.
+
+## Validation Proportionality
+
+Not every change needs heavy checks.
+
+Small, low-risk edits (docs-only copy, comments, narrow config updates, no behavior change, no auth/data boundary change) should prefer scoped checks and explicit `no functional impact` when that is true.
+
+High-risk or behavior-sensitive changes still use stronger proof, including checks listed in the proof contract.
+
+Do not default to full framework-heavy checks for low-risk edits; do not bypass stronger checks for high-risk behavior changes.
+
+## CI Surface Gate (Path-Proportional CI)
+
+CI strategy follows the same proportionality rule as testing:
+
+- `docs` / `editorial` / `skills` / `workflow-tracker` edits should not force app or APK pipelines.
+- app/site/backend edits should trigger only the matching heavy pipelines.
+- cheap checks stay local and cheap; heavy checks are run when scope is materially impacted.
+
+When path-filtered workflows are used:
+
+- prefer explicit positive `paths` ownership over only `paths-ignore`
+- require `workflow_dispatch` for full-surface manual reruns
+- avoid branch protection setups that block unrelated PRs because filtered workflows were skipped
+
 ## Flutter Mobile Proof Ladder
 
 For Flutter mobile work, do not ask the operator to install or test an APK until cheaper proof surfaces have been used or explicitly ruled out.

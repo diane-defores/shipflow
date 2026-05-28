@@ -121,6 +121,10 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - `scenario-first` for skill, prompt, routing, or governance contract changes
   - `evidence-first` for UI, docs, auth, deployment, operational, visual, content, or integration work
   - `exception-with-proof` when the strongest path is impractical; record why and name the alternate evidence
+- Choose validation proportionality before check selection:
+  - `bounded`: small-risk, scoped edits with a tight evidence requirement
+  - `full`: cross-surface, auth/data, release-risky, or high-impact behavior changes
+  - if uncertainty remains after task analysis, use `bounded` by default and escalate explicitly in the execution contract
 - Derive an execution contract:
   - spec metadata: `metadata_schema_version`, `artifact_version`, `status`, `updated`
   - minimal behavior contract: what the feature accepts/triggers, what it produces/returns, what happens on failure, and the easiest edge case to miss
@@ -135,6 +139,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - Sentry observability expectations when runtime evidence or instrumentation is relevant
   - documentation surfaces to update or explicitly leave unchanged
   - chosen proof path, exception reason if any, and validation/evidence expected before completion
+  - checklist strategy: when manual proof remains, include `shipflow_data/workflow/test-checklists/<scope>.md` and required scenario IDs
   - project development mode and validation surface: whether success must be proven locally or through `sf-ship` -> `sf-prod` on a Vercel preview
   - for Flutter mobile/UI work: the proof ladder expected before APK/device testing, starting with widget tests when practical, then agent-run Flutter Web smoke for shared UI behavior via `sf-browser` or `sf-auth-debug`, then APK/device proof only for native-only behavior
   - fresh external docs verdict when the task depends on external documented behavior: dependency/service, local version when available, Context7 or official docs source, and whether the implementation path is supported
@@ -287,6 +292,7 @@ Run focused validation relevant to the modified area:
 - when the user story depends on a browser auth flow or protected app path, run or emulate `sf-auth-debug` logic to confirm the observable flow in a real browser
 - when the user story depends on non-auth browser proof, route to or emulate `sf-browser` logic after the Playwright MCP runtime preflight
 - targeted tests if available
+- If the task produces or updates a manual checklist, create or update it before validation so `sf-test` can run against concrete rows.
 - quick lint/type check for touched modules when practical
 - syntax check for touched shell scripts if relevant
 - run the validation commands named in the spec when present

@@ -84,6 +84,7 @@ La spec doit contenir :
 - `Edge Cases`
 - `Implementation Tasks`
 - `Acceptance Criteria`
+- `Test Contract`
 - `Test Strategy`
 - `Risks`
 - `Execution Notes`
@@ -123,6 +124,15 @@ Contrôler :
 - `depends_on` liste les versions des docs business/techniques utilisées par la spec, ou explicite `unknown` pendant migration
 - aucune dépendance business/technique utilisée par la spec n'est connue comme `stale` sans revue explicite
 - la Documentation Freshness Gate de `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/documentation-freshness-gate.md` est satisfaite quand la spec dépend d'un framework, SDK, service, API, auth, build, migration ou intégration externe : source Context7 ou docs officielles actuelle nommée, version locale notée si disponible, et pas de `fresh-docs gap` non assumé
+- si la spec nécessite preuve manuelle, elle doit inclure un `Test Contract` complet avec :
+  - `surface`
+  - `proof_profile`
+  - `proof_order`
+  - `checklist_path` (quand un checklist artifact est prévu)
+  - `required_scenario_ids` (ou équivalent)
+  - `required_results`
+  - `exception_with_proof` / `exception_without_proof`
+- tout scénario requis doit être actionnable et lié aux tâches d'implémentation
 - `Status` est `draft` ou `reviewed`, pas déjà `ready` sans vérification
 - aucun `TBD`, `TODO`, placeholder ou formulation vague critique
 - `Open Questions` est `None`
@@ -183,6 +193,7 @@ Critiquer la spec comme si tu voulais :
 - une page de doc, FAQ, onboarding, pricing, screenshot, exemple ou support devient-elle fausse après la feature ?
 - une spec, skill ou doc technique peut-elle être mal interprétée parce que le contrat interne n'est pas en anglais, que la sortie user-facing n'est pas dans la langue active, que le français visible manque d'accents, ou que l'artefact mélange les langues sans raison claire ?
 - le test plan permet-il vraiment à `sf-verify` de juger la conformité ?
+- le `Test Contract` distingue-t-il clairement les résultats requis, optionnels et exceptions, et le mode de preuve final ?
 - la spec s'appuie-t-elle sur un comportement externe récent sans preuve de docs officielles actuelles ?
 - le flow peut-il être bypassé par saut d'étape, replay, double soumission, ordre invalide, état périmé ou entrée concurrente ?
 - une hypothèse "UI = sécurité" existe-t-elle alors qu'un contrôle serveur ou backend devrait être requis ?
@@ -256,6 +267,7 @@ Checklist:
 - Minimal behavior contract: [ok / fail]
 - Adversarial review: [ok / fail]
 - Security review: [ok / fail]
+- Test contract: [ok / fail / not applicable]
 - Open questions: [ok / fail]
 
 Not ready because:

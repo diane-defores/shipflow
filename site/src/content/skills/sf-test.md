@@ -139,3 +139,14 @@ The skill should preserve three different kinds of memory:
 - `bugs/BUG-ID.md` for the full dossier, including reproduction, expected and observed behavior, diagnosis, fixes, retests, and next action
 
 Evidence that is too large or sensitive should be redacted and stored by path in `test-evidence/BUG-ID/`, not pasted into the trackers. That split matters. A test is evidence. A bug is work to resolve. Keeping them separate makes future agent sessions more precise.
+
+## Checklist-First Testing
+
+When a spec provides a manual checklist artifact, `sf-test` should use it as the primary scenario source (instead of inventing a new list from scratch). Required rows are blockers if unresolved; optional rows are used when they materially improve confidence.
+
+The checklist contract should include:
+
+- a required/optional split
+- required final status semantics (`PASS` vs `FAIL`/`BLOCKED`)
+- evidence pointer path naming
+- bug link policy for failing required rows

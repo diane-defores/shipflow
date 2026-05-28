@@ -190,6 +190,31 @@ Production or cloud deploy jobs must be stricter than CI jobs:
 
 If a workflow uses Firebase Firestore deploys, also read `shipflow_data/technical/firebase-firestore-oidc-ci-playbook.md`.
 
+## Branch Protection and `paths`-Filtered Workflows
+
+When a workflow is skipped because `paths` filters do not match, branch protection must not fail the PR on that missing status.
+
+Use one of these patterns:
+
+- Keep path-filtered jobs out of branch protection; protect only an always-on umbrella status workflow instead.
+- Keep an always-on status workflow (for example, `ci-status`) that runs every PR and records:
+  - which CI jobs were expected for changed paths
+  - which jobs were intentionally skipped by path filters
+  - whether skipped jobs are acceptable for the scope
+
+If branch protection still requires path-specific checks directly, document a migration plan before adding or expanding `paths` filters.
+
+`workflow_dispatch` is required for forced full-surface validation when path-filtered workflows are intentionally optional.
+
+Minimum scope matrix for path-driven workflow ownership:
+
+- **Docs/site edits**: `shipflow_data/**`, `docs/**`, `README.md`, `CLAUDE.md`, `AGENT.md`, `site/**`
+- **Governance/surface updates**: `CHANGELOG.md`, `BUGS.md`, `TASKS.md`, `BUG-*.md`, `shipflow_data/workflow/**`
+- **Skill/runtimes edits**: `skills/**`, `tools/**`, `templates/**`, `site/src/content/skills/**`, `site/src/content/reference/**`
+- **App/backend edits**: project paths that actually build/deploy (for example, `apps/**`, `packages/**`, `src/**`, `api/**`, `functions/**`)
+
+Use this matrix as the evidence source when AC 11/12/13 are validated in repositories that actually host CI workflows.
+
 ## Artifact Rules
 
 Artifacts should be uploaded only when a human, QA flow, release process, or downstream job needs them.
