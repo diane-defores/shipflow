@@ -26,6 +26,7 @@ Verification semantics:
 - Keep the distinction explicit: `sf-start: implemented` vs `sf-verify: partial`.
 
 Before judging implementation quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Verification must fail or report partial when the work merely takes the fastest/easiest path and leaves correctness, security, performance, maintainability, durability, excellence, or proof quality below the accepted contract.
+When reporting any failure state, load `$SHIPFLOW_ROOT/skills/references/actionable-failure-contract.md` and include the concrete owner route for each evidence-backed issue.
 
 ## Report Modes
 

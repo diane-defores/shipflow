@@ -36,6 +36,10 @@
 
 ## Skills
 
+🟢 [ShipFlow] task: Integrer le TDD proof-first et les checklists manuelles durables dans les skills | status: done | area: skills
+🟢 [ShipFlow] task: Ajouter une boucle d'audit des conversations et d'auto-evolution des skills | status: done | area: skills
+🟢 [ShipFlow] task: Auditer en batch les conversations Markdown pour identifier les travers agents et router les améliorations | status: done | area: skills
+
 | Pri | Task | Status |
 |-----|------|--------|
 | 🟠 | Faire des specs le registre global des chantiers spec-first avec historique de skills | ✅ done |

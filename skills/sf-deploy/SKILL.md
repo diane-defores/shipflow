@@ -27,6 +27,8 @@ Default to `report=user`: concise, evidence-first, and using the compact chantie
 
 Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
 
+When reporting any failure state, load `$SHIPFLOW_ROOT/skills/references/actionable-failure-contract.md` and keep owner routing explicit.
+
 This skill follows that reference; local nuances below only narrow or route it. Release scope review, checks, ship routing, deployment truth, proof routing, verification, and changelog routing default to delegated sequential when subagents are available. Parallel release work remains blocked unless a ready spec defines safe `Execution Batches`.
 
 ## Master Workflow Lifecycle

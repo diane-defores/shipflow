@@ -63,6 +63,7 @@ Quick reference for the skill system, modes, and workflows.
 |-------|---------|-----------|
 | `/shipflow` | Primary natural-language router to the right ShipFlow skill or direct answer | `<instruction>` |
 | `/sf-build` | Master user-facing orchestrator from story to spec, implementation, verification, closure, and ship | `<story, bug, or goal>` |
+| `/sf-conversation-audit` | Audit workflow for recurring conversation execution defects and owner routing | `latest`, `path <file-or-dir>`, `export shipflow`, `report=agent` |
 | `/sf-skill-build` | Master skill-maintenance orchestrator for creating or modifying ShipFlow skills with optional exploration and lifecycle gates | `<new skill idea | existing skill path>` |
 | `/sf-maintain` | Master maintenance lifecycle from triage through delegated fixes, verification, and ship | `quick`, `full`, `security`, `global`, `no-ship` |
 | `/sf-content` | Master content lifecycle for strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship` |
@@ -90,6 +91,7 @@ Quick reference for the skill system, modes, and workflows.
 | `/sf-audit-copy` | Copywriting, tone, CTAs | `@file`, `global`, or nothing |
 | `/sf-audit-seo` | Meta tags, structured data, links | `@file`, `global`, or nothing |
 | `/sf-audit-gtm` | Go-to-market, conversion, trust | `@file`, `global`, or nothing |
+| `/sf-conversation-audit` | Conversation quality classification and action routing from saved transcripts | `latest`, `path <file-or-dir>`, `export shipflow`, `report=agent` |
 | `/sf-audit-translate` | i18n completeness, consistency, missing-translation sync | `@file`, `global`, `sync`, `apply`, or nothing |
 | `/sf-deps` | Dependencies: vulns, outdated, unused, licenses | `global`, or nothing |
 | `/sf-perf` | Performance: bundle, CWV, rendering, data | `@file`, `global`, or nothing |
@@ -107,7 +109,7 @@ Note: `/sf-verify` now includes guided next-step prompting when verdict is not r
 Note: `/sf-auth-debug` is the required diagnostic path for auth bugs that need browser evidence before implementation.
 Note: `/sf-browser` is the generic browser evidence path for non-auth page assertions; use `/sf-auth-debug` for auth/session/provider issues, `/sf-prod` for deployment truth, and `/sf-test` for durable manual QA logs.
 Note: `/sf-test` sits after verification and before shipping when a human needs to confirm the real user flow; it writes compact `TEST_LOG.md`, durable bug files under `bugs/`, and optional compact `BUGS.md` triage views when needed.
-Note: `/sf-test` supports a `checklist-first` mode: when a spec defines `manual_test_checklist`, required scenarios from the checklist become the authoritative source for manual proof; optional rows are run only if needed.
+Note: `/sf-test` supports a `checklist-first` mode: when a spec defines `shipflow_data/workflow/test-checklists/<scope>.md`, required scenarios from the parsed checklist become the authoritative source for manual proof; optional rows are run only if needed.
 Note: `/sf-bug` is the recommended entrypoint when you want the whole professional bug loop executed from a `BUG-ID`, retest, closure question, or ship-risk question.
 Note: `/sf-start` now reuses the `sf-model` routing matrix and can choose `single-agent` vs `multi-agent` execution with explicit file ownership and per-group model overrides.
 Note: `/sf-spec` → `/sf-ready` → `/sf-start` → `/sf-verify` now share a `User Story` contract and should ask targeted user questions whenever behavior, scope, or security is still ambiguous.
@@ -163,6 +165,7 @@ Internal role matrix:
 | `skills/sf-browser/SKILL.md` | conditionnel | source-de-chantier | Browser findings become a chantier for non-trivial page, deploy, runtime, security, or workflow issues beyond one direct observation. |
 | `skills/sf-changelog/SKILL.md` | conditionnel | support-de-chantier | Supports release documentation; not a source by default. |
 | `skills/sf-check/SKILL.md` | conditionnel | source-de-chantier | Failed checks become a chantier when failures span domains, block release, or need staged remediation. |
+| `skills/sf-conversation-audit/SKILL.md` | conditionnel | source-de-chantier | Conversation evidence findings become a chantier when recurrence, repeatable routing gaps, or cross-owner quality risks appear. |
 | `skills/sf-context/SKILL.md` | non-applicable | helper | Context discovery is read-only; not a chantier source. |
 | `skills/sf-deps/SKILL.md` | conditionnel | source-de-chantier | Dependency findings become a chantier for critical/high risk, supply-chain trust, migration, or automation gaps. |
 | `skills/sf-design/SKILL.md` | obligatoire | lifecycle | Master design lifecycle for routing design requests through specialist owner skills, spec-first implementation, proof, verification, and ship. |

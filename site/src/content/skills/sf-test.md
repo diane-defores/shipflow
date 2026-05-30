@@ -142,11 +142,13 @@ Evidence that is too large or sensitive should be redacted and stored by path in
 
 ## Checklist-First Testing
 
-When a spec provides a manual checklist artifact, `sf-test` should use it as the primary scenario source (instead of inventing a new list from scratch). Required rows are blockers if unresolved; optional rows are used when they materially improve confidence.
+When a spec provides a manual checklist artifact under `shipflow_data/workflow/test-checklists/<scope>.md`, `sf-test` should use it as the primary scenario source instead of inventing a new list from scratch. The checklist is parsed by ShipFlow tooling, so existing statuses, observations, evidence pointers, and bug links become durable test state.
 
 The checklist contract should include:
 
 - a required/optional split
-- required final status semantics (`PASS` vs `FAIL`/`BLOCKED`)
+- required final status semantics (`PASS` vs `FAIL`/`BLOCKED`/`NOT_RUN`)
 - evidence pointer path naming
 - bug link policy for failing required rows
+
+`sf-verify` then treats unresolved required rows as remaining proof gaps until they are passed, explicitly waived by the spec, or converted into tracked bug work.

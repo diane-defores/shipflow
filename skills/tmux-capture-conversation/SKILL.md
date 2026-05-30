@@ -29,6 +29,13 @@ When a tab number is provided, interpret it as a 1-based ordinal in the tmux win
 
 Do not accept the tmux window name as the final title when it is generic (`node`, `bash`, `zsh`, `claude`, `codex`, `nvim`, etc.) and transcript content gives a better subject. Infer a human title from the captured conversation first, for example `Conversation sf-build - architecture des skills`, not `Conversation tmux - panneau courant - node`.
 
+### Presets
+
+- `shipflow`: route inferred destination to `shipflow_data/workflow/conversations/` under governance root. Keep this output private to the chantier workflow (no publication).
+- `docs`: keep the legacy default behavior under the project docs folder.
+
+Use `--preset shipflow` or pass `shipflow` as the first positional preset.
+
 When no destination is supplied, prefer the project that the captured conversation is about, not the shell's incidental current directory. Use this priority:
 
 1. User-supplied destination.
@@ -36,7 +43,15 @@ When no destination is supplied, prefer the project that the captured conversati
 3. Git project root of the command working directory.
 4. Current working directory only when no project root can be identified.
 
-For project-root destinations, write under `docs/conversations/` by default. Create that directory if needed. Only write directly under `$HOME` when the transcript has no identifiable project and the command was actually run from `$HOME`.
+For `docs` or no preset:
+
+- project-root destinations write under `<project-root>/docs/conversations/` by default.
+- create that directory if needed.
+- write directly under `$HOME` only when the transcript has no identifiable project and the command was actually run from `$HOME`.
+
+For `shipflow` preset, infer or validate the governance root and write under `shipflow_data/workflow/conversations/`.
+
+`--destination` always overrides any preset inference.
 
 The confirmation prompt must include the inferred title and full destination. If either looks generic or misplaced, fix it before asking the user to approve.
 

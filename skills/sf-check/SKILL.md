@@ -34,6 +34,8 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 Run all available checks for the current project and fix errors if found.
 Treat this skill as a practical confidence pass, not as proof that the product is fully correct or secure.
 
+Before finalizing, load `$SHIPFLOW_ROOT/skills/references/actionable-failure-contract.md` when a check fails or is blocked so the failure maps to a specific owner and impact.
+
 Before choosing or interpreting checks, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and inspect `CLAUDE.md` or `SHIPFLOW.md`.
 - In `local` mode, local checks are the expected technical confidence pass.
 - In `vercel-preview-push` mode, local checks are pre-push confidence only. A passing local check does not authorize manual/browser/preview validation; the next deployment-sensitive step is `/sf-ship [scope]` then `/sf-prod [project or URL]`.

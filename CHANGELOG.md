@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.3.13"
+artifact_version: "0.3.16"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-18"
+updated: "2026-05-30"
 status: draft
 source_skill: sf-docs
 scope: documentation
@@ -25,6 +25,24 @@ evidence: []
 next_step: "/sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
+
+## [2026-05-30]
+
+### Added
+- Added a ShipFlow conversation-audit loop with a `shipflow` tmux capture preset, canonical private transcript storage, a new `sf-conversation-audit` skill, deterministic fixture classification, and a `conversation_audit` artifact template.
+- Added an actionable failure routing contract so support and lifecycle skills can map evidence-backed failures to concrete owner routes instead of passive reports.
+- Added a private batch conversation excellence audit report that turns selected `/home/claude` conversation transcripts into evidence-backed skill follow-up routes.
+
+### Changed
+- Updated operator discovery docs, help catalog, and the public skill page set to include the conversation-audit workflow.
+
+## [2026-05-29]
+
+### Added
+- Added durable manual checklist artifacts for proof-first TDD workflows, including the canonical `shipflow_data/workflow/test-checklists/<scope>.md` path and parser-backed status handling for `PASS`, `FAIL`, `BLOCKED`, `NOT_RUN`, and `N/A`.
+
+### Changed
+- Updated `sf-test`, README, workflow doctrine, FAQ, and launch-cheatsheet content so operators can fill checklist files directly while agents consume them as evidence instead of relying on chat copy-paste.
 
 ## [2026-05-18]
 

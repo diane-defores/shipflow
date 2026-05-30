@@ -38,6 +38,7 @@ Before resolving lifecycle gates, load `$SHIPFLOW_ROOT/skills/references/master-
 Use the shared skeleton for intake, work item resolution, readiness, model/topology routing, execution through owner skills, validation, verification, and post-verify closure/ship. Local sections below define `sf-build` routes and stop conditions only.
 
 Before choosing a route, model, topology, mini-contract, or implementation path, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. `sf-build` must optimize for correctness, security, performance, maintainability, durability, excellence, and professional best practices before speed, cost, or convenience.
+When an owner handoff or fix is itself a failure finding, load `$SHIPFLOW_ROOT/skills/references/actionable-failure-contract.md` and choose the most specific owner route before implementation.
 
 ## Context
 

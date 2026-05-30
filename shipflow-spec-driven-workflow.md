@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.18.0"
+artifact_version: "0.18.1"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-05-24"
+updated: "2026-05-29"
 status: draft
 source_skill: sf-docs
 scope: spec-driven-workflow
@@ -711,6 +711,7 @@ This lets existing work become traceable without pretending it was originally pr
 ShipFlow uses a bug-file-first record model so tests, triage, and evidence stay readable across sessions:
 
 - `TEST_LOG.md` is the compact campaign log.
+- `shipflow_data/workflow/test-checklists/<scope>.md` is the operator-fillable manual checklist when a spec needs durable manual, provider, environment, or device proof.
 - `bugs/BUG-ID.md` is the detailed Markdown source of truth for one bug work item.
 - `BUGS.md`, when present, is only a compact optional/generated triage index that points to bug files.
 - `test-evidence/BUG-ID/` stores redacted supporting evidence when material is too large or too sensitive for inline markdown.
@@ -724,7 +725,7 @@ sf-bug -> sf-test -> bug file -> sf-fix -> sf-test --retest -> sf-verify -> sf-s
 Each stage has a narrow job:
 
 - `sf-bug` reads bug state and continues the next safe lifecycle action through owner skills or bounded subagents without bypassing lifecycle gates.
-- `sf-test` captures the failure, opens or updates the bug file, and may refresh the optional compact index.
+- `sf-test` consumes a spec checklist when present, captures failures, opens or updates the bug file, and may refresh the optional compact index.
 - `sf-fix` reads the bug file and appends diagnosis and fix attempts.
 - `sf-test --retest BUG-ID` appends the retest history and updates the bug state.
 - `sf-verify` checks whether the remaining bug state still blocks release.

@@ -55,14 +55,14 @@ The skill is not meant to replace automated tests. It covers the human-facing an
 
 ## Checklist-first mode
 
-When a ready spec declares a manual checklist (for example `manual_test_checklist.md`), `sf-test` uses that checklist as the scenario source:
+When a ready spec declares a manual checklist under `shipflow_data/workflow/test-checklists/<scope>.md`, `sf-test` uses that checklist as the scenario source:
 
-- parse the checklist artifact and prioritize required rows
+- parse the checklist artifact with `tools/shipflow_checklist_status.py` and prioritize required rows
 - keep the existing `Observed`, `Evidence pointer`, and `Bug Link` fields in order
 - escalate unresolved required rows as blockers before marking the run clean
 - only add optional rows when they improve confidence and are clearly actionable
 
-The objective is to make manual testing deterministic and auditable: no scenario drift between run and run.
+The objective is to make manual testing deterministic and auditable: no scenario drift between run and run, and no need to copy manual PASS/FAIL/BLOCKED status back into chat.
 
 ## Example: Google Auth
 

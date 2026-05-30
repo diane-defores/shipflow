@@ -104,6 +104,7 @@ ARTIFACT_REQUIRED = {
     "verification_report": {"verified_outcomes", "assumptions"},
     "readiness_report": {"user_story", "verified_outcomes", "assumptions"},
     "review_report": {"period", "verified_outcomes", "assumptions"},
+    "conversation_audit": {"categories", "findings", "owner_routes"},
     "research_report": {"source_count", "primary_sources", "recommendation"},
     "decision_record": {"decision", "rationale", "consequences"},
     "content_map": {"content_surfaces", "next_review"},

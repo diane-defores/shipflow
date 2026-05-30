@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: "ShipFlow"
 created: "2026-05-24"
 created_at: "2026-05-24 17:23:00 UTC"
-updated: "2026-05-27"
-updated_at: "2026-05-28 20:32:30 UTC"
+updated: "2026-05-29"
+updated_at: "2026-05-30 20:21:23 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5.5 Codex"
@@ -49,7 +49,7 @@ evidence:
   - "User decision 2026-05-27: generated manual checklists use the fixed canonical path shipflow_data/workflow/test-checklists/<scope>.md."
   - "User decision 2026-05-27: implement a small checklist parser/helper so sf-test and sf-verify consume statuses mechanically instead of relying only on agent interpretation."
   - "Fresh docs 2026-05-27: GitHub Actions official workflow syntax docs at https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions confirm paths/paths-ignore filtering, workflow_dispatch, and the caveat that workflows skipped by path/branch/message filtering leave associated checks pending when required."
-next_step: "/sf-start ShipFlow TDD And Manual Checklist Artifacts"
+next_step: "None"
 ---
 
 # Spec: ShipFlow TDD And Manual Checklist Artifacts
@@ -337,14 +337,22 @@ None. Resolved on 2026-05-27:
 | 2026-05-27 09:27:19 UTC | sf-ready | GPT-5 Codex | Re-reviewed readiness after open decisions and freshness evidence were resolved | ready | /sf-start ShipFlow TDD And Manual Checklist Artifacts |
 | 2026-05-28 20:28:19 UTC | sf-docs | GPT-5.5 Codex | Added proportional CI path-filter policy and branch-protection guidance, plus a scope matrix for aligned path ownership when workflows exist in-repo | implemented | /sf-verify re-open ShipFlow TDD And Manual Checklist Artifacts |
 | 2026-05-28 20:32:30 UTC | sf-verify | GPT-5.5 Codex | Re-verified spec with runtime checks and focused gates; implementation is substantial but not fully verified as required manual checklist and preview/manual evidence are still missing | partial | /sf-start ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-28 21:54:33 UTC | sf-start | GPT-5.5 Codex | Executed runtime parser proof for manual checklist statuses, fixed table parsing in `tools/shipflow_checklist_status.py`, and completed required validation sweep for this chantier | implemented | /sf-verify ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-28 22:01:10 UTC | sf-content | GPT-5 Codex | Updated public sf-test/help content to reflect the canonical checklist path and parser-backed checklist-first proof flow after sf-start implementation | implemented | /sf-verify ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-28 22:16:51 UTC | sf-verify | GPT-5 Codex | Verified parser, metadata, skill sync, site build, and public docs; verdict remains partial because the durable checklist fixture contains unresolved required FAIL/BLOCKED/NOT_RUN rows without a formal exception | partial | /sf-start resolve checklist fixture gate for ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-29 03:41:57 UTC | sf-start | GPT-5.5 Codex | Separated parser-only status cases into a dedicated fixture and made the scope checklist operator-safe (no required unresolved FAIL/BLOCKED/NOT_RUN rows) so manual-verification gates can be durable | implemented | /sf-verify ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-29 14:35:05 UTC | sf-verify | GPT-5 Codex | Verified the operator checklist gate, parser fixture separation, metadata, skill sync, site build, and focused contract checks | verified | /sf-end ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-29 18:07:14 UTC | sf-end | GPT-5 Codex | Closed the verified TDD/manual checklist artifact chantier, prepared tracker and changelog bookkeeping, and left commit/push to sf-ship | closed | /sf-ship ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-29 21:13:36 UTC | sf-content | GPT-5 Codex | Aligned README, workflow doctrine, FAQ, skill modes, and launch-cheatsheet content with checklist-first manual proof after closure | implemented | /sf-ship ShipFlow TDD And Manual Checklist Artifacts |
+| 2026-05-30 20:21:23 UTC | sf-ship | GPT-5 Codex | Shipped the verified TDD/manual checklist artifacts with conversation-audit workflow changes in a scoped ShipFlow workflow commit | shipped | None |
 
 ## Current Chantier Flow
 
 - `sf-spec`: done, draft spec created.
 - `sf-ready`: ready.
-- `sf-start`: not launched.
-- `sf-verify`: partial (required checklist/runtime proof not fully demonstrated).
-- `sf-end`: not launched.
-- `sf-ship`: not launched.
+- `sf-start`: implemented.
+- `sf-verify`: verified.
+- `sf-end`: closed.
+- `sf-ship`: shipped.
 
-Next step: `/sf-start ShipFlow TDD And Manual Checklist Artifacts`
+Next step: None

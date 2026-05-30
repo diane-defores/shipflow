@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.11.0"
+artifact_version: "0.11.1"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-24"
+updated: "2026-05-29"
 status: draft
 source_skill: sf-docs
 scope: readme
@@ -84,6 +84,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - fast current-thread recap when a session becomes hard to follow
 - spec-driven implementation flow
 - verification and remediation loops
+- proof-first testing with durable manual checklist artifacts under `shipflow_data/workflow/test-checklists/`
 - professional bug management with compact `TEST_LOG.md`, one durable Markdown bug file per bug under `bugs/`, optional/generated `BUGS.md` triage views, and redacted `test-evidence/BUG-ID/` evidence
 - audits across code, design, copy, SEO, GTM, deps, perf, and translation
 - documentation and research workflows
@@ -388,6 +389,7 @@ Skill launch cheatsheet:
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
+| Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit ShipFlow conversation transcripts and route repeatable findings to owner skills or specs. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 | Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
 | Design system creation | `sf-design-from-scratch [target or mode]` | Build a complete professional token system from an existing UI; use `tokens-only` or `with-playground`. |
@@ -486,6 +488,7 @@ If the bug is ambiguous or non-trivial, `sf-fix` routes to `sf-spec -> sf-ready 
 ShipFlow keeps bug records split on purpose:
 
 - `TEST_LOG.md` stays compact and records what was tested and how it went.
+- `shipflow_data/workflow/test-checklists/<scope>.md` stores operator-fillable manual scenarios when proof cannot be fully automated.
 - `bugs/BUG-ID.md` holds the detailed source of truth for one bug work item.
 - `BUGS.md`, when present, stays compact as an optional/generated triage index that points to bug files.
 - `test-evidence/BUG-ID/` holds redacted evidence when screenshots, logs, or traces are too large or sensitive to inline.

@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.4.1"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-17"
+updated: "2026-05-29"
 status: reviewed
 source_skill: sf-docs
 scope: skill-launch-cheatsheet
@@ -72,6 +72,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
+| Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit recurring operator-facing defects in conversation transcripts and route durable owner actions. |
 | Design lifecycle | `sf-design <design question or goal>` | `tokens`, `audit`, `playground`, page/route targets, redesign goals, token migration, visual proof, or natural-language design requests. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 
@@ -83,11 +84,12 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Commit and push ready work | `sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |
 | Browser proof | `sf-browser` | Target a non-auth URL, route, preview, or production page. |
 | Auth or session diagnosis | `sf-auth-debug` | Target login, OAuth, cookies, callbacks, tenants, providers, sessions, or protected routes. |
-| Manual QA or retest evidence | `sf-test` | Target a guided scenario, test log, retest, or bug file update. |
+| Manual QA or retest evidence | `sf-test` | Target a guided scenario, checklist-first manual proof, test log, retest, or bug file update. |
 | Deployment truth | `sf-prod` | Target deployment URL, build logs, runtime logs, preview/prod health, or live readiness. |
 | Technical checks | `sf-check` | Target typecheck, lint, build, tests, dependency checks, or shell validation. |
 | Documentation work | `sf-docs [mode or target]` | `readme`, `api`, `components`, `audit`, `update`, `metadata`, `technical`, `editorial`, or a file path. |
 | Audit lane | `sf-audit*` | Choose the audit owner: code, design, copy, SEO, GTM, deps, perf, a11y, translation, components, or design tokens. |
+| Conversation quality lane | `sf-conversation-audit` | Classify recurring conversation execution defects and route concrete owner follow-up paths. |
 | Design system creation | `sf-design-from-scratch [target or mode]` | Use when no coherent professional token system exists; modes include `tokens-only` and `with-playground`. |
 | Dependency posture | `sf-deps` | Target dependency drift, vulnerabilities, licenses, or config. |
 | Framework migration | `sf-migrate [package[@version]]` | Use a structured package target such as `astro@5`, a package name, or no argument for discovery. |
@@ -107,6 +109,7 @@ Model routing note: `sf-model` recommends the right model for the current scope.
 | `sf-content` | no argument or content goal; `plan`; `repurpose`; `draft`; `article`; `blog`; `guide`; `enrich`; `audit`; `copy`; `copywriting`; `seo`; `editorial`; `apply`; `publish`; `ship` |
 | `sf-design` | design question; page/route; `tokens`; `audit`; `playground`; redesign goal; token migration; visual proof; detailed report modes |
 | `sf-skill-build` | new skill idea; existing skill path; `sf-explore` reroute when placement or public promise is too fuzzy |
+| `sf-conversation-audit` | `latest`; `path <file-or-dir>`; `export shipflow`; `report=agent` |
 | `sf-design-from-scratch` | no argument; target page/path; `tokens-only`; `with-playground`; detailed report modes |
 | `sf-ship` | no special argument; `skip-check`; `end la tache`; `end`; `fin`; `close task`; `all-dirty`; `ship-all`; `tout-dirty` |
 | `sf-audit-translate` | no special argument; file path or scope; `global`; `sync`; `apply`; `sync [path]`; `apply [path]` |

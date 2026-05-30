@@ -4,12 +4,17 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage:
-  capture_tmux_conversation.sh [--tab N] [--title TITLE] [--destination PATH] [--session NAME] [--dry-run] [--yes]
+  capture_tmux_conversation.sh [shipflow|docs|N] [--tab N] [--title TITLE] [--destination PATH] [--session NAME] [--preset shipflow|docs] [--dry-run] [--yes]
 
 Target:
   --tab N              Optional user-facing 1-based tmux tab/window ordinal.
                        The script resolves the actual tmux window index.
                        Omit to capture the current tmux pane.
+
+Preset:
+  --preset shipflow|docs  Output routing profile. `shipflow` routes to shipflow_data/workflow/conversations/.
+                         `docs` routes to <project>/docs/conversations/. If omitted, docs is used.
+  shipflow|docs           Shortcut positional preset.
 
 Optional:
   --title TITLE        Markdown title. Inferred when omitted.
@@ -25,6 +30,31 @@ EOF
 fail() {
   printf 'Error: %s\n' "$*" >&2
   exit 1
+}
+
+SHIPFLOW_PRESET="docs"
+
+infer_shipflow_root() {
+  local fallback_root="$1"
+  local candidate="${SHIPFLOW_ROOT:-${HOME}/shipflow}"
+
+  if [ -d "$candidate" ]; then
+    printf '%s\n' "$candidate"
+    return 0
+  fi
+
+  if [ -d "$fallback_root" ]; then
+    printf '%s\n' "$fallback_root"
+    return 0
+  fi
+
+  candidate="${HOME}/shipflow"
+  if [ -d "$candidate" ]; then
+    printf '%s\n' "$candidate"
+    return 0
+  fi
+
+  printf '%s\n' "$fallback_root"
 }
 
 need_cmd() {
@@ -282,6 +312,14 @@ FORCE=0
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
+    shipflow)
+      SHIPFLOW_PRESET="shipflow"
+      shift
+      ;;
+    docs)
+      SHIPFLOW_PRESET="docs"
+      shift
+      ;;
     --tab)
       [ "$#" -ge 2 ] || fail "--tab requires a value"
       TAB="$2"
@@ -300,6 +338,21 @@ while [ "$#" -gt 0 ]; do
     --session)
       [ "$#" -ge 2 ] || fail "--session requires a value"
       SESSION="$2"
+      shift 2
+      ;;
+    --preset)
+      [ "$#" -ge 2 ] || fail "--preset requires a value"
+      case "$2" in
+        shipflow)
+          SHIPFLOW_PRESET="shipflow"
+          ;;
+        docs)
+          SHIPFLOW_PRESET="docs"
+          ;;
+        *)
+          fail "unsupported preset: $2"
+          ;;
+      esac
       shift 2
       ;;
     --dry-run)
@@ -387,13 +440,18 @@ if [ -z "$DESTINATION" ]; then
   else
     SLUG="${SLUG}-${STAMP}"
   fi
-  PROJECT_ROOT=$(infer_project_root_from_raw "$TMP_RAW" "$PWD")
-  if [ -n "$PROJECT_ROOT" ] && [ "$PROJECT_ROOT" != "$PWD" ]; then
-    DESTINATION="${PROJECT_ROOT}/docs/conversations/${SLUG}.md"
-  elif [ -n "$PROJECT_ROOT" ] && [ -d "$PROJECT_ROOT/.git" ]; then
-    DESTINATION="${PROJECT_ROOT}/docs/conversations/${SLUG}.md"
+  if [ "$SHIPFLOW_PRESET" = "shipflow" ]; then
+    SHIPFLOW_ROOT_RESOLVED=$(infer_shipflow_root "${HOME}/shipflow")
+    DESTINATION="${SHIPFLOW_ROOT_RESOLVED}/shipflow_data/workflow/conversations/${SLUG}.md"
   else
-    DESTINATION="./${SLUG}.md"
+    PROJECT_ROOT=$(infer_project_root_from_raw "$TMP_RAW" "$PWD")
+    if [ -n "$PROJECT_ROOT" ] && [ "$PROJECT_ROOT" != "$PWD" ]; then
+      DESTINATION="${PROJECT_ROOT}/docs/conversations/${SLUG}.md"
+    elif [ -n "$PROJECT_ROOT" ] && [ -d "$PROJECT_ROOT/.git" ]; then
+      DESTINATION="${PROJECT_ROOT}/docs/conversations/${SLUG}.md"
+    else
+      DESTINATION="./${SLUG}.md"
+    fi
   fi
 elif [ -d "$(expand_tilde "$DESTINATION")" ] || [[ "$DESTINATION" == */ ]]; then
   SLUG=$(slugify "$TITLE")

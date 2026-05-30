@@ -111,13 +111,18 @@ def parse_table_rows(markdown: str, errors: list[str]) -> list[ChecklistRow]:
             continue
         if table_header is None and "Scenario ID" in line and "Scenario" in line and "Status" in line:
             table_header = [c.strip() for c in line.strip().strip("|").split("|")]
-            if len(table_header) >= 9:
-                continue
+            if len(table_header) < len(REQUIRED_COLUMNS):
+                errors.append(
+                    f"table header has {len(table_header)} columns, expected at least {len(REQUIRED_COLUMNS)}"
+                )
+                return []
+
         if table_header is not None and i + 1 < len(lines) and re.match(r"^\s*\|?\s*:?-{3,}", lines[i + 1]):
             table_sep = i + 1
             start = i + 2
             break
-    if table_header is None:
+
+    if table_header is None or start == 0:
         errors.append("no markdown table detected")
         return []
 
