@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "0.5.0"
+artifact_version: "0.6.0"
 project: ShipFlow
 created: "2026-05-24"
-updated: "2026-05-24"
+updated: "2026-05-30"
 status: draft
 source_skill: sf-docs
 scope: external-platforms-corpus
@@ -29,6 +29,7 @@ evidence:
   - "Operator decision on 2026-05-24: project-local provider usage notes are conditional on local risk/complexity, not mandatory per technology."
   - "Operator decision on 2026-05-24: provider usage notes resolve from the governance root, which is the monorepo root for monorepos."
   - "CrewAI global platform note added for agent orchestration, tools, memory, structured outputs, and dependency freshness."
+  - "Lemon Squeezy global platform note added for payment API/webhook, official SDK, and CLI/MCP availability decisions."
 next_review: "2026-06-24"
 next_step: "/sf-docs technical audit"
 ---
@@ -104,6 +105,7 @@ Each provider note should include:
 - `firecrawl.md`
 - `google-cloud.md`
 - `gum.md`
+- `lemonsqueezy.md`
 - `python.md`
 - `sentry.md`
 - `supabase.md`

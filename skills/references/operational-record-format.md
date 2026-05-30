@@ -126,10 +126,12 @@ During migration, readers must parse canonical records first, then tolerate lega
 
 When canonical and legacy records map to the same dedupe key, keep the canonical record and suppress the legacy row with a duplicate diagnostic. Migration tooling must produce a recoverable diff and record counts before deleting or replacing legacy information.
 
+When `--write` migration is required for a live source, zero unmapped/legacy-active rows remain for migrated files; unmapped or malformed rows block the write and must be resolved first.
+
 ## Examples
 
 ```text
 🔴 [shipflow_app] task: Run /sf-verify for shipflow-github-managed-clone-indexer.md | status: todo | area: github-clone-indexer
 🟠 [ShipFlow] audit: dependencies | date: 2026-04-27 | overall: C | issues: 0/1/2
-🟢 [ShipFlow] spec: ShipFlow Terminal TUI V1 | status: ready | path: /home/claude/shipflow//home/claude/shipflow/shipflow_data/workflow/specs/shipflow-terminal-tui-v1.md | next: /sf-start ShipFlow Terminal TUI V1
+🟢 [ShipFlow] spec: ShipFlow Terminal TUI V1 | status: ready | path: shipflow_data/workflow/specs/shipflow-terminal-tui-v1.md | next: /sf-start ShipFlow Terminal TUI V1
 ```

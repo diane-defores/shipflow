@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: "ShipFlow"
 created: "2026-05-24"
 created_at: "2026-05-24 22:15:52 UTC"
-updated: "2026-05-28"
-updated_at: "2026-05-28 18:26:47 UTC"
+updated: "2026-05-30"
+updated_at: "2026-05-30 20:26:00 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "unknown"
@@ -70,7 +70,7 @@ Grille de notation éditoriale projet pour les skills contenu
 
 Ready.
 
-La direction produit est décidée et la spec est prête pour `/sf-start` : une brique commune de notation éditoriale doit être intégrée aux skills contenu, avec règles spécifiques par projet chargées depuis le corpus de gouvernance, contrat machine strict, validation des entrées, modèle de sécurité, audit minimal et reprise/retry.
+La direction produit est décidée et l'implémentation a déjà été lancée. La spec est prête après ajout du `Test Contract` obligatoire : `sf-verify` peut maintenant distinguer les preuves requises, les exceptions et les résultats attendus du gate éditorial.
 
 ## User Story
 
@@ -241,6 +241,36 @@ Toute évaluation doit produire la sortie machine suivante, utilisée par les ow
 - Le caller, le project_id et la surface doivent être explicites dans la sortie; toute sortie sans provenance déclenche rejet.
 - Aucun skill consommateur ne peut recalculer localement ses propres statuts ou codes de blocage hors de la référence commune; il doit charger `content-quality-rubric.md`.
 - Le succès d'une notation ne peut jamais publier, ship ou modifier un contenu public par lui-même; il produit seulement une décision observable pour le workflow.
+
+## Test Contract
+
+- `surface`: ShipFlow content-governance contracts, with no browser UI, public page, API, database migration, auth flow, provider integration, or external runtime dependency.
+- `proof_profile`: mixed contract/manual proof. Mechanical proof verifies the shared rubric reference, skill wiring, metadata, and sync state. Manual proof verifies at least two representative rubric outputs because the core value is qualitative and project-aware.
+- `proof_order`: metadata lint -> targeted `rg` contract checks -> skill budget audit -> skill sync check -> manual rubric-output review -> `sf-verify` final gate.
+- `checklist_path`: `shipflow_data/workflow/test-checklists/grille-notation-editoriale-projet-skills-contenu.md` if the manual sample review is repeated or delegated; otherwise the sample evidence can be recorded directly in the `sf-verify` report.
+- `required_scenario_ids`:
+  - `rubric-ready-project-complete`: a content draft for a project with usable business/editorial corpus returns a global score, sub-scores, status, recommendations, evidence, confidence, `run_id`, `run_signature`, `project_id`, `surface`, `evaluator`, and `applied_rules_revision`.
+  - `rubric-project-specific-weights`: two project contexts with different brand/risk profiles produce different weighting, blocking, or recommendation behavior without changing the calling skill.
+  - `rubric-sensitive-claim-blocked`: a sensitive health, addiction, finance, compliance, privacy, AI reliability, pricing, savings, or business-outcome claim without sufficient proof returns `blocked`, `needs proof`, or an equivalent blocking code even when clarity and structure scores are high.
+  - `rubric-source-faithfulness`: a repurposed output that adds a claim absent from its source is blocked or marked `needs revision` on source-faithfulness.
+  - `rubric-invalid-input-contract`: invalid or ambiguous `surface`, `project_id`, `run_signature`, `evaluator.skill`, or project rules returns `blocked` with the precise normalized code, and no consumable quality score.
+  - `rubric-stale-or-conflicting-score`: a stale, mismatched, duplicate, concurrent, or conflicting score is rejected by `sf-verify` as non-final proof.
+- `required_results`:
+  - Contract checks prove `skills/references/content-quality-rubric.md` exists and names the output schema, status allowlist, blocking codes, project-rule sources, score fields, evidence fields, replay/concurrency behavior, and sensitive-claim rules.
+  - Owner skills prove they load or reference the shared rubric instead of duplicating local scoring logic.
+  - `sf-verify` proves it refuses missing, stale, recoverable, conflicting, or blocking rubric states when a spec or workflow declares the editorial quality gate.
+  - Manual sample evidence includes one normal pass or revision case and one blocked case. Each sample must show the project/source context used, the applied rules revision, the status, the top blocking or weighting reason, and the next route.
+  - The final verification report must separate required results, optional observations, and exceptions.
+- `optional_results`:
+  - A reusable checklist artifact can be created if the same sample scenarios need repeated manual review across future content-skill changes.
+  - A public site build is optional and only applies if `site/src/content/**` or a public documentation page changes.
+- `exception_with_proof`:
+  - Browser, auth, provider, API, database, migration, payment, analytics, and device proofs are non-applicable because this chantier changes local ShipFlow skill/docs contracts only. The proof is the absence of touched runtime app paths plus `fresh-docs not needed`.
+  - Unit tests are non-applicable for v1 because the change is contract/documentation-only; the replacement proof is metadata lint, skill sync, targeted contract checks, and sample rubric-output review.
+- `exception_without_proof`:
+  - A missing sample rubric output is not an acceptable exception. It keeps `sf-verify` partial because the feature can look mechanically wired while failing the project-aware scoring behavior.
+  - A missing `run_signature`, `applied_rules_revision`, `evaluator.skill`, `project_id`, or normalized `surface` is not an acceptable exception for a consumed score.
+- `sf-verify_consumption_rule`: `sf-verify` may pass this chantier only when mechanical checks pass and at least one acceptable sample proves the rubric output can be consumed or rejected according to the scenarios above.
 
 ## Dependencies
 
@@ -415,10 +445,13 @@ None
 | 2026-05-26 19:49:19 UTC | sf-start | gpt-5.3-codex | Implemented shared content quality rubric, owner-skill integration, verification consumption rules, and governance docs wiring; ran required checks. | implemented | /sf-verify grille notation editoriale projet skills contenu |
 | 2026-05-28 18:19:33 UTC | sf-verify | unknown | Verified rubric reference, owner-skill wiring, metadata, runtime skill sync, and governance docs; runtime rubric output scenarios remain unproven. | partial | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
 | 2026-05-28 18:26:47 UTC | sf-verify | unknown | Re-ran verification and confirmed mechanical checks still pass; no sample rubric run evidence was found for the runtime editorial score gate. | partial | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
+| 2026-05-29 14:35:37 UTC | sf-ready | unknown | Re-checked the already-started spec against the current Definition of Ready. | not ready | /sf-spec grille notation editoriale projet skills contenu ajouter Test Contract |
+| 2026-05-29 14:42:48 UTC | sf-spec | unknown | Added the mandatory Test Contract covering proof profile, proof order, required scenarios, required results, and acceptable/non-acceptable exceptions for the editorial rubric gate. | reviewed | /sf-ready grille notation editoriale projet skills contenu |
+| 2026-05-30 20:26:00 UTC | sf-ready | unknown | Re-checked the spec after Test Contract update against structure, user-story alignment, metadata, language doctrine, adversarial, security and test-contract gates. | ready | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
 
 ## Current Chantier Flow
 
-- `sf-spec`: reviewed.
+- `sf-spec`: reviewed; `Test Contract` added.
 - `sf-ready`: ready.
 - `sf-start`: implemented.
 - `sf-verify`: partial; mechanical contract checks pass, runtime rubric output proof missing.

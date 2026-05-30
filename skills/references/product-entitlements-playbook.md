@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: ShipFlow
 created: "2026-05-29"
-updated: "2026-05-29"
+updated: "2026-05-30"
 status: active
 source_skill: sf-build
 scope: product-entitlements
@@ -31,6 +31,7 @@ evidence:
   - "WinFlowz suite-authentication doctrine separates global identity, product entitlements, and product data namespaces."
   - "WinFlowz Firestore rules require a server-owned suiteAccess mirror before product data access."
   - "SocialGlowz implemented processor-agnostic entitlements, redemption codes, billing events, and Lifetime Deal activation UI."
+  - "SocialGlowz adoption review on 2026-05-30 exposed the generic duplicate-ledger risk: a target product must adapt to an existing suite entitlement ledger instead of recreating partial local infrastructure."
 next_review: "2026-06-29"
 next_step: "/sf-verify product-entitlements-playbook"
 ---
@@ -51,6 +52,8 @@ Authentication proves identity. It must not grant product access by itself.
 
 Payment providers and marketplaces are event sources. They must not be the runtime source of truth for product authorization. Store product access in a server-owned entitlement ledger and have product backends read that ledger before granting access to protected product data or premium capabilities.
 
+For products that belong to a suite, the entitlement ledger should be suite-owned by default. A target product should add its `product_id`, bridge, product UI, and product-specific gates to the canonical ledger. It should not create a second durable entitlement ledger unless the product is explicitly standalone or the spec documents a temporary migration adapter with a retirement path.
+
 Fail closed. If identity, provider verification, entitlement lookup, bridge sync, or product namespace checks are unavailable or malformed, show a recoverable "access not active/unavailable" state and deny protected reads or writes.
 
 ## When To Load This
@@ -66,6 +69,33 @@ Load this playbook before:
 
 Also load `documentation-freshness-gate.md` when provider API behavior, webhook signatures, OAuth, app-store purchase validation, or current marketplace rules matter.
 
+## Canonical Ledger Preflight
+
+Before adding entitlement tables, billing event tables, redemption-code tables, access queries, provider webhooks, or premium gates inside a target project, first prove whether a canonical entitlement ledger already exists for the product family.
+
+Minimum local search:
+
+```bash
+rg -n "productEntitlements|product_entitlements|entitlement ledger|suiteAccess|suite identity|globalUserId|global_user_id" .
+rg -n "product-entitlements-playbook|suite-authentication|unified-suite-authentication|master-auth-playbook" "$HOME/shipflow" "$HOME/shipflow_data" 2>/dev/null
+```
+
+If a suite ledger already exists, adapt to it instead of recreating it:
+
+- add or confirm the target `product_id` in the suite allowlist;
+- add provider/manual/Lifetime Deal ingestion to the suite ledger;
+- add an entitlement snapshot/query/bridge for the target app runtime;
+- keep product-local code to activation UI, status display, feature gates, and product-specific authorization calls;
+- store product-local entitlement state only as a documented cache, mirror, migration adapter, or compatibility fallback.
+
+Creating a second durable ledger in a target product is a stop condition unless one of these is true:
+
+- the product is intentionally standalone and outside the suite account/access architecture;
+- the canonical ledger is not available yet, and the spec explicitly marks local storage as temporary with a migration/removal plan;
+- regulatory, app-store, offline, or tenant-isolation constraints require a separate ledger and the security tradeoff is documented.
+
+If duplicate local infrastructure is discovered after implementation, do not keep building on top of it. Freeze additional product-local entitlement writes, identify the canonical owner, plan a bridge or migration, and update docs so future work treats local tables as temporary or deprecated.
+
 ## Canonical Product Model
 
 Use stable internal identifiers. External ids stay references, never replacements.
@@ -80,7 +110,7 @@ Prefer allowlists for `product_id`, `plan_id`, and `source`. Free-form strings a
 
 ## Minimum Tables
 
-For a simple single-product app, these three tables are enough:
+For a standalone simple single-product app with no existing suite entitlement ledger, these three tables are enough:
 
 - `entitlements`
   - `userId` or `globalUserId`
@@ -111,13 +141,15 @@ For a simple single-product app, these three tables are enough:
   - redacted payload summary, never raw secrets
   - `createdAt`
 
-For suite products, add identity mapping:
+For suite products, use or extend the existing suite-owned identity and entitlement mapping instead of creating similarly shaped project-local copies:
 
 - `global_users`
 - `identity_accounts`
 - `product_entitlements`
 - `product_access_events`
 - product data namespaces keyed by `product_id` and server-verified user identity.
+
+The target product may still own redemption UI, product copy, feature gates, and product-specific authorization helpers, but the durable answer to "does this global user have access to this product?" belongs in the canonical ledger.
 
 ## Status Semantics
 
