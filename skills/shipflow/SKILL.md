@@ -76,12 +76,14 @@ Choose exactly one route unless the user explicitly asks for a dashboard or comp
 | Intent | Route |
 | --- | --- |
 | Pure question, explanation, or advice with no file work | Answer directly |
+| Build or change a user-facing feature and also think about onboarding, activation, beginner adoption, or first-success guidance | `sf-build <instruction>` first; `sf-build` evaluates the post-implementation `sf-onboarding` gate |
 | Non-trivial feature, code, site, docs, product, or workflow work | `sf-build <instruction>` |
 | Recurring maintenance, security upkeep, dependencies, docs drift, checks, audit freshness, migrations, or project hygiene | `sf-maintain <mode or instruction>` |
 | Bug report, `BUG-ID`, retest, closure, fix state, or bug ship-risk question | `sf-bug <instruction>` |
 | Release confidence, preview/prod deploy, deployed truth, runtime logs, production health, post-deploy proof | `sf-deploy <instruction>` |
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, apply/publish content | `sf-content <instruction>` |
 | Design request, UI/UX work, redesign, design tokens, playground, accessibility design, component design, visual proof, or token migration | `sf-design <instruction>` |
+| User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `sf-onboarding <instruction>` |
 | Create, modify, rename, document, refresh, or validate ShipFlow skills | `sf-skill-build <instruction>` |
 | One obvious audit domain only | relevant `sf-audit-* <instruction>` or `sf-audit <instruction>` |
 | One obvious owner lane only, such as checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, or final ship | focused owner skill |
@@ -96,6 +98,12 @@ When a route is clear:
 3. Load the selected skill's required references before executing it.
 4. Pass the original user instruction as the target argument.
 5. Preserve the selected skill's report mode defaults unless the user asked for a detailed handoff.
+
+When routing a user-facing feature to `sf-build` and the instruction mentions
+onboarding, activation, beginner users, setup guidance, discoverability, or
+first-success, preserve that as a post-build activation requirement. `sf-build`
+owns the implementation lifecycle first, then evaluates whether to route or
+suggest `sf-onboarding`.
 
 Do not stop at "run `/skill ...`" when the user asked ShipFlow to handle the work and the route is safe. A command recommendation is acceptable only for pure orientation, unsupported runtime handoff, or a blocked state.
 

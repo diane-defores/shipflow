@@ -4,6 +4,20 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-05-31 — sf-onboarding
+
+**Added:**
+- [skill] New `skills/sf-onboarding/SKILL.md` reviewed against current ShipFlow routing, lifecycle, reporting, proof, docs/editorial, freshness, and budget gates
+- [public docs] Public skill page, router/help discovery, lifecycle docs, cheatsheets, and site skill-mode pages expose `sf-onboarding` as the user activation entrypoint
+
+**Updated:**
+- [routing] `sf-build` now evaluates whether a user-facing feature should route to or suggest `sf-onboarding` after implementation; `shipflow` routes mixed build-plus-onboarding requests to `sf-build` first with that gate preserved
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts)
+
 ## 2026-05-24 — decision-quality-contract
 
 **Added:**

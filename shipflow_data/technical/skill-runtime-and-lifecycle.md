@@ -25,6 +25,7 @@ linked_systems:
   - skills/sf-maintain/SKILL.md
   - skills/sf-content/SKILL.md
   - skills/sf-design/SKILL.md
+  - skills/sf-onboarding/SKILL.md
   - skills/sf-skill-build/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-bug/SKILL.md
@@ -68,6 +69,7 @@ evidence:
   - "Skill launch cheatsheet added for master and supporting modes."
   - "sf-skill-build exploration gate added before sf-spec for fuzzy skill ideas or placement decisions."
   - "sf-content added as the master content lifecycle for strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing."
+  - "sf-onboarding added as the user activation lifecycle for first-success paths, setup guidance, recoverable states, docs impact, and proof routing."
   - "sf-build delegated sequential subagent consent clarified; subagents and parallelism are distinct runtime concepts."
   - "Master delegation semantics extracted to skills/references/master-delegation-semantics.md and cited by master/orchestrator skills."
   - "Master workflow lifecycle extracted to skills/references/master-workflow-lifecycle.md; bug work items now use bugs/*.md as source of truth and BUGS.md as optional/generated triage."
@@ -115,7 +117,7 @@ Discovery descriptions are routing triggers, not workflow summaries. Keep them s
 
 Current family boundaries:
 
-- Lifecycle/master: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship`, `sf-build`, `sf-deploy`, `sf-maintain`, `sf-design`, `sf-content`, `sf-skill-build`.
+- Lifecycle/master: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship`, `sf-build`, `sf-deploy`, `sf-maintain`, `sf-design`, `sf-content`, `sf-onboarding`, `sf-skill-build`.
 - Audit/source: `sf-audit*`, `sf-deps`, `sf-perf`.
 - Bug/proof/source: `sf-bug`, `sf-fix`, `sf-test`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-migrate`.
 - Content/docs/support: `sf-docs`, `sf-redact`, `sf-enrich`, `sf-repurpose`, `sf-changelog`, `sf-scaffold`, `sf-skills-refresh`, `sf-init`.
@@ -164,6 +166,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 - `sf-content`: master content lifecycle (`CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> sf-verify -> sf-ship`).
 - `skills/references/content-quality-rubric.md`: shared editorial scoring contract used by content owner skills and verification gates.
 - `sf-design`: master design lifecycle (`design intent -> specialist audit/token/playground route -> spec-first implementation when needed -> checks/browser proof -> sf-verify -> sf-ship`).
+- `sf-onboarding`: user activation lifecycle (`first-success path -> setup order -> states/recovery -> docs impact -> proof or sf-build`).
 - `sf-design-from-scratch`: design-system creation skill for extracting an existing UI into a complete professional token system before playground or token audit work.
 - `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-explore when needed -> sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
 - `tools/shipflow_sync_skills.sh --check|--repair`: reusable local helper for current-user Claude/Codex skill visibility and install-time selected-user linking.
@@ -179,7 +182,7 @@ Primary router flow:
 ```text
 shipflow <instruction>
   -> direct conversational answer
-  -> or direct main-thread handoff to sf-build / sf-maintain / sf-bug / sf-deploy / sf-content / sf-design / sf-skill-build / sf-audit-*
+  -> or direct main-thread handoff to sf-build / sf-maintain / sf-bug / sf-deploy / sf-content / sf-design / sf-onboarding / sf-skill-build / sf-audit-*
   -> one numbered question when the route is ambiguous
 ```
 
@@ -303,6 +306,7 @@ sf-content
 - `sf-content` owns content-management orchestration; repurposing, drafting, enrichment, copy audit, copywriting audit, SEO audit, docs, veille, market study, browser proof, verification, and ship still run through their specialist owner skills and gates.
 - Content owner skills (`sf-content`, `sf-repurpose`, `sf-redact`, `sf-enrich`, `sf-audit-copy`, `sf-audit-copywriting`, `sf-audit-seo`) and `sf-verify` must use one shared rubric contract from `skills/references/content-quality-rubric.md`; recoverable score states (`needs retry`, `duplicate_in_progress`, `conflicting_score_state`, `stale_or_mismatched_score`) are never valid verification proof.
 - `sf-design` owns design lifecycle orchestration; UI/UX audits, token audits, component audits, accessibility audits, playground tooling, design-system creation, browser proof, implementation, verification, and ship still run through their specialist owner skills and gates.
+- `sf-onboarding` owns user activation contracts; implementation, visual design, docs/content, browser proof, and manual QA still run through `sf-build`, `sf-design`, `sf-docs`/`sf-content`, `sf-browser`, and `sf-test` when needed.
 - `sf-design-from-scratch` owns design-system creation from existing UI values; playground tooling, token audits, component audits, accessibility audits, and general design routing stay with their specialist or master skills.
 - `sf-skill-build` owns skill-maintenance orchestration and must route to `sf-explore` before `sf-spec` when skill intent, placement, public promise, or governance policy is too fuzzy for one targeted question to settle.
 - A release is not considered verified from push success, provider success, or a bare `200 OK` alone.

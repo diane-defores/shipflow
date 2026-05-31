@@ -23,6 +23,7 @@ linked_systems:
   - skills/sf-maintain/SKILL.md
   - skills/sf-content/SKILL.md
   - skills/sf-design/SKILL.md
+  - skills/sf-onboarding/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-bug/SKILL.md
   - skills/shipflow/SKILL.md
@@ -48,6 +49,7 @@ evidence:
   - "Documented shipflow <instruction> as the recommended non-technical router before direct sf-* expert entrypoints."
   - "Documented the shared question/default contract for numbered questions and context-safe defaults."
   - "Added sf-design as the master design lifecycle entrypoint."
+  - "Added sf-onboarding as the user activation lifecycle for first-success paths, setup guidance, recoverable states, and proof routing."
   - "Clarified sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Added project competitors/inspirations and affiliate program registries to the business documentation frame."
 next_step: "/sf-docs audit README.md"
@@ -364,7 +366,7 @@ Recommended non-technical entrypoint in a skill-aware agent session:
 shipflow <instruction>
 ```
 
-Use `shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `sf-build`, upkeep to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
+Use `shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `sf-build`, upkeep to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, onboarding and activation work to `sf-onboarding`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
 
 Decision-quality rule: ShipFlow optimizes first for correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality. Speed, cost, token economy, local convenience, or the shortest path are tie-breakers only after that quality bar is already satisfied. "Smallest safe path" means the smallest complete professional implementation, never the fastest patch that merely works.
 
@@ -384,11 +386,12 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes real work to the right master or specialist skill; uses context-safe defaults and asks one numbered decision question when ambiguity changes route, risk, scope, or proof. |
-| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story; `agents` strictly validates delegated sequential execution; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
+| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story; `agents` strictly validates delegated sequential execution; for user-facing features, `sf-build` evaluates whether to suggest or route `/sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
+| User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup ordering, why/how guidance, recoverable states, docs impact, and proof routing. |
 | Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit ShipFlow conversation transcripts and route repeatable findings to owner skills or specs. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 | Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
@@ -447,7 +450,7 @@ Direct build entrypoint for non-trivial feature/code/docs work:
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
 ```
 
-`sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invocation authorizes bounded delegated sequential execution for the current chantier, and `sf-build agents <story>` makes that a strict validation gate for file work, validation, closure preparation, and ship preparation. If `agents` is requested but no bounded subagent runs, `sf-build` must stop or report degraded execution with the reason. Short natural-language confirmations continue the bounded sequential path after diagnosis by intent rather than exact keyword. Parallel agent execution is not an argument mode; it requires ready non-overlapping `Execution Batches` in the spec. `sf-build` keeps user interaction focused on decisions and progress; material questions are framed as business decision briefs with the root problem, business stakes, options, and a recommended best-practice answer. It skips the question only when the best default is safe, reversible, compatible with the current project context, aligned with best practices, and verifiable.
+`sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invocation authorizes bounded delegated sequential execution for the current chantier, and `sf-build agents <story>` makes that a strict validation gate for file work, validation, closure preparation, and ship preparation. If `agents` is requested but no bounded subagent runs, `sf-build` must stop or report degraded execution with the reason. Short natural-language confirmations continue the bounded sequential path after diagnosis by intent rather than exact keyword. Parallel agent execution is not an argument mode; it requires ready non-overlapping `Execution Batches` in the spec. `sf-build` keeps user interaction focused on decisions and progress; material questions are framed as business decision briefs with the root problem, business stakes, options, and a recommended best-practice answer. It skips the question only when the best default is safe, reversible, compatible with the current project context, aligned with best practices, and verifiable. After user-facing feature work, `sf-build` also evaluates whether a `/sf-onboarding` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
 
 Recommended release entrypoint after implementation:
 
@@ -480,6 +483,14 @@ sf-content -> CONTENT_MAP + editorial corpus -> owner content skills -> audits/d
 ```
 
 `sf-content` routes content work through the right owner skill: `sf-repurpose` for source-faithful reuse, `sf-redact` for long-form drafting, `sf-enrich` for existing content upgrades, `sf-audit-copy` / `sf-audit-copywriting` / `sf-audit-seo` for review, and `sf-docs` for docs and editorial governance. It blocks undeclared blog/article surfaces with `surface missing: blog` instead of inventing paths.
+
+For user onboarding and feature activation, use the dedicated activation entrypoint:
+
+```text
+sf-onboarding -> first-success path -> setup order -> states/recovery -> docs impact -> proof or sf-build
+```
+
+`sf-onboarding` helps turn shipped features into guided activation flows. Use it after or alongside feature work when users need context, setup guidance, permission or integration sequencing, skipped/blocked/recoverable states, and a proof path that shows they can reach value.
 
 If the bug is local and clear, `sf-fix` fixes it directly, then verifies.
 That fast path should still attach the bug to durable project memory with a `bugs/BUG-ID.md` bug file, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix. `BUGS.md`, when present, is only a compact optional/generated triage view.

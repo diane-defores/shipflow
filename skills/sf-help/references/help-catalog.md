@@ -68,6 +68,7 @@ Quick reference for the skill system, modes, and workflows.
 | `/sf-maintain` | Master maintenance lifecycle from triage through delegated fixes, verification, and ship | `quick`, `full`, `security`, `global`, `no-ship` |
 | `/sf-content` | Master content lifecycle for strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship` |
 | `/sf-design` | Master design lifecycle for UI/UX, tokens, playgrounds, a11y, implementation, proof, and ship routing | `tokens`, `audit`, `playground`, page/route, or natural-language design goal |
+| `/sf-onboarding` | User activation lifecycle for first-success paths, setup guidance, recoverable states, docs impact, and proof routing | `<feature, flow, shipped change, or onboarding audit target>` |
 | `/sf-bug` | Professional bug loop lifecycle executor for intake, bug files, fixes, retests, verification, and ship risk | `BUG-ID`, `--retest BUG-ID`, `--ship BUG-ID` |
 | `/sf-fix` | Bug-first intake and routing (direct fix vs spec-first) | `<bug description>` |
 | `/sf-auth-debug` | Browser-auth diagnosis for Clerk, Supabase Auth, OAuth, Google/YouTube, Convex, sessions, callbacks | `<bug/URL/flow>` |
@@ -118,6 +119,7 @@ Note: `/sf-build` is the recommended end-user entrypoint for non-trivial work; i
 Note: `/sf-deploy` is the recommended release entrypoint when the operator wants the whole confidence loop after implementation: checks, bounded ship, deployment truth, post-deploy evidence routing, verification, and optional changelog.
 Note: `/sf-maintain` is the recommended recurring maintenance entrypoint for existing projects; by default it carries maintenance through spec/readiness when needed, bounded delegated execution, verification, and ship/deploy routing. Use `/sf-maintain quick` for read-only triage.
 Note: `/sf-content` is the recommended entrypoint for content management (`CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> sf-verify -> sf-ship`).
+Note: `/sf-onboarding` is the recommended entrypoint for user activation after feature work: first-success path, why/how guidance, setup order, skipped/blocked/recoverable states, docs impact, and proof routing.
 Note: `/sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`sf-explore when needed -> sf-spec -> SKILL.md -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help update -> sf-ship`).
 Note: User-facing skill questions follow the shared question contract: ask only when the answer changes route, scope, risk, proof, closure, ship posture, public claims, or technical/product/editorial direction; otherwise proceed only with a context-safe, verifiable default.
 
@@ -185,6 +187,7 @@ Internal role matrix:
 | `skills/sf-migrate/SKILL.md` | conditionnel | source-de-chantier | Migration findings become a chantier for breaking changes, staged upgrades, or rollback/validation planning. |
 | `skills/sf-maintain/SKILL.md` | obligatoire | lifecycle | Master maintenance lifecycle: triage, spec/readiness, bounded delegated execution, verification, and ship/deploy routing. |
 | `skills/sf-model/SKILL.md` | non-applicable | helper | Model advice does not mutate specs; report non-trace when useful. |
+| `skills/sf-onboarding/SKILL.md` | conditionnel | source-de-chantier | User activation findings become a chantier when onboarding implementation spans product behavior, permissions, docs, proof, or multiple surfaces. |
 | `skills/sf-perf/SKILL.md` | conditionnel | source-de-chantier | Perf findings become a chantier for Core Web Vitals risk, systemic rendering/fetching issues, or multi-file remediation. |
 | `skills/sf-priorities/SKILL.md` | conditionnel | pilotage | Priority work routes to `/sf-spec` only when an item needs a durable contract. |
 | `skills/sf-prod/SKILL.md` | conditionnel | source-de-chantier | Production incidents become a chantier for outage, deploy, runtime, rollback, or monitoring follow-up. |

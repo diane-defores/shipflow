@@ -33,6 +33,7 @@ evidence:
   - "shipflow <instruction> documented as the primary non-technical router with direct handoff to selected skills."
   - "Shared question/default contract added for numbered decisions and context-safe defaults."
   - "sf-design added as the master design lifecycle entrypoint for UI/UX, tokens, playgrounds, implementation, proof, and ship routing."
+  - "sf-onboarding added as the user activation lifecycle for first-success paths, setup guidance, recoverable states, and proof routing."
   - "sf-bug clarified as a lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Skill taxonomy description audit clarified runtime families while keeping public skill names and invocation paths stable."
 next_step: "/sf-docs audit docs/skill-launch-cheatsheet.md"
@@ -56,7 +57,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 
 | Family | Role | Examples |
 | --- | --- | --- |
-| Lifecycle/master | Carry work across several gates. | `shipflow`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-design`, `sf-content`, `sf-skill-build`, plus `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end -> sf-ship` |
+| Lifecycle/master | Carry work across several gates. | `shipflow`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-design`, `sf-content`, `sf-onboarding`, `sf-skill-build`, plus `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end -> sf-ship` |
 | Audit/source | Expose quality, security, performance, SEO, copy, design, dependency, or GTM risk that may deserve a chantier. | `sf-audit*`, `sf-deps`, `sf-perf` |
 | Bug/proof | Diagnose failures, validate behavior, or confirm deployment truth. | `sf-bug`, `sf-fix`, `sf-test`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-migrate` |
 | Content/docs/support | Keep public content, documentation, scaffolding, changelogs, skill contracts, and governance surfaces coherent with shipped behavior. | `sf-docs`, `sf-redact`, `sf-enrich`, `sf-repurpose`, `sf-changelog`, `sf-scaffold`, `sf-skills-refresh`, `sf-init` |
@@ -66,14 +67,15 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 
 | Need | Launch | Useful modes |
 | --- | --- | --- |
-| Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes feature/code/docs to `sf-build`, maintenance to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, design to `sf-design`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. Uses context-safe defaults and asks one numbered question when ambiguity changes route, risk, scope, or proof. |
-| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story. Use `agents` to make delegated sequential execution a validation gate. Use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
+| Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes feature/code/docs to `sf-build`, maintenance to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, design to `sf-design`, onboarding to `sf-onboarding`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. Uses context-safe defaults and asks one numbered question when ambiguity changes route, risk, scope, or proof. |
+| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story. Use `agents` to make delegated sequential execution a validation gate. For user-facing features, `sf-build` evaluates whether to suggest or route `/sf-onboarding` after implementation. Use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
 | Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit recurring operator-facing defects in conversation transcripts and route durable owner actions. |
 | Design lifecycle | `sf-design <design question or goal>` | `tokens`, `audit`, `playground`, page/route targets, redesign goals, token migration, visual proof, or natural-language design requests. |
+| User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup order, why/how guidance, recoverable states, docs impact, and proof routing. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 
 ## Supporting Skills
@@ -108,6 +110,7 @@ Model routing note: `sf-model` recommends the right model for the current scope.
 | `sf-bug` | no argument; `BUG-ID`; free-text summary; `--fix`; `--retest`; `--verify`; `--ship`; `--close` |
 | `sf-content` | no argument or content goal; `plan`; `repurpose`; `draft`; `article`; `blog`; `guide`; `enrich`; `audit`; `copy`; `copywriting`; `seo`; `editorial`; `apply`; `publish`; `ship` |
 | `sf-design` | design question; page/route; `tokens`; `audit`; `playground`; redesign goal; token migration; visual proof; detailed report modes |
+| `sf-onboarding` | feature, flow, shipped change, onboarding audit target; permission/setup focus; detailed report modes |
 | `sf-skill-build` | new skill idea; existing skill path; `sf-explore` reroute when placement or public promise is too fuzzy |
 | `sf-conversation-audit` | `latest`; `path <file-or-dir>`; `export shipflow`; `report=agent` |
 | `sf-design-from-scratch` | no argument; target page/path; `tokens-only`; `with-playground`; detailed report modes |

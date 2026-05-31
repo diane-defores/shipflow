@@ -21,6 +21,7 @@ linked_systems:
   - skills/sf-deploy/SKILL.md
   - skills/sf-content/SKILL.md
   - skills/sf-design/SKILL.md
+  - skills/sf-onboarding/SKILL.md
   - skills/sf-skill-build/SKILL.md
   - skills/sf-audit/SKILL.md
   - skills/references/master-delegation-semantics.md
@@ -77,12 +78,14 @@ A read-only routing scout is allowed only for cheap classification evidence and 
 | Operator intent | Primary route |
 | --- | --- |
 | Pure question, explanation, model/help clarification, or advice with no files | Direct answer |
+| Build or change a user-facing feature and also think about onboarding, activation, beginner adoption, or first-success guidance | `sf-build` first; `sf-build` evaluates the post-implementation `sf-onboarding` gate |
 | Feature, product change, code work, site work, docs work, workflow improvement, broad bug-like goal without durable bug state | `sf-build` |
 | Recurring upkeep, dependency posture, docs drift, checks, audits, migrations, project hygiene, security maintenance | `sf-maintain` |
 | Observed defect, `BUG-ID`, retest, bug closure, bug fix state, bug ship risk | `sf-bug` |
 | Release confidence, preview/prod deployment, deployed truth, runtime logs, production health, post-deploy proof | `sf-deploy` |
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, content apply/publish | `sf-content` |
 | Design request, UI/UX work, redesign, design tokens, design playground, accessibility design, component design, visual proof, or token migration | `sf-design` |
+| User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `sf-onboarding` |
 | New skill, skill modification, skill runtime visibility, skill public page, skill docs/help coherence | `sf-skill-build` |
 | One obvious audit domain only | relevant `sf-audit-*` or `sf-audit` |
 | One obvious focused lane: checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, final ship | focused owner skill |

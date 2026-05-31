@@ -212,6 +212,32 @@ When the contract is ready:
 
 Do not close or ship half-coded outcomes.
 
+## Post-Implementation Onboarding Gate
+
+After implementation and verification, evaluate whether the changed feature needs
+`sf-onboarding` before or after closure.
+
+Trigger this gate when the work adds or changes any user-facing feature, setup
+flow, first-run state, empty state, permission, integration, settings path,
+multi-step workflow, public promise, docs/support expectation, or behavior that a
+beginner might not discover or understand without guidance.
+
+Outcomes:
+
+- If the original request or ready spec includes activation, onboarding, setup
+  guidance, or first-success behavior, route to `sf-onboarding` before closure
+  and treat its output as part of the work item.
+- If the feature is complete but user activation would materially improve
+  adoption, include a concise final-report suggestion:
+  `Onboarding suggestion: /sf-onboarding <feature or flow>`.
+- If onboarding is clearly irrelevant, omit the suggestion in user mode and
+  record `onboarding: not needed` only in agent/handoff mode when useful.
+
+Do not block ship only because an optional onboarding pass could improve the
+feature. Do block or route before ship when the spec, acceptance criteria, public
+promise, permission posture, or verification evidence shows users cannot reach
+first success without onboarding work.
+
 ## End and Ship Orchestration
 
 After verification passes:
@@ -284,6 +310,7 @@ Result: [implemented / partial / blocked]
 [Agents: used / not needed / degraded: reason, only when relevant]
 [All checks passed ✅ | Checks failed: ... | Checks skipped: ...]
 Evidence: [browser/prod/manual route or not needed]
+[Onboarding suggestion: /sf-onboarding <feature or flow>, only when useful and not already handled]
 Risk: [only if non-empty]
 Next step: [only if real]
 
@@ -317,6 +344,7 @@ Phases:
 
 Evidence routing:
 - Browser proof: [sf-browser/sf-auth-debug/sf-prod/sf-test/not needed]
+- Onboarding: [handled by sf-onboarding/suggested/not needed/blocked]
 
 Validation:
 - [check] -> [pass/fail]

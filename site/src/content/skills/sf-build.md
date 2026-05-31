@@ -2,7 +2,7 @@
 title: "sf-build"
 slug: "sf-build"
 tagline: "Run non-trivial work from story to spec, build, verification, closeout, and ship without making the user drive every gate."
-summary: "The master user-facing lifecycle orchestrator for carrying a story, bug, or goal through ShipFlow's spec, readiness, implementation, verification, documentation, closure, and shipping gates."
+summary: "The master user-facing lifecycle orchestrator for carrying a story, bug, or goal through ShipFlow's spec, readiness, implementation, verification, onboarding consideration, documentation, closure, and shipping gates."
 category: "Build & Fix"
 audience:
   - "Founders who want the work handled end to end"
@@ -26,6 +26,7 @@ what_you_get:
   - "A clear agents status when delegated execution is requested or materially affects trust"
   - "Spec and readiness handling when the task is non-trivial"
   - "Implementation, verification, docs alignment, and closure routing"
+  - "A post-build onboarding suggestion when a user-facing feature would benefit from activation guidance"
   - "A concise user report with chantier status when a unique spec is in scope"
 example_prompts:
   - "/sf-build add a public cheatsheet for master skills and their modes"
@@ -35,7 +36,7 @@ example_prompts:
 argument_modes:
   - argument: "<story, bug, or goal>"
     effect: "Runs the user-facing lifecycle for the requested work."
-    consequence: "Routes through spec/readiness, implementation, verification, documentation alignment, end, and ship when the scope requires it."
+    consequence: "Routes through spec/readiness, implementation, verification, onboarding consideration, documentation alignment, end, and ship when the scope requires it."
   - argument: "agents"
     effect: "Forces delegated sequential execution as a validation gate for file work, validation, closure preparation, and ship preparation."
     consequence: "If no bounded subagent is used where one is required, the run must stop or report degraded execution with the reason."
@@ -61,6 +62,7 @@ related_skills:
   - "sf-browser"
   - "sf-auth-debug"
   - "sf-prod"
+  - "sf-onboarding"
 featured: true
 order: 20
 ---

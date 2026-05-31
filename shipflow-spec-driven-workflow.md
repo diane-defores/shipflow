@@ -20,6 +20,7 @@ linked_systems:
   - skills/sf-maintain/SKILL.md
   - skills/sf-content/SKILL.md
   - skills/sf-design/SKILL.md
+  - skills/sf-onboarding/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-bug/SKILL.md
   - skills/references/entrypoint-routing.md
@@ -59,6 +60,7 @@ evidence:
   - "Updated on 2026-05-04 to document shipflow <instruction> as the primary non-technical router with direct main-thread handoff to selected skills."
   - "Updated on 2026-05-05 to document shared question/default doctrine across skills."
   - "Updated on 2026-05-06 to add sf-design as the master design lifecycle entrypoint."
+  - "Updated on 2026-05-31 to add sf-onboarding as the user activation lifecycle entrypoint."
   - "Updated on 2026-05-08 to clarify sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Updated on 2026-05-11 to add competitive intelligence and affiliate program registries as project-local business artifacts."
   - "Updated on 2026-05-11 to make project governance artifacts canonical under shipflow_data/, including workflow specs."
@@ -98,11 +100,12 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `shipflow <instruction>` | Routes pure conversational answers directly; routes real work to the right master or specialist skill; asks one numbered question when ambiguous. |
-| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story; use `agents` to make delegated sequential execution a validation gate; use `report=agent`, `handoff`, `verbose`, or `full-report` only for detailed handoff evidence. |
+| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story; use `agents` to make delegated sequential execution a validation gate; for user-facing features, `sf-build` evaluates whether to suggest or route `/sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
+| User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup order, why/how guidance, recoverable states, docs impact, and proof routing. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 | Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
 | Design system creation | `sf-design-from-scratch [target or mode]` | Build a complete professional token system from an existing UI; use `tokens-only` or `with-playground`. |
@@ -146,7 +149,7 @@ Primary non-technical router entrypoint:
 shipflow <instruction> -> direct answer or direct handoff to selected skill
 ```
 
-`shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `sf-build`; maintenance to `sf-maintain`; bug-loop work to `sf-bug`; release, deploy, or production proof to `sf-deploy`; content work to `sf-content`; skill maintenance to `sf-skill-build`; and obvious specialist audits to `sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
+`shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `sf-build`; maintenance to `sf-maintain`; bug-loop work to `sf-bug`; release, deploy, or production proof to `sf-deploy`; content work to `sf-content`; onboarding and activation work to `sf-onboarding`; skill maintenance to `sf-skill-build`; and obvious specialist audits to `sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
 
 The router uses direct main-thread handoff to the selected skill. It does not run a master skill inside a subagent, and it does not duplicate the selected skill's lifecycle. Once selected, each master owns its own delegated sequential execution and proof gates.
 
@@ -156,7 +159,7 @@ Direct build entrypoint for non-trivial work:
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
 ```
 
-`sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: delegated sequential is the default for file and validation work, `agents` makes that delegation a strict validation gate, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`.
+`sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: delegated sequential is the default for file and validation work, `agents` makes that delegation a strict validation gate, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`. After user-facing feature work, `sf-build` evaluates whether a `/sf-onboarding` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
 
 Recommended release entrypoint after implementation:
 
@@ -189,6 +192,14 @@ sf-content -> CONTENT_MAP + editorial corpus -> owner content skills -> audits/d
 ```
 
 `sf-content` is the master content-management orchestrator. It does not replace `sf-repurpose`, `sf-redact`, `sf-enrich`, `sf-audit-copy`, `sf-audit-copywriting`, `sf-audit-seo`, `sf-docs`, `sf-veille`, or `sf-market-study`; it chooses and sequences them while enforcing public-surface, claim, runtime schema, validation, and missing-surface gates.
+
+Recommended user onboarding and activation entrypoint:
+
+```text
+sf-onboarding -> first-success path -> setup order -> states/recovery -> docs impact -> proof or sf-build
+```
+
+`sf-onboarding` is the user activation skill. It does not replace `sf-design` or `sf-build`; it defines the onboarding contract that helps users understand a feature, complete setup in the right order, recover from skipped or blocked steps, and reach value with proof and docs coherence.
 
 For expert manual control, the default non-trivial flow remains:
 

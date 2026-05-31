@@ -30,7 +30,7 @@ example_prompts:
 argument_modes:
   - argument: "<instruction>"
     effect: "Classifies the request and either answers directly or hands the main thread to the selected ShipFlow skill."
-    consequence: "Routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, design to sf-design, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*."
+    consequence: "Routes feature/code/docs to sf-build, mixed build-plus-onboarding requests to sf-build first with a post-build sf-onboarding gate, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, design to sf-design, onboarding-only work to sf-onboarding, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*."
 limits:
   - "It does not replace the selected skill's lifecycle gates"
   - "It uses context-safe defaults only when they are clear, low-risk, reversible, and verifiable"
@@ -43,6 +43,7 @@ related_skills:
   - "sf-deploy"
   - "sf-content"
   - "sf-design"
+  - "sf-onboarding"
   - "sf-skill-build"
   - "sf-audit"
 featured: true
