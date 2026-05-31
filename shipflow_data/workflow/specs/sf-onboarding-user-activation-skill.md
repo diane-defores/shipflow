@@ -305,7 +305,8 @@ None. The user explicitly proposed `onboarding`; placement evidence supports `sf
 | 2026-05-31 21:26:46 UTC | sf-verify | GPT-5 Codex | Verified skill contract coverage, route/help/site discoverability, metadata lint, runtime sync, budget audit, site build, and focused leak scan. | verified locally; not shipped | no commit requested |
 | 2026-05-31 21:42:00 UTC | sf-skill-build | GPT-5 Codex | Added progressive disclosure, small-step sequencing, visual cue semantics, and visual ambiguity stop conditions to `sf-onboarding`. | refined and validated locally | no commit requested |
 | 2026-05-31 21:46:04 UTC | sf-skill-build | GPT-5 Codex | Added a post-implementation onboarding gate to `sf-build` and mixed build-plus-onboarding routing guidance to `shipflow`. | refined and validated locally | no commit requested |
+| 2026-05-31 21:49:41 UTC | sf-ship | GPT-5 Codex | Quick-shipped the `sf-onboarding` skill, public page, routing/docs integration, and `sf-build` post-implementation onboarding gate. | shipped | pushed to `origin/main` |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-skill-build ✅ -> sf-verify ✅ -> sf-docs/help ✅ -> sf-ship ⏳
+sf-spec ✅ -> sf-ready ✅ -> sf-skill-build ✅ -> sf-verify ✅ -> sf-docs/help ✅ -> sf-ship ✅🎯
