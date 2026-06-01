@@ -24,6 +24,7 @@ linked_systems:
   - skills/sf-content/SKILL.md
   - skills/sf-design/SKILL.md
   - skills/sf-onboarding/SKILL.md
+  - skills/sf-local-cloud-sync/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-bug/SKILL.md
   - skills/shipflow/SKILL.md
@@ -50,6 +51,7 @@ evidence:
   - "Documented the shared question/default contract for numbered questions and context-safe defaults."
   - "Added sf-design as the master design lifecycle entrypoint."
   - "Added sf-onboarding as the user activation lifecycle for first-success paths, setup guidance, recoverable states, and proof routing."
+  - "Added sf-local-cloud-sync as the local-first data promotion, merge, sync UX, and security contract skill."
   - "Clarified sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Added project competitors/inspirations and affiliate program registries to the business documentation frame."
 next_step: "/sf-docs audit README.md"
@@ -366,7 +368,7 @@ Recommended non-technical entrypoint in a skill-aware agent session:
 shipflow <instruction>
 ```
 
-Use `shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `sf-build`, upkeep to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, onboarding and activation work to `sf-onboarding`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
+Use `shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `sf-build`, upkeep to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, onboarding and activation work to `sf-onboarding`, local-to-cloud sync contract work to `sf-local-cloud-sync`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
 
 Decision-quality rule: ShipFlow optimizes first for correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality. Speed, cost, token economy, local convenience, or the shortest path are tie-breakers only after that quality bar is already satisfied. "Smallest safe path" means the smallest complete professional implementation, never the fastest patch that merely works.
 
@@ -392,6 +394,7 @@ Skill launch cheatsheet:
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
 | User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup ordering, why/how guidance, recoverable states, docs impact, and proof routing. |
+| Local-to-cloud data sync | `sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
 | Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit ShipFlow conversation transcripts and route repeatable findings to owner skills or specs. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 | Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
@@ -491,6 +494,14 @@ sf-onboarding -> first-success path -> setup order -> states/recovery -> docs im
 ```
 
 `sf-onboarding` helps turn shipped features into guided activation flows. Use it after or alongside feature work when users need context, setup guidance, permission or integration sequencing, skipped/blocked/recoverable states, and a proof path that shows they can reach value.
+
+For local-first data promotion and cloud sync trust, use the dedicated sync entrypoint:
+
+```text
+sf-local-cloud-sync -> data inventory -> account association -> promotion/hydration -> merge/conflict/tombstones -> sync UX/security -> proof or sf-build
+```
+
+`sf-local-cloud-sync` helps prevent data loss when local app usage becomes account-backed cloud usage. Use it before promising backup, reinstall recovery, multi-device sync, or account creation preserving local data.
 
 If the bug is local and clear, `sf-fix` fixes it directly, then verifies.
 That fast path should still attach the bug to durable project memory with a `bugs/BUG-ID.md` bug file, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix. `BUGS.md`, when present, is only a compact optional/generated triage view.

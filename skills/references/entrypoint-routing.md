@@ -22,6 +22,7 @@ linked_systems:
   - skills/sf-content/SKILL.md
   - skills/sf-design/SKILL.md
   - skills/sf-onboarding/SKILL.md
+  - skills/sf-local-cloud-sync/SKILL.md
   - skills/sf-skill-build/SKILL.md
   - skills/sf-audit/SKILL.md
   - skills/references/master-delegation-semantics.md
@@ -86,6 +87,7 @@ A read-only routing scout is allowed only for cheap classification evidence and 
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, content apply/publish | `sf-content` |
 | Design request, UI/UX work, redesign, design tokens, design playground, accessibility design, component design, visual proof, or token migration | `sf-design` |
 | User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `sf-onboarding` |
+| Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `sf-local-cloud-sync` |
 | New skill, skill modification, skill runtime visibility, skill public page, skill docs/help coherence | `sf-skill-build` |
 | One obvious audit domain only | relevant `sf-audit-*` or `sf-audit` |
 | One obvious focused lane: checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, final ship | focused owner skill |

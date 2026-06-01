@@ -21,6 +21,7 @@ linked_systems:
   - skills/sf-content/SKILL.md
   - skills/sf-design/SKILL.md
   - skills/sf-onboarding/SKILL.md
+  - skills/sf-local-cloud-sync/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-bug/SKILL.md
   - skills/references/entrypoint-routing.md
@@ -61,6 +62,7 @@ evidence:
   - "Updated on 2026-05-05 to document shared question/default doctrine across skills."
   - "Updated on 2026-05-06 to add sf-design as the master design lifecycle entrypoint."
   - "Updated on 2026-05-31 to add sf-onboarding as the user activation lifecycle entrypoint."
+  - "Updated on 2026-06-01 to add sf-local-cloud-sync as the local-to-cloud data promotion, merge, sync UX, and security contract entrypoint."
   - "Updated on 2026-05-08 to clarify sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Updated on 2026-05-11 to add competitive intelligence and affiliate program registries as project-local business artifacts."
   - "Updated on 2026-05-11 to make project governance artifacts canonical under shipflow_data/, including workflow specs."
@@ -106,6 +108,7 @@ Skill launch cheatsheet:
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
 | User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup order, why/how guidance, recoverable states, docs impact, and proof routing. |
+| Local-to-cloud data sync | `sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 | Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
 | Design system creation | `sf-design-from-scratch [target or mode]` | Build a complete professional token system from an existing UI; use `tokens-only` or `with-playground`. |
@@ -149,7 +152,7 @@ Primary non-technical router entrypoint:
 shipflow <instruction> -> direct answer or direct handoff to selected skill
 ```
 
-`shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `sf-build`; maintenance to `sf-maintain`; bug-loop work to `sf-bug`; release, deploy, or production proof to `sf-deploy`; content work to `sf-content`; onboarding and activation work to `sf-onboarding`; skill maintenance to `sf-skill-build`; and obvious specialist audits to `sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
+`shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `sf-build`; maintenance to `sf-maintain`; bug-loop work to `sf-bug`; release, deploy, or production proof to `sf-deploy`; content work to `sf-content`; onboarding and activation work to `sf-onboarding`; local-to-cloud sync contract work to `sf-local-cloud-sync`; skill maintenance to `sf-skill-build`; and obvious specialist audits to `sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
 
 The router uses direct main-thread handoff to the selected skill. It does not run a master skill inside a subagent, and it does not duplicate the selected skill's lifecycle. Once selected, each master owns its own delegated sequential execution and proof gates.
 
@@ -200,6 +203,14 @@ sf-onboarding -> first-success path -> setup order -> states/recovery -> docs im
 ```
 
 `sf-onboarding` is the user activation skill. It does not replace `sf-design` or `sf-build`; it defines the onboarding contract that helps users understand a feature, complete setup in the right order, recover from skipped or blocked steps, and reach value with proof and docs coherence.
+
+Recommended local-to-cloud sync contract entrypoint:
+
+```text
+sf-local-cloud-sync -> data inventory -> account association -> promotion/hydration -> merge/conflict/tombstones -> sync UX/security -> proof or sf-build
+```
+
+`sf-local-cloud-sync` is the data-trust skill for local-first products. It does not replace `sf-build` or `sf-onboarding`; it defines the sync contract that prevents silent local data loss, cross-account replay, vague merge policy, unsafe secret sync, and unproven reinstall-recovery promises.
 
 For expert manual control, the default non-trivial flow remains:
 

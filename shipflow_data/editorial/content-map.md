@@ -39,6 +39,7 @@ evidence:
   - "site/src/pages/skill-modes.astro now owns the public launch cheatsheet for master and supporting skill modes"
   - "docs/skill-launch-cheatsheet.md added as the standalone Markdown reference for skill launch modes"
   - "sf-content added as the master content lifecycle entrypoint."
+  - "sf-local-cloud-sync added as a public skill page and skill launch surface for local-to-cloud data sync contracts."
   - "Project governance layout decision added and public docs page must explain root-vs-shipflow_data placement."
   - "Terminal TUI documentation added as an internal technical contract plus a public docs overview section."
   - "Decision-quality positioning added to public surfaces so users understand that ShipFlow optimizes quality before speed or convenience."
@@ -95,6 +96,7 @@ For public-content governance details, use `shipflow_data/editorial/` after this
 | Content quality rubric | `skills/references/content-quality-rubric.md` | Shared project-aware content quality score, blocked reason codes, and structured feedback schema for content owner skills | Markdown reference artifact | Business/product/brand/GTM contracts and editorial corpus revisions | Content scoring rules, blocked codes, evaluator allowlist, or verification gate semantics change |
 | Editorial Reader role | `skills/references/subagent-roles/editorial-reader.md` | Diagnose public-content and claim impact without editing files | Markdown role contract | `skills/references/editorial-content-corpus.md`, `shipflow_data/editorial/` | Reader output format, public-content gate, or role boundaries change |
 | Content lifecycle skill | `skills/sf-content/SKILL.md` | Orchestrate content strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing | Skill contract | `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/`, specialist content skills | Content-management lifecycle, owner-skill routing, or public content validation gates change |
+| Local-cloud sync skill | `skills/sf-local-cloud-sync/SKILL.md`, `site/src/content/skills/sf-local-cloud-sync.md` | Frame local-first data promotion, cloud hydration, merge/conflict policy, sync UX, sensitive-data exclusions, and proof routing | Skill contract + public skill page | `skills/sf-local-cloud-sync/SKILL.md`, skill-local references, public skill page | Local/cloud sync doctrine, public skill promise, skill launch routing, or sensitive-data claim changes |
 | Product contract | `shipflow_data/business/product.md` | Define user problem, scope, workflows, non-goals, and risks | Markdown artifact | Product decisions and repo evidence | Product scope or core workflows change |
 | GTM contract | `shipflow_data/business/gtm.md` | Define public promise, channels, objections, and proof | Markdown artifact | Business/product/brand docs | Public positioning or distribution assumptions change |
 | Brand contract | `shipflow_data/business/branding.md` | Define tone, trust posture, vocabulary, and claim boundaries | Markdown artifact | Brand decisions | Voice, vocabulary, or claim posture changes |

@@ -26,6 +26,7 @@ linked_systems:
   - skills/sf-content/SKILL.md
   - skills/sf-design/SKILL.md
   - skills/sf-onboarding/SKILL.md
+  - skills/sf-local-cloud-sync/SKILL.md
   - skills/sf-skill-build/SKILL.md
   - skills/sf-browser/SKILL.md
   - skills/sf-bug/SKILL.md
@@ -70,6 +71,7 @@ evidence:
   - "sf-skill-build exploration gate added before sf-spec for fuzzy skill ideas or placement decisions."
   - "sf-content added as the master content lifecycle for strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing."
   - "sf-onboarding added as the user activation lifecycle for first-success paths, setup guidance, recoverable states, docs impact, and proof routing."
+  - "sf-local-cloud-sync added as the local-to-cloud data promotion, merge, sync UX, and security contract skill."
   - "sf-build delegated sequential subagent consent clarified; subagents and parallelism are distinct runtime concepts."
   - "Master delegation semantics extracted to skills/references/master-delegation-semantics.md and cited by master/orchestrator skills."
   - "Master workflow lifecycle extracted to skills/references/master-workflow-lifecycle.md; bug work items now use bugs/*.md as source of truth and BUGS.md as optional/generated triage."
@@ -118,6 +120,7 @@ Discovery descriptions are routing triggers, not workflow summaries. Keep them s
 Current family boundaries:
 
 - Lifecycle/master: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship`, `sf-build`, `sf-deploy`, `sf-maintain`, `sf-design`, `sf-content`, `sf-onboarding`, `sf-skill-build`.
+- Data trust/source: `sf-local-cloud-sync`.
 - Audit/source: `sf-audit*`, `sf-deps`, `sf-perf`.
 - Bug/proof/source: `sf-bug`, `sf-fix`, `sf-test`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-migrate`.
 - Content/docs/support: `sf-docs`, `sf-redact`, `sf-enrich`, `sf-repurpose`, `sf-changelog`, `sf-scaffold`, `sf-skills-refresh`, `sf-init`.
@@ -143,6 +146,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
 | `skills/references/sentry-observability.md` | Shared Sentry runtime evidence, PM2/Doppler fallback evidence, release/environment correlation, redaction, and performance-overhead doctrine | Load when runtime behavior, crashes, 5xx, event IDs, deploy confidence, auth/payment/data failures, jobs, webhooks, verification, audits, or perf checks depend on observability |
 | `skills/references/product-entitlements-playbook.md` | Shared product-access doctrine for identity vs entitlement separation, Lifetime Deal/direct/partner code redemption, provider events, revokes/refunds, support runbooks, and smoke proof | Load when projects touch product access, billing providers, activation codes, paid plans, premium gates, quotas, refunds, revocations, or entitlement-backed data access |
+| `skills/sf-local-cloud-sync/references/*.md` | Local-to-cloud sync doctrine, UX/security checklist, and Flutter implementation checklist | Load when projects touch local data promotion, cloud hydration, merge/conflict policy, sync state UX, sensitive-data exclusions, or reinstall recovery |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
 | `shipflow-spec-driven-workflow.md` | Global workflow doctrine | Sequential shared file |
@@ -167,6 +171,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 - `skills/references/content-quality-rubric.md`: shared editorial scoring contract used by content owner skills and verification gates.
 - `sf-design`: master design lifecycle (`design intent -> specialist audit/token/playground route -> spec-first implementation when needed -> checks/browser proof -> sf-verify -> sf-ship`).
 - `sf-onboarding`: user activation lifecycle (`first-success path -> setup order -> states/recovery -> docs impact -> proof or sf-build`).
+- `sf-local-cloud-sync`: local-to-cloud data sync contract (`data inventory -> account association -> promotion/hydration -> merge/conflict/tombstones -> sync UX/security -> proof or sf-build`).
 - `sf-design-from-scratch`: design-system creation skill for extracting an existing UI into a complete professional token system before playground or token audit work.
 - `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-explore when needed -> sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
 - `tools/shipflow_sync_skills.sh --check|--repair`: reusable local helper for current-user Claude/Codex skill visibility and install-time selected-user linking.
@@ -182,7 +187,7 @@ Primary router flow:
 ```text
 shipflow <instruction>
   -> direct conversational answer
-  -> or direct main-thread handoff to sf-build / sf-maintain / sf-bug / sf-deploy / sf-content / sf-design / sf-onboarding / sf-skill-build / sf-audit-*
+  -> or direct main-thread handoff to sf-build / sf-maintain / sf-bug / sf-deploy / sf-content / sf-design / sf-onboarding / sf-local-cloud-sync / sf-skill-build / sf-audit-*
   -> one numbered question when the route is ambiguous
 ```
 

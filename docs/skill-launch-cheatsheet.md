@@ -34,6 +34,7 @@ evidence:
   - "Shared question/default contract added for numbered decisions and context-safe defaults."
   - "sf-design added as the master design lifecycle entrypoint for UI/UX, tokens, playgrounds, implementation, proof, and ship routing."
   - "sf-onboarding added as the user activation lifecycle for first-success paths, setup guidance, recoverable states, and proof routing."
+  - "sf-local-cloud-sync added as the local-to-cloud data promotion, merge, sync UX, and security contract entrypoint."
   - "sf-bug clarified as a lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Skill taxonomy description audit clarified runtime families while keeping public skill names and invocation paths stable."
 next_step: "/sf-docs audit docs/skill-launch-cheatsheet.md"
@@ -58,6 +59,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Family | Role | Examples |
 | --- | --- | --- |
 | Lifecycle/master | Carry work across several gates. | `shipflow`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-design`, `sf-content`, `sf-onboarding`, `sf-skill-build`, plus `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end -> sf-ship` |
+| Data trust/source | Frame local-first data becoming account-backed cloud data. | `sf-local-cloud-sync` |
 | Audit/source | Expose quality, security, performance, SEO, copy, design, dependency, or GTM risk that may deserve a chantier. | `sf-audit*`, `sf-deps`, `sf-perf` |
 | Bug/proof | Diagnose failures, validate behavior, or confirm deployment truth. | `sf-bug`, `sf-fix`, `sf-test`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-migrate` |
 | Content/docs/support | Keep public content, documentation, scaffolding, changelogs, skill contracts, and governance surfaces coherent with shipped behavior. | `sf-docs`, `sf-redact`, `sf-enrich`, `sf-repurpose`, `sf-changelog`, `sf-scaffold`, `sf-skills-refresh`, `sf-init` |
@@ -67,7 +69,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 
 | Need | Launch | Useful modes |
 | --- | --- | --- |
-| Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes feature/code/docs to `sf-build`, maintenance to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, design to `sf-design`, onboarding to `sf-onboarding`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. Uses context-safe defaults and asks one numbered question when ambiguity changes route, risk, scope, or proof. |
+| Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes feature/code/docs to `sf-build`, maintenance to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, design to `sf-design`, onboarding to `sf-onboarding`, local-to-cloud sync to `sf-local-cloud-sync`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. Uses context-safe defaults and asks one numbered question when ambiguity changes route, risk, scope, or proof. |
 | Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story. Use `agents` to make delegated sequential execution a validation gate. For user-facing features, `sf-build` evaluates whether to suggest or route `/sf-onboarding` after implementation. Use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
@@ -76,6 +78,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit recurring operator-facing defects in conversation transcripts and route durable owner actions. |
 | Design lifecycle | `sf-design <design question or goal>` | `tokens`, `audit`, `playground`, page/route targets, redesign goals, token migration, visual proof, or natural-language design requests. |
 | User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup order, why/how guidance, recoverable states, docs impact, and proof routing. |
+| Local-to-cloud data sync | `sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 
 ## Supporting Skills
@@ -111,6 +114,7 @@ Model routing note: `sf-model` recommends the right model for the current scope.
 | `sf-content` | no argument or content goal; `plan`; `repurpose`; `draft`; `article`; `blog`; `guide`; `enrich`; `audit`; `copy`; `copywriting`; `seo`; `editorial`; `apply`; `publish`; `ship` |
 | `sf-design` | design question; page/route; `tokens`; `audit`; `playground`; redesign goal; token migration; visual proof; detailed report modes |
 | `sf-onboarding` | feature, flow, shipped change, onboarding audit target; permission/setup focus; detailed report modes |
+| `sf-local-cloud-sync` | project, feature, data domains, sync question; audit; Flutter focus; secrets/sensitive-data focus; detailed report modes |
 | `sf-skill-build` | new skill idea; existing skill path; `sf-explore` reroute when placement or public promise is too fuzzy |
 | `sf-conversation-audit` | `latest`; `path <file-or-dir>`; `export shipflow`; `report=agent` |
 | `sf-design-from-scratch` | no argument; target page/path; `tokens-only`; `with-playground`; detailed report modes |

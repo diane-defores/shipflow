@@ -31,7 +31,7 @@ Before deciding execution topology, load `$SHIPFLOW_ROOT/skills/references/maste
 - hand off directly in the main conversation to the selected skill contract when work belongs to an existing skill
 - ask one numbered routing question when multiple routes are plausible and the answer changes behavior, risk, data, permissions, public claims, staging, closure, or ship posture
 
-Do not launch a selected master skill inside a subagent. In particular, do not run `sf-build`, `sf-maintain`, `sf-bug`, `sf-deploy`, `sf-content`, or `sf-skill-build` as a nested subagent from `shipflow`. After direct handoff, the selected master skill owns its own delegated sequential execution through the shared delegation reference.
+Do not launch a selected master skill inside a subagent. In particular, do not run `sf-build`, `sf-maintain`, `sf-bug`, `sf-deploy`, `sf-content`, `sf-local-cloud-sync`, or `sf-skill-build` as a nested subagent from `shipflow`. After direct handoff, the selected master or domain skill owns its own delegated sequential execution through the shared delegation reference.
 
 Use a read-only routing scout only when all of these are true:
 
@@ -84,6 +84,7 @@ Choose exactly one route unless the user explicitly asks for a dashboard or comp
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, apply/publish content | `sf-content <instruction>` |
 | Design request, UI/UX work, redesign, design tokens, playground, accessibility design, component design, visual proof, or token migration | `sf-design <instruction>` |
 | User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `sf-onboarding <instruction>` |
+| Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `sf-local-cloud-sync <instruction>` |
 | Create, modify, rename, document, refresh, or validate ShipFlow skills | `sf-skill-build <instruction>` |
 | One obvious audit domain only | relevant `sf-audit-* <instruction>` or `sf-audit <instruction>` |
 | One obvious owner lane only, such as checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, or final ship | focused owner skill |

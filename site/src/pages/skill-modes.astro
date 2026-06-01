@@ -9,7 +9,7 @@ const masterSkillCheatsheet = [
     command: "shipflow <instruction>",
     when: "Recommended non-technical first command when you want ShipFlow to choose the route.",
     modes:
-      "Answers pure conversation directly; routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, design to sf-design, onboarding to sf-onboarding, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*. Asks one numbered question when ambiguous."
+      "Answers pure conversation directly; routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, design to sf-design, onboarding to sf-onboarding, local-to-cloud sync to sf-local-cloud-sync, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*. Asks one numbered question when ambiguous."
   },
   {
     command: "sf-build <story, bug, or goal>",
@@ -54,6 +54,12 @@ const masterSkillCheatsheet = [
       "Use after or alongside feature work when users need context, why/how guidance, permission or integration setup, skipped/blocked recovery, and value proof."
   },
   {
+    command: "sf-local-cloud-sync <project, feature, or data domains>",
+    when: "Local-to-cloud data sync contract for local data promotion, account association, merge policy, sync UX, and security.",
+    modes:
+      "Use before account-backed sync, backup, reinstall recovery, or multi-device claims when local data, cloud data, sensitive content, or conflicts must be handled safely."
+  },
+  {
     command: "sf-skill-build <idea or path>",
     when: "Creation or maintenance of ShipFlow skills themselves.",
     modes:
@@ -89,6 +95,11 @@ const runtimeFamilies = [
     title: "Lifecycle/master",
     use: "Carry a work item across several gates.",
     examples: "shipflow, sf-build, sf-maintain, sf-deploy, sf-design, sf-content, sf-onboarding, sf-skill-build"
+  },
+  {
+    title: "Data trust/source",
+    use: "Frame local-first user data becoming account-backed cloud data.",
+    examples: "sf-local-cloud-sync"
   },
   {
     title: "Audit/source",

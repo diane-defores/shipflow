@@ -4,6 +4,21 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
+## 2026-06-01 — sf-local-cloud-sync
+
+**Added:**
+- [skill] New `skills/sf-local-cloud-sync/SKILL.md` for local data promotion, cloud hydration, merge/conflict policy, sync UX, sensitive-data exclusions, and proof routing
+- [references] Skill-local doctrine, UX/security, and Flutter implementation checklists extracted from the WinFlowz sync chantier lessons
+- [public docs] Public skill page, router/help discovery, lifecycle docs, launch cheatsheet, and skill modes page expose `sf-local-cloud-sync`
+
+**Updated:**
+- [routing] `shipflow` and `entrypoint-routing` now route local-first data sync, account promotion, merge, and reinstall recovery questions to `sf-local-cloud-sync`
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts and WinFlowz chantier context)
+
 ## 2026-05-31 — sf-onboarding
 
 **Added:**
