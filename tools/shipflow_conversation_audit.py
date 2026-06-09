@@ -110,6 +110,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("path", help="Markdown transcript path")
     parser.add_argument("--fixtures", action="store_true", help="Emit normalized fixtures for deterministic tests")
+    parser.add_argument("--raw", action="store_true", help="Classify the raw transcript without terminal-noise filtering")
     return parser.parse_args()
 
 
@@ -119,6 +120,56 @@ def read_text(path: Path) -> str:
 
 def is_unsafe(text: str) -> bool:
     return any(pattern.search(text) for pattern in UNSAFE_PATTERNS)
+
+
+def is_terminal_noise_line(line: str) -> bool:
+    stripped = line.strip()
+    if not stripped:
+        return False
+
+    # Metadata and wrappers added by tmux capture are evidence context, not
+    # user/agent behavior.
+    if stripped.startswith(("# ", "- Captured at:", "- tmux ", "~~~")):
+        return True
+
+    # Diff, patch, and line-numbered command output are frequent false-positive
+    # sources because they include questions, TODO searches, and copied reports.
+    if re.match(r"^(diff --git|index [0-9a-f]|@@\s|[+-]{3}\s|[+-]\s)", stripped):
+        return True
+    if re.match(r"^\d+\s+[+-]", stripped):
+        return True
+
+    # Common Codex terminal summaries: "Search TODO|...", "└ Search ...",
+    # "Read ...", "List ...". These are not conversational turns.
+    if re.match(r"^(└\s*)?(Search|Read|List|Bash|Grep|Glob|Edit|Patch)\b", stripped):
+        return True
+    if re.search(r"\bSearch\b.*(TODO|TBD|placeholder|rg|\|)", stripped):
+        return True
+
+    # JSON/tool payload lines from previous classifier runs should not become
+    # evidence for the next classifier pass.
+    if re.match(r'^[{}\[\],]$', stripped):
+        return True
+    if re.match(r'^"[A-Za-z_]+":', stripped):
+        return True
+
+    return False
+
+
+def cleaned_classifier_text(text: str) -> str:
+    kept: list[str] = []
+    in_fence = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if re.fullmatch(r"~{3,}", stripped):
+            in_fence = not in_fence
+            continue
+        if is_terminal_noise_line(line):
+            continue
+        # Preserve actual conversation turns even when they were inside the raw
+        # captured pane fence; only the obvious terminal noise is removed.
+        kept.append(line)
+    return "\n".join(kept).strip()
 
 
 def classify(text: str) -> list[Finding]:
@@ -147,12 +198,17 @@ def main() -> int:
         return 2
 
     text = read_text(path)
-    findings = classify(text)
+    classifier_text = text if args.raw else cleaned_classifier_text(text)
+    findings = classify(classifier_text)
     unsafe = is_unsafe(text)
 
     payload: dict[str, Any] = {
         "path": str(path),
         "unsafe_detected": unsafe,
+        "cleaned_input_used": not args.raw,
+        "raw_line_count": len(text.splitlines()),
+        "cleaned_line_count": len(classifier_text.splitlines()) if classifier_text else 0,
+        "cleaned_input_empty": not bool(classifier_text),
         "finding_count": len(findings),
         "findings": [f.as_dict() for f in findings],
         "categories": sorted({f.category for f in findings}),
@@ -164,6 +220,8 @@ def main() -> int:
     else:
         if payload["unsafe_detected"]:
             print("WARNING: unsafe scope detected; review required before public publication.")
+        if payload["cleaned_input_empty"]:
+            print("WARNING: cleaned classifier input is empty; no clean audit can be claimed.")
         if payload["findings"]:
             print("Findings:")
             for finding in findings:
@@ -172,7 +230,7 @@ def main() -> int:
         else:
             print("No findings detected.")
 
-    return 0 if (findings or unsafe) else 1
+    return 0 if (findings or unsafe or payload["cleaned_input_empty"]) else 1
 
 
 if __name__ == "__main__":

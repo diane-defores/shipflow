@@ -448,6 +448,7 @@ None
 | 2026-05-29 14:35:37 UTC | sf-ready | unknown | Re-checked the already-started spec against the current Definition of Ready. | not ready | /sf-spec grille notation editoriale projet skills contenu ajouter Test Contract |
 | 2026-05-29 14:42:48 UTC | sf-spec | unknown | Added the mandatory Test Contract covering proof profile, proof order, required scenarios, required results, and acceptable/non-acceptable exceptions for the editorial rubric gate. | reviewed | /sf-ready grille notation editoriale projet skills contenu |
 | 2026-05-30 20:26:00 UTC | sf-ready | unknown | Re-checked the spec after Test Contract update against structure, user-story alignment, metadata, language doctrine, adversarial, security and test-contract gates. | ready | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
+| 2026-06-01 21:40:04 UTC | sf-end | unknown | Attempted closure after route from shipflow end; kept chantier open because sf-verify remains partial and sample rubric output evidence is still missing. | deferred | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
 
 ## Current Chantier Flow
 
@@ -455,7 +456,7 @@ None
 - `sf-ready`: ready.
 - `sf-start`: implemented.
 - `sf-verify`: partial; mechanical contract checks pass, runtime rubric output proof missing.
-- `sf-end`: not launched.
+- `sf-end`: deferred; closure blocked by missing sample rubric proof.
 - `sf-ship`: not launched.
 
 Next step: `/sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence`

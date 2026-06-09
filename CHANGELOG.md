@@ -26,6 +26,11 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
 
+## [2026-06-01]
+
+### Changed
+- Clarified the project-aware editorial scoring chantier with a required `Test Contract` and kept closure partial until `sf-verify` has sample rubric output evidence.
+
 ## [2026-05-30]
 
 ### Added

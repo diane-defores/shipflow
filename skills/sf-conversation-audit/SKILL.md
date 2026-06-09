@@ -27,6 +27,7 @@ When attached to a unique chantier spec, append a `Chantier potentiel` block if 
 
 - Never publish or ingest private transcripts by default.
 - Keep default output under `shipflow_data/workflow/conversation-audits/` (private governance area).
+- Preserve the raw transcript as private evidence, but classify a cleaned conversation view by default.
 - If a transcript contains likely secrets/private URLs/log paths/PII tokens, stop with a safety hold.
 - Never include full secrets in the report; include only redacted excerpts.
 - If safety holds, propose one of:
@@ -49,9 +50,10 @@ When attached to a unique chantier spec, append a `Chantier potentiel` block if 
    - `latest`,
    - or default latest-in-folder.
 2. Validate redaction gate before reading raw transcript content.
-3. Classify with deterministic categories (below).
-4. Write report to `shipflow_data/workflow/conversation-audits/<slug>.md` using template `templates/artifacts/conversation_audit.md`.
-5. Print top findings + evidence summary + routing recommendation.
+3. Derive a cleaned classifier input that removes obvious terminal chrome, command output, diffs, JSON payloads, and long log/search noise while preserving user/agent turns.
+4. Classify the cleaned view with deterministic categories (below), while keeping raw unsafe detection tied to the original transcript.
+5. Write report to `shipflow_data/workflow/conversation-audits/<slug>.md` using template `templates/artifacts/conversation_audit.md`.
+6. Print top findings + evidence summary + routing recommendation.
 
 ## Stable Finding Categories
 
@@ -71,6 +73,8 @@ When attached to a unique chantier spec, append a `Chantier potentiel` block if 
 - Findings are evidence-first and deterministic.
 - Frictions are valid only when mapped to text evidence, scope impact, and confidence.
 - One line of evidence per finding in the report.
+- Terminal/diff/search-command matches are classifier noise unless a human review ties them to an actual user or agent turn.
+- Reports should mention `cleaned_input_used` or equivalent when the helper script provides it.
 
 ## Categories to Owners
 
