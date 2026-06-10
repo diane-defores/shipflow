@@ -1,7 +1,7 @@
 ---
 artifact: readiness_report
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: "[project name]"
 created: "YYYY-MM-DD"
 updated: "YYYY-MM-DD"
@@ -23,6 +23,20 @@ next_step: "/sf-start [scope]"
 ---
 
 # Readiness: [spec title]
+
+## User-Mode Summary
+
+Use this compact shape when a human directly launched `sf-ready` and did not ask for detail:
+
+```text
+Readiness: [ready|not ready|blocked]
+Spec: [path]
+[Blockers: only blockers that require action]
+[Checks: short metadata/proof summary]
+Next step: [real user action only]
+```
+
+Do not include the full checklist in a successful user-mode report. Use the detailed sections below for `report=agent`, handoff, blocked runs, or explicit verbose/full-report requests.
 
 ## Spec
 

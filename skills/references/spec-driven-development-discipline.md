@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-18"
-updated: "2026-05-24"
+updated: "2026-06-09"
 status: active
 source_skill: sf-start
 scope: spec-driven-development-discipline
@@ -37,8 +37,9 @@ evidence:
   - "Spec spec-driven-tdd-evidence-gates.md keeps ShipFlow spec-driven development as the outer lifecycle and adds proof-first implementation discipline."
   - "User decision 2026-05-24: proof paths must support high-quality code and durable decisions, not just the quickest passing change."
   - "User decision 2026-05-24: for Flutter mobile work, prove common UI first with widget tests and Flutter Web smoke before asking for APK/device testing."
+  - "Conversation audit 2026-06-09: UI and product behavior claims need an explicit proof path or proof gap before being reported as fixed."
 next_review: "2026-06-18"
-next_step: "/sf-verify spec-driven-tdd-evidence-gates"
+next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
 
 # Spec-Driven Development Discipline
@@ -63,6 +64,8 @@ Before implementation, name the proof path that fits the changed surface:
 
 The proof path is part of the execution contract. It does not replace the source-of-truth work item.
 
+A user-visible behavior claim is not complete until the report names the proof path that was run, or names the proof gap that remains. This applies especially to UI controls, keyboard/gesture behavior, playback behavior, auth/session behavior, and other flows where a green static check can leave the actual user story unproven.
+
 ## Stack-Agnostic Test and Proof Contract
 
 For every spec or execution task that includes behavior, add a proof ladder with stack-aware order and explicit exceptions:
@@ -78,6 +81,8 @@ When automation and required manual evidence are both impossible, use `exception
 - what was impossible,
 - why it is justified,
 - and what alternate proof was run.
+
+For skill-contract and governance changes, `scenario-first` means the implementation must define pressure scenarios or mechanical checks before claiming the contract is hardened. The final report should point to those scenarios or scans instead of saying the wording was merely updated.
 
 ## Validation Proportionality
 
@@ -126,6 +131,7 @@ Stop, reroute, or report `partial`/`not verified` when:
 - a bug fix lacks reproduction or cause-root evidence
 - a skill contract change lacks pressure scenarios or mechanical checks
 - evidence-first work names no concrete evidence surface
+- a final report claims a user-visible behavior, skill behavior, or workflow behavior is fixed without naming validation run or the remaining proof gap
 - proof collection would expose secrets, cookies, tokens, credentials, private payloads, production PII, or sensitive screenshots
 - a Flutter UI change routes straight to APK/manual device testing while widget tests or agent-run Flutter Web smoke via `sf-browser`/`sf-auth-debug` can reasonably prove the shared UI behavior
 - the proposed implementation is merely the fastest/easiest patch and does not satisfy the decision-quality contract
@@ -139,5 +145,7 @@ Final reports for execution and verification skills should state:
 - validation or evidence actually performed
 - explicit exception reason when test-first or regression-first was skipped
 - remaining proof gap, if any
+
+For concise user-mode reports, this can be one short evidence line. For agent or handoff reports, include the detailed validation matrix.
 
 Good evidence examples: unit test, typecheck, build, lint, metadata lint, skill budget audit, runtime sync check, browser proof, screenshot, manual QA, redacted log, retest history, production check, or targeted `rg` confirmation.

@@ -39,6 +39,7 @@
 🟢 [ShipFlow] task: Integrer le TDD proof-first et les checklists manuelles durables dans les skills | status: done | area: skills
 🟢 [ShipFlow] task: Ajouter une boucle d'audit des conversations et d'auto-evolution des skills | status: done | area: skills
 🟢 [ShipFlow] task: Auditer en batch les conversations Markdown pour identifier les travers agents et router les améliorations | status: done | area: skills
+🟢 [ShipFlow] task: Durcir les retours humains des skills, l'autonomie des questions, les claims de preuve et la sortie `sf-ready` | status: done | area: skills | spec: shipflow_data/workflow/specs/shipflow-skill-reporting-and-proof-hardening.md | next: /sf-ship shipflow-skill-reporting-and-proof-hardening
 
 | Pri | Task | Status |
 |-----|------|--------|

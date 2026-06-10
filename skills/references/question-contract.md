@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-05"
-updated: "2026-05-24"
+updated: "2026-06-09"
 status: active
 source_skill: sf-skill-build
 scope: skill-question-contract
@@ -30,8 +30,9 @@ evidence:
   - "User request 2026-05-04: skill questions should be numbered, explain why, include helpful icons, and identify the recommended answer."
   - "User clarification 2026-05-04: a default is acceptable only when it is compatible with the current technical/product/editorial context and current best practices."
   - "User decision 2026-05-24: recommended defaults must optimize for performance, security, excellence, durability, and high-quality code before speed or convenience."
+  - "User decision 2026-06-09: skills should be almost fully autonomous and professionally effective, asking fewer questions and only in plain decision language when the operator truly owns the decision."
 next_review: "2026-06-05"
-next_step: "/sf-verify shared question contract"
+next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
 
 # Question Contract
@@ -82,6 +83,12 @@ If the obvious or requested option conflicts with project context, public/editor
 
 Never ask broad "anything else?" questions.
 
+Autonomy is the default. A skill must not ask the operator to choose between internal workflow mechanics, file-level implementation details, checklist preferences, or obvious reversible defaults when the skill can choose a professional path itself. State the chosen assumption briefly in the final report only if it affects trust or future review.
+
+Ask at most one user-facing decision question at a time unless several decisions are inseparable. If multiple low-level gaps exist, collapse them into the smallest operator-owned decision or choose safe defaults and continue.
+
+Do not ask with internal jargon such as "gate", "lifecycle", "trace category", "fresh context", "metadata transition", or model names unless that literal term is the user's decision. Translate the consequence into plain operator language first.
+
 ## Required Shape
 
 Every user-facing question must be answerable by number. Start each question with a numeric marker:
@@ -101,6 +108,8 @@ Each question must include:
 - answer instruction: tell the user they can answer with the number or name another route
 
 Use small icons only as scanning aids. Icons never replace the text label and are optional when the runtime or context favors plain ASCII.
+
+Questions should be rare enough that answering them feels like steering the product or risk posture, not supervising the skill. If a question would only make the operator approve routine professional execution, do not ask it.
 
 ## Plain-Text Format
 
@@ -133,3 +142,8 @@ Prefer recommendations that:
 - avoid premature shipping when proof is missing
 
 Name the condition that would make another option better when that matters.
+
+## Pressure Scenarios
+
+- `SSRP-005 safe default`: when the safe professional default is clear, reversible, in scope, and verifiable, the skill proceeds and reports the assumption only if useful.
+- `SSRP-006 required decision`: when the answer changes security, data, product behavior, validation confidence, closure, or ship risk, the skill asks one numbered plain-language question with a recommended option.

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-03"
-updated: "2026-05-05"
+updated: "2026-06-09"
 status: active
 source_skill: sf-build
 scope: skill-reporting-contract
@@ -30,8 +30,9 @@ evidence:
   - "User decision 2026-05-03: concise user reports by default, detailed agent reports by explicit mode."
   - "User decision 2026-05-04: user reports should organize ship status as outcome, evidence, then limits, match the user's active language, and allow a few sober status emojis."
   - "User decision 2026-05-05: final reports need a visible Paris-time verdict timestamp as a shared reporting brick, not duplicated per skill."
+  - "User decision 2026-06-09: human-launched skills may keep technical evidence internally or in report=agent, but their default report must stay short, readable, and useful to a non-developer operator."
 next_review: "2026-06-04"
-next_step: "/sf-verify skill reporting modes"
+next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
 
 # Reporting Contract
@@ -52,7 +53,7 @@ Use `report=user` when:
 
 - the skill is launched directly by the operator
 - no explicit report mode is provided
-- the run succeeds and the user only needs outcome, checks, risk, and next step
+- the run succeeds, partially succeeds, or blocks and the user only needs outcome, proof summary, material limits, and a real next step
 
 Use `report=agent` when:
 
@@ -62,6 +63,8 @@ Use `report=agent` when:
 
 Do not infer caller identity from runtime state. If a master skill wants a detailed downstream report, it must pass `report=agent` or an equivalent explicit handoff flag.
 
+Human-launched user mode is not a simplified agent report. It is a decision surface for a human operator. It must translate internal gates into the user's active language and expose only the information needed to trust the outcome or choose the next action.
+
 ## User Mode
 
 Keep the final report compact and outcome-first.
@@ -69,6 +72,15 @@ Keep the final report compact and outcome-first.
 Match the user's active language for user-facing labels and explanatory
 sentences. Stable commands, file paths, status values, and machine-readable
 contract labels may stay in English when translation would weaken traceability.
+
+Default user-mode reports must fit this shape unless the skill has a stricter local format:
+
+1. outcome or verdict
+2. proof summary or check summary
+3. limits only when they affect trust, risk, or next action
+4. one real next step only when the user must act
+
+Do not include full checklists, validation matrices, phase ledgers, file inventories, raw command output, or lifecycle internals in successful user-mode reports. Keep that detail in the durable artifact or use `report=agent`.
 
 Use a few status emojis when they improve scanning, not as decoration. Good
 defaults are `🚀` for pushed/shipped, `✅` for passed checks, `⚠️` for limits or
@@ -112,6 +124,8 @@ Translate internal gate names into their user consequence when possible. Prefer
 
 Omit empty or redundant lines such as `Reste a faire: none`, `Prochaine etape: none`, `Trace spec: ecrite`, and `Verdict <skill>` when the heading or status already says the same thing.
 
+If a skill is blocked, partial, risky, or security-sensitive, user mode may be longer, but it still must not dump internal machinery. Say what blocked, what evidence proves it, what action is safest, and whether the work can continue or ship.
+
 ## Agent Mode
 
 Agent mode may include:
@@ -126,6 +140,8 @@ Agent mode may include:
 - full chantier trace metadata
 
 Agent mode must still avoid dumping raw secrets, cookies, tokens, private logs, or unnecessary bulk output.
+
+Agent mode is the correct place for detailed readiness checklists, validation matrices, file lists, evidence tables, route rationale, and handoff notes. Master skills that need such detail from downstream skills must request `report=agent`; downstream skills must not guess that detail is wanted.
 
 ## Compact Chantier Block
 
@@ -175,6 +191,16 @@ Concise does not mean vague. If a run is blocked, partial, or risky, include:
 - the concrete evidence
 - the safest next action
 - whether the current work can or cannot ship
+
+## Pressure Scenarios
+
+Use these scenarios when changing reporting behavior or reviewing a skill report:
+
+- `SSRP-001 human success`: a directly launched skill succeeds. The user report is concise, in the user's active language, and includes outcome, proof summary, and no checklist dump.
+- `SSRP-002 human not-ready`: `sf-ready` finds blockers. The user report lists only blockers that require action, explains them plainly, and gives one next command.
+- `SSRP-003 human blocked safety`: a safety or security gate blocks work. The user report names the gate, summarizes redacted evidence, gives the safest next action, and does not expose secrets or bulk logs.
+- `SSRP-004 agent handoff`: another skill needs detailed evidence. The caller passes `report=agent`, and the report may include checklists, matrices, files, commands, and lifecycle internals.
+- `SSRP-005 proof limit`: a completion claim lacks full proof. The user report stays short but names the missing proof or explicit exception before claiming completion.
 
 ## Final Timestamp
 

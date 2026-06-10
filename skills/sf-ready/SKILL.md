@@ -21,7 +21,7 @@ If this run creates or mutates a `spec:` operational summary line, first load `$
 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
 
-Default to `report=user`: concise, readiness verdict first, blockers only when present, and using the compact chantier block. The detailed checklist report below is for `report=agent`, `not ready`, blocked runs, or explicit handoff.
+Default to `report=user`: concise, readiness verdict first, blockers only when they require user action, and using the compact chantier block. Do not show the full checklist to a human by default. The detailed checklist report below is for `report=agent`, blocked runs, explicit handoff, or explicit verbose/full-report requests.
 
 ## Context
 
@@ -231,7 +231,8 @@ Si la sécurité dépend d'une décision produit encore non prise, exiger que la
 
 Si tout passe :
 - mettre à jour la spec en `Status: ready`
-- mettre aussi à jour le frontmatter : `status: ready`, `updated: [today]`, `next_step: "/sf-start [title]"`
+- appliquer une transition ready atomique avant de conclure : frontmatter `status: ready`, `artifact_version` sorti des versions pre-ready quand la politique metadata l'exige, `updated`, `updated_at`, `next_step: "/sf-start [title]"`, ligne `Skill Run History`, et `Current Chantier Flow`
+- lancer le lint metadata applicable après cette mutation et corriger tout écart mécanique avant le verdict; si l'écart n'est pas mécanique ou sûr, garder `not ready`
 - rapporter un verdict `ready`
 - si la suite doit idéalement partir sur un contexte frais :
   - lancer un subagent sans historique si c'est possible dans l'environnement courant
@@ -243,6 +244,27 @@ Sinon :
 - rapporter `not ready` avec corrections concrètes
 
 ### Rapport attendu
+
+En `report=user`, utiliser ce format compact sauf si la run est bloquée ou si l'utilisateur demande le détail :
+
+```text
+Readiness: [ready | not ready | blocked]
+Spec: [path]
+[Blockers: 1-3 bullets only when action is required]
+[Checks: metadata/proof summary, one short line]
+
+## Chantier
+
+[spec path]
+
+Flux: sf-spec [marker] -> sf-ready [marker] -> sf-start [marker] -> sf-verify [marker] -> sf-end [marker] -> sf-ship [marker]
+[Prochaine etape: only if real]
+
+Verdict sf-ready: [ready | not ready | blocked]
+Horodatage du verdict: YYYY-MM-DD HH:mm Paris time
+```
+
+Le rapport détaillé ci-dessous est réservé à `report=agent`, aux runs bloquées, aux handoffs, ou aux demandes explicites de détail :
 
 ```text
 ## Readiness: [spec title]
@@ -320,6 +342,7 @@ Verdict sf-ready:
 - Ne pas implémenter
 - Être strict sur les ambiguïtés bloquantes
 - Préférer `not ready` à une validation molle
+- En user-mode, traduire les gates en conséquences utilisateur et ne pas exposer la checklist complète si elle ne change pas la décision de l'opératrice
 - Toujours raisonner contre la user story avant de raisonner sur la solution
 - Toujours faire une passe "comment est-ce que ça casse ?" avant de conclure `ready`
 - Toujours expliciter le niveau de risque cyber sécurité, même si l'impact est nul ou faible
