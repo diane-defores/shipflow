@@ -113,7 +113,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Step 7: Optional tag
 
-Use **AskUserQuestion**:
+Use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "Create a git tag for this release?"
 - Options:
   - **No tag** — "Just update the changelog" (Recommended)

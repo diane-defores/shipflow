@@ -46,12 +46,12 @@ Audit performance across ALL projects in the workspace.
 
 1. Read `discovered project-local corpora (`shipflow_data/` markers)` — check the **Domain Applicability** table. Identify projects with ✓ in the Perf column.
 
-2. Use **AskUserQuestion** to let the user choose:
+2. Use the runtime's structured question tool when available to let the user choose:
    - Question: "Which projects should I audit for performance?"
    - `multiSelect: true`
    - One option per applicable project: label = project name, description = stack inferred from project-local markers
 
-3. Use the **Task tool** to launch one agent per **selected** project — ALL IN A SINGLE MESSAGE (parallel). Each agent: `subagent_type: "general-purpose"`.
+3. Use available parallel agent/tooling to launch one bounded worker per **selected** project in a single parallel batch when supported. If unavailable, run the selected projects sequentially.
 
    Agent prompt must include:
    - `cd [path]` then read `CLAUDE.md` for project context
@@ -152,7 +152,7 @@ Fixed: X issues | Needs decision: Y
 
 If the current directory has no project markers (no `package.json`, no `requirements.txt`, no `src/` dir, no `lib.sh`) BUT contains multiple project subdirectories — you are at the **workspace root**, not inside a project.
 
-Use **AskUserQuestion**:
+Use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "You're at the workspace root. Which project(s) should I audit for performance?"
 - `multiSelect: true`
 - Options:

@@ -25,7 +25,7 @@ The argument provided is: `{{ args }}`
 
 ### Steps
 
-1. **Get the session name** — use the argument if provided, otherwise ask the user with AskUserQuestion: "What name do you want to give this session?"
+1. **Get the session name** — use the argument if provided, otherwise ask the user with the runtime's structured question tool when available, or a concise plain-text question: "What name do you want to give this session?"
 
 2. **Find the current session ID** — run:
    ```bash

@@ -66,7 +66,7 @@ Output a concise summary:
 **Budget used:** X / 18,000 chars
 ```
 
-Then use **AskUserQuestion**:
+Then use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "Le contexte est prêt. On fait quoi ?"
 - `multiSelect: false`
 - Options:

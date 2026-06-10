@@ -44,7 +44,7 @@ Before choosing or interpreting checks, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/s
 
 ### Workspace root detection
 
-If the current directory has no project markers (no `package.json`, no `requirements.txt`, no `src/` dir) BUT contains multiple project subdirectories — you are at the **workspace root**. Use **AskUserQuestion**:
+If the current directory has no project markers (no `package.json`, no `requirements.txt`, no `src/` dir) BUT contains multiple project subdirectories — you are at the **workspace root**. Use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "Which project(s) should I check?"
 - `multiSelect: true`
 - One option per project: label = project name, description = stack
@@ -58,7 +58,7 @@ Shared tracking files are read-only in this skill:
 
 ### Step 0: Choose which checks to run
 
-If `$ARGUMENTS` is empty (not "fix" or "nofix"), use **AskUserQuestion**:
+If `$ARGUMENTS` is empty (not "fix" or "nofix"), use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "Which checks should I run?"
 - `multiSelect: true`
 - Options:

@@ -74,7 +74,7 @@ Intelligently manage the TASKS.md file by:
 
 ### Workspace root detection
 
-If the current directory has no project markers (not inside a specific project) — you are at the **workspace root**. Use **AskUserQuestion**:
+If the current directory has no project markers (not inside a specific project) — you are at the **workspace root**. Use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "Which project(s) should I update tasks for?"
 - `multiSelect: true`
 - Options:

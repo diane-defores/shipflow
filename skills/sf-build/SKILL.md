@@ -117,7 +117,7 @@ If the best-practice answer is clear, low-risk, reversible, inside the existing 
 
 Preferred path:
 
-- use integrated prompt tooling (for example `AskUserQuestion`) when available
+- use integrated prompt tooling when available
 - otherwise use short plain-text questions with 2-3 prepared options and allow free-form answers
 - when integrated prompt tooling has limited room, send the decision framing as a short user-facing paragraph before the prompt, then use concise option labels and descriptions
 

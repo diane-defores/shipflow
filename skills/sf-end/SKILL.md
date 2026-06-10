@@ -55,7 +55,7 @@ From the conversation, identify:
 
 ### Step 1.5 — Closure mode decision
 
-If completion status is ambiguous, use **AskUserQuestion**:
+If completion status is ambiguous, use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "Quel mode de clôture veux-tu ?"
 - `multiSelect: false`
 - Options:

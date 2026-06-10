@@ -53,7 +53,7 @@ Load only the references required by the active run:
 
 ### Step 1: Parse topic
 
-If `$ARGUMENTS` is empty, load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then use **AskUserQuestion** or the runtime's equivalent numbered question:
+If `$ARGUMENTS` is empty, load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then use the runtime's structured question tool when available, or a concise numbered plain-text question:
 - Question: "What topic should I research?"
 - Options:
   - **Library comparison** — "Compare libraries/tools for a specific need"

@@ -185,7 +185,7 @@ Force `spec-first` if any unresolved point could change:
 - whether the workflow can be bypassed, replayed, or left inconsistent
 - whether external systems, billing, notifications, jobs, or automations behave differently
 
-If classification confidence is low (mixed signals), use **AskUserQuestion**:
+If classification confidence is low (mixed signals), use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "Le scope du bug est borderline. Quelle voie prends-tu ?"
 - `multiSelect: false`
 - Options:

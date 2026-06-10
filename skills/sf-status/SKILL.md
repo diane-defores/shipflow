@@ -77,7 +77,7 @@ git -C [path] log -1 --format="%ar — %s" 2>/dev/null     # Last commit
 git -C [path] stash list 2>/dev/null | wc -l              # Stashed changes
 ```
 
-Run all projects in parallel using the **Task tool** with multiple agents, or sequentially with Bash if fast enough (<10s total).
+Run all projects in parallel using available parallel agent/tooling when present, or sequentially with Bash if fast enough (<10s total).
 
 ### Step 3: Compile dashboard
 

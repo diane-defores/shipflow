@@ -235,3 +235,22 @@ Plateforme API-first pour agents vocaux IA. 500K+ devs, latence <500ms, 100+ lan
 - Les critères sensibles doivent respecter les limites de claims, notamment santé/addiction, finance, conformité, IA fiable et promesses business.
 
 **Quand revisiter :** Lors du cadrage d'une grille de notation éditoriale partagée pour les skills contenu.
+
+---
+
+## Firecrawl Web Agent — agent open-source de recherche web structurée
+
+**Lien :** https://github.com/firecrawl/web-agent
+**Date de veille :** 2026-06-10
+**Business :** contentglowz_lab (8/10)
+
+**Pourquoi c'est intéressant :**
+- Référence concurrentielle indirecte pour agents de recherche web avec skills, subagents parallèles, streaming et sortie JSON structurée.
+- Pattern utile pour benchmarker nos agents recherche/SEO/veille sans lancer d'implémentation immédiate.
+- Complète la veille Firecrawl Lockdown côté sécurité URL, rétention et modes d'ingestion web plus contrôlés.
+
+**Précautions :**
+- Ne pas calquer l'architecture LangChain Deep Agents sans vérifier la compatibilité avec notre runtime Python/FastAPI, PydanticAI, CrewAI et les garde-fous URL safety.
+- Traiter les interactions web comme surface à risque : permissions, SSRF, actions externes, coûts Firecrawl et rétention.
+
+**Quand revisiter :** Quand ContentGlowz planifiera une refonte ou un benchmark des agents recherche/SEO.

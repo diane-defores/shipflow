@@ -289,9 +289,9 @@ Skip Phase 2 (coverage matrix requires all modes), Phase 4 (dep graph requires c
 
 Same pattern as `sf-audit-design` GLOBAL MODE:
 1. Read discovered project-local corpora (`shipflow_data/` markers) Domain Applicability table — identify projects with Design ✓
-2. Use **AskUserQuestion** to let the user select projects
-3. Launch one agent per selected project via the Task tool, all in a single message (parallel)
-4. Each agent: `subagent_type: "general-purpose"`, runs this skill's PROJECT MODE, returns the structured report
+2. Use the runtime's structured question tool when available to let the user select projects
+3. Launch one bounded worker per selected project with available parallel agent/tooling in a single parallel batch when supported. If unavailable, run the selected projects sequentially.
+4. Each worker runs this skill's PROJECT MODE and returns the structured report
 5. Compile a cross-project design tokens report with aggregated findings
 
 ---

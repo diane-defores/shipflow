@@ -77,7 +77,7 @@ Even in full mode, bookkeeping and git operations are not proof that the shipped
 
 ## Step 1 — Workspace root detection
 
-If the current directory has no `.git` directory BUT contains project subdirectories with changes, use **AskUserQuestion**:
+If the current directory has no `.git` directory BUT contains project subdirectories with changes, use the runtime's structured question tool when available, or a concise plain-text question:
 - "Which project should I ship?"
 - One option per project with uncommitted changes
 - `multiSelect: false`

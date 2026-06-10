@@ -46,7 +46,7 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 If `$ARGUMENTS` is empty:
 1. Run `npm outdated` / `yarn outdated` / `pnpm outdated` or `pip list --outdated`
 2. Filter for major version bumps only
-3. Use **AskUserQuestion**:
+3. Use the runtime's structured question tool when available, or a concise plain-text question:
    - Question: "Which package should I migrate?"
    - `multiSelect: false`
    - Options: one per major outdated package, label = "package current → latest", description = last major release date
@@ -121,7 +121,7 @@ MIGRATION PLAN: [package] [current] → [target]
 
 ### Step 5: Get user approval
 
-Use **AskUserQuestion**:
+Use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "How should I proceed with the migration?"
 - Options:
   - **All at once** — "Apply all changes, then verify" (Recommended for small migrations)

@@ -74,7 +74,7 @@ Before scaffolding:
 
    If framework is unsupported (Flutter, native, custom), abort with a message explaining the limitation. The playground concept can still be implemented manually using the patterns in this skill — list them.
 
-3. **Check if a playground already exists** at the target route (see context block). If yes, ask using **AskUserQuestion**:
+3. **Check if a playground already exists** at the target route (see context block). If yes, ask using the runtime's structured question tool when available, or a concise plain-text question:
    - Overwrite — replace existing
    - Augment — add missing token categories without touching existing code
    - Cancel
@@ -192,7 +192,7 @@ Implementation per framework:
 - NextAuth: `session.user.role === 'admin'` (or whatever role field is configured — read auth options)
 - Clerk: `auth().has({ role: 'admin' })`
 - Better-Auth: check `session.user.role`
-- Custom session: ask using **AskUserQuestion** what field/value identifies an admin
+- Custom session: ask using the runtime's structured question tool when available, or a concise plain-text question, what field/value identifies an admin
 
 If the auth library is detected but the role mechanism is unclear, ask the user — don't guess.
 
@@ -232,7 +232,7 @@ If the user wants the font-family dropdown to actually switch fonts, scaffold a 
 - If next/font: generate a `playground-fonts.ts` that loads a curated set (5-10 fonts covering serif, sans, mono, display) — only loaded on the playground route
 - Otherwise: load via Google Fonts CDN with `font-display: swap`
 
-Default font set if none specified: `Inter`, `IBM Plex Sans`, `IBM Plex Serif`, `JetBrains Mono`, `Playfair Display`, `Space Grotesk`. Ask the user using **AskUserQuestion** if they want to customize this list.
+Default font set if none specified: `Inter`, `IBM Plex Sans`, `IBM Plex Serif`, `JetBrains Mono`, `Playfair Display`, `Space Grotesk`. Ask the user with the runtime's structured question tool when available, or a concise plain-text question, if they want to customize this list.
 
 ---
 

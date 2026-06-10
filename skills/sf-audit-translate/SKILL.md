@@ -128,13 +128,13 @@ Audit ALL multilingual projects in the workspace for translation completeness an
 
 1. Read discovered project-local corpora (`shipflow_data/` markers) — check the **Domain Applicability** table. Identify projects with ✓ in the Translate column.
 
-2. Use **AskUserQuestion** to let the user choose:
+2. Use the runtime's structured question tool when available to let the user choose:
    - Question: "Which projects should I audit for translations?"
    - `multiSelect: true`
    - One option per applicable project: label = project name, description = stack inferred from project-local markers
    - All applicable projects pre-listed as options
 
-3. Use the **Task tool** to launch one agent per **selected** project — ALL IN A SINGLE MESSAGE (parallel). Each agent: `subagent_type: "general-purpose"`.
+3. Use available parallel agent/tooling to launch one bounded worker per **selected** project in a single parallel batch when supported. If unavailable, run the selected projects sequentially.
 
    Agent prompt must include:
    - `cd [path]` then read `CLAUDE.md` for project context
@@ -245,7 +245,7 @@ Technical fixes: Z
 
 If the current directory has no project markers (no `package.json`, no `src/` dir) BUT contains multiple project subdirectories — you are at the **workspace root**, not inside a project.
 
-Use **AskUserQuestion**:
+Use the runtime's structured question tool when available, or a concise plain-text question:
 - Question: "You're at the workspace root. Which project(s) should I audit for translations?"
 - `multiSelect: true`
 - Options:

@@ -30,7 +30,7 @@ Parse `$ARGUMENTS` for type and name:
 - `page about` → type: page, name: about
 - `component UserCard` → type: component, name: UserCard
 - `api users` → type: api, name: users
-- Empty → use AskUserQuestion
+- Empty → use the runtime's structured question tool when available, or a concise plain-text question
 
 ---
 
@@ -50,7 +50,7 @@ Parse `$ARGUMENTS` for type and name:
 
 ### Step 1: Parse arguments
 
-If `$ARGUMENTS` is empty, use **AskUserQuestion**:
+If `$ARGUMENTS` is empty, use the runtime's structured question tool when available, or a concise plain-text question:
 - Q1: "What type of file should I scaffold?"
   - Options: page, component, layout, api, content, hook, util
 - Q2: "What name?" (free text — user types via "Other")
