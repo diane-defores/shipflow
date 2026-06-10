@@ -28,6 +28,7 @@ what_you_get:
   - "A source analysis or build summary when it helps justify the recommendations"
   - "Documentation notes and marketing-safe claims kept separate"
   - "Content angles routed through the project's content map when available, with missing blog surfaces called out instead of guessed"
+  - "An optional project-aware quality score for final repurposed outputs"
   - "An evidence ledger that marks what is confirmed, inferred, or not safe to publish"
 example_prompts:
   - "/sf-repurpose this build conversation into docs and marketing angles"
@@ -37,6 +38,7 @@ example_prompts:
   - "/sf-repurpose faq: [paste paragraph]"
   - "/sf-repurpose newsletter: [paste idea]"
   - "/sf-repurpose landing: summarize what changed in this feature"
+  - "/sf-repurpose transforme cette source en article et applique la grille qualité"
 limits:
   - "It repurposes content; it does not generate implementation ideas from external source text"
   - "It is read-only for project content; writing belongs in sf-docs, sf-enrich, or sf-redact"

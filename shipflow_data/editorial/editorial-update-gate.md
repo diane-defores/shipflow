@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-06-10"
 status: reviewed
 source_skill: sf-start
 scope: editorial-update-gate
@@ -57,6 +57,7 @@ Run the gate when a workstream changes or verifies any of these:
 - public claim about security, privacy, compliance, AI reliability, automation, speed, savings, availability, pricing, or business outcomes
 - Astro runtime content under `site/src/content/**`
 - blog, article, newsletter, or future content output
+- workflow or spec requirement for project-aware content quality scoring or an editorial score gate
 
 ## Editorial Update Plan
 
@@ -89,6 +90,12 @@ When a sensitive claim is affected, add the plan from `docs/editorial/claim-regi
 | `needs proof` | Claim could be true but lacks evidence |
 | `pending final copy` | Update is intentionally deferred with owner, reason, and a block-before-ship condition |
 | `blocked` | Public content would mislead, expose private detail, break schema, or require an unresolved decision |
+
+## Content Quality Score Gate
+
+When an editorial score gate is declared, use `skills/references/content-quality-rubric.md` as the scoring contract. The gate is complete only when the score output contains the required schema fields, final status, blocked reasons when relevant, evidence, recommendations, confidence, and applied project-rule revisions.
+
+`sf-verify` rejects recoverable, duplicate, stale, conflicting, or mismatched score states. It also rejects any blocking criterion even when the numeric score is high, including unsupported sensitive claims, unresolved project context, invalid surfaces, missing project rules, or unauthorized evaluator fields.
 
 ## Shared Surface Rules
 

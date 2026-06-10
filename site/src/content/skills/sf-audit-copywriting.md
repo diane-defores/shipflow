@@ -21,6 +21,7 @@ what_you_get:
   - "A conversion-oriented copywriting review"
   - "Findings around proof, objections, and message match"
   - "A better basis for strategic rewrite work"
+  - "A rubric-compatible score and blocked-reason status when project claims or proof are gating"
   - "Governance notes for public claims, funnel promises, and documentation impact when relevant"
 example_prompts:
   - "/sf-audit-copywriting"

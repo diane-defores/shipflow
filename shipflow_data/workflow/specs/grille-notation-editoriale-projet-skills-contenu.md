@@ -6,7 +6,7 @@ project: "ShipFlow"
 created: "2026-05-24"
 created_at: "2026-05-24 22:15:52 UTC"
 updated: "2026-06-10"
-updated_at: "2026-06-10 12:22:53 UTC"
+updated_at: "2026-06-10 18:23:15 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "unknown"
@@ -453,14 +453,19 @@ None
 | 2026-06-01 21:40:04 UTC | sf-end | unknown | Attempted closure after route from shipflow end; kept chantier open because sf-verify remains partial and sample rubric output evidence is still missing. | deferred | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
 | 2026-06-10 11:20:00 UTC | sf-verify | gpt-5 | Added sample rubric run evidence with schema-complete final output and rejection scenarios for duplicate, conflicting, and stale score states. | verified | /sf-end grille notation editoriale projet skills contenu |
 | 2026-06-10 12:22:53 UTC | sf-end | gpt-5 | Closed the chantier after verified sample rubric evidence, tracker update, and changelog entry. | closed | /sf-ship |
+| 2026-06-10 17:31:09 UTC | sf-verify | unknown | Re-verified rubric reference, owner-skill wiring, metadata, runtime skill sync, and sample rubric evidence for revision and blocked-sensitive-claim scenarios. | verified | /sf-ship |
+| 2026-06-10 18:17:23 UTC | sf-build | gpt-5 | Documented how to discover and use the project-aware editorial scoring gate from README, launch/help docs, public skill pages, public mode cheatsheet, and editorial governance gates. | implemented | /sf-verify grille notation editoriale projet docs |
+| 2026-06-10 18:20:46 UTC | sf-verify | gpt-5 | Verified the docs/content discovery layer for the project-aware editorial scoring gate with metadata lint, targeted contract search, skill budget audit, and Astro build proof. | verified | /sf-ship |
+| 2026-06-10 18:23:15 UTC | sf-ship | gpt-5 | Quick-shipped the verified docs/content discovery layer for project-aware editorial scoring. | shipped | None |
 
 ## Current Chantier Flow
 
 - `sf-spec`: reviewed; `Test Contract` added.
 - `sf-ready`: ready.
 - `sf-start`: implemented.
-- `sf-verify`: verified; mechanical checks and sample rubric proof are present.
+- `sf-verify`: verified; mechanical checks, sample rubric proof, docs discovery, and public site build proof are present.
 - `sf-end`: closed.
-- `sf-ship`: not launched.
+- `sf-build`: docs/content alignment implemented after closure so operators can discover how to use the scoring gate.
+- `sf-ship`: shipped.
 
-Next step: `/sf-ship`
+Next step: None

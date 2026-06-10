@@ -21,6 +21,7 @@ what_you_get:
   - "A more useful and current content direction"
   - "A stronger basis for rewriting or upgrading the page"
   - "A clearer path toward better SEO and answer quality"
+  - "An optional project-aware quality score when the enriched version needs a final gate"
   - "Governance notes for public claims, content surfaces, and documentation impact when relevant"
 example_prompts:
   - "/sf-enrich pricing guide"

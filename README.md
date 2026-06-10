@@ -489,6 +489,8 @@ sf-content -> CONTENT_MAP + editorial corpus -> owner content skills -> audits/d
 
 `sf-content` routes content work through the right owner skill: `sf-repurpose` for source-faithful reuse, `sf-redact` for long-form drafting, `sf-enrich` for existing content upgrades, `sf-audit-copy` / `sf-audit-copywriting` / `sf-audit-seo` for review, and `sf-docs` for docs and editorial governance. It blocks undeclared blog/article surfaces with `surface missing: blog` instead of inventing paths.
 
+When a workflow or spec asks whether content is good enough for a specific project, content owner skills use the shared `skills/references/content-quality-rubric.md` contract. The rubric loads project rules from `shipflow_data/business/*` and `shipflow_data/editorial/*`, then returns a global score, criterion scores, evidence, recommendations, confidence, and one of `ready`, `needs revision`, `blocked`, or `publishable with caveats`. Blocking claims, missing project context, stale score signatures, and undeclared surfaces override the numeric score.
+
 For user onboarding and feature activation, use the dedicated activation entrypoint:
 
 ```text

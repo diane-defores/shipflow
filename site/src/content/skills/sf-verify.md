@@ -24,11 +24,13 @@ what_you_get:
   - "A verification result in the spec's chantier flow when a unique spec is in scope"
   - "A callout for linked open bug records when they affect the scope"
   - "A route to sf-browser when non-auth browser evidence is missing"
+  - "Validation of project-aware editorial scores when a spec or workflow declares a content quality gate"
   - "A stronger basis for end-of-task or shipping decisions"
 example_prompts:
   - "/sf-verify"
   - "/sf-verify after onboarding fix"
   - "/sf-verify current branch before ship"
+  - "/sf-verify vérifier le gate de score éditorial"
 limits:
   - "It raises the quality bar, but cannot prove the absence of every defect"
   - "Weak upstream specs still reduce the strength of downstream verification"
@@ -47,3 +49,7 @@ order: 60
 When the scope overlaps known bugs, `sf-verify` should name the linked open records, explain whether they block closure, and avoid optimistic language that implies the bug state disappeared.
 
 If the current work depends on one of those bugs being resolved, the verification result should say so explicitly instead of treating the branch as fully clean.
+
+## Editorial Score Gates
+
+When a spec or workflow declares a content quality gate, `sf-verify` checks the shared rubric output before accepting the work as ready. The score must match the current content, project rules, surface, and evaluator allowlist, and any blocking criterion keeps the verdict blocked even if the numeric score is high.

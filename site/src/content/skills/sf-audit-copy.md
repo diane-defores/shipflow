@@ -21,6 +21,7 @@ what_you_get:
   - "A copy review focused on clarity and persuasion"
   - "Findings around readability, trust, and CTA quality"
   - "A sharper basis for rewrite work"
+  - "A rubric-compatible score and status when the audit is used as a project quality gate"
   - "Governance notes for public claims, page intent, schema risk, and documentation impact when relevant"
 example_prompts:
   - "/sf-audit-copy"

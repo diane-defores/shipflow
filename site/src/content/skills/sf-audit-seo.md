@@ -21,6 +21,7 @@ what_you_get:
   - "A technical and structural SEO audit"
   - "Findings around metadata, linking, performance, and AI visibility"
   - "A clearer improvement path before publishing more content"
+  - "A rubric-compatible quality signal when SEO recommendations depend on project-aware editorial fit"
   - "Governance notes for indexed claims, public content surfaces, and documentation impact when relevant"
 example_prompts:
   - "/sf-audit-seo"

@@ -31,6 +31,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ### Changed
 - Added a numeric skill-code discovery layer with a canonical `skills/references/skill-code-index.md` map, router/help guidance, and a linter that keeps codes aligned with the unchanged skill names.
 - Closed the project-aware editorial scoring chantier with sample rubric evidence covering schema-complete scoring plus duplicate, conflicting, and stale score rejection scenarios.
+- Documented project-aware editorial scoring across README, launch cheatsheet, help catalog, public skill pages, public mode cheatsheet, and editorial governance gates.
 - Hardened ShipFlow conversation audit storage so the `shipflow` tmux capture preset stays under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/` and project-local destinations are blocked.
 - Hardened human-mode ShipFlow skill reports so directly launched skills return concise operator-facing outcomes while keeping detailed evidence in `report=agent`.
 - Strengthened the shared question contract so skills choose safe professional defaults and ask only material numbered questions in plain decision language.

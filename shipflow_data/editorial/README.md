@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-11"
+updated: "2026-06-10"
 status: reviewed
 source_skill: sf-start
 scope: editorial-governance-index
@@ -73,6 +73,14 @@ This layer complements, but does not replace, `shipflow_data/editorial/content-m
 | `editorial-update-gate.md` | Any workstream that changes visible behavior, public docs, public copy, skill promises, FAQ, support copy, pricing, or claims |
 | `astro-content-schema-policy.md` | `site/src/content/**`, public skill content, content collections, frontmatter, or Astro build risk |
 | `blog-and-article-surface-policy.md` | Blog, article, newsletter, editorial post, or long-form content requests |
+
+## Content Quality Scoring
+
+Use `skills/references/content-quality-rubric.md` when a workflow, spec, or operator asks whether content is good enough for a specific project. The rubric is shared across `sf-content`, `sf-repurpose`, `sf-redact`, `sf-enrich`, `sf-audit-copy`, `sf-audit-copywriting`, `sf-audit-seo`, and `sf-verify`; do not create a project-specific skill for scoring.
+
+The scoring context comes from `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/page-intent-map.md`, and `shipflow_data/editorial/claim-register.md`. A valid report includes the global score, criterion scores, weights, final status, blocked reasons, evidence, recommendations, confidence, and applied project-rule revisions.
+
+Allowed final statuses are `ready`, `needs revision`, `blocked`, and `publishable with caveats`. Blocking criteria such as unsupported sensitive claims, unresolved project context, missing or invalid surfaces, stale rules, conflicting score state, or missing required schema fields override the numeric score.
 
 ## Invariants
 

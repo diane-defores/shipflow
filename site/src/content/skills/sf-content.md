@@ -23,11 +23,13 @@ what_you_get:
   - "A mode decision and routed owner-skill sequence"
   - "Content map and editorial governance checks before public output"
   - "Specialist handoff to repurposing, drafting, enrichment, audits, docs, research, or ship gates"
+  - "Optional project-aware quality scoring with global score, criterion scores, status, evidence, recommendations, and confidence"
   - "Validation and a concise content lifecycle report"
 example_prompts:
   - "/sf-content repurpose this build conversation into docs, FAQ, and public skill-page updates"
   - "/sf-content audit the public content around skill modes and update the right surfaces"
   - "/sf-content draft article about ShipFlow skill lifecycle"
+  - "/sf-content audit article avec grille projet"
 argument_modes:
   - argument: "plan / strategy"
     effect: "Creates or routes a content plan before edits."
@@ -73,3 +75,9 @@ enrichment, copy audit, SEO, docs, research, verification, or ship routing.
 
 The skill starts from the content map and editorial governance layer, so public
 content stays tied to declared surfaces, product truth, and claim evidence.
+
+When a workflow asks whether a draft is good enough for a specific project,
+`sf-content` can route the piece through the shared content quality rubric. The
+rubric reads project rules from `shipflow_data/business/*` and
+`shipflow_data/editorial/*`, then returns scores, a final status, evidence, and
+revision guidance without creating a separate skill for each project.

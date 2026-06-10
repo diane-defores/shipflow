@@ -98,13 +98,22 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
-| Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
+| Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`; add `score`, `quality gate`, or `grille projet` when you want project-aware scoring through the shared rubric. |
 | Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit recurring operator-facing defects in conversation transcripts and route durable owner actions. |
 | Design lifecycle | `sf-design <design question or goal>` | `tokens`, `audit`, `playground`, page/route targets, redesign goals, token migration, visual proof, or natural-language design requests. |
 | User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup order, why/how guidance, recoverable states, docs impact, and proof routing. |
 | Local-to-cloud data sync | `sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
 | Product entitlements and access gates | `sf-product-entitlements <project or feature>` | Entitlement ownership, provider events, activation codes, product-local mirrors, backend authorization gates, support flows, and sync handoffs. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
+
+Content scoring examples:
+
+```text
+/sf-content audit article avec grille projet
+/sf-redact finalise puis note ce brouillon
+/sf-repurpose transforme cette source en article et applique la grille qualite
+/sf-verify verifier le gate de score editorial
+```
 
 ## Supporting Skills
 
@@ -137,7 +146,7 @@ Model routing note: `sf-model` recommends the right model for the current scope.
 | `sf-maintain` | no argument/`full`; `quick`; `security`; `deps`; `docs`; `audits`; `no-ship`; `global`; detailed report modes |
 | `sf-deploy` | no argument; `skip-check`; `--preview`; `--prod`; `no-changelog` |
 | `sf-bug` | no argument; `BUG-ID`; free-text summary; `--fix`; `--retest`; `--verify`; `--ship`; `--close` |
-| `sf-content` | no argument or content goal; `plan`; `repurpose`; `draft`; `article`; `blog`; `guide`; `enrich`; `audit`; `copy`; `copywriting`; `seo`; `editorial`; `apply`; `publish`; `ship` |
+| `sf-content` | no argument or content goal; `plan`; `repurpose`; `draft`; `article`; `blog`; `guide`; `enrich`; `audit`; `copy`; `copywriting`; `seo`; `editorial`; `apply`; `publish`; `ship`; `score`; `quality gate`; `grille projet` |
 | `sf-design` | design question; page/route; `tokens`; `audit`; `playground`; redesign goal; token migration; visual proof; detailed report modes |
 | `sf-onboarding` | feature, flow, shipped change, onboarding audit target; permission/setup focus; detailed report modes |
 | `sf-local-cloud-sync` | project, feature, data domains, sync question; audit; Flutter focus; secrets/sensitive-data focus; detailed report modes |
