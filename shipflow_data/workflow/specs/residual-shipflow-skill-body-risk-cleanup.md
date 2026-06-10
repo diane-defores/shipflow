@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-06-10"
 created_at: "2026-06-10 18:58:09 UTC"
 updated: "2026-06-10"
-updated_at: "2026-06-10 19:20:15 UTC"
+updated_at: "2026-06-10 19:24:03 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
@@ -58,7 +58,7 @@ evidence:
   - "tools/skill_budget_audit.py on 2026-06-10 reports 66 skills, 0 hard violations, 0 warnings, 3 separate body-token risks: sf-audit-components, sf-fix, and sf-test; sf-build is near threshold by that estimator and still flagged by the plugin audit."
   - "Direct cleanup already removed hard-coded skill validation paths, missing report-contract style warnings, missing mission-heading style warnings, and runtime-specific AskUserQuestion/Task tool wording."
   - "Existing compact skill instruction phases 1-4 are complete historical chantiers; this spec handles the new residual findings from the current 66-skill inventory."
-next_step: "/sf-verify Residual ShipFlow Skill Body Risk Cleanup"
+next_step: "/sf-skill-build hipflow alias skill quality cleanup, or remove unintended skills/hipflow and rerun /sf-verify"
 ---
 
 # Spec: Residual ShipFlow Skill Body Risk Cleanup
@@ -306,13 +306,14 @@ None. The behavior goal, target files, and proof path are defined by the current
 | 2026-06-10 18:58:09 UTC | sf-spec | GPT-5 Codex | Created residual body-risk cleanup spec from ShipFlow Core audit findings. | draft saved | /sf-ready Residual ShipFlow Skill Body Risk Cleanup |
 | 2026-06-10 19:04:20 UTC | sf-ready | GPT-5 Codex | Validated user-story fit, scope, security posture, implementation tasks, proof path, and ShipFlow language doctrine. | ready | /sf-start Residual ShipFlow Skill Body Risk Cleanup |
 | 2026-06-10 19:20:15 UTC | sf-start | gpt-5.3-codex-spark | Compacted four residual body-risk skills into activation contracts plus focused skill-local references; plugin audit, budget audit, metadata lint, diff check, rg checks, and sync check passed. | implemented | /sf-verify Residual ShipFlow Skill Body Risk Cleanup |
+| 2026-06-10 19:24:03 UTC | sf-verify | GPT-5 Codex | Verified the four scoped body-risk skills and new references; target budget, metadata, and diff checks passed, but global plugin audit now sees unrelated untracked `skills/hipflow/SKILL.md` with one review and one style finding. | partial | /sf-skill-build hipflow alias skill quality cleanup, or remove unintended skills/hipflow and rerun /sf-verify |
 
 ## Current Chantier Flow
 
 - sf-spec: draft saved.
 - sf-ready: ready.
 - sf-start: implemented.
-- sf-verify: not launched.
+- sf-verify: partial.
 - sf-end: not launched.
 - sf-ship: not launched.
-- Next step: `/sf-verify Residual ShipFlow Skill Body Risk Cleanup`.
+- Next step: `/sf-skill-build hipflow alias skill quality cleanup`, or remove unintended `skills/hipflow` and rerun `/sf-verify`.
