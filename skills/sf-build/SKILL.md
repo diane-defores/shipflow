@@ -53,6 +53,8 @@ Before `sf-start`, load `$SHIPFLOW_ROOT/skills/sf-model/references/model-routing
 
 The objective is an excellent professional lifecycle that removes manual detours while preserving quality, security, performance, durability, and proof.
 
+`sf-start` may continue into local, bounded verification when safe, but that is an implementation-side optimization only. Full lifecycle ownership (`sf-verify` routing, `sf-end`, and `sf-ship`) remains with `sf-build`.
+
 ## Execution Modes
 
 - `main-only`: only for pure conversational output, explicit planning without mutation, or an explicit no-subagent request.
@@ -116,6 +118,7 @@ Apply `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`. The default user
 - Follow `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
 - Do not commit or push directly from `sf-build`; delegate closure and ship through `sf-end` and `sf-ship`.
 - Do not make the user manually run `sf-end` or `sf-ship` after successful verification unless a named stop condition blocks automatic orchestration.
+- Treat `sf-start` auto-verify as an allowed local optimization only; do not interpret it as automatic completion of lifecycle orchestration.
 
 ## Validation
 

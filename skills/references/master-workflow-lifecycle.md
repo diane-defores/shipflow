@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.4.1"
 project: ShipFlow
 created: "2026-05-04"
 updated: "2026-06-10"
@@ -53,6 +53,7 @@ evidence:
   - "User decision 2026-05-24: ShipFlow optimizes first for performance, security, excellence, durability, and professional best practices; speed and convenience are secondary tie-breakers only."
   - "User decision 2026-06-10: favor subagents broadly to keep the main conversation clean; sequential is the normal default, while parallel remains read-only or spec/batch-gated."
   - "User decision 2026-06-10: master-skill invocation is consent for bounded sequential subagents; `spark`, `codex`, `sous-agent`/`subagent`, and `mini` arguments request model-specific subagent delegation."
+  - "Spec auto-follow-through-for-local-only-sf-start-verification.md defines bounded local auto-verify for sf-start without changing full sf-build lifecycle ownership."
 next_review: "2026-06-04"
 next_step: "/sf-verify master workflow lifecycle reference"
 ---
@@ -174,6 +175,7 @@ Master skills orchestrate; owner skills own specialist internals.
 Examples:
 
 - `sf-start` owns spec implementation.
+- `sf-start` may run bounded local auto-verification when the remaining proof is local, tool-backed, non-destructive, and has no preview, production, auth/browser, Sentry, device, manual QA, secret, commit, push, ship, or external side-effect requirement. This does not make `sf-start` the full lifecycle orchestrator.
 - `sf-fix` owns bug diagnosis and fix attempts.
 - `sf-test` owns durable manual QA, retests, and bug-file mutation.
 - `sf-docs` owns documentation corpus creation/update/audit.
@@ -199,6 +201,8 @@ Use proof owners by evidence type:
 ### 7. Verification
 
 Run or route through `sf-verify` when the user story, release scope, content promise, bug closure, or skill maintenance outcome needs coherence verification.
+
+If an owner skill such as `sf-start` already ran explicitly eligible local auto-verification, a master skill may count that local proof for the matching local proof obligation. It must still route or run any remaining broader, hosted, browser, manual, production, closure, or ship proof through the normal owner skills.
 
 If verification fails, route back to correction, retest, spec update, or blocked report. Do not proceed to closure or ship as if the work passed.
 

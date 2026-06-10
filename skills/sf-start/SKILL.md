@@ -26,6 +26,11 @@ Result semantics:
 - When local implementation is complete but those gaps stay pending, avoid closure/ship-ready wording and route the next owner or proof step explicitly (`sf-ship -> sf-prod`, `sf-prod -> sf-browser/sf-auth-debug/sf-test`) with required target/environment.
 - If local checks fail because the implementation is broken, use `partial` or `blocked` depending on whether the fix can continue. If checks fail because the environment cannot run a proof surface outside `sf-start` scope, keep `implemented` and route to `sf-verify partial`.
 
+Auto-verify semantics:
+- When a unique ready spec is in scope and the only remaining lifecycle proof is local, tool-backed, non-destructive verification, `sf-start` may run that local verification itself and report `auto-verify: run`.
+- Do not auto-verify when proof needs preview, production, auth/browser flows, Sentry, device testing, manual QA, secret access, a user decision, commit, push, ship, or any external side effect; report `auto-verify: skipped` with the exact owner route instead.
+- Local auto-verify never means `sf-end`, `sf-ship`, or full lifecycle orchestration; `sf-build` remains the owner of full `sf-verify -> sf-end -> sf-ship` continuation.
+
 ## Report Modes
 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
@@ -78,6 +83,6 @@ Stop and report blocked or rerouted when:
 
 Validate this skill after edits with:
 
-- `rg -n "Trace category|Process role|Result semantics|implemented|partial|Report Modes|Required References|Spec-first|ready spec|references/execution-workflow|spec-driven-development-discipline|test-first|evidence-first|proof path" skills/sf-start/SKILL.md`
+- `rg -n "Trace category|Process role|Result semantics|Auto-verify semantics|auto-verify|implemented|partial|Report Modes|Required References|Spec-first|ready spec|references/execution-workflow|spec-driven-development-discipline|test-first|evidence-first|proof path" skills/sf-start/SKILL.md`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `tools/shipflow_sync_skills.sh --check --all`

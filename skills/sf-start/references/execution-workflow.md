@@ -1,10 +1,10 @@
 ---
 artifact: skill_reference
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "shipflow"
 created: "2026-05-16"
-updated: "2026-05-16"
+updated: "2026-06-10"
 status: draft
 source_skill: sf-start
 scope: "sf-start-workflow"
@@ -25,6 +25,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted during compact-shipflow-skill-instructions-phase-4 to preserve lifecycle workflow detail outside the activation body."
+  - "Added bounded local auto-verify follow-through for sf-start while preserving proof-owner routing."
 next_step: "none"
 ---
 
@@ -144,7 +145,8 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - for Flutter mobile/UI work: the proof ladder expected before APK/device testing, starting with widget tests when practical, then agent-run Flutter Web smoke for shared UI behavior via `sf-browser` or `sf-auth-debug`, then APK/device proof only for native-only behavior
   - fresh external docs verdict when the task depends on external documented behavior: dependency/service, local version when available, Context7 or official docs source, and whether the implementation path is supported
   - abuse cases / misuse cases and security constraints when present
-  - validation commands and stop conditions
+- validation commands and stop conditions
+- auto-verify eligibility: whether `sf-start` may run local verification itself, the exact `auto-verify: run` or `auto-verify: skipped` report value, and any out-of-scope proof owner route
 - For every business or technical contract listed in `depends_on` (`shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, docs API, pricing, personas, onboarding/support docs):
   - preserve the referenced `artifact_version` and `required_status` in the execution context
   - read the current file when it is present and its version/status may affect the implementation
@@ -311,6 +313,31 @@ Project development mode gate:
 
 If checks fail, report clearly and include next repair action.
 
+### Step 7.5 — Local auto-verify follow-through
+
+After implementation checks pass, decide whether `sf-start` may continue into local verification before the final report.
+
+Use `auto-verify: run` only when all criteria are true:
+
+- one unique ready spec owns the work
+- implementation and required local checks in `sf-start` scope passed
+- the remaining verification is local, tool-backed, read-only or non-destructive, and does not require a user decision
+- no preview, production, hosted runtime, auth/browser flow, Sentry dashboard, device-only behavior, manual QA, secret access, commit, push, ship, deployment, billing, data mutation, external provider action, or other external side effect is required
+- the verification command or owner route is already clear from the spec and changed surface
+
+When eligible, run the local verification or the local equivalent of `sf-verify` checks for the changed contract. Record the validation evidence and include `auto-verify: run` in the report. If that local verification fails because the implementation or contract is broken, do not claim lifecycle success; continue to a correction when safe, otherwise report `partial` or `blocked` with the concrete failed check.
+
+Use `auto-verify: skipped` when any criterion is false. The skip reason must name `owner_skill`, `scenario`, and `target_or_environment`:
+
+- preview or hosted proof: `sf-ship -> sf-prod`, then `sf-browser`, `sf-auth-debug`, or `sf-test` as needed
+- production truth or deployment health: `sf-prod`
+- non-auth browser proof: `sf-browser`
+- auth/session/provider proof: `sf-auth-debug`
+- durable manual QA or retest: `sf-test`
+- broader lifecycle/adversarial verification: `sf-verify`
+
+Local auto-verify is not closure, ship, or full lifecycle orchestration. It must not run `sf-end`, `sf-ship`, commits, pushes, deployments, provider actions, destructive tests, manual prompts, or secret-bearing proof. `sf-build` remains the full lifecycle owner when the operator invokes a master build flow.
+
 ### Step 8 — Report
 
 Output one concise execution report:
@@ -336,6 +363,9 @@ Files changed:
 
 Validation:
 - [check] -> [pass/fail]
+
+Auto-verify:
+- [run/skipped] -> [local evidence or exact owner route]
 
 Proof path:
 - [test-first / regression-first / scenario-first / evidence-first / exception-with-proof] -> [evidence or exception]

@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.17.0"
+artifact_version: "1.18.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-06-10"
@@ -88,9 +88,10 @@ evidence:
   - "Pilot compaction applied to sf-docs, sf-audit-design, and sf-verify while preserving chantier/reporting/security/doc-update gates."
   - "Skill taxonomy description audit applied compact routing descriptions across 61 skills while preserving names, trace categories, process roles, and runtime visibility."
   - "sf-verify aligned stale dependency metadata during the skill taxonomy description verification."
-  - "Decision quality contract added: ShipFlow optimizes for correctness, security, performance, maintainability, durability, professional best practices, and proof quality before speed, cost, or convenience."
-  - "Skill instruction layering refreshed: SKILL.md is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in references."
-  - "Codex model wording refreshed to use the current `codex` implementation profile instead of pinning long implementations to a deprecated slug."
+- "Decision quality contract added: ShipFlow optimizes for correctness, security, performance, maintainability, durability, professional best practices, and proof quality before speed, cost, or convenience."
+- "Skill instruction layering refreshed: SKILL.md is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in references."
+- "Codex model wording refreshed to use the current `codex` implementation profile instead of pinning long implementations to a deprecated slug."
+- "sf-start local auto-verify contract added: eligible local, tool-backed, non-destructive verification can run inside sf-start, while hosted/browser/manual/production/ship proof stays with owner skills and sf-build remains full lifecycle orchestrator."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -209,6 +210,7 @@ source skill
   -> sf-ready
   -> Governance Corpus Gate
   -> sf-start
+  -> optional sf-start local auto-verify when proof is local, tool-backed, non-destructive, and has no external side effect
   -> Documentation Update Plan after code-changing wave
   -> Editorial Update Plan after public-content or claim-impacting wave
   -> sf-verify
@@ -230,6 +232,8 @@ intake
   -> post-verify closure
   -> bounded ship/deploy/release routing
 ```
+
+`sf-start` may record `auto-verify: run` for eligible local proof only. It must record `auto-verify: skipped` and route to the proof owner when verification needs preview, production, auth/browser, Sentry, device, manual QA, secret access, commit, push, ship, or any external side effect. This does not replace `sf-build` as the full lifecycle owner through `sf-verify`, `sf-end`, and `sf-ship`.
 
 Model routing is a lifecycle gate, not a promise that the active conversation can switch its own runtime model. Master skills use `skills/sf-model/references/model-routing.md` for the policy and `skills/references/decision-quality-contract.md` for the quality boundary. In Codex/OpenAI, `gpt-5.4-mini` fits small bounded low-risk missions; `gpt-5.3-codex-spark` fits Spark-eligible summaries, text-only handoffs, micro-code, targeted UI/local edits, or other low-risk bounded work when it does not replace needed reasoning; the `codex` implementation profile fits long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` fits ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work with calibrated reasoning effort. Delegated subagent missions should include model, reasoning or alias behavior, quality-equivalent fallback, and model application status when the runtime supports or rejects overrides.
 

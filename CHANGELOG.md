@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.3.16"
+artifact_version: "0.3.17"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-06-10"
@@ -30,6 +30,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 
 ### Changed
 - Added veille/backlog references for Alpic MCP/ChatGPT Apps distribution, models.dev model metadata, and OpenPostern-style security signal routing as future ShipFlow skill/product directions.
+- Added bounded `sf-start` local auto-verification semantics so safe, tool-backed, non-destructive proof can run in the same local implementation flow while preview, production, browser/auth, manual QA, commit, push, and ship proof stays routed to owner skills.
 - Added a numeric skill-code discovery layer with a canonical `skills/references/skill-code-index.md` map, router/help guidance, and a linter that keeps codes aligned with the unchanged skill names.
 - Closed the project-aware editorial scoring chantier with sample rubric evidence covering schema-complete scoring plus duplicate, conflicting, and stale score rejection scenarios.
 - Documented project-aware editorial scoring across README, launch cheatsheet, help catalog, public skill pages, public mode cheatsheet, and editorial governance gates.

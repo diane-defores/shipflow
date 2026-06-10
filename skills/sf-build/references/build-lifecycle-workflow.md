@@ -1,7 +1,7 @@
 ---
 artifact: skill_reference
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: "shipflow"
 created: "2026-06-10"
 updated: "2026-06-10"
@@ -24,6 +24,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from sf-build/SKILL.md during residual body-risk cleanup."
+  - "Clarified that sf-start local auto-verify is not full sf-build lifecycle orchestration."
 next_step: "none"
 ---
 
@@ -122,9 +123,13 @@ For local-complete implementation with hosted/prod/provider proof pending, route
 When the contract is ready:
 
 1. Run `sf-start`.
-2. Run `sf-verify` against the user story and behavior contract.
-3. If hosted/deployed/provider proof is missing, route to owner proof skills with scenario and target/environment.
-4. If verification fails, reroute to correction before closure.
+2. Validate local implementation outcomes and any `sf-start` local follow-through result.
+3. If `sf-start` reported `auto-verify: run` for local-only, non-destructive checks, treat those checks as complete for local proof and continue to the remaining lifecycle evidence decisions; do not treat that as full lifecycle completion.
+4. Run `sf-verify` for remaining user-facing proof obligations not already completed locally.
+5. If hosted/deployed/provider proof is missing, route to owner proof skills with scenario and target/environment.
+6. If verification fails, reroute to correction before closure.
+
+`sf-build` remains the sole owner of orchestration through `sf-verify -> sf-end -> sf-ship`, even when local `sf-start` auto-verify ran.
 
 Do not close or ship half-coded outcomes.
 
