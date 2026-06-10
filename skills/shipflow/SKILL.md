@@ -46,6 +46,8 @@ Before classifying a non-trivial instruction, load `$SHIPFLOW_ROOT/skills/refere
 
 Use that reference as the canonical routing matrix. Do not duplicate specialist internals here.
 
+When `$ARGUMENTS` begins with a numeric skill code, load `$SHIPFLOW_ROOT/skills/references/skill-code-index.md` before natural-language classification. Resolve `NN`, `NN-skill`, `NNskill`, or `NN skill` to the canonical skill name from that index, then hand off to the canonical skill. Numeric codes are discovery shortcuts only; do not treat display labels such as `01-sf-build` as renamed runtime skills.
+
 Before choosing a route, answer, or fallback, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Routing must prefer the owner path that preserves correctness, security, performance, maintainability, durability, excellence, and proof quality; do not route to the fastest or easiest owner when that would weaken the work.
 
 ## Mission
@@ -66,6 +68,7 @@ Parse `$ARGUMENTS` as the operator instruction.
 
 - Empty argument: give a compact orientation answer and ask for the instruction to route.
 - `help`, `aide`, `commands`, `skills`, or route-selection questions: answer directly or route to `sf-help` only if the user wants the full help surface.
+- Numeric skill code: resolve the leading two digits through `skill-code-index.md`, then hand off to the canonical skill. Accepted forms include `01`, `01-sf-build`, `01sfbuild`, and `01 sf-build`.
 - Explicit skill name: hand off to that skill unless the request reveals a safer owner.
 - Natural-language instruction: classify using the routing matrix below.
 

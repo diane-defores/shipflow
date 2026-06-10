@@ -117,6 +117,8 @@ Phase 2 compaction uses conservative skill-local workflow references for large l
 
 Discovery descriptions are routing triggers, not workflow summaries. Keep them short, one-sentence, and front-loaded with the work type or domain.
 
+Numeric skill codes are a discovery layer, not skill identities. The canonical lookup lives in `skills/references/skill-code-index.md`; it maps labels such as `00-shipflow` and `01-sf-build` to unchanged canonical skill names. `shipflow` may resolve `NN`, `NN-skill`, `NNskill`, or `NN skill` through that index before normal natural-language routing.
+
 Current family boundaries:
 
 - Lifecycle/master: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship`, `sf-build`, `sf-deploy`, `sf-maintain`, `sf-design`, `sf-content`, `sf-onboarding`, `sf-skill-build`.
@@ -141,6 +143,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/references/master-delegation-semantics.md` | Shared master/orchestrator delegation, subagent, short-approval, and parallelism doctrine | Load before master skills choose execution topology |
 | `skills/references/master-workflow-lifecycle.md` | Shared master/orchestrator lifecycle skeleton and work item model | Load before master skills resolve intake, readiness, model/topology, validation, verification, closure, or ship/deploy routes |
 | `skills/references/decision-quality-contract.md` | Shared high-quality decision doctrine: correctness, security, performance, maintainability, durability, best practices, and proof before speed/cost/convenience | Load before routing, model/fallback selection, implementation, fixes, skill-contract changes, verification, or recommended defaults |
+| `skills/references/skill-code-index.md` | Canonical numeric lookup from memorable codes to unchanged skill names | Update whenever a skill is added, removed, or renamed; validate with `python3 tools/skill_code_index_lint.py` |
 | `skills/references/spec-driven-development-discipline.md` | Shared spec-first/proof-first discipline | Load before execution or verification when behavior, bug, skill contract, UI/docs/auth/deploy, operational, or integration work needs a proof path |
 | `skills/references/content-quality-rubric.md` | Shared project-aware content quality scoring schema and blocked-code contract | Load when content owner skills or `sf-verify` produce/consume editorial quality gates |
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
@@ -149,6 +152,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/sf-local-cloud-sync/references/*.md` | Local-to-cloud sync doctrine, UX/security checklist, and Flutter implementation checklist | Load when projects touch local data promotion, cloud hydration, merge/conflict policy, sync state UX, sensitive-data exclusions, or reinstall recovery |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
+| `tools/skill_code_index_lint.py` | Numeric skill-code index validator | Run after changing `skills/references/skill-code-index.md` or the skill set |
 | `shipflow-spec-driven-workflow.md` | Global workflow doctrine | Sequential shared file |
 | `templates/artifacts/*.md` | Durable artifact templates | Keep linter-compatible |
 | `AGENT.md`, `AGENTS.md` | Agent entrypoint and compatibility alias | `AGENT.md` canonical; `AGENTS.md` symlink only |
@@ -156,6 +160,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 ## Entrypoints
 
 - `shipflow <instruction>`: recommended non-technical first command; answers pure conversation directly or hands the main thread to the selected `sf-*` master/specialist skill.
+- Numeric skill codes: `shipflow 01`, `shipflow 01-sf-build`, or equivalent code-first requests resolve through `skills/references/skill-code-index.md` to canonical skill names without renaming runtime skills.
 - `sf-explore -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end`: normal non-trivial flow.
 - `sf-fix`: bug-first entrypoint that may route direct or spec-first.
 - `sf-init`: project bootstrap that reports or creates baseline technical and editorial governance corpus state.

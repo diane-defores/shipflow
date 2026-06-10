@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.3.16"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-30"
+updated: "2026-06-10"
 status: draft
 source_skill: sf-docs
 scope: documentation
@@ -29,6 +29,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-06-10]
 
 ### Changed
+- Added a numeric skill-code discovery layer with a canonical `skills/references/skill-code-index.md` map, router/help guidance, and a linter that keeps codes aligned with the unchanged skill names.
 - Hardened ShipFlow conversation audit storage so the `shipflow` tmux capture preset stays under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/` and project-local destinations are blocked.
 - Hardened human-mode ShipFlow skill reports so directly launched skills return concise operator-facing outcomes while keeping detailed evidence in `report=agent`.
 - Strengthened the shared question contract so skills choose safe professional defaults and ask only material numbered questions in plain decision language.

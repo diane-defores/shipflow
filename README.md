@@ -395,6 +395,7 @@ Skill launch cheatsheet:
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
 | User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup ordering, why/how guidance, recoverable states, docs impact, and proof routing. |
 | Local-to-cloud data sync | `sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
+| Platform parity | `sf-platform-parity <project, feature, or platform set>` | Audit declared web, mobile, desktop, and native platform behavior; classify parity, adaptation, degradation, unsupported scope, and proof gaps before routing follow-up. |
 | Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit ShipFlow conversation transcripts and route repeatable findings to owner skills or specs. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 | Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |

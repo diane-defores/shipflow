@@ -35,11 +35,14 @@ The canonical `Chantier Registry` doctrine lives in `$SHIPFLOW_ROOT/skills/refer
 
 The canonical decision-quality doctrine lives in `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`; this skill summarizes it when users ask about quality, minimal changes, shortcuts, model choice, best practices, security, performance, or engineering standards.
 
+The canonical numeric skill-code index lives in `$SHIPFLOW_ROOT/skills/references/skill-code-index.md`; load it when users ask about skill codes, numeric prefixes, shortcuts, faster skill lookup, or exact skill discovery.
+
 ## Mode Detection
 
 Parse `$ARGUMENTS` and choose the smallest safe mode as defined by `decision-quality-contract`: bounded and professional, never shortcut quality.
 
 - If the user asks a direct help question, answer concisely from the top-level route and `references/help-catalog.md` as needed.
+- If the user asks for skill codes, numeric prefixes, or shortcut lookup, load `skill-code-index.md` and answer from the code table without renaming canonical skills.
 - If the user needs full skill taxonomy, workflow cheat sheets, or quick answers, load `references/help-catalog.md`.
 - Use `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` for canonical trace/process role doctrine instead of maintaining a duplicate role matrix here.
 - For `Skills at a Glance`, `Quick Answers`, workflow cycles, audit scoring, and file-reference help, load `references/help-catalog.md`.

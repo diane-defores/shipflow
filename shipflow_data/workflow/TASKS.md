@@ -42,6 +42,7 @@
 🟢 [ShipFlow] task: Durcir les retours humains des skills, l'autonomie des questions, les claims de preuve et la sortie `sf-ready` | status: done | area: skills | spec: shipflow_data/workflow/specs/shipflow-skill-reporting-and-proof-hardening.md | next: /sf-ship shipflow-skill-reporting-and-proof-hardening
 🟢 [ShipFlow] task: Router les preuves hébergées manquantes vers un owner concret après un verdict `partial` | status: done | area: skills | spec: shipflow_data/workflow/specs/shipflow-hosted-proof-follow-through-and-user-report-discipline.md | next: none
 🟢 [ShipFlow] task: Forcer les exports et audits de conversation ShipFlow dans le repo ShipFlow | status: done | area: skills | spec: shipflow_data/workflow/specs/conversation-audit-canonical-storage-hardening.md | next: none
+🟢 [ShipFlow] task: Ajouter un index numerique canonique des skills sans renommer les invocations | status: done | area: skills | spec: shipflow_data/workflow/specs/numeric-skill-code-index.md | next: /sf-ship Numeric Skill Code Index
 
 | Pri | Task | Status |
 |-----|------|--------|

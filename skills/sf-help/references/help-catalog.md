@@ -57,6 +57,29 @@ Quick reference for the skill system, modes, and workflows.
 
 ## Skills at a Glance
 
+### Numeric Skill Codes
+
+The canonical numeric lookup lives in `$SHIPFLOW_ROOT/skills/references/skill-code-index.md`.
+
+Use it when the operator wants faster skill lookup without changing canonical skill names. Accepted forms include `01`, `01-sf-build`, `01sfbuild`, and `01 sf-build`; all resolve to the canonical skill in the index.
+
+Core codes:
+
+| Code | Skill |
+| --- | --- |
+| `00` | `/shipflow` |
+| `01` | `/sf-build` |
+| `02` | `/sf-maintain` |
+| `03` | `/sf-bug` |
+| `04` | `/sf-deploy` |
+| `05` | `/sf-ship` |
+| `06` | `/sf-design` |
+| `07` | `/sf-content` |
+| `08` | `/sf-onboarding` |
+| `09` | `/sf-skill-build` |
+
+Family bands: `10` lifecycle/proof, `20` content/research/copy, `30` docs/context/support, `40` audit/quality/ops, `50` design/components, `60` data/activation, `70` pilotage/session, `80` conversation/transcript.
+
 ### Task & Workflow
 
 | Skill | Purpose | Arguments |

@@ -66,6 +66,8 @@ Route to the smallest existing owner that can safely own the outcome.
 
 If the request needs more than one phase, route to the relevant master skill. If the request clearly names one specialist phase, route to that focused owner skill. If no file work or lifecycle action is needed, answer directly.
 
+Before natural-language routing, resolve numeric skill-code prefixes through `skills/references/skill-code-index.md`. Accepted forms include `01`, `01-sf-build`, `01sfbuild`, and `01 sf-build`. Codes point to canonical skill names; they do not rename runtime skills.
+
 ## Execution Topology
 
 Use direct main-thread handoff for selected skills.
@@ -79,6 +81,7 @@ A read-only routing scout is allowed only for cheap classification evidence and 
 | Operator intent | Primary route |
 | --- | --- |
 | Pure question, explanation, model/help clarification, or advice with no files | Direct answer |
+| Numeric skill code such as `01`, `01-sf-build`, or `01sfbuild` | Canonical skill from `skills/references/skill-code-index.md` |
 | Build or change a user-facing feature and also think about onboarding, activation, beginner adoption, or first-success guidance | `sf-build` first; `sf-build` evaluates the post-implementation `sf-onboarding` gate |
 | Feature, product change, code work, site work, docs work, workflow improvement, broad bug-like goal without durable bug state | `sf-build` |
 | Recurring upkeep, dependency posture, docs drift, checks, audits, migrations, project hygiene, security maintenance | `sf-maintain` |

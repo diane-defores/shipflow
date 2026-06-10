@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.4.1"
+artifact_version: "1.4.2"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-29"
+updated: "2026-06-10"
 status: reviewed
 source_skill: sf-docs
 scope: skill-launch-cheatsheet
@@ -37,6 +37,7 @@ evidence:
   - "sf-local-cloud-sync added as the local-to-cloud data promotion, merge, sync UX, and security contract entrypoint."
   - "sf-bug clarified as a lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Skill taxonomy description audit clarified runtime families while keeping public skill names and invocation paths stable."
+  - "sf-platform-parity added as the platform parity/concordance audit and routing skill."
 next_step: "/sf-docs audit docs/skill-launch-cheatsheet.md"
 ---
 
@@ -52,6 +53,29 @@ Start with `sf-build` directly when you already know the request is a feature, c
 
 Use a focused skill directly when you intentionally want one owner lane: checks, docs, browser proof, auth diagnosis, manual QA, production truth, audit, dependency posture, migration, or final ship.
 
+## Numeric Skill Codes
+
+ShipFlow also maintains a numeric lookup for faster skill discovery without renaming skills. The canonical index is `skills/references/skill-code-index.md`.
+
+Accepted lookup forms include `01`, `01-sf-build`, `01sfbuild`, and `01 sf-build`; all resolve through `shipflow` to the canonical skill name. The display label is only an index label, not a new runtime skill name.
+
+Core codes:
+
+| Code | Skill |
+| --- | --- |
+| `00` | `shipflow` |
+| `01` | `sf-build` |
+| `02` | `sf-maintain` |
+| `03` | `sf-bug` |
+| `04` | `sf-deploy` |
+| `05` | `sf-ship` |
+| `06` | `sf-design` |
+| `07` | `sf-content` |
+| `08` | `sf-onboarding` |
+| `09` | `sf-skill-build` |
+
+Family bands: `10` lifecycle/proof, `20` content/research/copy, `30` docs/context/support, `40` audit/quality/ops, `50` design/components, `60` data/activation, `70` pilotage/session, `80` conversation/transcript.
+
 ## Current Runtime Families
 
 Public categories make the catalog easier to browse. Runtime families explain how ShipFlow routes work internally.
@@ -60,7 +84,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | --- | --- | --- |
 | Lifecycle/master | Carry work across several gates. | `shipflow`, `sf-build`, `sf-maintain`, `sf-deploy`, `sf-design`, `sf-content`, `sf-onboarding`, `sf-skill-build`, plus `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end -> sf-ship` |
 | Data trust/source | Frame local-first data becoming account-backed cloud data. | `sf-local-cloud-sync` |
-| Audit/source | Expose quality, security, performance, SEO, copy, design, dependency, or GTM risk that may deserve a chantier. | `sf-audit*`, `sf-deps`, `sf-perf` |
+| Audit/source | Expose quality, security, performance, SEO, copy, design, dependency, parity, or GTM risk that may deserve a chantier. | `sf-audit*`, `sf-deps`, `sf-perf`, `sf-platform-parity` |
 | Bug/proof | Diagnose failures, validate behavior, or confirm deployment truth. | `sf-bug`, `sf-fix`, `sf-test`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-migrate` |
 | Content/docs/support | Keep public content, documentation, scaffolding, changelogs, skill contracts, and governance surfaces coherent with shipped behavior. | `sf-docs`, `sf-redact`, `sf-enrich`, `sf-repurpose`, `sf-changelog`, `sf-scaffold`, `sf-skills-refresh`, `sf-init` |
 | Research/pilotage/helper | Clarify information, prioritize, summarize, route, or preserve context without owning full lifecycle closure. | `sf-research`, `sf-market-study`, `sf-veille`, `sf-backlog`, `sf-priorities`, `sf-review`, `sf-tasks`, `sf-context`, `sf-model`, `sf-help`, `sf-status`, `sf-resume`, `sf-explore`, `name` |
@@ -94,6 +118,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Technical checks | `sf-check` | Target typecheck, lint, build, tests, dependency checks, or shell validation. |
 | Documentation work | `sf-docs [mode or target]` | `readme`, `api`, `components`, `audit`, `update`, `metadata`, `technical`, `editorial`, or a file path. |
 | Audit lane | `sf-audit*` | Choose the audit owner: code, design, copy, SEO, GTM, deps, perf, a11y, translation, components, or design tokens. |
+| Platform parity/concordance | `sf-platform-parity <project, feature, or spec path>` | Check product and technical parity across web, Android, iOS, Windows, macOS, and Linux; route gaps to `sf-spec`, `sf-build`, `sf-test`, `sf-verify`, `sf-docs`, or `sf-ship`. |
 | Conversation quality lane | `sf-conversation-audit` | Classify recurring conversation execution defects and route concrete owner follow-up paths. |
 | Design system creation | `sf-design-from-scratch [target or mode]` | Use when no coherent professional token system exists; modes include `tokens-only` and `with-playground`. |
 | Dependency posture | `sf-deps` | Target dependency drift, vulnerabilities, licenses, or config. |
@@ -117,6 +142,7 @@ Model routing note: `sf-model` recommends the right model for the current scope.
 | `sf-local-cloud-sync` | project, feature, data domains, sync question; audit; Flutter focus; secrets/sensitive-data focus; detailed report modes |
 | `sf-skill-build` | new skill idea; existing skill path; `sf-explore` reroute when placement or public promise is too fuzzy |
 | `sf-conversation-audit` | `latest`; `path <file-or-dir>`; `export shipflow`; `report=agent` |
+| `sf-platform-parity` | project, feature, or spec path; `platforms=web,android,ios,windows,macos,linux`; `report=agent` |
 | `sf-design-from-scratch` | no argument; target page/path; `tokens-only`; `with-playground`; detailed report modes |
 | `sf-ship` | no special argument; `skip-check`; `end la tache`; `end`; `fin`; `close task`; `all-dirty`; `ship-all`; `tout-dirty` |
 | `sf-audit-translate` | no special argument; file path or scope; `global`; `sync`; `apply`; `sync [path]`; `apply [path]` |
