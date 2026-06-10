@@ -84,6 +84,27 @@ When automation and required manual evidence are both impossible, use `exception
 
 For skill-contract and governance changes, `scenario-first` means the implementation must define pressure scenarios or mechanical checks before claiming the contract is hardened. The final report should point to those scenarios or scans instead of saying the wording was merely updated.
 
+## Hosted-Proof Follow-Through Rule
+
+For tasks that can end in `partial`, `not verified`, or `blocked` because proof is missing outside the local scope, the contract must include an explicit owner route, not only a missing-evidence noun.
+
+Any hosted/prod/deployed/provider/browser/manual proof gap must declare all of:
+
+- `proof_type`: hosted, preview, production, auth, browser, webhook/provider, manual QA, or similar
+- `owner_skill`: `sf-prod`, `sf-browser`, `sf-auth-debug`, `sf-test`, `sf-ship`, or a justified concrete alternative
+- `scenario`: the exact action/flow to prove next (example: `login-smoke`, `checkout-smoke`, `webhook-smoke`)
+- `target_or_environment`: preview URL, production URL, tenant, environment, or `target needed`
+
+When `target_or_environment` is unknown, the first route is `sf-prod` for target discovery; do not route directly to non-hosted proof before discovery.
+
+## Pressure Scenarios
+
+- `VERIFY-PARTIAL-HOSTED`: `sf-verify` partial caused by missing hosted proof must include all hosted follow-through fields and a concrete owner route.
+- `UNKNOWN-DEPLOYMENT-TARGET`: if the deployment URL/target is unknown, route as `target needed` and assign a concrete owner for discovery.
+- `PREVIEW-PUSH-LADDER`: preview proof needing deployment must route `sf-ship` -> `sf-prod` before browser/auth/manual owner routing.
+- `LOCAL-COMPLETE-PROD-PENDING`: local implementation complete while production/provider proof is pending must avoid closure/ship-ready language and name next owner.
+- `SAFETY-REDACTION`: proof routes touching private payloads/logs/tokens/cookies/secrets must stay redacted and avoid requesting sensitive values.
+
 ## Validation Proportionality
 
 Not every change needs heavy checks.

@@ -23,6 +23,7 @@ Result semantics:
 - Use `implemented` when the planned code, docs, and tests within `sf-start` scope were completed, even if runtime, manual, hosted, production, Sentry, or device-only verification remains pending.
 - Use `partial` only when implementation work itself is incomplete, intentionally deferred, or some planned files or tasks could not be finished.
 - Missing manual QA, hosted preview proof, Sentry dashboard evidence, production verification, or device-only validation must not downgrade `sf-start` from `implemented` to `partial`; record those gaps for `sf-verify` instead.
+- When local implementation is complete but those gaps stay pending, avoid closure/ship-ready wording and route the next owner or proof step explicitly (`sf-ship -> sf-prod`, `sf-prod -> sf-browser/sf-auth-debug/sf-test`) with required target/environment.
 - If local checks fail because the implementation is broken, use `partial` or `blocked` depending on whether the fix can continue. If checks fail because the environment cannot run a proof surface outside `sf-start` scope, keep `implemented` and route to `sf-verify partial`.
 
 ## Report Modes

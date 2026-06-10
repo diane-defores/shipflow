@@ -21,9 +21,14 @@ Before verifying a spec-first chantier, load `$SHIPFLOW_ROOT/skills/references/c
 
 Verification semantics:
 
-- `partial`: implementation appears complete but required proof is missing (manual QA, preview/prod proof, browser/auth proof, Sentry pointer, device-only validation).
+- `partial`: implementation appears complete but required proof is missing (manual QA, preview/prod proof, browser/auth proof, Sentry pointer, device-only validation). Each missing proof gap must be routed to a concrete next owner (`sf-prod`, `sf-browser`, `sf-auth-debug`, `sf-test`, `sf-ship`, etc.) with proof type, scenario, and target/environment when knowable; if target/environment is unknown, route to `sf-prod` with explicit target discovery task and do not claim readiness.
 - Never downgrade completed `sf-start` implementation semantics only because verification evidence is incomplete.
 - Keep the distinction explicit: `sf-start: implemented` vs `sf-verify: partial`.
+
+When `sf-verify` partial is caused by hosted/deployed/provider proof, the next routing contract is mandatory:
+
+- `sf-verify`: `partial` -> `sf-ship -> sf-prod` if deploy is needed -> proof owner (`sf-browser`, `sf-auth-debug`, or `sf-test`) with target and scenario.
+
 
 Before judging implementation quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Verification must fail or report partial when the work merely takes the fastest/easiest path and leaves correctness, security, performance, maintainability, durability, excellence, or proof quality below the accepted contract.
 When reporting any failure state, load `$SHIPFLOW_ROOT/skills/references/actionable-failure-contract.md` and include the concrete owner route for each evidence-backed issue.

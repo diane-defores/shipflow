@@ -1,13 +1,13 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: "ShipFlow"
 created: "2026-06-10"
 created_at: "2026-06-10 07:55:46 UTC"
 updated: "2026-06-10"
-updated_at: "2026-06-10 07:59:02 UTC"
-status: draft
+updated_at: "2026-06-10 08:14:35 UTC"
+status: ready
 source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: "hosted-proof-follow-through-routing"
@@ -49,7 +49,7 @@ evidence:
   - "sf-conversation-audit 2026-06-10: sf-start used closure-sounding wording despite explicit hosted proof gaps."
   - "User correction 2026-06-10: recent reporting-concision work should be treated as mostly resolved; this chantier should not focus on report brevity."
   - "Existing spec-driven-development-discipline.md requires proof paths, but the audited partial hosted proof did not become an executable next route."
-next_step: "/sf-ready shipflow-hosted-proof-follow-through-and-user-report-discipline"
+next_step: "none"
 ---
 
 ## Title
@@ -58,7 +58,7 @@ ShipFlow Hosted Proof Follow-Through Routing
 
 ## Status
 
-Draft from `sf-conversation-audit` on 2026-06-10, then narrowed after user correction: do not re-open the general reporting-concision chantier. This spec focuses on routing missing hosted proof after `partial` or blocked verification.
+Ready from `sf-ready` on 2026-06-10 after user correction: do not re-open the general reporting-concision chantier. This spec focuses on routing missing hosted proof after `partial` or blocked verification.
 
 ## User Story
 
@@ -216,35 +216,35 @@ Implementation should be bounded: update shared references and only the skill ac
 
 ## Implementation Tasks
 
-- [ ] Task 1: Add hosted-proof follow-through rule to the proof discipline
+- [x] Task 1: Add hosted-proof follow-through rule to the proof discipline
   - File: `skills/references/spec-driven-development-discipline.md`
   - Action: State that missing hosted/deployed/provider proof must include proof type, owner skill, scenario, and target/environment when knowable.
   - User story link: Gives the operator one actionable proof route instead of missing-evidence nouns.
   - Depends on: none.
   - Validate with: `rg -n "owner skill|scenario|target|environment|proof gap" skills/references/spec-driven-development-discipline.md`
 
-- [ ] Task 2: Update `sf-verify` partial-proof contract
+- [x] Task 2: Update `sf-verify` partial-proof contract
   - File: `skills/sf-verify/SKILL.md`
   - Action: Require `partial` findings to route each missing required proof to `sf-prod`, `sf-browser`, `sf-auth-debug`, `sf-test`, `sf-ship`, or another concrete owner.
   - User story link: Makes partial verification operational.
   - Depends on: Task 1.
   - Validate with: `rg -n "partial|sf-prod|sf-browser|sf-auth-debug|sf-test|sf-ship|owner route" skills/sf-verify/SKILL.md`
 
-- [ ] Task 3: Update `sf-build` post-implementation proof routing
+- [x] Task 3: Update `sf-build` post-implementation proof routing
   - File: `skills/sf-build/SKILL.md`
   - Action: Ensure local-complete but hosted-proof-pending work routes to the next proof owner instead of stopping at generic "rerun verification" language.
   - User story link: Prevents the operator from inferring the next skill.
   - Depends on: Task 1.
   - Validate with: `rg -n "hosted proof|sf-prod|sf-browser|sf-auth-debug|sf-test|sf-ship|proof owner" skills/sf-build/SKILL.md`
 
-- [ ] Task 4: Add closure-language guard where needed
+- [x] Task 4: Add closure-language guard where needed
   - File: `skills/sf-start/SKILL.md`
   - Action: If not already covered by references, prevent closure-sounding wording when implementation is local-only and hosted/provider/manual proof remains pending.
   - User story link: Avoids giving the operator a false sense of lifecycle completion.
   - Depends on: Task 1.
   - Validate with: `rg -n "local implementation|hosted proof|production proof|pending|partial" skills/sf-start/SKILL.md`
 
-- [ ] Task 5: Add pressure scenarios or examples
+- [x] Task 5: Add pressure scenarios or examples
   - File: `skills/references/spec-driven-development-discipline.md` or a suitable proof-routing reference/fixture.
   - Action: Add `VERIFY-PARTIAL-HOSTED`, `UNKNOWN-DEPLOYMENT-TARGET`, `PREVIEW-PUSH-LADDER`, `LOCAL-COMPLETE-PROD-PENDING`, and `SAFETY-REDACTION` scenarios.
   - User story link: Makes future audits and verification deterministic.
@@ -263,12 +263,12 @@ Implementation should be bounded: update shared references and only the skill ac
 
 ## Acceptance Criteria
 
-- [ ] AC 1: Given `sf-verify` returns `partial` for missing hosted proof, when the report is produced, then it names the proof owner, scenario, and target/environment when knowable.
-- [ ] AC 2: Given hosted proof requires a new deploy, when the report is produced, then it routes through `sf-ship -> sf-prod` before browser/auth/manual proof.
-- [ ] AC 3: Given the deployment URL or preview target is unknown, when proof is missing, then the report routes to `sf-prod` or asks for the target URL instead of naming a downstream browser/manual test prematurely.
-- [ ] AC 4: Given local implementation is complete but production/provider proof is pending, when `sf-start` or `sf-build` reports, then it avoids closed/ship-ready wording and routes to the next proof owner.
-- [ ] AC 5: Given the proof route would expose secrets or private logs, when reporting, then the skill blocks or redacts and routes to a safe proof path.
-- [ ] AC 6: Given changed skill contracts, when validation runs, then metadata lint, skill budget audit, and skill sync checks pass.
+- [x] AC 1: Given `sf-verify` returns `partial` for missing hosted proof, when the report is produced, then it names the proof owner, scenario, and target/environment when knowable.
+- [x] AC 2: Given hosted proof requires a new deploy, when the report is produced, then it routes through `sf-ship -> sf-prod` before browser/auth/manual proof.
+- [x] AC 3: Given the deployment URL or preview target is unknown, when proof is missing, then the report routes to `sf-prod` or asks for the target URL instead of naming a downstream browser/manual test prematurely.
+- [x] AC 4: Given local implementation is complete but production/provider proof is pending, when `sf-start` or `sf-build` reports, then it avoids closed/ship-ready wording and routes to the next proof owner.
+- [x] AC 5: Given the proof route would expose secrets or private logs, when reporting, then the skill blocks or redacts and routes to a safe proof path.
+- [x] AC 6: Given changed skill contracts, when validation runs, then metadata lint, skill budget audit, and skill sync checks pass.
 
 ## Test Strategy
 
@@ -309,6 +309,9 @@ None.
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
+| 2026-06-10 08:14:35 UTC | sf-ship | GPT-5 Codex | Closed tracker/changelog/spec bookkeeping for the hosted-proof routing chantier and prepared the bounded ship scope. | shipped | none |
+| 2026-06-10 08:09:36 UTC | sf-build | GPT-5 Codex + gpt-5.3-codex-spark subagents | Implemented the hosted-proof follow-through routing contract through bounded Spark subagents, then verified acceptance criteria and validation commands. | implemented | `/sf-end shipflow-hosted-proof-follow-through-and-user-report-discipline` |
+| 2026-06-10 08:06:14 UTC | sf-ready | GPT-5 Codex | Reviewed the hosted-proof follow-through routing spec for readiness: behavior contract, scope, target files, pressure scenarios, security/redaction, and validation plan are sufficiently explicit. | ready | `/sf-start shipflow-hosted-proof-follow-through-and-user-report-discipline` |
 | 2026-06-10 07:59:02 UTC | sf-spec | GPT-5 Codex | Narrowed the draft after user correction: reporting concision is already mostly covered, so the chantier now focuses on hosted-proof follow-through routing after partial verification. | draft | `/sf-ready shipflow-hosted-proof-follow-through-and-user-report-discipline` |
 | 2026-06-10 07:55:46 UTC | sf-spec | GPT-5 Codex | Created draft spec from the conversation-audit chantier potential about hosted-proof follow-through, user-report concision, and concrete proof-owner routing. | draft | `/sf-ready shipflow-hosted-proof-follow-through-and-user-report-discipline` |
 
@@ -317,8 +320,8 @@ None.
 | Step | Status | Evidence | Next |
 |------|--------|----------|------|
 | sf-spec | complete | Draft spec created from the 2026-06-10 conversation audit, then narrowed to hosted-proof follow-through routing after user correction. | Run `/sf-ready shipflow-hosted-proof-follow-through-and-user-report-discipline`. |
-| sf-ready | pending | Not yet evaluated. | Run readiness review. |
-| sf-start | pending | Not started. | Wait for ready verdict. |
-| sf-verify | pending | Not started. | Wait for implementation. |
-| sf-end | pending | Not closed. | Wait for verification. |
-| sf-ship | pending | Not shipped. | Wait for closure and explicit ship scope. |
+| sf-ready | complete | Ready review passed on 2026-06-10: behavior contract, tasks, scenarios, validation, and security/redaction gates are explicit. | Run implementation. |
+| sf-start | complete | Implemented by bounded Spark worker: hosted-proof rule, pressure scenarios, `sf-verify`, `sf-build`, and `sf-start` routing hooks. | Verify. |
+| sf-verify | complete | Independent Spark verification passed: rg checks, metadata lint, skill budget audit, and skill sync check all passed. | Close chantier bookkeeping. |
+| sf-end | complete | Full-close bookkeeping updated: `shipflow_data/workflow/TASKS.md`, `CHANGELOG.md`, and spec trace. | Ship bounded scope. |
+| sf-ship | complete | Bounded ship scope prepared for commit/push: hosted-proof routing skill contracts plus chantier bookkeeping. | None. |

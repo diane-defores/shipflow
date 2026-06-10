@@ -201,13 +201,15 @@ Do not treat browser/manual proof as one generic bucket.
 - Use `sf-prod` for hosted deployment/runtime truth, logs, serverless/edge behavior, or live deployment health.
 - Use `sf-test` for durable manual QA scripts, retests, and structured test logs.
 
+For local-complete implementation where hosted/prod/provider proof remains pending, route immediately to the concrete owner skill with an explicit proof scenario and target/environment.
+
 ## Implementation and Verification Orchestration
 
 When the contract is ready:
 
 1. Run `sf-start` to implement.
 2. Run `sf-verify` against user story and behavior contract.
-3. Route to browser/manual proof skills when required.
+3. If hosted/deployed/provider proof is missing, route to owner proof skill(s) with scenario + target/environment instead of closing with a generic verification-repeat step.
 4. If verification fails, reroute to correction (direct fix or spec update) before closure.
 
 Do not close or ship half-coded outcomes.
@@ -264,10 +266,15 @@ When closure mode is ambiguous, ask the `sf-end` closure decision question
 instead of stopping silently. When shipping intent or staging scope is ambiguous,
 ask the `sf-ship` intent/scope question instead of silently handing the user a
 manual command. When manual, browser, auth, or hosted proof is required, route to
-`sf-browser`, `sf-auth-debug`, `sf-prod`, or `sf-test` and explain what evidence
-is still missing. In `vercel-preview-push` or preview-required `hybrid` mode,
-ship first, then route immediately to `sf-prod`; do not ask for manual preview
-testing before the matching deployment exists.
+`sf-browser`, `sf-auth-debug`, `sf-prod`, or `sf-test` with explicit scenario
+and target/environment and explain what evidence is still missing. In
+`vercel-preview-push` or preview-required `hybrid` mode, ship first, then route
+immediately to `sf-prod` (then `sf-browser`/`sf-auth-debug`/`sf-test` if needed);
+do not ask for manual preview testing before the matching deployment exists.
+
+When implementation is complete but production/provider proof remains pending, avoid
+closure/ship-ready language and route the next owner as `sf-ship -> sf-prod` when
+deployment is required, then to the downstream proof owner with scenario/target.
 
 ## Stop Conditions
 
