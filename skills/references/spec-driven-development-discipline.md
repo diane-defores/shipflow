@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-18"
-updated: "2026-06-09"
+updated: "2026-06-10"
 status: active
 source_skill: sf-start
 scope: spec-driven-development-discipline
@@ -24,10 +24,10 @@ linked_systems:
   - skills/references/decision-quality-contract.md
 depends_on:
   - artifact: "skills/references/decision-quality-contract.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: active
   - artifact: "skills/references/master-workflow-lifecycle.md"
-    artifact_version: "1.3.0"
+    artifact_version: "1.4.0"
     required_status: active
   - artifact: "skills/references/skill-instruction-layering.md"
     artifact_version: "0.1.0"
@@ -38,6 +38,7 @@ evidence:
   - "User decision 2026-05-24: proof paths must support high-quality code and durable decisions, not just the quickest passing change."
   - "User decision 2026-05-24: for Flutter mobile work, prove common UI first with widget tests and Flutter Web smoke before asking for APK/device testing."
   - "Conversation audit 2026-06-09: UI and product behavior claims need an explicit proof path or proof gap before being reported as fixed."
+  - "User decision 2026-06-10: proof-first instructions should preserve strong evidence requirements without verbose examples in the decision path."
 next_review: "2026-06-18"
 next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
@@ -64,7 +65,7 @@ Before implementation, name the proof path that fits the changed surface:
 
 The proof path is part of the execution contract. It does not replace the source-of-truth work item.
 
-A user-visible behavior claim is not complete until the report names the proof path that was run, or names the proof gap that remains. This applies especially to UI controls, keyboard/gesture behavior, playback behavior, auth/session behavior, and other flows where a green static check can leave the actual user story unproven.
+A user-visible behavior claim is not complete until the report names the proof run or the remaining proof gap. This matters most for UI, input, playback, auth/session, and other flows where static checks can miss the user story.
 
 ## Stack-Agnostic Test and Proof Contract
 

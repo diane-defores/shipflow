@@ -1,14 +1,14 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "1.0.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-05-16"
-status: draft
-source_skill: sf-start
+updated: "2026-06-10"
+status: active
+source_skill: sf-skill-build
 scope: skill-instruction-layering
-owner: unknown
+owner: Diane
 confidence: high
 risk_level: high
 security_impact: yes
@@ -21,31 +21,34 @@ linked_systems:
   - shipflow_data/technical/skill-runtime-and-lifecycle.md
 depends_on:
   - artifact: "skills/references/skill-context-budget.md"
-    artifact_version: "0.2.0"
+    artifact_version: "0.3.1"
     required_status: "draft"
   - artifact: "skills/references/chantier-tracking.md"
     artifact_version: "0.5.0"
     required_status: "draft"
   - artifact: "skills/references/reporting-contract.md"
-    artifact_version: "1.2.0"
+    artifact_version: "1.4.0"
     required_status: "active"
 supersedes: []
 evidence:
   - "Spec compact-shipflow-skill-instructions.md requested layered compaction for pilot skills."
   - "Repeated top-level doctrine across long skills was identified as instruction dilution risk."
-next_review: "2026-06-16"
-next_step: "/sf-verify Compact ShipFlow Skill Instructions"
+  - "User decision 2026-06-10: keep SKILL.md contracts short and move detailed playbooks, examples, matrices, and edge cases to references."
+next_review: "2026-06-24"
+next_step: "/sf-verify skill instruction layering"
 ---
 
 # Skill Instruction Layering
 
 ## Purpose
 
-Define the progressive-disclosure contract for ShipFlow skills so compaction reduces repetition without removing operational guardrails.
+Define where ShipFlow skill instructions belong so skill bodies stay compact without losing operational guardrails.
 
 ## Top-Level `SKILL.md` Contract
 
-Each `SKILL.md` must keep a compact activation surface that is independently understandable after required references are loaded.
+`SKILL.md` is the activation contract: keep it short, directive, and decision-oriented. Put detailed playbooks, examples, checklists, matrices, and edge cases in references.
+
+Each `SKILL.md` must stay independently understandable after required references are loaded.
 
 Required local sections:
 
@@ -57,7 +60,7 @@ Required local sections:
 6. Local stop conditions and validation commands.
 7. Explicit list of required references and when each one must be loaded.
 
-The top-level skill body must prioritize first-screen clarity over exhaustive examples.
+The top-level skill body must prioritize first-screen clarity over exhaustive examples or narrative rationale.
 
 ## What Must Stay Local
 
@@ -68,6 +71,7 @@ Keep these elements in `SKILL.md` even when a reference exists:
 - Result semantics or verdict semantics that downstream lifecycle skills depend on.
 - Routing choices that decide which reference to load.
 - Any section labels mechanically checked by downstream workflows.
+- The minimum reference-loading map needed to know which detail file applies.
 
 Never remove `Trace category`, `Process role`, chantier routing visibility, canonical-paths loading, reporting-contract loading, redaction/security gates, or documentation-update gates just to reduce lines.
 
@@ -94,8 +98,19 @@ Use `$SHIPFLOW_ROOT/skills/<skill>/references/*.md` for long, skill-specific det
 - extended examples
 - migration checklists
 - large report templates
+- edge-case catalogs and troubleshooting branches
 
 Local references should be split by purpose. Avoid creating one new mega-reference.
+
+## Compaction Rule
+
+When a local instruction grows past activation, route it by type:
+
+| Keep in `SKILL.md` | Move to references |
+| --- | --- |
+| Trigger, mission, scope, required loaders, stop conditions, validation commands, report mode, and local non-negotiables | Examples, rationale, mode playbooks, scoring tables, provider matrices, migration steps, troubleshooting trees, and long templates |
+
+If moving detail would make the activation contract ambiguous, keep the stricter local sentence and move only the supporting detail.
 
 ## Exception Policy For Long Skills
 

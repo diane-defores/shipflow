@@ -40,6 +40,10 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 Default to `report=user`: concise, findings-first when verification fails, compact chantier block.
 Use `report=agent` for handoff, blocked runs, or explicit verbose request.
 
+## Mission
+
+Verify ship readiness against the user story, implementation completeness, correctness, coherence, dependencies, proof quality, and risk.
+
 ## Context
 
 - Current directory: !`pwd`

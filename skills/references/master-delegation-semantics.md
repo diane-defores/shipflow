@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-24"
+updated: "2026-06-10"
 status: active
 source_skill: sf-build
 scope: master-delegation-semantics
@@ -30,7 +30,7 @@ linked_systems:
   - README.md
 depends_on:
   - artifact: "skills/references/decision-quality-contract.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: active
 supersedes: []
 evidence:
@@ -41,6 +41,8 @@ evidence:
   - "User decision 2026-05-06: sf-design joins the master/orchestrator topology set."
   - "User decision 2026-05-14: an `agents` argument should explicitly validate delegated sequential execution; parallelism remains spec-gated through `Execution Batches`, not an `agents parallel` shortcut."
   - "User decision 2026-05-24: delegated execution must optimize for quality, security, performance, and durability before speed or cost."
+  - "User decision 2026-06-10: favor subagents broadly to keep the main conversation clean; sequential is the normal default, while parallel remains read-only or spec/batch-gated."
+  - "User decision 2026-06-10: using a master skill counts as consent for bounded sequential subagents, and `spark`, `codex`, `sous-agent`/`subagent`, and `mini` arguments request model-specific subagent delegation."
 next_review: "2026-06-04"
 next_step: "/sf-verify master delegation semantics"
 ---
@@ -54,6 +56,10 @@ This reference defines how ShipFlow master and orchestrator skills choose execut
 The goal is a clean master conversation: the master skill owns decisions, routing, status, integration, and final reporting, while bounded execution contexts handle routine file work, validation, closure preparation, and ship preparation when the runtime supports them.
 
 Load `skills/references/decision-quality-contract.md` before choosing topology, model fallbacks, or delegated mission boundaries. Delegation is an execution-quality and excellence tool, not a shortcut around professional engineering standards.
+
+Favor subagents by default to keep the main conversation clean and outcome-focused.
+Use sequential subagents by default; use parallel subagents only for read-only work or ready `Execution Batches`.
+Do not narrate routine subagent orchestration; report outcomes, evidence, blockers, and degraded execution only.
 
 ## Applies To
 
@@ -75,11 +81,13 @@ Delegation to one sequential subagent is not parallelism. It is the normal way a
 
 When subagents are available, the default topology for master-skill work that reads files, edits files, validates, prepares closure, or prepares ship is `delegated sequential`.
 
+Invoking a master or orchestrator skill is consent for bounded sequential subagents. Ask again only when the next action changes material scope, risk, data, permissions, destructive behavior, staging, closure, ship semantics, or parallel execution.
+
 Use one bounded subagent at a time. A small scope may use a mini-contract, but small scope is not an exception to delegation. If file work or validation is needed and subagents are available, the master should delegate sequentially instead of doing routine diffs or patches in the master conversation.
 
-When a master skill accepts an `agents` argument, treat it as a strict delegated sequential request for the current work item. If file work, validation, closure preparation, or ship preparation proceeds without a bounded subagent, the run must stop or report `degraded: subagents unavailable/not applied` with the reason. `agents` never means parallel execution.
+When a master skill accepts an `agents`, `subagent`, `sous-agent`, `spark`, `codex`, or `mini` argument, treat it as a strict delegated sequential request for the current work item. If file work, validation, closure preparation, or ship preparation proceeds without a bounded subagent, the run must stop or report `degraded: subagents unavailable/not applied` with the reason. These arguments never mean parallel execution.
 
-For Codex/OpenAI subagents, the default bounded mission model is the smallest quality-equivalent model for the mission. Use `gpt-5.4-mini` only for low-risk bounded work where it can meet the quality and excellence bar. Escalate when the mission profile requires it: `gpt-5.3-codex-spark` for quality-equivalent micro-code or targeted UI/local edits, `gpt-5.3-codex` for long implementation or multi-file code work, and `gpt-5.5` for transverse audits, risky arbitration, architecture/product decisions, or business-risk synthesis.
+For Codex/OpenAI subagents, the default bounded mission model is the smallest quality-equivalent model for the mission. Use `gpt-5.4-mini` only for low-risk bounded work where it can meet the quality and excellence bar. Use `gpt-5.3-codex-spark` when `spark` is requested and the mission is quality-equivalent on Spark, including concise summaries, text-only handoffs, micro-code, targeted UI/local edits, or other low-risk bounded work while Spark credits/availability permit. Use the `codex` implementation profile when `codex` is requested or the mission is long implementation, multi-file code work, refactor, hard debugging, or terminal-heavy execution; resolve that profile through `skills/sf-model/references/model-routing.md` rather than pinning it to a deprecated slug. Use `gpt-5.5` with the appropriate `low`, `medium`, `high`, or `xhigh` reasoning for non-implementation work when ambiguity, cross-system reasoning, governance, architecture, audits, product arbitration, security, business risk, or high error cost require it.
 
 Each delegated mission must include:
 
@@ -97,7 +105,7 @@ Each delegated mission must include:
 - report mode
 - stop conditions
 
-Do not claim that a subagent used a model override unless the runtime actually accepted that override. If the orchestration layer cannot set the subagent model, keep the recommendation in the mission text and report the run as degraded when that matters for risk, cost, or evidence.
+Claim a subagent model override only when the runtime accepted it. If overrides are unavailable, keep the model as recommended-only and report degradation only when it affects risk, cost, or evidence.
 
 ## Short Confirmations
 
@@ -107,7 +115,7 @@ After a master skill has diagnosed the current chantier, proposed a bounded acti
 continue the current chantier in delegated sequential mode with one bounded subagent
 ```
 
-Do not reinterpret short confirmations as consent for parallel subagents. Do not ask a second delegation-consent question unless the next action changes scope, risk, data, permissions, destructive behavior, staging, closure, or ship semantics.
+Short confirmations never authorize parallel subagents. Ask again only when scope, risk, data, permissions, destructive behavior, staging, closure, or ship semantics change.
 
 ## Parallelism
 

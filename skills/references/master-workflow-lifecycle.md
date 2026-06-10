@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-24"
+updated: "2026-06-10"
 status: active
 source_skill: sf-skill-build
 scope: master-workflow-lifecycle
@@ -32,13 +32,13 @@ linked_systems:
   - README.md
 depends_on:
   - artifact: "skills/references/decision-quality-contract.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: active
   - artifact: "skills/references/master-delegation-semantics.md"
-    artifact_version: "1.3.0"
+    artifact_version: "1.4.0"
     required_status: active
   - artifact: "skills/references/question-contract.md"
-    artifact_version: "1.1.0"
+    artifact_version: "1.3.0"
     required_status: active
   - artifact: "skills/references/chantier-tracking.md"
     artifact_version: "0.4.4"
@@ -51,6 +51,8 @@ evidence:
   - "User decision 2026-05-06: sf-design joins the master lifecycle set."
   - "User decision 2026-05-08: sf-bug is a lifecycle executor through owner skills and bounded subagents, not a simple next-command router."
   - "User decision 2026-05-24: ShipFlow optimizes first for performance, security, excellence, durability, and professional best practices; speed and convenience are secondary tie-breakers only."
+  - "User decision 2026-06-10: favor subagents broadly to keep the main conversation clean; sequential is the normal default, while parallel remains read-only or spec/batch-gated."
+  - "User decision 2026-06-10: master-skill invocation is consent for bounded sequential subagents; `spark`, `codex`, `sous-agent`/`subagent`, and `mini` arguments request model-specific subagent delegation."
 next_review: "2026-06-04"
 next_step: "/sf-verify master workflow lifecycle reference"
 ---
@@ -145,7 +147,7 @@ Do not start implementation from a draft, ambiguous, or contradictory work item.
 
 Before expensive or risky execution, choose the model profile using `sf-model` guidance or the relevant local model-routing reference, bounded by `skills/references/decision-quality-contract.md`.
 
-Before file work, validation, closure preparation, or ship preparation, choose topology using `skills/references/master-delegation-semantics.md`.
+Before file work, validation, closure preparation, or ship preparation, choose topology using `skills/references/master-delegation-semantics.md`. Favor subagents by default: sequential normally, parallel only for read-only fan-out or ready `Execution Batches`. Master-skill invocation authorizes bounded sequential subagents; ask again only for material scope, risk, permissions, data, destructive behavior, closure, staging, ship, or parallel execution changes.
 
 Record the choice when it affects trust, cost, evidence, or handoff.
 
@@ -156,7 +158,14 @@ The model decision has two runtime layers:
 - Main conversation: recommend or route to the best model, but do not claim the active thread can always switch its own model mid-run.
 - Delegated subagents: when the runtime supports model overrides, include model, reasoning or alias behavior, fallback, and application status in each bounded mission.
 
-Use `gpt-5.5` by default in Codex/OpenAI for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. Use `gpt-5.3-codex` for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution. For small bounded subagent missions, default to `gpt-5.4-mini`; use `gpt-5.3-codex-spark` for micro-code or targeted UI/local edits.
+Use `gpt-5.5` by default in Codex/OpenAI for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work, with `low`, `medium`, `high`, or `xhigh` reasoning calibrated to task risk. Use the `codex` implementation profile from `skills/sf-model/references/model-routing.md` for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution. For small bounded subagent missions, default to `gpt-5.4-mini` only when quality-equivalent; use `gpt-5.3-codex-spark` for Spark-eligible summary, text-only, micro-code, targeted UI/local edit, or other low-risk bounded missions when Spark credits/availability permit.
+
+Model-topology arguments are delegated subagent requests:
+
+- `spark` / `--spark`: Spark subagent, `low` by default, only when quality-equivalent.
+- `codex` / `--codex`: Codex implementation-profile subagent.
+- `sous-agent`, `subagent`, `agents`: subagent using the current model/profile unless a stronger alias is supplied.
+- `mini` / `--mini`: `gpt-5.4-mini` subagent for low-risk bounded work.
 
 ### 5. Execution Through Owners
 

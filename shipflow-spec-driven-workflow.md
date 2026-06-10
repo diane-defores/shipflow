@@ -102,13 +102,14 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `shipflow <instruction>` | Routes pure conversational answers directly; routes real work to the right master or specialist skill; asks one numbered question when ambiguous. |
-| Non-trivial product, code, site, or docs work | `sf-build [agents|no-agents] <story, bug, or goal>` | Plain task text is the story; use `agents` to make delegated sequential execution a validation gate; for user-facing features, `sf-build` evaluates whether to suggest or route `/sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
+| Non-trivial product, code, site, or docs work | `sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; use `spark`, `codex`, `mini`, `agents`, or `sous-agent` to make model-specific delegated sequential execution a validation gate; for user-facing features, `sf-build` evaluates whether to suggest or route `/sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
 | User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup order, why/how guidance, recoverable states, docs impact, and proof routing. |
 | Local-to-cloud data sync | `sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
+| Product entitlements and access gates | `sf-product-entitlements <project or feature>` | Entitlement ownership, provider events, activation codes, product-local mirrors, backend authorization gates, support flows, and sync handoffs. |
 | Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 | Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
 | Design system creation | `sf-design-from-scratch [target or mode]` | Build a complete professional token system from an existing UI; use `tokens-only` or `with-playground`. |
@@ -144,7 +145,7 @@ Optional model-selection entrypoint before execution:
 sf-model -> choose model / reasoning / fallbacks before sf-start
 ```
 
-`sf-model` chooses a model policy, not a guaranteed mid-thread runtime switch. Model choice follows `skills/references/decision-quality-contract.md`: speed, cost, and latency are fallbacks only when quality-equivalent for the risk. In Codex/OpenAI, use `gpt-5.4-mini` for small bounded low-risk missions, `gpt-5.3-codex-spark` for micro-code or targeted UI/local edits when it does not replace needed reasoning, `gpt-5.3-codex` for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution, and `gpt-5.5` for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. When subagents are available and the runtime accepts model overrides, each bounded mission should state the model, reasoning effort, quality-equivalent fallback, and whether the override is applied or only recommended.
+`sf-model` chooses a model policy, not a guaranteed mid-thread runtime switch. Model choice follows `skills/references/decision-quality-contract.md`: speed, cost, and latency are fallbacks only when quality-equivalent for the risk. In Codex/OpenAI, use `gpt-5.4-mini` for small bounded low-risk missions, `gpt-5.3-codex-spark` for Spark-eligible summaries, text-only handoffs, micro-code, or targeted UI/local edits when it does not replace needed reasoning and credits/availability permit, the `codex` implementation profile for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution, and `gpt-5.5` with calibrated `low`/`medium`/`high`/`xhigh` reasoning for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. When subagents are available and the runtime accepts model overrides, each bounded mission should state the model, reasoning effort, quality-equivalent fallback, and whether the override is applied or only recommended.
 
 Primary non-technical router entrypoint:
 
@@ -152,7 +153,7 @@ Primary non-technical router entrypoint:
 shipflow <instruction> -> direct answer or direct handoff to selected skill
 ```
 
-`shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `sf-build`; maintenance to `sf-maintain`; bug-loop work to `sf-bug`; release, deploy, or production proof to `sf-deploy`; content work to `sf-content`; onboarding and activation work to `sf-onboarding`; local-to-cloud sync contract work to `sf-local-cloud-sync`; skill maintenance to `sf-skill-build`; and obvious specialist audits to `sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
+`shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `sf-build`; maintenance to `sf-maintain`; bug-loop work to `sf-bug`; release, deploy, or production proof to `sf-deploy`; content work to `sf-content`; onboarding and activation work to `sf-onboarding`; local-to-cloud sync contract work to `sf-local-cloud-sync`; product entitlement and access-gate work to `sf-product-entitlements`; skill maintenance to `sf-skill-build`; and obvious specialist audits to `sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
 
 The router uses direct main-thread handoff to the selected skill. It does not run a master skill inside a subagent, and it does not duplicate the selected skill's lifecycle. Once selected, each master owns its own delegated sequential execution and proof gates.
 
@@ -162,7 +163,7 @@ Direct build entrypoint for non-trivial work:
 sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
 ```
 
-`sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: delegated sequential is the default for file and validation work, `agents` makes that delegation a strict validation gate, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`. After user-facing feature work, `sf-build` evaluates whether a `/sf-onboarding` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
+`sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: invoking a master skill authorizes bounded delegated sequential execution for the current chantier, `spark`, `codex`, `sous-agent`/`subagent`/`agents`, and `mini` request model-specific subagent delegation, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`. After user-facing feature work, `sf-build` evaluates whether a `/sf-onboarding` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
 
 Recommended release entrypoint after implementation:
 
@@ -211,6 +212,14 @@ sf-local-cloud-sync -> data inventory -> account association -> promotion/hydrat
 ```
 
 `sf-local-cloud-sync` is the data-trust skill for local-first products. It does not replace `sf-build` or `sf-onboarding`; it defines the sync contract that prevents silent local data loss, cross-account replay, vague merge policy, unsafe secret sync, and unproven reinstall-recovery promises.
+
+Recommended product-entitlement contract entrypoint:
+
+```text
+sf-product-entitlements -> identity/provider/access separation -> ledger ownership -> backend gates/support -> sync/auth handoff or sf-build
+```
+
+`sf-product-entitlements` is the access-trust skill for product gates. It does not replace `sf-local-cloud-sync` or `sf-auth-debug`; it defines the entitlement ownership and authorization contract before product data, premium capabilities, provider events, activation codes, refunds, revokes, support flows, or entitlement-gated sync move into implementation.
 
 For expert manual control, the default non-trivial flow remains:
 

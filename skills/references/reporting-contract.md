@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-03"
-updated: "2026-06-09"
+updated: "2026-06-10"
 status: active
 source_skill: sf-build
 scope: skill-reporting-contract
@@ -31,6 +31,7 @@ evidence:
   - "User decision 2026-05-04: user reports should organize ship status as outcome, evidence, then limits, match the user's active language, and allow a few sober status emojis."
   - "User decision 2026-05-05: final reports need a visible Paris-time verdict timestamp as a shared reporting brick, not duplicated per skill."
   - "User decision 2026-06-09: human-launched skills may keep technical evidence internally or in report=agent, but their default report must stay short, readable, and useful to a non-developer operator."
+  - "User decision 2026-06-10: routine subagent orchestration should not be narrated to the user; results matter more than process."
 next_review: "2026-06-04"
 next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
@@ -81,6 +82,8 @@ Default user-mode reports must fit this shape unless the skill has a stricter lo
 4. one real next step only when the user must act
 
 Do not include full checklists, validation matrices, phase ledgers, file inventories, raw command output, or lifecycle internals in successful user-mode reports. Keep that detail in the durable artifact or use `report=agent`.
+
+Do not report routine subagent orchestration in user mode. Mention it only when availability, degraded execution, model override status, cost/risk, or topology changes trust or the user's next decision.
 
 Use a few status emojis when they improve scanning, not as decoration. Good
 defaults are `🚀` for pushed/shipped, `✅` for passed checks, `⚠️` for limits or

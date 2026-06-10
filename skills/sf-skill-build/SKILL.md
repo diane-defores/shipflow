@@ -37,6 +37,8 @@ Use the shared skeleton for intake, skill-maintenance work item resolution, read
 
 Before editing skill contracts or shared references, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Skill maintenance must preserve professional quality, excellence, security, performance, durability, and discoverability before optimizing for speed or convenience.
 
+Before editing or compacting a skill body, load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md`. `SKILL.md` is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in shared or skill-local references.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -136,6 +138,7 @@ Before modifying a skill contract, load `$SHIPFLOW_ROOT/skills/references/spec-d
 - For skill contract changes, validate with pressure scenarios or mechanical checks before claiming completion.
 - Keep internal contracts in English.
 - Keep `description` to one concise sentence and keep arguments in `argument-hint`.
+- Keep `SKILL.md` short, directive, and decision-oriented; move non-activation detail to references.
 - Encode explicit lifecycle gates, stop conditions, and validation commands.
 - For any skill that produces a final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md` and support concise `report=user` by default plus explicit `report=agent`/`handoff` detail mode. Do not duplicate shared reporting bricks such as the verdict timestamp inside individual skills.
 - Do not duplicate full internals of `sf-spec`, `sf-skills-refresh`, `sf-verify`, `sf-docs`, `sf-help`, or `sf-ship`; orchestrate them.

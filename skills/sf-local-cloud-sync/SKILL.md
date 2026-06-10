@@ -64,7 +64,7 @@ local data inventory
   -> spec/build/verify routing when implementation is needed
 ```
 
-This skill complements `sf-build` and `sf-onboarding`. `sf-build` owns implementation lifecycle. `sf-onboarding` owns broad activation and setup comprehension. `sf-local-cloud-sync` owns the data-trust contract: no local wipe on account creation, no cross-account replay, no vague merge policy, no hidden secret sync, and no reinstall-recovery promise without durable proof.
+This skill complements `sf-build`, `sf-onboarding`, and `sf-product-entitlements`. `sf-build` owns implementation lifecycle. `sf-onboarding` owns broad activation and setup comprehension. `sf-product-entitlements` owns product access/entitlement preconditions. `sf-local-cloud-sync` owns the data-trust contract: no local wipe on account creation, no cross-account replay, no vague merge policy, no hidden secret sync, and no reinstall-recovery promise without durable proof.
 
 ## Mode Detection
 
@@ -75,6 +75,7 @@ Parse `$ARGUMENTS` as a sync target.
 | Read-only sync architecture advice for a clear project | Produce a Sync Contract in the final report |
 | Audit an existing local/cloud sync plan or implementation | Review against the doctrine and report findings plus chantier potential |
 | Non-trivial implementation across data stores, auth, cloud, UI, docs, or tests | Route to `sf-spec -> sf-ready -> sf-build/sf-start` |
+| Access control, entitlement gating, or entitlement precondition ambiguity | Route access decisions to `sf-product-entitlements` before final sync contract |
 | Existing ready spec already owns the sync work | Attach to that spec and support the active lifecycle |
 | User activation, tutorials, or setup copy dominates | Route or hand off to `sf-onboarding` after the sync contract is clear |
 | Provider behavior, SDK semantics, encryption, or offline storage rules are current/external | Run the Documentation Freshness Gate before design decisions |
@@ -128,6 +129,7 @@ Every sync recommendation or implementation contract must cover:
 - **Secrets excluded by default**: secrets, tokens, credentials, private keys, and recovery material are not synced unless a future spec explicitly designs secure secret sync.
 - **Visible states**: sync and settings-save state should show loading, saved/synced, pending, retrying, blocked, and error states when relevant.
 - **Proof before promise**: reinstall/relogin recovery must not be claimed until durable remote write and hydration are proven.
+- **Access gating**: unresolved or inactive entitlement state is not a sync boundary pass; treat as denied until entitlement ownership is explicit.
 
 ## Security And Privacy Rules
 
@@ -188,6 +190,7 @@ Stop and report `blocked` or route to the owner skill when:
 - secrets or sensitive content would be synced by convenience
 - cross-account replay could occur
 - provider behavior matters and fresh official docs are missing
+- sync scope that depends on entitlements is blocked until access preconditions are explicit
 - UI claims saved/synced before durable local and remote success criteria are met
 - reinstall/relogin recovery is promised without full write/hydrate proof
 - unrelated dirty files would enter implementation or ship scope

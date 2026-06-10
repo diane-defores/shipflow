@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-06-10"
 created_at: "2026-06-10 11:09:38 UTC"
 updated: "2026-06-10"
-updated_at: "2026-06-10 11:20:13 UTC"
+updated_at: "2026-06-10 11:35:28 UTC"
 status: ready
 source_skill: sf-spec
 source_model: GPT-5 Codex
@@ -51,7 +51,7 @@ evidence:
   - "skills/sf-local-cloud-sync/SKILL.md already owns local-to-cloud data promotion, merge, conflict, tombstone, offline queue, UX state, and data-trust proof."
   - "skills/sf-auth-debug/SKILL.md owns auth/OAuth/session debugging, not entitlement lifecycle design."
   - "ReplayGlowz suite-auth migration and backend guard work exposed the recurring need for a skill that prevents duplicate ledgers, stale mirrors, and product-data authorization gaps."
-next_step: "/sf-skill-build shipflow_data/workflow/specs/sf-product-entitlements-skill.md"
+next_step: "/sf-ship \"Add sf-product-entitlements skill\""
 ---
 
 # Title
@@ -314,12 +314,14 @@ None blocking. The public skill page should be included if the current ShipFlow 
 |----------|-------|-------|--------|--------|-----------|
 | 2026-06-10 11:09:38 UTC | sf-spec | GPT-5 Codex | Created skill-maintenance spec for `sf-product-entitlements` and its `sf-local-cloud-sync` entitlement handoff from the exploration report and operator naming decision. | draft | `/sf-ready shipflow_data/workflow/specs/sf-product-entitlements-skill.md` |
 | 2026-06-10 11:20:13 UTC | sf-ready | GPT-5 Codex | Reviewed structure, user-story alignment, security scope, adjacent-skill handoffs, test contract, documentation coherence, and adversarial bypass cases. | ready | `/sf-skill-build shipflow_data/workflow/specs/sf-product-entitlements-skill.md` |
+| 2026-06-10 11:28:23 UTC | sf-skill-build | GPT-5 Codex | Created `skills/sf-product-entitlements/SKILL.md`, added entitlement precondition handoff in `sf-local-cloud-sync`, added public skill content, repaired runtime links, and aligned help/docs/content discovery surfaces. | implemented | `/sf-verify sf-product-entitlements-skill.md` |
+| 2026-06-10 11:35:28 UTC | sf-verify | GPT-5 Codex | Verified scenario-first contract coverage, runtime links, skill-code index, skill budget, metadata, public site build, docs/content coherence, language doctrine, and diff hygiene. | verified | `/sf-ship "Add sf-product-entitlements skill"` |
 
 ## Current Chantier Flow
 
 - sf-spec: ready
 - sf-ready: ready
-- sf-start: pending
-- sf-verify: pending
+- sf-start: implemented via sf-skill-build
+- sf-verify: verified
 - sf-end: pending
 - sf-ship: pending

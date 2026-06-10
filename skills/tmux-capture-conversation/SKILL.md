@@ -68,7 +68,10 @@ The confirmation prompt must include the inferred title and full destination. If
    - Ask whether it is OK.
    - Accept a replacement destination path as the answer and use that path instead.
 4. Run the bundled script after confirmation.
-5. Report the final Markdown path, mention the tmux target that was captured, and relay the printed Neovim command so the user can open the file from its parent directory.
+
+## Final Report
+
+Report the final Markdown path, mention the tmux target that was captured, and relay the printed Neovim command so the user can open the file from its parent directory.
 
 ## Script
 

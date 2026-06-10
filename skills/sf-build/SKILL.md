@@ -1,7 +1,7 @@
 ---
 name: sf-build
 description: "Orchestrate story-to-ship product implementation."
-argument-hint: "[agents|no-agents] <story, bug, or goal>"
+argument-hint: "[spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>"
 ---
 
 ## Canonical Paths
@@ -27,9 +27,9 @@ Default to `report=user`: concise, outcome-first, and using the compact chantier
 
 Before choosing execution topology, load `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`.
 
-This skill follows that reference; local nuances below only narrow or route it. `sf-build` owns end-to-end lifecycle orchestration through `sf-end` and `sf-ship`, and keeps `main-only`, `delegated sequential`, and `spec-gated parallel` as its explicit reportable execution modes.
+This skill follows that reference. `sf-build` owns end-to-end lifecycle orchestration through `sf-end` and `sf-ship`, with `main-only`, `delegated sequential`, and `spec-gated parallel` as reportable execution modes.
 
-The argument token `agents` is an explicit runtime delegation request. It forces `delegated sequential` for file work, validation, closure preparation, and ship preparation. If `agents` is present but no subagent is launched for work that touches files or runs validation, stop before mutation or report an explicit degraded state with the reason and user acceptance. Do not invent an `agents parallel` mode: simultaneous agents are controlled only by ready spec `Execution Batches`.
+`spark`, `codex`, `mini`, `agents`, `subagent`, and `sous-agent` force delegated sequential execution; if unavailable for file work or validation, stop/report degraded. They never mean parallel execution.
 
 ## Master Workflow Lifecycle
 
@@ -65,7 +65,7 @@ The objective is not fewer safeguards or the shortest path. The objective is an 
 
 ### Argument flags
 
-- `agents`: force bounded delegated sequential execution for any file work, validation, closure preparation, or ship preparation. If runtime subagents are unavailable or not applied, ask before degrading or stop with `degraded: subagents unavailable/not applied`.
+- `spark`, `codex`, `mini`, `agents`, `subagent`, or `sous-agent`: force delegated sequential model-topology.
 - `no-agents` or `main-only`: force main-thread execution. Use only when the user intentionally accepts less isolation between orchestration and execution.
 - `report=agent`, `handoff`, `verbose`, and `full-report` affect report detail only. They do not request execution agents.
 
@@ -77,7 +77,7 @@ Use only for pure conversational output where no file read/edit/validation/ship 
 
 `/sf-build <story>` or `$sf-build <story>` is explicit bounded delegation consent for the current chantier. Use the shared master delegation semantics for subagent defaults, short approvals, mini-contracts, degradation, and reporting.
 
-`/sf-build agents <story>` or `$sf-build agents <story>` is stricter than default consent: any file-changing or validation-bearing implementation path must either launch one bounded subagent at a time or stop/report degraded execution. The final report should include `Agents: used`, `Agents: not needed`, or `Agents: degraded: <reason>` when `agents` was requested or when topology affects trust.
+Any subagent argument is stricter than default consent: file-changing or validation-bearing paths must launch one bounded subagent at a time or stop/report degraded execution. Report `Agents: used`, `Agents: not needed`, or `Agents: degraded: <reason>` when topology affects trust.
 
 ### `spec-gated parallel`
 
@@ -284,7 +284,7 @@ Stop and ask or reroute when:
 - readiness does not pass
 - requested parallelism has no safe `Execution Batches`
 - file ownership overlaps in a parallel plan
-- `agents` was requested but runtime subagents are unavailable or no bounded subagent was launched for file work, validation, closure preparation, or ship preparation
+- subagent mode was requested but unavailable or not applied for file work, validation, closure, or ship preparation
 - governance corpus state is missing/stale and unresolved
 - a change would alter existing behavior without explicit decision
 - permission/data/security semantics remain ambiguous

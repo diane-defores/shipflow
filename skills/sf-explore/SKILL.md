@@ -16,6 +16,10 @@ Process role: `helper`.
 This skill does not write to chantier specs. If invoked inside a spec-first flow, do not modify `Skill Run History`; include `Chantier: non applicable` or `Chantier: non trace` in the final report when useful, with the reason and the next lifecycle command if one is obvious.
 
 
+## Mission
+
+Explore ideas, problems, requirements, risks, and options before coding, without implementing product changes.
+
 Mode réflexion. Penser en profondeur. Visualiser librement. Suivre la conversation où elle mène.
 
 **IMPORTANT : Le mode explore est fait pour réfléchir, pas pour implémenter.** Tu peux lire des fichiers, chercher dans le code, investiguer le codebase, mais tu ne dois JAMAIS écrire du code ni implémenter de fonctionnalités. Si l'utilisateur te demande d'implémenter, rappelle-lui de sortir du mode explore d'abord (ex: `/sf-start`). Tu PEUX créer des documents de réflexion (comparaisons, notes) si demandé, et tu peux aussi produire un `exploration_report` selon le seuil ci-dessous — c'est capturer la pensée, pas implémenter.

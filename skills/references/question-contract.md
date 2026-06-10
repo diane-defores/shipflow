@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-05"
-updated: "2026-06-09"
+updated: "2026-06-10"
 status: active
 source_skill: sf-skill-build
 scope: skill-question-contract
@@ -23,7 +23,7 @@ linked_systems:
   - shipflow-spec-driven-workflow.md
 depends_on:
   - artifact: "skills/references/decision-quality-contract.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.1.0"
     required_status: active
 supersedes: []
 evidence:
@@ -31,6 +31,7 @@ evidence:
   - "User clarification 2026-05-04: a default is acceptable only when it is compatible with the current technical/product/editorial context and current best practices."
   - "User decision 2026-05-24: recommended defaults must optimize for performance, security, excellence, durability, and high-quality code before speed or convenience."
   - "User decision 2026-06-09: skills should be almost fully autonomous and professionally effective, asking fewer questions and only in plain decision language when the operator truly owns the decision."
+  - "User decision 2026-06-10: autonomy and question rules should be compact enough to preserve the signal."
 next_review: "2026-06-05"
 next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
@@ -41,7 +42,7 @@ next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
 
 This reference defines how ShipFlow skills ask user-facing questions.
 
-The goal is to keep questions rare, useful, and easy to answer by number. A question is a decision brief: it tells the operator why the decision matters, which answer ShipFlow recommends by default when a responsible default exists, and why that recommendation fits the current context.
+Questions should be rare, useful, and answerable by number. A question is a decision brief: why the decision matters, the recommended default when one exists, and the practical options.
 
 Load `skills/references/decision-quality-contract.md` before recommending a default. The recommended answer must preserve ShipFlow's quality and excellence bar; do not recommend the fastest, cheapest, or easiest route unless it is also quality-equivalent, excellence-equivalent, and professionally correct.
 
@@ -70,20 +71,13 @@ Ask only when the answer changes at least one material outcome:
 - staging, deployment, release, closure, ship scope, or bug risk
 - validation strategy when the wrong proof would create false confidence
 
-Proceed without asking only when the default answer is all of these:
-
-- clear from the request and known project context
-- low-risk and reversible
-- inside the existing contract, spec, or accepted scope
-- compatible with the current technical, product, and editorial context
-- aligned with current best practices for the affected stack, provider, security posture, and user workflow
-- verifiable with the evidence available in the current run
+Proceed without asking when the safe default is clear, in scope, low-risk or reversible, compatible with project context and current best practices, and verifiable in the current run.
 
 If the obvious or requested option conflicts with project context, public/editorial claims, architecture, security posture, or current best practices, do not silently choose it. Either choose the safe compatible alternative when it is obvious and inside scope, or ask a numbered decision question that explains the conflict.
 
 Never ask broad "anything else?" questions.
 
-Autonomy is the default. A skill must not ask the operator to choose between internal workflow mechanics, file-level implementation details, checklist preferences, or obvious reversible defaults when the skill can choose a professional path itself. State the chosen assumption briefly in the final report only if it affects trust or future review.
+Autonomy is the default. Do not ask the operator to choose internal workflow mechanics, file-level implementation details, checklist preferences, or obvious reversible defaults. Report assumptions only when they affect trust or future review.
 
 Ask at most one user-facing decision question at a time unless several decisions are inseparable. If multiple low-level gaps exist, collapse them into the smallest operator-owned decision or choose safe defaults and continue.
 

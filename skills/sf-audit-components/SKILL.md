@@ -313,7 +313,7 @@ Single-component audit. Apply phases 3 (god component check), 5 (abstraction qua
 
 ## GLOBAL MODE
 
-Same pattern as other audit skills: discover local project corpora, let user select projects via **AskUserQuestion**, launch parallel agents, compile cross-project report.
+Same pattern as other audit skills: discover local project corpora, let the user select projects with the runtime's structured question tool when available, use available parallel agent/tooling when present, and compile the cross-project report. If those capabilities are unavailable, ask a concise plain-text question and run the selected projects sequentially.
 
 ---
 

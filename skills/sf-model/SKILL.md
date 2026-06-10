@@ -107,10 +107,11 @@ Règles de décision Codex/OpenAI :
 - préférer `gpt-5.5` pour les tâches ambiguës, transverses, tool-heavy, ou à fort coût d'erreur
 - préférer `gpt-5.5` pour audits transverses, priorisation automatique de tâches, migrations prompts/docs, synthèse de risques business, et mises à jour cohérentes de trackers/fiches projets
 - préférer `gpt-5.4` quand il faut rester premium mais avec un meilleur contrôle du coût
-- préférer `gpt-5.3-codex` par défaut pour les implémentations longues, multi-fichiers, les refactors, le debugging difficile et les longues boucles agentiques terminal/code
+- préférer le profil `codex` défini dans `references/model-routing.md` pour les implémentations longues, multi-fichiers, les refactors, le debugging difficile et les longues boucles agentiques terminal/code; ne pas figer ce profil sur un slug déprécié
 - préférer `gpt-5.4-mini` pour les boucles rapides, le triage, les petites modifs, l'exploration et les tâches répétitives uniquement quand le coût d'erreur est bas et que la qualité attendue reste suffisante
-- utiliser `gpt-5.4-mini` comme défaut des petites missions bornées en sous-agent seulement si la mission est low-risk et quality-equivalent; sinon escalader vers `gpt-5.3-codex-spark`, `gpt-5.3-codex`, ou `gpt-5.5`
+- utiliser `gpt-5.4-mini` comme défaut des petites missions bornées en sous-agent seulement si la mission est low-risk et quality-equivalent; sinon escalader vers `gpt-5.3-codex-spark`, le profil `codex`, ou `gpt-5.5`
 - préférer `gpt-5.3-codex-spark` pour les itérations UI ciblées ou les modifications locales quand il reste quality-equivalent; ne pas l'utiliser pour éviter une analyse nécessaire
+- interpréter les arguments `spark`, `codex`, `sous-agent`/`subagent`/`agents`, et `mini` comme des demandes de sous-agent avec le modèle/profil correspondant selon `references/model-routing.md`, pas comme de simples paramètres textuels
 - éviter `gpt-5.2` par défaut sauf besoin explicite de continuité ou préférence empirique utilisateur
 
 Règles de décision Claude Code :

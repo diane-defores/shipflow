@@ -37,6 +37,10 @@ When attached to a unique chantier spec, append a `Chantier potentiel` block if 
   - `sf-docs`: if source-surface rules changed
   - `sf-verify`: for evidence/process review
 
+## Mission
+
+Audit stored ShipFlow conversation transcripts into private governance reports with evidence-backed findings, safety holds, and owner routes for improvement work.
+
 ## Modes
 
 - `default` (implicit): audit most recent file under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/` with fallback to `latest`.

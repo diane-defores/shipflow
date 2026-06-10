@@ -46,9 +46,11 @@ argument_modes:
 limits:
   - "It does not replace sf-build for implementation lifecycle"
   - "It does not replace sf-onboarding for broad activation and setup guidance"
+  - "It routes product-access and entitlement-ledger decisions to sf-product-entitlements before final sync contracts"
   - "It blocks unsafe defaults such as silent local wipe, cross-account replay, vague latest-wins, and convenience secret sync"
   - "It does not promise provider-specific sync behavior without fresh official docs and proof"
 related_skills:
+  - "sf-product-entitlements"
   - "sf-build"
   - "sf-onboarding"
   - "sf-docs"

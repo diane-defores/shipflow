@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-24"
-updated: "2026-05-24"
+updated: "2026-06-10"
 status: active
 source_skill: sf-skill-build
 scope: decision-quality-contract
@@ -24,15 +24,16 @@ linked_systems:
   - README.md
 depends_on:
   - artifact: "skills/references/question-contract.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.3.0"
     required_status: active
   - artifact: "skills/references/spec-driven-development-discipline.md"
-    artifact_version: "1.0.0"
+    artifact_version: "1.4.0"
     required_status: active
 supersedes: []
 evidence:
   - "User directive 2026-05-24: ShipFlow must optimize for maximum performance, maximum security, excellence, and durability, not convenience, speed, or the shortest path."
   - "User directive 2026-05-24: the operator wants high-quality code, modern effective tools, and current best practices; time pressure is not the primary constraint."
+  - "User decision 2026-06-10: central skill rules should stay compact enough for agents to retain the decision signal."
 next_review: "2026-06-24"
 next_step: "/sf-verify decision-quality-contract"
 ---
@@ -43,9 +44,7 @@ next_step: "/sf-verify decision-quality-contract"
 
 This reference defines the default decision quality bar for ShipFlow agents, skills, model routing, implementation, fixes, audits, documentation, and verification.
 
-Excellence is an instruction-level requirement, not a public slogan. It means the agent should choose the strongest professional path that fits the product contract, risk, and evidence needs, even when a faster acceptable-looking shortcut exists.
-
-ShipFlow must not optimize for ease, speed, token economy, local convenience, or the shortest path for their own sake. Those factors are secondary tie-breakers only after the primary quality bar is satisfied.
+Excellence is an instruction-level requirement: choose the strongest professional path that fits the product contract, risk, and evidence needs. Ease, speed, token economy, and local convenience are tie-breakers only after the quality bar is satisfied.
 
 ## Primary Decision Metrics
 
@@ -61,16 +60,7 @@ Speed, cost, latency, token use, local simplicity, or implementation convenience
 
 ## Forbidden Optimizations
 
-Do not choose an option because it is:
-
-- the quickest patch
-- the easiest local edit
-- the cheapest model or tool
-- the shortest path through the workflow
-- enough to make a check green while leaving the product contract weak
-- adequate but below the professional excellence bar for the risk
-- less ambitious than the best professional implementation
-- convenient for the agent but worse for durability, security, or operator trust
+Do not choose the quickest, easiest, cheapest, or shortest path when it weakens the product contract, security, durability, maintainability, proof quality, or operator trust.
 
 Do not use phrases such as "minimal change to make it work" when they imply shortcut quality. Use "bounded professional implementation" or "smallest safe path" only with the definition below.
 

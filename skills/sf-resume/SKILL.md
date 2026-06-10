@@ -19,6 +19,10 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 
 # SF Résume
 
+## Mission
+
+Give the user a fast closure snapshot of the current conversation only.
+
 ## Goal
 
 Give the user a fast closure snapshot of the current conversation only.

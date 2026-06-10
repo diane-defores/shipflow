@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.16.0"
+artifact_version: "1.17.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-26"
+updated: "2026-06-10"
 status: reviewed
 source_skill: sf-start
 scope: skill-runtime-and-lifecycle
@@ -80,8 +80,8 @@ evidence:
   - "sf-bug clarified as a bug lifecycle executor through owner skills and bounded subagents, not a simple next-command router."
   - "Shared Sentry observability reference added for runtime evidence, release/environment correlation, redaction, and performance overhead checks."
   - "Sentry reference clarified: skills never have direct Sentry dashboard access; bounded local PM2 logs and redacted Doppler presence/scope checks are acceptable supporting evidence when no Sentry pointer is supplied or visible."
-  - "Model routing clarified: GPT-5.5 is the Codex/OpenAI premium default for ambiguous, cross-project, governance-heavy, transverse audit, prioritization, prompt/docs migration, and business-risk synthesis work; GPT-5.3-Codex is the default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; main-thread model changes are recommendations unless the runtime actually applies an override."
-  - "Subagent model defaults clarified: GPT-5.4-mini is the default for small bounded Codex/OpenAI subagent missions, GPT-5.3-Codex-Spark for micro-code or targeted UI/local edits, GPT-5.3-Codex for long implementation, and GPT-5.5 for high-risk transverse reasoning."
+  - "Model routing clarified: GPT-5.5 fits ambiguous, cross-project, governance-heavy, transverse audit, prioritization, prompt/docs migration, and business-risk synthesis work; the `codex` implementation profile fits long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; main-thread model changes are recommendations unless the runtime actually applies an override."
+  - "Subagent model defaults clarified: GPT-5.4-mini is the default for small bounded Codex/OpenAI subagent missions, GPT-5.3-Codex-Spark for Spark-eligible low-risk work, the `codex` implementation profile for long implementation, and GPT-5.5 for high-risk transverse reasoning."
   - "`sf-build agents` clarified as a strict delegated sequential validation gate; parallel agents remain controlled only by ready spec `Execution Batches`."
   - "Layered skill-instruction contract added for progressive SKILL.md compaction with pilot extraction to skill-local references."
   - "Spec-driven development discipline added: spec-first remains the outer lifecycle contract, while execution skills choose proof paths such as test-first, regression-first, scenario-first, evidence-first, or exception-with-proof."
@@ -89,6 +89,8 @@ evidence:
   - "Skill taxonomy description audit applied compact routing descriptions across 61 skills while preserving names, trace categories, process roles, and runtime visibility."
   - "sf-verify aligned stale dependency metadata during the skill taxonomy description verification."
   - "Decision quality contract added: ShipFlow optimizes for correctness, security, performance, maintainability, durability, professional best practices, and proof quality before speed, cost, or convenience."
+  - "Skill instruction layering refreshed: SKILL.md is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in references."
+  - "Codex model wording refreshed to use the current `codex` implementation profile instead of pinning long implementations to a deprecated slug."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit skills"
 ---
@@ -107,11 +109,11 @@ ShipFlow skill instructions follow layered progressive disclosure:
 - shared doctrine in `skills/references/*.md`
 - heavy skill-specific checklists/playbooks in `skills/<skill>/references/*.md`
 
-Use `skills/references/skill-instruction-layering.md` as the canonical placement contract. Use `skills/references/skill-context-budget.md` for body-size and discovery-budget thresholds.
+Use `skills/references/skill-instruction-layering.md` as the canonical placement contract. `SKILL.md` is the activation contract: keep trigger, mission, scope, required loaders, stop conditions, validation commands, report mode, and local non-negotiables there; move detailed playbooks, examples, matrices, troubleshooting branches, and edge cases to references. Use `skills/references/skill-context-budget.md` for body-size and discovery-budget thresholds.
 
 Compaction must preserve operational guardrails: canonical path resolution, chantier trace semantics, reporting contract loading, security/redaction rules, and documentation-update gates.
 
-Phase 2 compaction uses conservative skill-local workflow references for large legacy skill bodies when the detailed behavior is too broad to safely split in the same pass. Future refreshes may split those workflow references further by mode, but the top-level `SKILL.md` remains the activation contract and must name the exact references to load.
+Future compaction should split large workflow references by mode when useful, but the top-level `SKILL.md` must remain the activation contract and name the exact references to load.
 
 ## Skill Discovery Taxonomy
 
@@ -122,7 +124,7 @@ Numeric skill codes are a discovery layer, not skill identities. The canonical l
 Current family boundaries:
 
 - Lifecycle/master: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, `sf-ship`, `sf-build`, `sf-deploy`, `sf-maintain`, `sf-design`, `sf-content`, `sf-onboarding`, `sf-skill-build`.
-- Data trust/source: `sf-local-cloud-sync`.
+- Data trust/source: `sf-local-cloud-sync`, `sf-product-entitlements`.
 - Audit/source: `sf-audit*`, `sf-deps`, `sf-perf`.
 - Bug/proof/source: `sf-bug`, `sf-fix`, `sf-test`, `sf-browser`, `sf-auth-debug`, `sf-prod`, `sf-check`, `sf-migrate`.
 - Content/docs/support: `sf-docs`, `sf-redact`, `sf-enrich`, `sf-repurpose`, `sf-changelog`, `sf-scaffold`, `sf-skills-refresh`, `sf-init`.
@@ -138,7 +140,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | --- | --- | --- |
 | `skills/*/SKILL.md` | Executable skill contracts | Keep descriptions compact; route heavy detail to references |
 | `skills/references/*.md` | Shared doctrine and provider-specific references | Resolve from `${SHIPFLOW_ROOT:-$HOME/shipflow}` |
-| `skills/references/skill-instruction-layering.md` | Canonical layering contract for what stays local vs moved to references | Load before compacting long skills |
+| `skills/references/skill-instruction-layering.md` | Canonical layering contract for `SKILL.md` activation rules vs shared or skill-local references | Load before editing or compacting skills |
 | `skills/<skill>/references/*.md` | Skill-local heavy checklists, mode playbooks, and report matrices | Keep top-level SKILL focused on activation and gates |
 | `skills/references/master-delegation-semantics.md` | Shared master/orchestrator delegation, subagent, short-approval, and parallelism doctrine | Load before master skills choose execution topology |
 | `skills/references/master-workflow-lifecycle.md` | Shared master/orchestrator lifecycle skeleton and work item model | Load before master skills resolve intake, readiness, model/topology, validation, verification, closure, or ship/deploy routes |
@@ -149,6 +151,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
 | `skills/references/sentry-observability.md` | Shared Sentry runtime evidence, PM2/Doppler fallback evidence, release/environment correlation, redaction, and performance-overhead doctrine | Load when runtime behavior, crashes, 5xx, event IDs, deploy confidence, auth/payment/data failures, jobs, webhooks, verification, audits, or perf checks depend on observability |
 | `skills/references/product-entitlements-playbook.md` | Shared product-access doctrine for identity vs entitlement separation, Lifetime Deal/direct/partner code redemption, provider events, revokes/refunds, support runbooks, and smoke proof | Load when projects touch product access, billing providers, activation codes, paid plans, premium gates, quotas, refunds, revocations, or entitlement-backed data access |
+| `skills/sf-product-entitlements/SKILL.md` | Product entitlement skill for access ownership, provider-event handling, backend authorization gates, support flow framing, product-local mirrors, and sync/auth handoffs | Load when projects need an entitlement contract, duplicate-ledger review, product-access guard design, provider/manual grant routing, or entitlement-gated sync preconditions |
 | `skills/sf-local-cloud-sync/references/*.md` | Local-to-cloud sync doctrine, UX/security checklist, and Flutter implementation checklist | Load when projects touch local data promotion, cloud hydration, merge/conflict policy, sync state UX, sensitive-data exclusions, or reinstall recovery |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
@@ -177,6 +180,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 - `sf-design`: master design lifecycle (`design intent -> specialist audit/token/playground route -> spec-first implementation when needed -> checks/browser proof -> sf-verify -> sf-ship`).
 - `sf-onboarding`: user activation lifecycle (`first-success path -> setup order -> states/recovery -> docs impact -> proof or sf-build`).
 - `sf-local-cloud-sync`: local-to-cloud data sync contract (`data inventory -> account association -> promotion/hydration -> merge/conflict/tombstones -> sync UX/security -> proof or sf-build`).
+- `sf-product-entitlements`: product access lifecycle contract (`identity/provider/access separation -> ledger ownership -> backend gates/support -> sync/auth handoff or sf-build`).
 - `sf-design-from-scratch`: design-system creation skill for extracting an existing UI into a complete professional token system before playground or token audit work.
 - `sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`sf-explore when needed -> sf-spec -> SKILL.md -> runtime skill links -> sf-skills-refresh -> budget audit -> sf-verify -> sf-docs/help -> sf-ship`).
 - `tools/shipflow_sync_skills.sh --check|--repair`: reusable local helper for current-user Claude/Codex skill visibility and install-time selected-user linking.
@@ -227,7 +231,7 @@ intake
   -> bounded ship/deploy/release routing
 ```
 
-Model routing is a lifecycle gate, not a promise that the active conversation can switch its own runtime model. Master skills use `skills/sf-model/references/model-routing.md` for the policy and `skills/references/decision-quality-contract.md` for the quality boundary. In Codex/OpenAI, `gpt-5.4-mini` fits small bounded low-risk missions; `gpt-5.3-codex-spark` fits micro-code or targeted UI/local edits when it does not replace needed reasoning; `gpt-5.3-codex` is the default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` is the premium default for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work. Delegated subagent missions should include model, reasoning or alias behavior, quality-equivalent fallback, and model application status when the runtime supports or rejects overrides.
+Model routing is a lifecycle gate, not a promise that the active conversation can switch its own runtime model. Master skills use `skills/sf-model/references/model-routing.md` for the policy and `skills/references/decision-quality-contract.md` for the quality boundary. In Codex/OpenAI, `gpt-5.4-mini` fits small bounded low-risk missions; `gpt-5.3-codex-spark` fits Spark-eligible summaries, text-only handoffs, micro-code, targeted UI/local edits, or other low-risk bounded work when it does not replace needed reasoning; the `codex` implementation profile fits long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` fits ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work with calibrated reasoning effort. Delegated subagent missions should include model, reasoning or alias behavior, quality-equivalent fallback, and model application status when the runtime supports or rejects overrides.
 
 Release confidence flow:
 
@@ -291,11 +295,11 @@ sf-content
 - The Reader diagnoses docs impact; the executor or integrator applies docs updates.
 - The Technical Reader diagnoses code-docs impact; the Editorial Reader diagnoses public-content and claim impact.
 - Shared files are sequential by default.
-- Master/orchestrator skills load `skills/references/master-delegation-semantics.md` before choosing execution topology. Delegated sequential subagents are the default for file, validation, closure, and ship work when subagents are available; `sf-build agents` makes that delegated sequential path a strict validation gate; parallelism means simultaneous subagents and requires ready `Execution Batches`.
+- Master/orchestrator skills load `skills/references/master-delegation-semantics.md` before choosing execution topology. Favor subagents by default to keep the main conversation clean; use sequential subagents normally, and use parallel subagents only for read-only fan-out or ready `Execution Batches`.
 - Master/orchestrator skills load `skills/references/master-workflow-lifecycle.md` before resolving lifecycle flow. The shared skeleton is intake, work item resolution, readiness, model/topology routing, owner-skill execution, validation/evidence, verification, post-verify closure, and bounded ship/deploy/release routing.
 - Skills load `skills/references/decision-quality-contract.md` before quality-sensitive routing, model/fallback choice, implementation, fix, verification, or recommendations. The shortest path is acceptable only when it is also the complete professional path for the risk.
 - Skills should load `skills/references/question-contract.md` before user-facing questions. They ask only when the answer changes route, scope, risk, validation, closure, ship posture, public claims, or technical/product/editorial direction; otherwise they proceed by the best-practice default only when it is clear, low-risk, reversible, context-compatible, and verifiable.
-- When long skill bodies are compacted, keep required section labels (`Canonical Paths`, `Trace category`, `Process role`, `Report Modes`) in top-level `SKILL.md`; move only heavy detail to references.
+- When skill bodies are edited or compacted, treat top-level `SKILL.md` as the activation contract. Keep required section labels (`Canonical Paths`, `Trace category`, `Process role`, `Report Modes`) and local non-negotiables there; move only supporting detail to references.
 - Bug work uses one Markdown bug file under `bugs/*.md` as the durable source of truth. `BUGS.md`, when present, is an optional compact/generated/triage view and must not override the bug file.
 - Short natural-language confirmations after diagnosis or proposal continue the current chantier in delegated sequential mode by intent rather than exact keyword, not parallel fan-out.
 - Fresh context is preferred for non-trivial spec-first execution when available.

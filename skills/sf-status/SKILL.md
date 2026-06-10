@@ -26,6 +26,9 @@ Default to `report=user`: concise dashboard, attention items, limits, and `Chant
 
 - Load `$SHIPFLOW_ROOT/skills/references/question-contract.md` before asking for dashboard view mode.
 
+## Mission
+
+Report cross-project git status, sync state, and attention items without mutating project governance.
 
 ## Context
 

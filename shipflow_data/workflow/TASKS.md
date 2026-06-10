@@ -94,7 +94,7 @@
 | 🟢 | Ajouter un handoff contenu à `sf-research` et `sf-market-study` quand leurs rapports recommandent des contenus publics, avec sources, claims et route vers `sf-content` | 💤 deferred |
 | 🟢 | Renforcer `sf-audit` master pour charger explicitement les corpus éditorial/technique quand l'audit touche des surfaces publiques, claims ou docs mappées | 💤 deferred |
 | 🟢 | Ajouter une micro-intégration `technical-docs-corpus` à `sf-content`/`sf-repurpose` quand les opportunités ou handoffs touchent des docs techniques internes | 💤 deferred |
-| 🟡 | Cadrer une grille de notation éditoriale réutilisable par les skills contenu, avec critères communs et règles spécifiques par projet depuis le corpus de gouvernance — spec ready, attente preuve sample rubric `sf-verify` | 🔄 in progress |
+| 🟡 | Cadrer une grille de notation éditoriale réutilisable par les skills contenu, avec critères communs et règles spécifiques par projet depuis le corpus de gouvernance — preuve sample rubric ajoutée et `sf-verify` validé | ✅ done |
 | 🟢 | Idée à cadrer : créer une brique partagée de journaux opérationnels append-only (`OPERATIONS_LOG.md` / `DEPENDENCY_LOG.md`) pour tracer les runs importants sans remplacer `specs/`, `bugs/`, `TASKS.md` ni `CHANGELOG.md` | 💤 deferred |
 | 🟢 | Cadrer plus tard le mécanisme de synchronisation `project repo -> master` pour `shipflow_data` (symlink, copie, index généré, ingestion web app ou autre) dans une spec dédiée | 💤 deferred |
 

@@ -91,6 +91,7 @@ A read-only routing scout is allowed only for cheap classification evidence and 
 | Design request, UI/UX work, redesign, design tokens, design playground, accessibility design, component design, visual proof, or token migration | `sf-design` |
 | User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `sf-onboarding` |
 | Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `sf-local-cloud-sync` |
+| Product access, paid plans, premium gates, entitlement ledgers, provider events, activation codes, refunds/revokes, support access flows, or backend access gates | `sf-product-entitlements` |
 | New skill, skill modification, skill runtime visibility, skill public page, skill docs/help coherence | `sf-skill-build` |
 | One obvious audit domain only | relevant `sf-audit-*` or `sf-audit` |
 | One obvious focused lane: checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, final ship | focused owner skill |

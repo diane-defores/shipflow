@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.1"
 project: "shipflow"
 created: "2026-05-25"
-updated: "2026-05-25"
+updated: "2026-06-10"
 status: active
 source_skill: sf-skill-build
 scope: skill-execution-fidelity
@@ -20,10 +20,10 @@ linked_systems:
   - "/home/claude/plugins/shipflow-core/scripts/audit_shipflow_skills.py"
 depends_on:
   - artifact: "skills/references/skill-instruction-layering.md"
-    artifact_version: "0.1.0"
-    required_status: "draft"
+    artifact_version: "1.0.0"
+    required_status: "active"
   - artifact: "skills/references/spec-driven-development-discipline.md"
-    artifact_version: "1.2.0"
+    artifact_version: "1.4.0"
     required_status: "active"
 supersedes: []
 evidence:
@@ -31,6 +31,8 @@ evidence:
   - "shipflow-core pilot audit initially produced 70 noisy signals; after classification it found 0 hard findings, 5 review findings, and 5 style findings."
   - "Operational lesson: discovery budget compliance does not prove execution fidelity."
   - "User escalation 2026-05-26: agents keep asking the operator to continue or retest when browser/prod proof could be run by the agent."
+  - "User decision 2026-06-10: execution contracts should favor compact outcome-focused instructions and avoid routine process narration."
+  - "User decision 2026-06-10: SKILL.md is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in references."
 next_review: "2026-06-25"
 next_step: "/sf-verify shipflow-skill-execution-fidelity-plugin-pilot"
 ---
@@ -46,6 +48,8 @@ This reference complements `skills/references/skill-instruction-layering.md`.
 - `skill-context-budget.md` protects startup discovery.
 - `skill-instruction-layering.md` decides what stays in `SKILL.md` versus references.
 - This file protects execution fidelity after Codex has loaded a skill.
+
+Keep activation-body rules short enough to be obeyed. Put the deep operational material in references unless it is required to choose the next action safely.
 
 Execution fidelity means a fresh agent can quickly answer:
 
@@ -105,11 +109,9 @@ If a required reference is missing, stop and report a ShipFlow installation or c
 
 ## Operator-Last-Resort Rule
 
-The operator should test only as a last resort.
+The operator tests only as a last resort. If the agent has the permission, credentials, environment, and tools to run or route the next proof step, it must do that before asking the operator.
 
-When an agent has the permission, credentials, environment, and tool surface to run the next proof step, it must run or route that proof before asking the operator to continue, retest, or confirm manually.
-
-This applies especially after implementation, deploy, or backend/API fixes:
+Common proof routes:
 
 - If a deployment URL is known and ready, run browser proof through `sf-browser` or auth proof through `sf-auth-debug`.
 - If deployment truth is missing, route to `sf-prod` instead of asking the operator to inspect the deploy.
@@ -117,7 +119,7 @@ This applies especially after implementation, deploy, or backend/API fixes:
 - If a backend deploy makes a frontend action available, retest the frontend action when the action is non-destructive and the target environment is available.
 - If the only remaining check is a local command, typecheck, lint, unit test, or deterministic script, run it instead of telling the operator to run it.
 
-Only ask the operator to test when at least one of these is true:
+Ask the operator to test only when one of these is true:
 
 - the test requires private credentials, MFA, paid access, device access, or a physical environment the agent does not have
 - the action would buy, delete, publish, email, invite, charge money, mutate production data, or otherwise create non-reversible side effects without approval
@@ -132,11 +134,10 @@ You can retest the import now.
 Next step: /sf-browser
 ```
 
-Good:
+Good outcome report:
 
 ```text
-I deployed the backend. I am now retesting the import through `sf-browser`
-against the production URL because the action is available and non-destructive.
+Backend deployed; import retested through `sf-browser` against production.
 ```
 
 Good blocked report:

@@ -141,6 +141,8 @@ Frequency wins over family when a skill belongs to both. For example `sf-content
 | `53` | `sf-audit-design-tokens` | Design/components | `53-sf-audit-design-tokens` |
 | `54` | `sf-audit-components` | Design/components | `54-sf-audit-components` |
 | `60` | `sf-local-cloud-sync` | Data/activation | `60-sf-local-cloud-sync` |
+| `61` | `sf-product-entitlements` | Data/activation | `61-sf-product-entitlements` |
+| `62` | `sf-platform-parity` | Data/activation | `62-sf-platform-parity` |
 | `70` | `sf-explore` | Pilotage/session | `70-sf-explore` |
 | `71` | `sf-backlog` | Pilotage/session | `71-sf-backlog` |
 | `72` | `sf-priorities` | Pilotage/session | `72-sf-priorities` |

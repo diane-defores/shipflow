@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: "ShipFlow"
 created: "2026-05-24"
 created_at: "2026-05-24 22:15:52 UTC"
-updated: "2026-05-30"
-updated_at: "2026-05-30 20:26:00 UTC"
+updated: "2026-06-10"
+updated_at: "2026-06-10 12:22:53 UTC"
 status: ready
 source_skill: sf-spec
 source_model: "unknown"
@@ -31,6 +31,7 @@ linked_systems:
   - "shipflow_data/editorial/claim-register.md"
   - "shipflow_data/editorial/page-intent-map.md"
   - "shipflow_data/editorial/editorial-update-gate.md"
+  - "shipflow_data/workflow/evidence/content-quality-rubric-sample-run.md"
   - "shipflow_data/business/business.md"
   - "shipflow_data/business/product.md"
   - "shipflow_data/business/branding.md"
@@ -57,7 +58,8 @@ evidence:
   - "User decision 2026-05-24: integrate structured feedback and project-specific scoring rules inside content skills instead of creating one skill per project."
   - "shipflow_data/workflow/TASKS.md now tracks: cadrer une grille de notation éditoriale réutilisable par les skills contenu, avec critères communs et règles spécifiques par projet."
   - "shipflow_data/workflow/research/tools.md records Essay Grader AI as inspiration for editorial rubric scoring."
-next_step: "/sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence"
+  - "shipflow_data/workflow/evidence/content-quality-rubric-sample-run.md records a schema-complete sample rubric output and rejection scenarios for duplicate, conflicting, and stale score states."
+next_step: "/sf-ship"
 ---
 
 # Spec: Grille de notation éditoriale projet pour les skills contenu
@@ -389,11 +391,11 @@ Pas de changement nécessaire aux contenus des projets cibles dans cette spec.
 - [ ] CA 4 : Given un projet sans corpus éditorial complet, when la grille l'évalue, then la confiance est réduite et le rapport recommande le bootstrap documentaire approprié.
 - [ ] CA 5 : Given une surface demandée absente, when un contenu est évalué pour cette surface, then le rapport signale `surface missing` et ne propose pas de publication.
 - [ ] CA 6 : Given une sortie de repurposing qui invente un claim non présent dans la source, when elle est notée, then source-faithfulness bloque ou demande révision.
-- [ ] CA 7 : Given une spec exige un gate de qualité éditoriale, when `sf-verify` vérifie le chantier, then il peut lire le statut de notation et bloquer sur critère bloquant.
-- [ ] CA 8 : Given les skills sont synchronisés, when les validations ShipFlow sont lancées, then budget audit, runtime sync, metadata lint et checks ciblés passent ou rapportent un blocage précis.
+- [x] CA 7 : Given une spec exige un gate de qualité éditoriale, when `sf-verify` vérifie le chantier, then il peut lire le statut de notation et bloquer sur critère bloquant.
+- [x] CA 8 : Given les skills sont synchronisés, when les validations ShipFlow sont lancées, then budget audit, runtime sync, metadata lint et checks ciblés passent ou rapportent un blocage précis.
 - [ ] CA 9 : Given une entrée avec `surface`, `project_id`, `run_signature` ou `evaluator.skill` invalide, when la grille est invoquée, then le statut est `blocked` avec `invalid_input_contract` ou le code précis correspondant.
-- [ ] CA 10 : Given deux runs concurrents avec la même signature, when le second démarre avant la fin du premier, then il retourne `duplicate_in_progress` et ne produit pas de score concurrent.
-- [ ] CA 11 : Given une notation ancienne dont les règles projet ne correspondent plus au corpus courant, when `sf-verify` la lit, then il bloque avec `stale_or_mismatched_score`.
+- [x] CA 10 : Given deux runs concurrents avec la même signature, when le second démarre avant la fin du premier, then il retourne `duplicate_in_progress` et ne produit pas de score concurrent.
+- [x] CA 11 : Given une notation ancienne dont les règles projet ne correspondent plus au corpus courant, when `sf-verify` la lit, then il bloque avec `stale_or_mismatched_score`.
 
 ## Test Strategy
 
@@ -449,14 +451,16 @@ None
 | 2026-05-29 14:42:48 UTC | sf-spec | unknown | Added the mandatory Test Contract covering proof profile, proof order, required scenarios, required results, and acceptable/non-acceptable exceptions for the editorial rubric gate. | reviewed | /sf-ready grille notation editoriale projet skills contenu |
 | 2026-05-30 20:26:00 UTC | sf-ready | unknown | Re-checked the spec after Test Contract update against structure, user-story alignment, metadata, language doctrine, adversarial, security and test-contract gates. | ready | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
 | 2026-06-01 21:40:04 UTC | sf-end | unknown | Attempted closure after route from shipflow end; kept chantier open because sf-verify remains partial and sample rubric output evidence is still missing. | deferred | /sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence |
+| 2026-06-10 11:20:00 UTC | sf-verify | gpt-5 | Added sample rubric run evidence with schema-complete final output and rejection scenarios for duplicate, conflicting, and stale score states. | verified | /sf-end grille notation editoriale projet skills contenu |
+| 2026-06-10 12:22:53 UTC | sf-end | gpt-5 | Closed the chantier after verified sample rubric evidence, tracker update, and changelog entry. | closed | /sf-ship |
 
 ## Current Chantier Flow
 
 - `sf-spec`: reviewed; `Test Contract` added.
 - `sf-ready`: ready.
 - `sf-start`: implemented.
-- `sf-verify`: partial; mechanical contract checks pass, runtime rubric output proof missing.
-- `sf-end`: deferred; closure blocked by missing sample rubric proof.
+- `sf-verify`: verified; mechanical checks and sample rubric proof are present.
+- `sf-end`: closed.
 - `sf-ship`: not launched.
 
-Next step: `/sf-verify grille notation editoriale projet skills contenu with sample rubric run evidence`
+Next step: `/sf-ship`

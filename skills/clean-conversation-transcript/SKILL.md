@@ -17,6 +17,10 @@ Process role: `helper`.
 
 This skill edits a submitted transcript for readability and does not write to chantier specs. If invoked inside a spec-first flow, do not modify `Skill Run History`; report `Chantier: non applicable` only when useful.
 
+## Mission
+
+Clean one exported tmux/Codex transcript into a readable Markdown source while preserving user intent, decisions, commands, errors, and outcomes.
+
 ## Goal
 
 Transform one exported Markdown transcript into a readable working source for documentation or content repurposing. Edit the submitted file directly. Do not create a separate report, pack, summary file, or sidecar unless the user explicitly asks for one.
@@ -93,7 +97,10 @@ Use `$sf-repurpose` as inspiration when useful for choosing angles, but do not r
 6. Preserve significant commands and outcomes as short quoted or fenced blocks only when they are needed.
 7. Remove duplicated progress chatter, repeated terminal noise, and excessive assistant narration.
 8. Save the changes in place.
-9. Final answer: only state the file edited and the main transformation. Do not paste a long report.
+
+## Final Report
+
+Only state the file edited and the main transformation. Do not paste a long report.
 
 ## Output Shape Inside The File
 

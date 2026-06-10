@@ -202,11 +202,13 @@ Pick:
 
 Prefer simple Codex/OpenAI defaults:
 - `gpt-5.4-mini` for small, clear, local, low-risk work where it remains quality-equivalent
-- `gpt-5.3-codex` as the default for long agentic implementation, multi-file coding, refactors, hard debugging, and terminal-heavy execution
-- `gpt-5.5` for ambiguity, architecture, cross-project governance, transverse audits, task prioritization, prompt/docs migrations, business-risk synthesis, and high error cost
+- the `codex` implementation profile from `sf-model` for long agentic implementation, multi-file coding, refactors, hard debugging, and terminal-heavy execution; do not pin this profile to a deprecated slug
+- `gpt-5.5` for ambiguity, architecture, cross-project governance, transverse audits, task prioritization, prompt/docs migrations, business-risk synthesis, and high error cost, with `low`, `medium`, `high`, or `xhigh` reasoning calibrated to the task
 - `gpt-5.4` for bounded premium architecture or tradeoffs where `gpt-5.5` is likely overkill
-- `gpt-5.3-codex-spark` for highly local fast-iteration work, especially UI-focused deltas, when it does not replace necessary reasoning
+- `gpt-5.3-codex-spark` for Spark-eligible summaries, text-only handoffs, micro-code, highly local fast-iteration work, and UI-focused deltas when it does not replace necessary reasoning and credits/availability permit
 - `gpt-5.4-mini` as the default for small bounded subagent missions only when the mission risk is low enough for the quality bar
+
+Treat `spark`, `codex`, `sous-agent`/`subagent`/`agents`, and `mini` arguments as delegated subagent requests using the model-topology alias rules from `sf-model/references/model-routing.md`.
 
 Prefer simple Claude Code defaults:
 - `haiku` for tiny triage, classification, and quality-equivalent side work

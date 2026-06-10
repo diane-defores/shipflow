@@ -88,6 +88,7 @@ Choose exactly one route unless the user explicitly asks for a dashboard or comp
 | Design request, UI/UX work, redesign, design tokens, playground, accessibility design, component design, visual proof, or token migration | `sf-design <instruction>` |
 | User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `sf-onboarding <instruction>` |
 | Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `sf-local-cloud-sync <instruction>` |
+| Product access, paid plans, premium gates, entitlement ledgers, provider events, activation codes, refunds/revokes, support access flows, or backend access gates | `sf-product-entitlements <instruction>` |
 | Create, modify, rename, document, refresh, or validate ShipFlow skills | `sf-skill-build <instruction>` |
 | One obvious audit domain only | relevant `sf-audit-* <instruction>` or `sf-audit <instruction>` |
 | One obvious owner lane only, such as checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, or final ship | focused owner skill |

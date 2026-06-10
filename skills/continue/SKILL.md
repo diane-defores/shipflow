@@ -101,9 +101,9 @@ Default model menu for Codex/OpenAI agents:
 
 - `gpt-5.5` with `high` or `xhigh`: very complicated work, high ambiguity, architecture, security, data integrity, or expensive mistakes.
 - `gpt-5.4` with `medium` or `high`: complex product/code reasoning where quality matters but the task is not the hardest class.
-- `gpt-5.3-codex` with `medium` or `high`: long coding agents, multi-file implementation, debugging, refactors, test repair.
+- the `codex` implementation profile from `sf-model` with `medium` or `high`: long coding agents, multi-file implementation, debugging, refactors, test repair; do not pin this profile to a deprecated slug.
 - `gpt-5.4-mini` with `low` or `medium`: small clear tasks, triage, read-only exploration, cheap focused checks.
-- `gpt-5.3-codex-spark` with `low` or `medium`: fast local edits, UI deltas, tight iteration loops.
+- `gpt-5.3-codex-spark` with `low` or `medium`: Spark-eligible summaries, text-only handoffs, fast local edits, UI deltas, and tight iteration loops when credits/availability permit and quality remains equivalent.
 
 If the choice is not obvious, or if the task has high ambiguity, high cost of error, long execution, security/data implications, or unclear provider/runtime constraints, use the `sf-model` skill before spawning: open `$SHIPFLOW_ROOT/skills/sf-model/SKILL.md`, then read `$SHIPFLOW_ROOT/skills/sf-model/references/model-routing.md` if instructed or needed. Otherwise inherit the current model only when that is clearly adequate.
 
