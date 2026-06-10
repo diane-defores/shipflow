@@ -29,6 +29,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-06-10]
 
 ### Changed
+- Hardened ShipFlow conversation audit storage so the `shipflow` tmux capture preset stays under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/` and project-local destinations are blocked.
 - Hardened human-mode ShipFlow skill reports so directly launched skills return concise operator-facing outcomes while keeping detailed evidence in `report=agent`.
 - Strengthened the shared question contract so skills choose safe professional defaults and ask only material numbered questions in plain decision language.
 - Tightened proof-first reporting and `sf-ready` readiness output with proof-gap language, compact user-mode readiness reports, atomic ready metadata transitions, and a pressure-scenario checklist.

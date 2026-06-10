@@ -12,9 +12,11 @@ Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references
 
 Canonical paths for this skill:
 
-- Input transcripts: `shipflow_data/workflow/conversations/`
-- Audit output: `shipflow_data/workflow/conversation-audits/`
-- Optional fixtures: `shipflow_data/workflow/conversations/fixtures/`
+- Input transcripts: `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/`
+- Audit output: `$SHIPFLOW_ROOT/shipflow_data/workflow/conversation-audits/`
+- Optional fixtures: `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/fixtures/`
+
+Conversation audits are ShipFlow-owned governance artifacts even when the audited conversation concerns another project. Do not create project-local `shipflow_data/workflow/conversations/` or `shipflow_data/workflow/conversation-audits/` directories for this skill. An explicit `path <file-or-dir>` may read an external transcript as input evidence, but the generated audit report still belongs under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversation-audits/`.
 
 ## Chantier Tracking
 
@@ -26,7 +28,7 @@ When attached to a unique chantier spec, append a `Chantier potentiel` block if 
 ## Redaction and Safety Gate
 
 - Never publish or ingest private transcripts by default.
-- Keep default output under `shipflow_data/workflow/conversation-audits/` (private governance area).
+- Keep default output under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversation-audits/` (private governance area).
 - Preserve the raw transcript as private evidence, but classify a cleaned conversation view by default.
 - If a transcript contains likely secrets/private URLs/log paths/PII tokens, stop with a safety hold.
 - Never include full secrets in the report; include only redacted excerpts.
@@ -37,10 +39,10 @@ When attached to a unique chantier spec, append a `Chantier potentiel` block if 
 
 ## Modes
 
-- `default` (implicit): audit most recent file under `shipflow_data/workflow/conversations/` with fallback to `latest`.
+- `default` (implicit): audit most recent file under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/` with fallback to `latest`.
 - `latest`: audit the most recent transcript in the canonical conversation directory.
-- `path <file-or-dir>`: audit a specific transcript file or all files in a directory.
-- `export shipflow`: run `tmux-capture-conversation --preset shipflow` first, then audit the new transcript.
+- `path <file-or-dir>`: audit a specific transcript file or all files in a directory; this can read external input but must not move the audit output out of `$SHIPFLOW_ROOT`.
+- `export shipflow`: run `tmux-capture-conversation --preset shipflow` first, then audit the new transcript from `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/`.
 - `report=agent`: include detailed evidence and route rationale.
 
 ## Canonical Workflow
@@ -52,7 +54,7 @@ When attached to a unique chantier spec, append a `Chantier potentiel` block if 
 2. Validate redaction gate before reading raw transcript content.
 3. Derive a cleaned classifier input that removes obvious terminal chrome, command output, diffs, JSON payloads, and long log/search noise while preserving user/agent turns.
 4. Classify the cleaned view with deterministic categories (below), while keeping raw unsafe detection tied to the original transcript.
-5. Write report to `shipflow_data/workflow/conversation-audits/<slug>.md` using template `templates/artifacts/conversation_audit.md`.
+5. Write report to `$SHIPFLOW_ROOT/shipflow_data/workflow/conversation-audits/<slug>.md` using template `templates/artifacts/conversation_audit.md`.
 6. Print top findings + evidence summary + routing recommendation.
 
 ## Stable Finding Categories

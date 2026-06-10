@@ -38,23 +38,50 @@ infer_shipflow_root() {
   local fallback_root="$1"
   local candidate="${SHIPFLOW_ROOT:-${HOME}/shipflow}"
 
-  if [ -d "$candidate" ]; then
+  if [ -d "$candidate" ] && [ -d "$candidate/skills" ] && [ -d "$candidate/shipflow_data" ]; then
     printf '%s\n' "$candidate"
     return 0
   fi
 
-  if [ -d "$fallback_root" ]; then
+  if [ -d "$fallback_root" ] && [ -d "$fallback_root/skills" ] && [ -d "$fallback_root/shipflow_data" ]; then
     printf '%s\n' "$fallback_root"
     return 0
   fi
 
   candidate="${HOME}/shipflow"
-  if [ -d "$candidate" ]; then
+  if [ -d "$candidate" ] && [ -d "$candidate/skills" ] && [ -d "$candidate/shipflow_data" ]; then
     printf '%s\n' "$candidate"
     return 0
   fi
 
-  printf '%s\n' "$fallback_root"
+  return 1
+}
+
+ensure_path_under_dir() {
+  local path="$1"
+  local allowed_dir="$2"
+  local path_real allowed_real
+
+  path_real=$(realpath -m "$path")
+  allowed_real=$(realpath -m "$allowed_dir")
+  case "$path_real" in
+    "$allowed_real"/*)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+validate_shipflow_preset_output() {
+  local output="$1"
+  local root="$2"
+  local allowed_dir="$root/shipflow_data/workflow/conversations"
+
+  if ! ensure_path_under_dir "$output" "$allowed_dir"; then
+    fail "shipflow preset output must stay under $allowed_dir (got: $output). Use the docs preset for project-local conversation files."
+  fi
 }
 
 need_cmd() {
@@ -441,7 +468,8 @@ if [ -z "$DESTINATION" ]; then
     SLUG="${SLUG}-${STAMP}"
   fi
   if [ "$SHIPFLOW_PRESET" = "shipflow" ]; then
-    SHIPFLOW_ROOT_RESOLVED=$(infer_shipflow_root "${HOME}/shipflow")
+    SHIPFLOW_ROOT_RESOLVED=$(infer_shipflow_root "${HOME}/shipflow") \
+      || fail "cannot resolve ShipFlow root; set SHIPFLOW_ROOT to the ShipFlow repository"
     DESTINATION="${SHIPFLOW_ROOT_RESOLVED}/shipflow_data/workflow/conversations/${SLUG}.md"
   else
     PROJECT_ROOT=$(infer_project_root_from_raw "$TMP_RAW" "$PWD")
@@ -463,6 +491,11 @@ fi
 
 OUTPUT=$(absolute_path "$DESTINATION")
 OUTPUT=$(unique_path "$OUTPUT")
+if [ "$SHIPFLOW_PRESET" = "shipflow" ]; then
+  SHIPFLOW_ROOT_RESOLVED=$(infer_shipflow_root "${HOME}/shipflow") \
+    || fail "cannot resolve ShipFlow root; set SHIPFLOW_ROOT to the ShipFlow repository"
+  validate_shipflow_preset_output "$OUTPUT" "$SHIPFLOW_ROOT_RESOLVED"
+fi
 
 print_plan() {
   printf 'Title: %s\n' "$TITLE"
@@ -495,6 +528,11 @@ if [ "$YES" != "1" ]; then
       DESTINATION=$(with_md_extension "$ANSWER")
       OUTPUT=$(absolute_path "$DESTINATION")
       OUTPUT=$(unique_path "$OUTPUT")
+      if [ "$SHIPFLOW_PRESET" = "shipflow" ]; then
+        SHIPFLOW_ROOT_RESOLVED=$(infer_shipflow_root "${HOME}/shipflow") \
+          || fail "cannot resolve ShipFlow root; set SHIPFLOW_ROOT to the ShipFlow repository"
+        validate_shipflow_preset_output "$OUTPUT" "$SHIPFLOW_ROOT_RESOLVED"
+      fi
       printf 'New destination: %s\n' "$OUTPUT"
       ;;
   esac

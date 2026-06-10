@@ -36,6 +36,8 @@ Do not accept the tmux window name as the final title when it is generic (`node`
 
 Use `--preset shipflow` or pass `shipflow` as the first positional preset.
 
+The `shipflow` preset is a protected ShipFlow-owned evidence route. It must resolve to `${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/workflow/conversations/`, not to the current project's governance root. If an explicit `--destination` for the `shipflow` preset points outside that directory, including a relative `shipflow_data/workflow/conversations/...` path from a product repo, the script must fail before writing. Use the `docs` preset for intentionally project-local conversation notes.
+
 When no destination is supplied, prefer the project that the captured conversation is about, not the shell's incidental current directory. Use this priority:
 
 1. User-supplied destination.
@@ -49,9 +51,9 @@ For `docs` or no preset:
 - create that directory if needed.
 - write directly under `$HOME` only when the transcript has no identifiable project and the command was actually run from `$HOME`.
 
-For `shipflow` preset, infer or validate the governance root and write under `shipflow_data/workflow/conversations/`.
+For `shipflow` preset, resolve `${SHIPFLOW_ROOT:-$HOME/shipflow}` and write under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/`.
 
-`--destination` always overrides any preset inference.
+`--destination` overrides preset inference only when it stays valid for that preset. For `shipflow`, explicit destinations outside `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/` are blocked.
 
 The confirmation prompt must include the inferred title and full destination. If either looks generic or misplaced, fix it before asking the user to approve.
 
