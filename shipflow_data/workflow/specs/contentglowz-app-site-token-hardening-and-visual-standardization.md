@@ -265,12 +265,13 @@ None.
 |----------|-------|-------|--------|--------|-----------|
 | 2026-06-11 18:00:00 UTC | 100-sf-spec | GPT-5 Codex | create | ready | /101-sf-ready ContentGlowz app/site token hardening and visual standardization |
 | 2026-06-11 18:00:00 UTC | 101-sf-ready | GPT-5 Codex | readiness-check | ready | /102-sf-start ContentGlowz app/site token hardening and visual standardization |
+| 2026-06-11 18:14:00 UTC | 001-sf-build | gpt-5.3-codex-spark | lifecycle-orchestration | partial | /102-sf-start ContentGlowz app/site token hardening and visual standardization |
 
 ## Current Chantier Flow
 
 - 100-sf-spec: done
 - 101-sf-ready: done
-- 102-sf-start: not launched
+- 102-sf-start: requested
 - 103-sf-verify: not launched
 - 104-sf-end: not launched
 - 005-sf-ship: not launched
