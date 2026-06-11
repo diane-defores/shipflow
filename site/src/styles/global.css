@@ -121,6 +121,12 @@ pre {
   min-height: 40px;
 }
 
+.language-link {
+  color: var(--accent-strong);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .hero {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;

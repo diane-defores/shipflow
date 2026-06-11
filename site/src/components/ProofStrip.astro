@@ -1,20 +1,22 @@
+---
+import { sharedHomeSections, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "en" } = Astro.props;
+const copy = sharedHomeSections[locale].proof;
+---
+
 <section class="section">
   <div class="section-heading">
-    <p class="eyebrow">Proof, Not Hype</p>
-    <h2>The mechanism is visible before you buy the story.</h2>
-    <p>
-      ShipFlow should not ask you to trust vague automation claims. The proof
-      is in the files, workflows, gates, and operations you can inspect.
-    </p>
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h2>{copy.title}</h2>
+    <p>{copy.body}</p>
   </div>
 
   <div class="pill-grid">
-    <span class="pill">AGENT.md + operational context</span>
-    <span class="pill">sf-spec → sf-ready → sf-start → sf-verify</span>
-    <span class="pill">decision-quality contract</span>
-    <span class="pill">artifact templates</span>
-    <span class="pill">Python stdlib metadata linter</span>
-    <span class="pill">verification and audit skills</span>
-    <span class="pill">PM2 + Flox + Caddy operations</span>
+    {copy.pills.map((pill) => <span class="pill">{pill}</span>)}
   </div>
 </section>

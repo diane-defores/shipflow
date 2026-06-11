@@ -1,33 +1,29 @@
+---
+import { sharedHomeSections, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "en" } = Astro.props;
+const copy = sharedHomeSections[locale].product;
+---
+
 <section class="section" id="how-it-works">
   <div class="section-heading">
-    <p class="eyebrow">What ShipFlow Is</p>
-    <h2>The operating model around AI-generated work.</h2>
-    <p>
-      AI can produce code faster than your old process can safely absorb it.
-      ShipFlow connects the agent workflow, the decision contracts, and the
-      server lifecycle so the output has somewhere disciplined to land.
-    </p>
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h2>{copy.title}</h2>
+    <p>{copy.body}</p>
   </div>
 
   <div class="split-grid">
-    <article class="panel">
-      <h3>Delivery discipline for agents</h3>
-      <ul class="check-list">
-        <li>route a fresh agent to the right context fast</li>
-        <li>shape non-trivial work before coding starts</li>
-        <li>verify against contracts instead of hope</li>
-        <li>keep business, product, and docs traceable</li>
-      </ul>
-    </article>
-
-    <article class="panel">
-      <h3>Server control for real shipping</h3>
-      <ul class="check-list">
-        <li>run isolated environments with Flox</li>
-        <li>manage processes and lifecycle with PM2</li>
-        <li>publish through Caddy and DuckDNS</li>
-        <li>use tunnels, checks, and runtime operations without duct tape</li>
-      </ul>
-    </article>
+    {copy.panels.map(([title, items]) => (
+      <article class="panel">
+        <h3>{title}</h3>
+        <ul class="check-list">
+          {items.map((item) => <li>{item}</li>)}
+        </ul>
+      </article>
+    ))}
   </div>
 </section>

@@ -1,14 +1,20 @@
+---
+import { footerCopy, pathFor, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "en" } = Astro.props;
+const copy = footerCopy[locale];
+---
+
 <footer class="site-footer">
   <div>
     <strong>ShipFlow</strong>
-    <p>
-      Built for solo founders who want less ambiguity, stronger agent handoffs,
-      and simpler server-side shipping.
-    </p>
+    <p>{copy.body}</p>
   </div>
   <div class="footer-links">
-    <a href="/skills">Skills</a>
-    <a href="https://github.com/dianedef/ShipFlow">GitHub</a>
-    <a href="/#how-it-works">Framework</a>
+    {copy.links.map(([label, href]) => <a href={pathFor(href, locale)}>{label}</a>)}
   </div>
 </footer>

@@ -1,21 +1,30 @@
+---
+import { alternatePath, navCopy, pathFor, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale?: Locale;
+  currentPath?: string;
+}
+
+const { locale = "en", currentPath = "/" } = Astro.props;
+const copy = navCopy[locale];
+const otherLocale = locale === "fr" ? "en" : "fr";
+---
+
 <header class="topbar">
-  <a class="brand" href="/">
+  <a class="brand" href={pathFor("/", locale)}>
     <span class="brand-mark">SF</span>
     <span>ShipFlow</span>
   </a>
 
-  <nav class="topnav" aria-label="Primary">
-    <a href="/skills">Skills</a>
-    <a href="/about">About</a>
-    <a href="/faq">FAQ</a>
-    <a href="/why-not-just-prompts">Why not just prompts?</a>
-    <a href="/#how-it-works">How it works</a>
-    <a href="/pricing">Pricing</a>
-    <a href="/docs">Docs</a>
-    <a href="/contact">Contact</a>
+  <nav class="topnav" aria-label={copy.aria}>
+    {copy.links.map(([label, href]) => <a href={pathFor(href, locale)}>{label}</a>)}
   </nav>
 
   <a class="button button-secondary topbar-cta" href="https://github.com/dianedef/ShipFlow">
-    GitHub
+    {copy.github}
+  </a>
+  <a class="language-link" href={alternatePath(currentPath, otherLocale)} hreflang={otherLocale}>
+    {copy.language}
   </a>
 </header>

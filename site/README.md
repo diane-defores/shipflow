@@ -36,6 +36,7 @@ npm run preview
 - `src/pages/skill-modes.astro` - public skill launch guide
 - `src/pages/remote-mcp-oauth-tunnel.astro` - remote MCP OAuth tunnel explanation
 - `src/pages/why-not-just-prompts.astro` - positioning page
+- `src/pages/fr/` - French public routes for the main site navigation
 - `src/content/skills/` - public skill descriptions; do not paste full internal `SKILL.md` prompts
 - `src/content.config.ts` - Astro content schema; keep generated content compatible
 - `src/layouts/BaseLayout.astro` - base document shell
@@ -48,4 +49,5 @@ npm run preview
 - Do not expose secrets, private logs, credentials, private hostnames, or operator-only traces.
 - Keep public claims aligned with `shipflow_data/business/`, `shipflow_data/editorial/`, and the current product reality.
 - Keep plugin packaging claims aligned with `shipflow_data/technical/codex-plugin-packaging.md`.
+- French routes may localize navigation and explanatory framing, but skill descriptions stay in English by default because agents consume the English skill contracts more reliably.
 - Run `npm --prefix site run build` after changing rendered site content or schemas.

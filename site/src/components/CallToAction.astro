@@ -1,15 +1,21 @@
+---
+import { pathFor, sharedHomeSections, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "en" } = Astro.props;
+const copy = sharedHomeSections[locale].cta;
+---
+
 <section class="section">
   <div class="cta-panel">
-    <p class="eyebrow">Start Here</p>
-    <h2>If your agents move fast but your handoffs keep leaking context, start here.</h2>
-    <p>
-      Start with the repo, read the docs like working contracts, and inspect
-      how ShipFlow turns context, execution, verification, and server operations
-      into one practical system.
-    </p>
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h2>{copy.title}</h2>
+    <p>{copy.body}</p>
     <div class="hero-actions">
-      <a class="button button-primary" href="https://github.com/dianedef/ShipFlow">Open The Repository</a>
-      <a class="button button-secondary" href="/docs">Read The Docs</a>
+      {copy.actions.map(([label, href, className]) => <a class={className} href={pathFor(href, locale)}>{label}</a>)}
     </div>
   </div>
 </section>

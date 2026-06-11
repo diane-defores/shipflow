@@ -1,18 +1,24 @@
+---
+import { pathFor, sharedHomeSections, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "en" } = Astro.props;
+const copy = sharedHomeSections[locale].docs;
+---
+
 <section class="section" id="docs-cta">
   <div class="docs-panel">
     <div>
-      <p class="eyebrow">Documentation Entry</p>
-      <h2>Start with the docs that actually move the work.</h2>
-      <p>
-        If you want to understand ShipFlow fast, begin with the routing and
-        context layer, then follow the workflow and decision contracts.
-      </p>
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h2>{copy.title}</h2>
+      <p>{copy.body}</p>
     </div>
 
     <div class="docs-links">
-      <a class="docs-link" href="/docs">Documentation overview</a>
-      <a class="docs-link" href="/docs#artifact-corpus">AGENT + CONTEXT entrypoint</a>
-      <a class="docs-link" href="/docs#execution-logic">Workflow doctrine</a>
+      {copy.links.map(([label, href]) => <a class="docs-link" href={pathFor(href, locale)}>{label}</a>)}
     </div>
   </div>
 </section>

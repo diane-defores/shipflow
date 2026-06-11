@@ -89,6 +89,8 @@
 
 ## Backlog
 
+🟢 [ShipFlow] task: Conserver les fiches skills en anglais et l’expliquer sur le site français | status: done | area: site-i18n
+
 | Pri | Task | Status |
 |-----|------|--------|
 | 🟠 | Harmoniser tous les sous-menus CLI : lettres au lieu de chiffres, `x) Cancel` unique, et comportement Cancel cohérent entre `gum` et fallback bash | ✅ done |

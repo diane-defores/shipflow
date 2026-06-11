@@ -1,50 +1,27 @@
 ---
-const features = [
-  {
-    title: "Context becomes infrastructure",
-    body:
-      "A fresh thread gets a point of entry, an operational map, and explicit contracts instead of rebuilding the same story from memory."
-  },
-  {
-    title: "Planning happens before prompting",
-    body:
-      "Specs, readiness checks, and task boundaries turn a loose request into work an agent can execute without guessing the product."
-  },
-  {
-    title: "Quality beats the shortest path",
-    body:
-      "Model choice, routing, implementation, and verification optimize for correctness, security, maintainability, relevant performance, and proof before speed or convenience."
-  },
-  {
-    title: "Review has something to test against",
-    body:
-      "Verification is not optimism after a green build. It checks behavior, docs, and contract drift against what the work was supposed to change."
-  },
-  {
-    title: "The server path stays in the loop",
-    body:
-      "ShipFlow also keeps operational reality visible: environments, processes, tunnels, publishing, health, and the server state around real delivery."
-  }
-];
+import { homeCopy, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "en" } = Astro.props;
+const copy = homeCopy[locale].features;
 ---
 
 <section class="section">
   <div class="section-heading">
-    <p class="eyebrow">Why ShipFlow Exists</p>
-    <h2>The problem is no longer typing code. It is directing the system around it.</h2>
-    <p>
-      AI can scaffold the easy parts quickly. The hard part is deciding what
-      deserves a professional solution, feeding the right context, catching
-      drift, and keeping the deployment path connected to the promise you made.
-    </p>
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h2>{copy.title}</h2>
+    <p>{copy.body}</p>
   </div>
 
   <div class="card-grid">
     {
-      features.map((feature) => (
+      copy.items.map(([title, body]) => (
         <article class="card">
-          <h3>{feature.title}</h3>
-          <p>{feature.body}</p>
+          <h3>{title}</h3>
+          <p>{body}</p>
         </article>
       ))
     }

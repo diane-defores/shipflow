@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.5.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-11"
+updated: "2026-06-11"
 status: reviewed
 source_skill: sf-start
 scope: public-site-and-content-runtime
@@ -33,6 +33,7 @@ evidence:
   - "Skill modes page expanded into a public launch cheatsheet for master and supporting skill modes."
   - "docs/skill-launch-cheatsheet.md added as the Markdown reference for the public launch cheatsheet."
   - "Public docs page now needs to present the project governance layout decision."
+  - "French locale added for primary public routes while public skill contracts remain intentionally English for agent reliability."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit site"
 ---
@@ -49,7 +50,7 @@ This doc covers the Astro public site under `site/`, public skill content, conte
 | --- | --- | --- |
 | `site/` | Astro public site | Do not publish internal-only technical docs by accident |
 | `site/src/pages/**` | Public routes | Public copy must match product and GTM contracts |
-| `site/src/content/skills/**` | Public skill pages | Summarize outcomes, not internal prompt bodies |
+| `site/src/content/skills/**` | Public skill pages | Summarize outcomes, not internal prompt bodies; keep skill contract language in English by default for agent reliability |
 | `docs/skill-launch-cheatsheet.md` | Markdown skill launch reference | Keep aligned with `/skill-modes`, README workflow, and public skill pages |
 | `shipflow_data/editorial/content-map.md` | Content surface and repurposing map | Update when public surfaces or routing rules change |
 | `shipflow_data/technical/decisions/project-governance-layout.md` | Canonical root-vs-shipflow_data layout decision | Keep public docs aligned when compliance or migration rules change |
@@ -74,6 +75,7 @@ This doc covers the Astro public site under `site/`, public skill content, conte
 - Public claims must be backed by product, business, brand, GTM, workflow docs, or observed behavior.
 - Public claims that touch sensitive areas must pass the editorial claim register.
 - Public skill pages should not duplicate full `SKILL.md` implementation prompts.
+- Public skill content under `site/src/content/skills/*.md` intentionally remains in English even when the surrounding public UI is localized. These pages are public explanations, but they also mirror operational skill contracts consumed by agents, which follow the English source more reliably.
 - `site/src/content/skills/*.md` must preserve `site/src/content.config.ts`; do not add ShipFlow governance metadata unless the schema accepts it.
 - Blog/article output requires a declared route and collection; otherwise report `surface missing: blog`.
 - Public docs must describe root `BUSINESS.md`, `CONTENT_MAP.md`, `CONTEXT.md`, and similar files as legacy migration sources, not compliant final locations.
@@ -83,6 +85,7 @@ This doc covers the Astro public site under `site/`, public skill content, conte
 - Adding `shipflow_data/technical/` to public routing leaks internal details.
 - Public docs can drift from README/workflow doctrine if only one surface is updated.
 - Skill descriptions can promise capabilities not present in internal skill contracts.
+- Localizing skill contract content can create drift between the public page and the agent-facing English source. Translate navigation and explanatory framing first; translate individual skill bodies only after an explicit product decision and source-alignment plan.
 - Astro content collection frontmatter can break the build if agents add fields outside the schema.
 - Agents can invent blog paths unless the missing surface is treated as a governance finding.
 - Build output under `site/dist` and dependencies under `site/node_modules` should not be treated as source docs.

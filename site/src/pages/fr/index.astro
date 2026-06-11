@@ -1,20 +1,20 @@
 ---
-import CallToAction from "../components/CallToAction.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import DocsCta from "../components/DocsCta.astro";
-import FaqSection from "../components/FaqSection.astro";
-import FeatureGrid from "../components/FeatureGrid.astro";
-import Footer from "../components/Footer.astro";
-import Hero from "../components/Hero.astro";
-import AgentLoop from "../components/AgentLoop.astro";
-import NavBar from "../components/NavBar.astro";
-import PricingHypothesis from "../components/PricingHypothesis.astro";
-import ProductSurface from "../components/ProductSurface.astro";
-import ProofStrip from "../components/ProofStrip.astro";
-import RoleMap from "../components/RoleMap.astro";
-import { homeCopy, pathFor } from "../i18n/ui";
+import CallToAction from "../../components/CallToAction.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import DocsCta from "../../components/DocsCta.astro";
+import FaqSection from "../../components/FaqSection.astro";
+import FeatureGrid from "../../components/FeatureGrid.astro";
+import Footer from "../../components/Footer.astro";
+import Hero from "../../components/Hero.astro";
+import AgentLoop from "../../components/AgentLoop.astro";
+import NavBar from "../../components/NavBar.astro";
+import PricingHypothesis from "../../components/PricingHypothesis.astro";
+import ProductSurface from "../../components/ProductSurface.astro";
+import ProofStrip from "../../components/ProofStrip.astro";
+import RoleMap from "../../components/RoleMap.astro";
+import { homeCopy, pathFor } from "../../i18n/ui";
 
-const locale = "en";
+const locale = "fr";
 const copy = homeCopy[locale];
 ---
 
@@ -22,8 +22,8 @@ const copy = homeCopy[locale];
   title={copy.title}
   description={copy.description}
   locale={locale}
-  canonicalPath="/"
-  alternatePath="/fr/"
+  canonicalPath="/fr/"
+  alternatePath="/"
 >
   <main class="page-shell">
     <NavBar locale={locale} currentPath="/" />

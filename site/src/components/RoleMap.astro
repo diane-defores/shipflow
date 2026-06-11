@@ -1,34 +1,24 @@
 ---
-const docs = [
-  ["AGENT.md (compat)", "point of entry for a fresh agent"],
-  ["shipflow_data/*", "project-local governance corpus for adopted repos"],
-  ["shipflow_data/technical/context.md", "operational map of the repository"],
-  ["shipflow_data/technical/context-function-tree.md", "structural index for large procedural files"],
-  ["shipflow_data/editorial/content-map.md", "where content lives and how it is repurposed"],
-  ["shipflow_data/business/business.md", "for whom, what value, what model"],
-  ["shipflow_data/business/product.md", "what, workflows, non-goals"],
-  ["shipflow_data/business/branding.md", "how the product speaks"],
-  ["shipflow_data/business/gtm.md", "how the product is presented and distributed"],
-  ["shipflow_data/technical/architecture.md", "how the system is organized"],
-  ["shipflow_data/technical/guidelines.md", "how contributors should work inside it"],
-  ["shipflow_data/technical/decisions/project-governance-layout.md", "where project governance artifacts belong"]
-];
+import { roleMapCopy, type Locale } from "../i18n/ui";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = "en" } = Astro.props;
+const copy = roleMapCopy[locale];
 ---
 
 <section class="section">
   <div class="section-heading">
-    <p class="eyebrow">How It Stays Coherent</p>
-    <h2>Every document has one job.</h2>
-    <p>
-      ShipFlow documentation is not trying to be encyclopedic. It is designed
-      to be complete for fast agent navigation, with one explicit and exclusive
-      role per artifact.
-    </p>
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h2>{copy.title}</h2>
+    <p>{copy.body}</p>
   </div>
 
   <div class="role-list">
     {
-      docs.map(([name, role]) => (
+      copy.docs.map(([name, role]) => (
         <div class="role-row">
           <code>{name}</code>
           <span>{role}</span>
