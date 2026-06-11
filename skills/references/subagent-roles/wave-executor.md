@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-02"
 updated: "2026-05-02"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: wave-executor-role
 owner: Diane
 confidence: high
@@ -15,17 +15,17 @@ security_impact: yes
 docs_impact: yes
 linked_systems:
   - specs/
-  - skills/sf-build/SKILL.md
+  - skills/001-sf-build/SKILL.md
   - skills/references/subagent-roles/integrator.md
 depends_on:
-  - artifact: "specs/sf-build-autonomous-master-skill.md"
+  - artifact: "specs/001-sf-build-autonomous-master-skill.md"
     artifact_version: "1.2.0"
     required_status: "ready"
 supersedes: []
 evidence:
   - "Ready spec allows parallel work only through ready Execution Batches with non-overlapping ownership."
 next_review: "2026-06-02"
-next_step: "/sf-verify sf-build Autonomous Master Skill"
+next_step: "/103-sf-verify 001-sf-build Autonomous Master Skill"
 ---
 
 # Wave Executor Contract

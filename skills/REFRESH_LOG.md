@@ -1,32 +1,32 @@
 # Skills Refresh Log
 
-Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first.
+Chronological log of skill refreshes via `/307-sf-skills-refresh`. Most recent first.
 
 ---
 
-## 2026-06-01 — sf-local-cloud-sync
+## 2026-06-01 — 600-sf-local-cloud-sync
 
 **Added:**
-- [skill] New `skills/sf-local-cloud-sync/SKILL.md` for local data promotion, cloud hydration, merge/conflict policy, sync UX, sensitive-data exclusions, and proof routing
+- [skill] New `skills/600-sf-local-cloud-sync/SKILL.md` for local data promotion, cloud hydration, merge/conflict policy, sync UX, sensitive-data exclusions, and proof routing
 - [references] Skill-local doctrine, UX/security, and Flutter implementation checklists extracted from the WinFlowz sync chantier lessons
-- [public docs] Public skill page, router/help discovery, lifecycle docs, launch cheatsheet, and skill modes page expose `sf-local-cloud-sync`
+- [public docs] Public skill page, router/help discovery, lifecycle docs, launch cheatsheet, and skill modes page expose `600-sf-local-cloud-sync`
 
 **Updated:**
-- [routing] `shipflow` and `entrypoint-routing` now route local-first data sync, account promotion, merge, and reinstall recovery questions to `sf-local-cloud-sync`
+- [routing] `000-shipflow` and `entrypoint-routing` now route local-first data sync, account promotion, merge, and reinstall recovery questions to `600-sf-local-cloud-sync`
 
 **New phases:**
 - None
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts and WinFlowz chantier context)
 
-## 2026-05-31 — sf-onboarding
+## 2026-05-31 — 008-sf-onboarding
 
 **Added:**
-- [skill] New `skills/sf-onboarding/SKILL.md` reviewed against current ShipFlow routing, lifecycle, reporting, proof, docs/editorial, freshness, and budget gates
-- [public docs] Public skill page, router/help discovery, lifecycle docs, cheatsheets, and site skill-mode pages expose `sf-onboarding` as the user activation entrypoint
+- [skill] New `skills/008-sf-onboarding/SKILL.md` reviewed against current ShipFlow routing, lifecycle, reporting, proof, docs/editorial, freshness, and budget gates
+- [public docs] Public skill page, router/help discovery, lifecycle docs, cheatsheets, and site skill-mode pages expose `008-sf-onboarding` as the user activation entrypoint
 
 **Updated:**
-- [routing] `sf-build` now evaluates whether a user-facing feature should route to or suggest `sf-onboarding` after implementation; `shipflow` routes mixed build-plus-onboarding requests to `sf-build` first with that gate preserved
+- [routing] `001-sf-build` now evaluates whether a user-facing feature should route to or suggest `008-sf-onboarding` after implementation; `000-shipflow` routes mixed build-plus-onboarding requests to `001-sf-build` first with that gate preserved
 
 **New phases:**
 - None
@@ -41,7 +41,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Updated:**
 - [lifecycle] `master-workflow-lifecycle`, `spec-driven-development-discipline`, `master-delegation-semantics`, and `question-contract` now load or depend on the decision-quality contract
-- [models] `sf-model` and `model-routing.md` now treat fast/cheap fallbacks as valid only when quality-equivalent for the risk
+- [models] `704-sf-model` and `model-routing.md` now treat fast/cheap fallbacks as valid only when quality-equivalent for the risk
 - [execution] Core build/start/fix/verify/skill-build/router/help/spec/design and repeated "smallest safe mode" language now point to bounded professional scope, never shortcut quality
 - [instructions] Excellence is now explicit in the instruction-level decision bar for shared contracts and core routing/execution/model skills, not left as implied quality wording
 - [docs] README, workflow docs, runtime lifecycle docs, and help catalog now expose the doctrine
@@ -51,7 +51,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-23 — sf-backlog
+## 2026-05-23 — 701-sf-backlog
 
 **Added:**
 - [reporting] Report modes through `reporting-contract.md`
@@ -68,7 +68,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-23 — sf-priorities
+## 2026-05-23 — 702-sf-priorities
 
 **Added:**
 - [reporting] Report modes through `reporting-contract.md`
@@ -85,7 +85,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-23 — sf-review
+## 2026-05-23 — 703-sf-review
 
 **Added:**
 - [reporting] Report modes through `reporting-contract.md`
@@ -102,7 +102,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-23 — sf-status
+## 2026-05-23 — 308-sf-status
 
 **Added:**
 - [reporting] Report modes through `reporting-contract.md`
@@ -118,7 +118,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-23 — sf-research
+## 2026-05-23 — 203-sf-research
 
 **Added:**
 - [reporting] Report modes through `reporting-contract.md`
@@ -128,7 +128,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Updated:**
 - [context] Project-specific recommendations now use project-local `shipflow_data/` governance; external `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` is registry/tracker only
-- [content] Public-content recommendations route through `sf-content` / `sf-repurpose` and editorial governance
+- [content] Public-content recommendations route through `007-sf-content` / `202-sf-repurpose` and editorial governance
 - [public docs] Public skill page now names saved workflow reports and content lifecycle limits
 
 **New phases:**
@@ -136,11 +136,11 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-23 — sf-help
+## 2026-05-23 — 302-sf-help
 
 **Added:**
 - [help catalog] Explicit external control-plane vs project-local governance explanation
-- [research docs] `sf-research` described as saving workflow reports
+- [research docs] `203-sf-research` described as saving workflow reports
 
 **Updated:**
 - [paths] Replaced stale `~/shipflow_data` help text with `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}` control-plane wording
@@ -150,11 +150,11 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-22 — sf-veille
+## 2026-05-22 — 205-sf-veille
 
 **Added:**
 - [governance] Report modes, question contract, editorial corpus loading, and delegated-read semantics for URL triage
-- [content] `sf-content` / `sf-repurpose` handoff and `surface missing: blog` gate for public-content opportunities
+- [content] `007-sf-content` / `202-sf-repurpose` handoff and `surface missing: blog` gate for public-content opportunities
 - [paths] Canonical `shipflow_data/workflow/research/` output path for reports and tools
 
 **Updated:**
@@ -166,12 +166,12 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-22 — sf-skills-refresh
+## 2026-05-22 — 307-sf-skills-refresh
 
 **Added:**
 - [governance baseline] Current ShipFlow gates before external refresh research: reporting, question, delegation, proof path, freshness, budget, docs/public surfaces, and runtime visibility
 - [reporting] Explicit `report=user` / `report=agent` contract through `reporting-contract.md`
-- [self-refresh] Manual `sf-skill-build` recovery path for refreshing `sf-skills-refresh` itself
+- [self-refresh] Manual `009-sf-skill-build` recovery path for refreshing `307-sf-skills-refresh` itself
 
 **Updated:**
 - [research] Replaced stale hard-coded agent wording with runtime-aware delegation semantics and local-governance-first evidence for docs/freshness skills
@@ -184,7 +184,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts)
 
-## 2026-05-22 — sf-docs
+## 2026-05-22 — 300-sf-docs
 
 **Added:**
 - [required references] `question-contract` before user-facing docs decisions and `documentation-freshness-gate` for external-behavior docs
@@ -192,7 +192,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 - [validation] Runtime sync and site build checks when skill docs or public skill pages change
 
 **Updated:**
-- [public docs] Public `sf-docs` page now names skill documentation and public skill-page coherence as governed surfaces
+- [public docs] Public `300-sf-docs` page now names skill documentation and public skill-page coherence as governed surfaces
 
 **New phases:**
 - None
@@ -204,15 +204,15 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 **Added:**
 - [reference] Sentry Monitors/Alerts split: Monitors detect/create issues, Alerts route notifications/actions
 - [reference] Metric Monitor migration, Cron Monitor, Uptime Monitor, and alert-routing evidence rules
-- [sf-prod] Sentry Uptime comparison and monitor-alert runtime proof checks
-- [sf-audit-code] Monitor-ready telemetry, monitor coverage, alert routing, and sensitive telemetry checks
-- [sf-verify] Monitor/alert correlation statuses and runtime confidence gap rules
+- [405-sf-prod] Sentry Uptime comparison and monitor-alert runtime proof checks
+- [401-sf-audit-code] Monitor-ready telemetry, monitor coverage, alert routing, and sensitive telemetry checks
+- [103-sf-verify] Monitor/alert correlation statuses and runtime confidence gap rules
 
 **Updated:**
 - [reference] Sentry evidence, correlation, reporting, privacy, and performance rules now distinguish detection from routing
-- [sf-prod] Sentry proof now accepts only visible/operator-provided issue/event/monitor/alert evidence
-- [sf-audit-code] Reliability and security checks now include monitor-created issues, dist/build IDs, debug IDs, and alert/webhook payloads
-- [sf-verify] Sentry status vocabulary now separates monitor issue proof from alert routing proof
+- [405-sf-prod] Sentry proof now accepts only visible/operator-provided issue/event/monitor/alert evidence
+- [401-sf-audit-code] Reliability and security checks now include monitor-created issues, dist/build IDs, debug IDs, and alert/webhook payloads
+- [103-sf-verify] Sentry status vocabulary now separates monitor issue proof from alert routing proof
 
 **New phases:**
 - None
@@ -223,8 +223,8 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Added:**
 - Shared `skills/references/sentry-observability.md` for Sentry evidence, correlation, privacy, reporting, and performance rules
-- Runtime evidence hooks for `sf-prod`, `sf-deploy`, `sf-auth-debug`, `sf-browser`, `sf-test`, `sf-bug`, `sf-fix`, `sf-start`, and `sf-verify`
-- Sentry observability checks in `sf-audit-code` and Sentry overhead checks in `sf-perf`
+- Runtime evidence hooks for `405-sf-prod`, `004-sf-deploy`, `109-sf-auth-debug`, `108-sf-browser`, `107-sf-test`, `003-sf-bug`, `106-sf-fix`, `102-sf-start`, and `103-sf-verify`
+- Sentry observability checks in `401-sf-audit-code` and Sentry overhead checks in `403-sf-perf`
 
 **Updated:**
 - Runtime/deploy/debug skills now treat Sentry issue/event IDs as redacted evidence pointers, not raw payloads
@@ -245,7 +245,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Updated:**
 - Master lifecycle and entrypoint routing references now point to the shared question/default contract
-- `sf-build` and `shipflow` local question gates now align with the shared rule
+- `001-sf-build` and `000-shipflow` local question gates now align with the shared rule
 - README, workflow doctrine, technical docs, launch cheatsheet, help, and public skill pages now describe the same default-vs-question behavior
 
 **New phases:**
@@ -258,12 +258,12 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 ## 2026-05-04 — content owner skill governance integration
 
 **Added:**
-- Shared editorial governance loading and output plan language for sf-enrich, sf-redact, sf-audit-copy, sf-audit-copywriting, and sf-audit-seo
+- Shared editorial governance loading and output plan language for 201-sf-enrich, 200-sf-redact, 206-sf-audit-copy, 207-sf-audit-copywriting, and 406-sf-audit-seo
 - Shared technical docs corpus loading and `Documentation Update Plan` expectations for mapped code, runtime content, site, skill, and docs changes
 
 **Updated:**
 - Public skill pages now mention governance notes for claims, surfaces, schemas, and documentation impact when relevant
-- sf-audit-copywriting and sf-audit-seo now load the editorial corpus before public-content scoring
+- 207-sf-audit-copywriting and 406-sf-audit-seo now load the editorial corpus before public-content scoring
 - Four target skill descriptions shortened slightly to keep discovery budget margin
 
 **New phases:**
@@ -281,7 +281,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Updated:**
 - Skill description shortened to keep aggregate discovery budget under 8000
-- Help, workflow, technical docs, launch cheatsheet, and public skill content now present `shipflow` as the non-technical first command
+- Help, workflow, technical docs, launch cheatsheet, and public skill content now present `000-shipflow` as the non-technical first command
 
 **New phases:**
 - None
@@ -290,7 +290,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-scaffold
+## 2026-05-04 — 306-sf-scaffold
 
 **Added:**
 - Professional safe-shell doctrine for ambiguous scaffolding requests
@@ -306,7 +306,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-docs
+## 2026-05-04 — 300-sf-docs
 
 **Added:**
 - None
@@ -322,7 +322,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-init
+## 2026-05-04 — 305-sf-init
 
 **Added:**
 - None
@@ -338,7 +338,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-audit-design
+## 2026-05-04 — 502-sf-audit-design
 
 **Added:**
 - Professional standard-mode wording for default audits
@@ -355,7 +355,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-audit-design-tokens
+## 2026-05-04 — 503-sf-audit-design-tokens
 
 **Added:**
 - None
@@ -373,7 +373,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-audit-components
+## 2026-05-04 — 504-sf-audit-components
 
 **Added:**
 - None
@@ -389,7 +389,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-audit-a11y
+## 2026-05-04 — 409-sf-audit-a11y
 
 **Added:**
 - None
@@ -404,7 +404,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-audit-copywriting
+## 2026-05-04 — 207-sf-audit-copywriting
 
 **Added:**
 - None
@@ -420,7 +420,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-market-study
+## 2026-05-04 — 204-sf-market-study
 
 **Added:**
 - None
@@ -436,7 +436,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-perf
+## 2026-05-04 — 403-sf-perf
 
 **Added:**
 - None
@@ -451,7 +451,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-priorities
+## 2026-05-04 — 702-sf-priorities
 
 **Added:**
 - `high-roi` wording as the preferred name for bounded-effort priority opportunities
@@ -466,7 +466,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-tasks
+## 2026-05-04 — 309-sf-tasks
 
 **Added:**
 - None
@@ -481,7 +481,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-help
+## 2026-05-04 — 302-sf-help
 
 **Added:**
 - None
@@ -496,7 +496,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-design-from-scratch
+## 2026-05-04 — 500-sf-design-from-scratch
 
 **Added:**
 - New design-system creation skill for extracting scattered UI values into a complete professional design-system source of truth
@@ -505,8 +505,8 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 - Public skill page and internal discoverability updates
 
 **Updated:**
-- `sf-design-playground` now routes no-token from-scratch requests to `sf-design-from-scratch`
-- `sf-audit-design-tokens` now points no-token projects to `sf-design-from-scratch` before playground and deep token audit
+- `501-sf-design-playground` now routes no-token from-scratch requests to `500-sf-design-from-scratch`
+- `503-sf-audit-design-tokens` now points no-token projects to `500-sf-design-from-scratch` before playground and deep token audit
 
 **New phases:**
 - Inventory -> token plan -> token source -> bounded migration -> playground/token-audit follow-up
@@ -515,7 +515,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-05-04 — sf-repurpose existing content placement
+## 2026-05-04 — 202-sf-repurpose existing content placement
 
 **Added:**
 - Existing-content placement analysis for internal documentation and public content surfaces
@@ -523,7 +523,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 - Requirement to evaluate which existing surface becomes clearer before proposing only net-new content
 - Shared delegation reference and parallel read-only fan-out rules for non-overlapping existing-content scans
 - Read-only execution boundary for project content and docs, with trace-spec-only mutation allowed
-- `Owner Skill Handoffs` routing for `sf-docs`, `sf-enrich`, `sf-redact`, `sf-audit-copy`, `sf-audit-copywriting`, and `sf-audit-seo`
+- `Owner Skill Handoffs` routing for `300-sf-docs`, `201-sf-enrich`, `200-sf-redact`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, and `406-sf-audit-seo`
 
 **Updated:**
 - Public skill page now promises existing-content improvement opportunities alongside article ideas and conversation titles
@@ -535,7 +535,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local user feedback and existing ShipFlow content governance)
 
-## 2026-05-04 — sf-repurpose
+## 2026-05-04 — 202-sf-repurpose
 
 **Added:**
 - Action-first repurposing report contract with `Best Next Actions`, `Article Name Ideas`, and `Titles For This Conversation` before the detailed source pack
@@ -549,13 +549,13 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 **New phases:**
 - None
 
-**Sources:** 0 URLs consulted (local user feedback, current `sf-repurpose` contract, and existing content governance)
+**Sources:** 0 URLs consulted (local user feedback, current `202-sf-repurpose` contract, and existing content governance)
 
-## 2026-05-04 — sf-content
+## 2026-05-04 — 007-sf-content
 
 **Added:**
 - New master content lifecycle contract for content map, editorial corpus, owner content skills, audits, docs, validation, and ship routing
-- Explicit routing boundaries so `sf-content` orchestrates `sf-repurpose`, `sf-redact`, `sf-enrich`, `sf-audit-copy`, `sf-audit-copywriting`, `sf-audit-seo`, `sf-docs`, `sf-veille`, and `sf-market-study` without duplicating them
+- Explicit routing boundaries so `007-sf-content` orchestrates `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-audit-seo`, `300-sf-docs`, `205-sf-veille`, and `204-sf-market-study` without duplicating them
 - Stop conditions for missing declared blog/article surfaces, unsupported sensitive claims, runtime content schema violations, validation failures, and unrelated dirty ship scope
 - Public skill page and internal discoverability updates for content-management work
 
@@ -567,43 +567,43 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local content governance, editorial corpus, and existing content skill contracts)
 
-## 2026-05-03 — sf-maintain
+## 2026-05-03 — 002-sf-maintain
 
 **Added:**
 - New project maintenance orchestrator for bugs, dependency posture, docs drift, checks, audits, migrations, tasks, and security posture
-- Explicit ownership boundaries so `sf-maintain` routes to `sf-bug`, `sf-deps`, `sf-docs`, `sf-check`, `sf-audit-code`, `sf-audit`, `sf-migrate`, and `sf-tasks` without duplicating them
-- `security` mode that composes `sf-deps` and `sf-audit-code` instead of introducing a separate security audit skill
+- Explicit ownership boundaries so `002-sf-maintain` routes to `003-sf-bug`, `402-sf-deps`, `300-sf-docs`, `105-sf-check`, `401-sf-audit-code`, `400-sf-audit`, `404-sf-migrate`, and `309-sf-tasks` without duplicating them
+- `security` mode that composes `402-sf-deps` and `401-sf-audit-code` instead of introducing a separate security audit skill
 - Public skill page and internal discoverability updates for recurring maintenance work
 
 **Updated:**
-- Workflow/help docs now position `sf-maintain` as the recurring maintenance entrypoint for existing projects
+- Workflow/help docs now position `002-sf-maintain` as the recurring maintenance entrypoint for existing projects
 
 **New phases:**
 - None
 
 **Sources:** 0 URLs consulted (local ShipFlow doctrine and existing maintenance/audit skill contracts)
 
-## 2026-05-03 — sf-bug
+## 2026-05-03 — 003-sf-bug
 
 **Added:**
-- New professional bug loop orchestrator for `sf-test -> bug file -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship`
-- Explicit ownership boundaries so `sf-bug` routes without duplicating bug capture, fix, retest, browser evidence, verification, or shipping internals
+- New professional bug loop orchestrator for `107-sf-test -> bug file -> 106-sf-fix -> 107-sf-test --retest -> 103-sf-verify -> 005-sf-ship`
+- Explicit ownership boundaries so `003-sf-bug` routes without duplicating bug capture, fix, retest, browser evidence, verification, or shipping internals
 - Stop conditions for missing bug files, unsafe closure, unresolved high/critical ship risk, sensitive evidence, destructive production actions, and preview-validation gaps
 - Public skill page and internal discoverability updates for the professional bug lifecycle workflow
 
 **Updated:**
-- Compact descriptions for selected existing skills so adding `sf-bug` keeps discovery budget under the hard limit
+- Compact descriptions for selected existing skills so adding `003-sf-bug` keeps discovery budget under the hard limit
 
 **New phases:**
 - None
 
 **Sources:** 0 URLs consulted (local Professional Bug Management doctrine and existing bug skill contracts)
 
-## 2026-05-03 — sf-deploy
+## 2026-05-03 — 004-sf-deploy
 
 **Added:**
-- New release orchestrator skill contract for `sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog`
-- Explicit ownership boundaries so `sf-deploy` does not duplicate `sf-ship`, `sf-prod`, browser proof, manual QA, or verification internals
+- New release orchestrator skill contract for `105-sf-check -> 005-sf-ship -> 405-sf-prod -> 108-sf-browser/109-sf-auth-debug/107-sf-test -> 103-sf-verify -> 304-sf-changelog`
+- Explicit ownership boundaries so `004-sf-deploy` does not duplicate `005-sf-ship`, `405-sf-prod`, browser proof, manual QA, or verification internals
 - Stop conditions for ambiguous scope, failed checks, blocked ship, failed deploy, missing evidence, failed verification, stale docs, unrelated dirty files, and sensitive evidence
 - Public skill page and internal discoverability updates for the release confidence workflow
 
@@ -615,11 +615,11 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Sources:** 0 URLs consulted (local ShipFlow doctrine and existing release skill contracts)
 
-## 2026-05-02 — sf-skill-build
+## 2026-05-02 — 009-sf-skill-build
 
 **Added:**
 - Contract sections for canonical paths, chantier tracking, scope gate, spec-first gate, implementation flow, freshness gate, security constraints, stop conditions, and final report shape
-- Explicit lifecycle sequence: `sf-spec -> SKILL.md -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship`
+- Explicit lifecycle sequence: `100-sf-spec -> SKILL.md -> 307-sf-skills-refresh -> skill budget audit -> 103-sf-verify -> 300-sf-docs/help update -> 005-sf-ship`
 - Validation commands for budget audit, metadata lint, and site build
 - Public-by-default rule with explicit internal-only exception policy
 - Invocation rename block rule requiring explicit user approval before any rename edits
@@ -636,30 +636,30 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 **Added:**
 - Shared reference — `project-development-mode.md` defines local, Vercel preview-push, and hybrid validation modes
-- `sf-init` — project-local `## ShipFlow Development Mode` section for `CLAUDE.md` / `SHIPFLOW.md`
-- `sf-start` — execution contract now records development mode and routes preview-push validation to `sf-ship` -> `sf-prod`
-- `sf-fix` — bug retest routing now respects local vs Vercel preview-push validation
-- `sf-ship` — successful push now hands off to `sf-prod` when preview deployment is the validation surface
-- `sf-prod` — Vercel MCP is primary for waiting on matching preview deployments in preview-push mode
-- `sf-test` — preview/manual tests are blocked until changed code is shipped and `sf-prod` confirms deployment
-- `sf-help` — global doctrine now explains project development modes and the preview-push sequence
-- `sf-auth-debug` — auth diagnostics now respect project development mode and require `sf-ship` -> `sf-prod` before authoritative Vercel preview auth proof
-- `sf-verify` — ready-to-ship verdicts now account for project development mode and required Vercel preview proof
-- `sf-end` — closeout now stays partial when required preview-push validation evidence is missing
-- `sf-check` — local checks now report when they are only pre-push confidence before `sf-ship` -> `sf-prod`
+- `305-sf-init` — project-local `## ShipFlow Development Mode` section for `CLAUDE.md` / `SHIPFLOW.md`
+- `102-sf-start` — execution contract now records development mode and routes preview-push validation to `005-sf-ship` -> `405-sf-prod`
+- `106-sf-fix` — bug retest routing now respects local vs Vercel preview-push validation
+- `005-sf-ship` — successful push now hands off to `405-sf-prod` when preview deployment is the validation surface
+- `405-sf-prod` — Vercel MCP is primary for waiting on matching preview deployments in preview-push mode
+- `107-sf-test` — preview/manual tests are blocked until changed code is shipped and `405-sf-prod` confirms deployment
+- `302-sf-help` — global doctrine now explains project development modes and the preview-push sequence
+- `109-sf-auth-debug` — auth diagnostics now respect project development mode and require `005-sf-ship` -> `405-sf-prod` before authoritative Vercel preview auth proof
+- `103-sf-verify` — ready-to-ship verdicts now account for project development mode and required Vercel preview proof
+- `104-sf-end` — closeout now stays partial when required preview-push validation evidence is missing
+- `105-sf-check` — local checks now report when they are only pre-push confidence before `005-sf-ship` -> `405-sf-prod`
 
 **Updated:**
-- `sf-prod` pending rule now points to the full polling loop instead of a shorter fixed wait
-- READMEs for `sf-start`, `sf-fix`, `sf-ship`, and `sf-prod` mention development-mode-aware routing
-- `sf-auth-debug` README and Vercel tooling reference now distinguish local auth evidence from preview/prod-authoritative evidence
-- READMEs for `sf-verify`, `sf-end`, and `sf-check` now mention development-mode-aware evidence limits
+- `405-sf-prod` pending rule now points to the full polling loop instead of a shorter fixed wait
+- READMEs for `102-sf-start`, `106-sf-fix`, `005-sf-ship`, and `405-sf-prod` mention development-mode-aware routing
+- `109-sf-auth-debug` README and Vercel tooling reference now distinguish local auth evidence from preview/prod-authoritative evidence
+- READMEs for `103-sf-verify`, `104-sf-end`, and `105-sf-check` now mention development-mode-aware evidence limits
 
 **New phases:**
 - None
 
 **Sources:** 0 URLs consulted (manual workflow doctrine update)
 
-## 2026-04-20 — sf-audit-code
+## 2026-04-20 — 401-sf-audit-code
 
 **Added:**
 - FILE MODE — Category 2 (NEW): System Fit & Reuse (anti-duplication): prefer reusing existing utilities/patterns; avoid near-duplicate helpers and signature drift
@@ -670,7 +670,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-04-19 — sf-enrich
+## 2026-04-19 — 201-sf-enrich
 
 **Added:**
 - Phase 4 — Quick Answer / TL;DR box (LLM extraction target)
@@ -689,7 +689,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-04-19 — sf-audit-copy
+## 2026-04-19 — 206-sf-audit-copy
 
 **Added:**
 - Category 2 — sentence length variance (SD > 6 words), dual FK targets (6-8 consumer / 8-10 B2B), plain-language summary for pages > 400 words
@@ -709,7 +709,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-04-19 — sf-audit-design
+## 2026-04-19 — 502-sf-audit-design
 
 **Added:**
 - Category 3 — OKLCH tokens over HSL/hex, `color-mix()` with fallbacks, `light-dark()` + `color-scheme`, WCAG 3 APCA note
@@ -731,7 +731,7 @@ Chronological log of skill refreshes via `/sf-skills-refresh`. Most recent first
 
 ---
 
-## 2026-04-19 — sf-audit-seo
+## 2026-04-19 — 406-sf-audit-seo
 
 **Added:**
 - Phase 1 — `<meta name="author">`, `article:published_time`/`modified_time`, `hreflang` lowercase rule, separate canonicals per language

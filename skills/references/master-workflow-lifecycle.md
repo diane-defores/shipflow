@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-04"
 updated: "2026-06-10"
 status: active
-source_skill: sf-skill-build
+source_skill: 009-sf-skill-build
 scope: master-workflow-lifecycle
 owner: Diane
 confidence: high
@@ -14,14 +14,14 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - skills/sf-build/SKILL.md
-  - skills/sf-maintain/SKILL.md
-  - skills/sf-content/SKILL.md
-  - skills/sf-design/SKILL.md
-  - skills/sf-skill-build/SKILL.md
-  - skills/sf-deploy/SKILL.md
-  - skills/sf-bug/SKILL.md
-  - skills/sf-audit/SKILL.md
+  - skills/001-sf-build/SKILL.md
+  - skills/002-sf-maintain/SKILL.md
+  - skills/007-sf-content/SKILL.md
+  - skills/006-sf-design/SKILL.md
+  - skills/009-sf-skill-build/SKILL.md
+  - skills/004-sf-deploy/SKILL.md
+  - skills/003-sf-bug/SKILL.md
+  - skills/400-sf-audit/SKILL.md
   - skills/references/master-delegation-semantics.md
   - skills/references/spec-driven-development-discipline.md
   - skills/references/decision-quality-contract.md
@@ -48,14 +48,14 @@ evidence:
   - "User decision 2026-05-04: master skills should share the same workflow skeleton instead of duplicating lifecycle doctrine."
   - "User decision 2026-05-04: bug work uses one Markdown bug file per bug under bugs/*.md; BUGS.md is optional/generated/triage view, not the source of truth."
   - "User decision 2026-05-04: user-facing questions should share a numbered, context-aware question/default contract."
-  - "User decision 2026-05-06: sf-design joins the master lifecycle set."
-  - "User decision 2026-05-08: sf-bug is a lifecycle executor through owner skills and bounded subagents, not a simple next-command router."
+  - "User decision 2026-05-06: 006-sf-design joins the master lifecycle set."
+  - "User decision 2026-05-08: 003-sf-bug is a lifecycle executor through owner skills and bounded subagents, not a simple next-command router."
   - "User decision 2026-05-24: ShipFlow optimizes first for performance, security, excellence, durability, and professional best practices; speed and convenience are secondary tie-breakers only."
   - "User decision 2026-06-10: favor subagents broadly to keep the main conversation clean; sequential is the normal default, while parallel remains read-only or spec/batch-gated."
   - "User decision 2026-06-10: master-skill invocation is consent for bounded sequential subagents; `spark`, `codex`, `sous-agent`/`subagent`, and `mini` arguments request model-specific subagent delegation."
-  - "Spec auto-follow-through-for-local-only-sf-start-verification.md defines bounded local auto-verify for sf-start without changing full sf-build lifecycle ownership."
+  - "Spec auto-follow-through-for-local-only-102-sf-start-verification.md defines bounded local auto-verify for 102-sf-start without changing full 001-sf-build lifecycle ownership."
 next_review: "2026-06-04"
-next_step: "/sf-verify master workflow lifecycle reference"
+next_step: "/103-sf-verify master workflow lifecycle reference"
 ---
 
 # Master Workflow Lifecycle
@@ -72,7 +72,7 @@ Spec-first is the outer lifecycle contract: it defines user story, scope, succes
 
 ## Applies To
 
-Use this reference from master and orchestrator skills that pilot more than one phase or owner skill, including `sf-build`, `sf-maintain`, `sf-content`, `sf-design`, `sf-skill-build`, `sf-deploy`, `sf-bug`, and `sf-audit`.
+Use this reference from master and orchestrator skills that pilot more than one phase or owner skill, including `001-sf-build`, `002-sf-maintain`, `007-sf-content`, `006-sf-design`, `009-sf-skill-build`, `004-sf-deploy`, `003-sf-bug`, and `400-sf-audit`.
 
 Atomic owner skills may cite this reference only when they need to align their own handoff language with the master lifecycle.
 
@@ -146,7 +146,7 @@ Do not start implementation from a draft, ambiguous, or contradictory work item.
 
 ### 4. Model And Topology Routing
 
-Before expensive or risky execution, choose the model profile using `sf-model` guidance or the relevant local model-routing reference, bounded by `skills/references/decision-quality-contract.md`.
+Before expensive or risky execution, choose the model profile using `704-sf-model` guidance or the relevant local model-routing reference, bounded by `skills/references/decision-quality-contract.md`.
 
 Before file work, validation, closure preparation, or ship preparation, choose topology using `skills/references/master-delegation-semantics.md`. Favor subagents by default: sequential normally, parallel only for read-only fan-out or ready `Execution Batches`. Master-skill invocation authorizes bounded sequential subagents; ask again only for material scope, risk, permissions, data, destructive behavior, closure, staging, ship, or parallel execution changes.
 
@@ -159,7 +159,7 @@ The model decision has two runtime layers:
 - Main conversation: recommend or route to the best model, but do not claim the active thread can always switch its own model mid-run.
 - Delegated subagents: when the runtime supports model overrides, include model, reasoning or alias behavior, fallback, and application status in each bounded mission.
 
-Use `gpt-5.5` by default in Codex/OpenAI for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work, with `low`, `medium`, `high`, or `xhigh` reasoning calibrated to task risk. Use the `codex` implementation profile from `skills/sf-model/references/model-routing.md` for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution. For small bounded subagent missions, default to `gpt-5.4-mini` only when quality-equivalent; use `gpt-5.3-codex-spark` for Spark-eligible summary, text-only, micro-code, targeted UI/local edit, or other low-risk bounded missions when Spark credits/availability permit.
+Use `gpt-5.5` by default in Codex/OpenAI for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work, with `low`, `medium`, `high`, or `xhigh` reasoning calibrated to task risk. Use the `codex` implementation profile from `skills/704-sf-model/references/model-routing.md` for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution. For small bounded subagent missions, default to `gpt-5.4-mini` only when quality-equivalent; use `gpt-5.3-codex-spark` for Spark-eligible summary, text-only, micro-code, targeted UI/local edit, or other low-risk bounded missions when Spark credits/availability permit.
 
 Model-topology arguments are delegated subagent requests:
 
@@ -174,13 +174,13 @@ Master skills orchestrate; owner skills own specialist internals.
 
 Examples:
 
-- `sf-start` owns spec implementation.
-- `sf-start` may run bounded local auto-verification when the remaining proof is local, tool-backed, non-destructive, and has no preview, production, auth/browser, Sentry, device, manual QA, secret, commit, push, ship, or external side-effect requirement. This does not make `sf-start` the full lifecycle orchestrator.
-- `sf-fix` owns bug diagnosis and fix attempts.
-- `sf-test` owns durable manual QA, retests, and bug-file mutation.
-- `sf-docs` owns documentation corpus creation/update/audit.
-- `sf-ship` owns staging, commit, and push.
-- `sf-prod`, `sf-browser`, and `sf-auth-debug` own deployment/browser/auth proof.
+- `102-sf-start` owns spec implementation.
+- `102-sf-start` may run bounded local auto-verification when the remaining proof is local, tool-backed, non-destructive, and has no preview, production, auth/browser, Sentry, device, manual QA, secret, commit, push, ship, or external side-effect requirement. This does not make `102-sf-start` the full lifecycle orchestrator.
+- `106-sf-fix` owns bug diagnosis and fix attempts.
+- `107-sf-test` owns durable manual QA, retests, and bug-file mutation.
+- `300-sf-docs` owns documentation corpus creation/update/audit.
+- `005-sf-ship` owns staging, commit, and push.
+- `405-sf-prod`, `108-sf-browser`, and `109-sf-auth-debug` own deployment/browser/auth proof.
 
 Do not duplicate owner internals inside a master skill for convenience.
 
@@ -192,17 +192,17 @@ For behavior, bug, skill-contract, UI/docs/auth/deploy, operational, or integrat
 
 Use proof owners by evidence type:
 
-- local checks: `sf-check` or project validation commands
-- hosted deployment truth: `sf-prod`
-- non-auth browser/page proof: `sf-browser`
-- auth/session/provider/protected-route proof: `sf-auth-debug`
-- durable manual QA or bug retest evidence: `sf-test`
+- local checks: `105-sf-check` or project validation commands
+- hosted deployment truth: `405-sf-prod`
+- non-auth browser/page proof: `108-sf-browser`
+- auth/session/provider/protected-route proof: `109-sf-auth-debug`
+- durable manual QA or bug retest evidence: `107-sf-test`
 
 ### 7. Verification
 
-Run or route through `sf-verify` when the user story, release scope, content promise, bug closure, or skill maintenance outcome needs coherence verification.
+Run or route through `103-sf-verify` when the user story, release scope, content promise, bug closure, or skill maintenance outcome needs coherence verification.
 
-If an owner skill such as `sf-start` already ran explicitly eligible local auto-verification, a master skill may count that local proof for the matching local proof obligation. It must still route or run any remaining broader, hosted, browser, manual, production, closure, or ship proof through the normal owner skills.
+If an owner skill such as `102-sf-start` already ran explicitly eligible local auto-verification, a master skill may count that local proof for the matching local proof obligation. It must still route or run any remaining broader, hosted, browser, manual, production, closure, or ship proof through the normal owner skills.
 
 If verification fails, route back to correction, retest, spec update, or blocked report. Do not proceed to closure or ship as if the work passed.
 
@@ -212,14 +212,14 @@ After verification passes, the master skill should continue through its owned cl
 
 Typical routes:
 
-- `sf-build`: `sf-end -> sf-ship`
-- `sf-maintain`: `sf-end` when a chantier needs closure bookkeeping, then `sf-ship` or `sf-deploy`
-- `sf-content`: `sf-verify -> sf-ship` for bounded content changes
-- `sf-skill-build`: `sf-docs/help update -> sf-ship`
-- `sf-deploy`: `sf-check -> sf-ship -> sf-prod -> proof -> sf-verify -> sf-changelog`
-- `sf-bug`: retest/verify/ship-risk execution from the bug file through owner skills
+- `001-sf-build`: `104-sf-end -> 005-sf-ship`
+- `002-sf-maintain`: `104-sf-end` when a chantier needs closure bookkeeping, then `005-sf-ship` or `004-sf-deploy`
+- `007-sf-content`: `103-sf-verify -> 005-sf-ship` for bounded content changes
+- `009-sf-skill-build`: `300-sf-docs/help update -> 005-sf-ship`
+- `004-sf-deploy`: `105-sf-check -> 005-sf-ship -> 405-sf-prod -> proof -> 103-sf-verify -> 304-sf-changelog`
+- `003-sf-bug`: retest/verify/ship-risk execution from the bug file through owner skills
 
-Do not end a successful post-verify master report with a manual `/sf-end`, `/sf-ship`, or `/sf-deploy` next step unless a concrete blocker prevents orchestration in the current run.
+Do not end a successful post-verify master report with a manual `/104-sf-end`, `/005-sf-ship`, or `/004-sf-deploy` next step unless a concrete blocker prevents orchestration in the current run.
 
 ## Bug Work Item Rules
 

@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-18"
 updated: "2026-06-10"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: spec-driven-development-discipline
 owner: Diane
 confidence: high
@@ -14,11 +14,11 @@ risk_level: medium
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - skills/sf-start/SKILL.md
-  - skills/sf-fix/SKILL.md
-  - skills/sf-bug/SKILL.md
-  - skills/sf-skill-build/SKILL.md
-  - skills/sf-verify/SKILL.md
+  - skills/102-sf-start/SKILL.md
+  - skills/106-sf-fix/SKILL.md
+  - skills/003-sf-bug/SKILL.md
+  - skills/009-sf-skill-build/SKILL.md
+  - skills/103-sf-verify/SKILL.md
   - skills/references/master-workflow-lifecycle.md
   - skills/references/master-delegation-semantics.md
   - skills/references/decision-quality-contract.md
@@ -40,7 +40,7 @@ evidence:
   - "Conversation audit 2026-06-09: UI and product behavior claims need an explicit proof path or proof gap before being reported as fixed."
   - "User decision 2026-06-10: proof-first instructions should preserve strong evidence requirements without verbose examples in the decision path."
 next_review: "2026-06-18"
-next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
+next_step: "/103-sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
 
 # Spec-Driven Development Discipline
@@ -92,17 +92,17 @@ For tasks that can end in `partial`, `not verified`, or `blocked` because proof 
 Any hosted/prod/deployed/provider/browser/manual proof gap must declare all of:
 
 - `proof_type`: hosted, preview, production, auth, browser, webhook/provider, manual QA, or similar
-- `owner_skill`: `sf-prod`, `sf-browser`, `sf-auth-debug`, `sf-test`, `sf-ship`, or a justified concrete alternative
+- `owner_skill`: `405-sf-prod`, `108-sf-browser`, `109-sf-auth-debug`, `107-sf-test`, `005-sf-ship`, or a justified concrete alternative
 - `scenario`: the exact action/flow to prove next (example: `login-smoke`, `checkout-smoke`, `webhook-smoke`)
 - `target_or_environment`: preview URL, production URL, tenant, environment, or `target needed`
 
-When `target_or_environment` is unknown, the first route is `sf-prod` for target discovery; do not route directly to non-hosted proof before discovery.
+When `target_or_environment` is unknown, the first route is `405-sf-prod` for target discovery; do not route directly to non-hosted proof before discovery.
 
 ## Pressure Scenarios
 
-- `VERIFY-PARTIAL-HOSTED`: `sf-verify` partial caused by missing hosted proof must include all hosted follow-through fields and a concrete owner route.
+- `VERIFY-PARTIAL-HOSTED`: `103-sf-verify` partial caused by missing hosted proof must include all hosted follow-through fields and a concrete owner route.
 - `UNKNOWN-DEPLOYMENT-TARGET`: if the deployment URL/target is unknown, route as `target needed` and assign a concrete owner for discovery.
-- `PREVIEW-PUSH-LADDER`: preview proof needing deployment must route `sf-ship` -> `sf-prod` before browser/auth/manual owner routing.
+- `PREVIEW-PUSH-LADDER`: preview proof needing deployment must route `005-sf-ship` -> `405-sf-prod` before browser/auth/manual owner routing.
 - `LOCAL-COMPLETE-PROD-PENDING`: local implementation complete while production/provider proof is pending must avoid closure/ship-ready language and name next owner.
 - `SAFETY-REDACTION`: proof routes touching private payloads/logs/tokens/cookies/secrets must stay redacted and avoid requesting sensitive values.
 
@@ -137,7 +137,7 @@ For Flutter mobile work, do not ask the operator to install or test an APK until
 Default order:
 
 1. Widget tests first for ordinary Flutter UI behavior, state transitions, form validation, crashes, regressions, loaders, empty states, and error states.
-2. Flutter Web smoke next for UI surfaces that share the same Flutter widget/app code. The agent should run or route this proof itself when a local, preview, or production Web target is available: use `sf-browser` for non-auth UI proof and `sf-auth-debug` for auth/session/callback/protected-route proof.
+2. Flutter Web smoke next for UI surfaces that share the same Flutter widget/app code. The agent should run or route this proof itself when a local, preview, or production Web target is available: use `108-sf-browser` for non-auth UI proof and `109-sf-auth-debug` for auth/session/callback/protected-route proof.
 3. Android APK/device proof last for behavior Flutter Web cannot prove: IME/keyboard behavior, permissions, overlays, notifications, background/foreground services, native plugins, platform channels, file pickers, camera/mic, storage, install/update behavior, and real-device performance.
 
 For classic Flutter UI flows, the execution contract should list agent-run Web smoke scenarios before APK testing. Examples: manual clipboard add, edit, cancel, save without change, save with change, search, pin/unpin, and visual onboarding/settings.
@@ -155,7 +155,7 @@ Stop, reroute, or report `partial`/`not verified` when:
 - evidence-first work names no concrete evidence surface
 - a final report claims a user-visible behavior, skill behavior, or workflow behavior is fixed without naming validation run or the remaining proof gap
 - proof collection would expose secrets, cookies, tokens, credentials, private payloads, production PII, or sensitive screenshots
-- a Flutter UI change routes straight to APK/manual device testing while widget tests or agent-run Flutter Web smoke via `sf-browser`/`sf-auth-debug` can reasonably prove the shared UI behavior
+- a Flutter UI change routes straight to APK/manual device testing while widget tests or agent-run Flutter Web smoke via `108-sf-browser`/`109-sf-auth-debug` can reasonably prove the shared UI behavior
 - the proposed implementation is merely the fastest/easiest patch and does not satisfy the decision-quality contract
 - the proposed implementation is adequate but visibly below the excellence bar for the risk
 

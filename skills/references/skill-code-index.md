@@ -1,158 +1,147 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "2.0.0"
 project: ShipFlow
 created: "2026-06-10"
 updated: "2026-06-10"
 status: active
-source_skill: sf-build
+source_skill: 102-sf-start
 scope: skill-code-index
 owner: Diane
 confidence: high
-risk_level: medium
+risk_level: high
 security_impact: none
 docs_impact: yes
 linked_systems:
   - skills/
-  - skills/shipflow/SKILL.md
-  - skills/sf-help/SKILL.md
+  - skills/000-shipflow/SKILL.md
+  - skills/302-sf-help/SKILL.md
   - docs/skill-launch-cheatsheet.md
   - tools/skill_code_index_lint.py
 depends_on:
-  - artifact: "shipflow_data/workflow/specs/numeric-skill-code-index.md"
+  - artifact: "shipflow_data/workflow/specs/three-digit-runtime-skill-names.md"
     artifact_version: "1.0.0"
     required_status: ready
-supersedes: []
+supersedes:
+  - artifact: "shipflow_data/workflow/specs/numeric-skill-code-index.md"
+    artifact_version: "1.0.0"
 evidence:
-  - "User decision 2026-06-10: numeric prefixes only, no symbol-heavy aliases."
-  - "User decision 2026-06-10: put a numeric code before the displayed skill name without changing canonical skill names."
-  - "User decision 2026-06-10: reserve the 00 family for master skills, then use understandable families."
+  - "User decision 2026-06-10: use three digits directly before the skill name for the real runtime-visible skill identity."
+  - "User decision 2026-06-10: no symbol-heavy names; keep lowercase letters, numbers, and hyphens only."
 next_review: "2026-07-10"
-next_step: "/sf-verify Numeric Skill Code Index"
+next_step: "/103-sf-verify Three Digit Runtime Skill Names"
 ---
 
 # Skill Code Index
 
 ## Purpose
 
-This is the canonical ShipFlow `code -> skill` lookup table.
+This is the canonical ShipFlow runtime skill-name map.
 
-The code is a discovery and routing aid. It is not a runtime rename.
-
-Canonical skill directories and `name:` frontmatter stay unchanged. For example:
+The code is now part of the runtime-visible skill identity. For example:
 
 ```text
-code: 01
-display: 01-sf-build
-canonical skill: sf-build
+old name: 001-sf-build
+runtime name: 001-sf-build
+operator invocation: $001-sf-build
 ```
 
 ## Resolution Rules
 
-Accepted user-facing forms:
-
-- `01`
-- `01-sf-build`
-- `01sfbuild`
-- `01 sf-build`
-
-Resolution rules:
-
-1. Extract the leading two digits.
-2. Resolve those digits in the table below.
-3. If a trailing skill-like label exists and conflicts with the resolved code, prefer the numeric code and mention the canonical skill.
-4. Hand off to the canonical skill name, not to the display label.
-
-Do not create wrapper skills, duplicate skill directories, or numeric symlinks for this index unless a future spec explicitly changes the runtime contract.
+- Runtime skill names use `NNN-<old-name>`.
+- The three-digit code is stable after ship.
+- The suffix preserves the old skill name exactly.
+- Old unprefixed names may appear only as legacy aliases, historical evidence, or natural-language route hints.
+- Do not create wrapper skills for old names unless a future ready spec explicitly accepts duplicate picker entries.
 
 ## Family Bands
 
 | Band | Family | Memory rule |
 | --- | --- | --- |
-| `00-09` | Global and master entrypoints | Most frequent and highest-level commands get the easiest codes. |
-| `10-19` | Lifecycle and proof | Spec, readiness, execution, verification, checks, fixes, browser/auth/test proof. |
-| `20-29` | Content, research, and copy | Writing, enrichment, repurposing, market/research/watch, and copy audits. |
-| `30-39` | Docs, context, and support | Docs, help, context, changelog, init, scaffold, status, tasks. |
-| `40-49` | Audit, quality, ops risk | Audit master, code/deps/perf/migrate/prod/SEO/i18n/GTM/a11y. |
-| `50-59` | Design and components | Design-system, playground, design audit, tokens, component audit. |
-| `60-69` | Data and activation | Local-cloud sync and future account/data/activation surfaces. |
-| `70-79` | Pilotage and session helpers | Explore, backlog, priorities, review, model choice, resume helpers. |
-| `80-89` | Conversation and transcript helpers | Conversation audit and transcript tooling. |
-| `90-99` | Reserved rare meta space | Reserved for future rare or migration-only skills. |
+| `000-099` | Master and high-frequency entrypoints | Most frequent and highest-level commands get the easiest codes. |
+| `100-199` | Lifecycle and proof | Spec, readiness, execution, verification, checks, fixes, browser/auth/test proof. |
+| `200-299` | Content, research, and copy | Writing, enrichment, repurposing, market/research/watch, and copy audits. |
+| `300-399` | Docs, context, and support | Docs, help, context, changelog, init, scaffold, status, tasks. |
+| `400-499` | Audit, quality, and ops risk | Audit master, code/deps/perf/migrate/prod/SEO/i18n/GTM/a11y. |
+| `500-599` | Design and components | Design-system, playground, design audit, tokens, component audit. |
+| `600-699` | Data and activation | Local-cloud sync, entitlements, parity, and future account/data surfaces. |
+| `700-799` | Pilotage and session helpers | Explore, backlog, priorities, review, model choice, resume helpers. |
+| `800-899` | Conversation and transcript helpers | Conversation capture and transcript tooling. |
+| `900-999` | Reserved rare meta space | Reserved for future rare or migration-only skills. |
 
-Frequency wins over family when a skill belongs to both. For example `sf-content` is a master entrypoint, so it gets `07` instead of `20`.
+Frequency wins over family when a skill belongs to both. For example `007-sf-content` stays in the master band.
 
 ## Code Table
 
-| Code | Skill | Family | Display label |
+| Code | Old name | Runtime skill | Family |
 | --- | --- | --- | --- |
-| `00` | `shipflow` | Global/master | `00-shipflow` |
-| `01` | `sf-build` | Global/master | `01-sf-build` |
-| `02` | `sf-maintain` | Global/master | `02-sf-maintain` |
-| `03` | `sf-bug` | Global/master | `03-sf-bug` |
-| `04` | `sf-deploy` | Global/master | `04-sf-deploy` |
-| `05` | `sf-ship` | Global/master | `05-sf-ship` |
-| `06` | `sf-design` | Global/master | `06-sf-design` |
-| `07` | `sf-content` | Global/master | `07-sf-content` |
-| `08` | `sf-onboarding` | Global/master | `08-sf-onboarding` |
-| `09` | `sf-skill-build` | Global/master | `09-sf-skill-build` |
-| `10` | `sf-spec` | Lifecycle/proof | `10-sf-spec` |
-| `11` | `sf-ready` | Lifecycle/proof | `11-sf-ready` |
-| `12` | `sf-start` | Lifecycle/proof | `12-sf-start` |
-| `13` | `sf-verify` | Lifecycle/proof | `13-sf-verify` |
-| `14` | `sf-end` | Lifecycle/proof | `14-sf-end` |
-| `15` | `sf-check` | Lifecycle/proof | `15-sf-check` |
-| `16` | `sf-fix` | Lifecycle/proof | `16-sf-fix` |
-| `17` | `sf-test` | Lifecycle/proof | `17-sf-test` |
-| `18` | `sf-browser` | Lifecycle/proof | `18-sf-browser` |
-| `19` | `sf-auth-debug` | Lifecycle/proof | `19-sf-auth-debug` |
-| `20` | `sf-redact` | Content/research/copy | `20-sf-redact` |
-| `21` | `sf-enrich` | Content/research/copy | `21-sf-enrich` |
-| `22` | `sf-repurpose` | Content/research/copy | `22-sf-repurpose` |
-| `23` | `sf-research` | Content/research/copy | `23-sf-research` |
-| `24` | `sf-market-study` | Content/research/copy | `24-sf-market-study` |
-| `25` | `sf-veille` | Content/research/copy | `25-sf-veille` |
-| `26` | `sf-audit-copy` | Content/research/copy | `26-sf-audit-copy` |
-| `27` | `sf-audit-copywriting` | Content/research/copy | `27-sf-audit-copywriting` |
-| `30` | `sf-docs` | Docs/context/support | `30-sf-docs` |
-| `31` | `sf-context` | Docs/context/support | `31-sf-context` |
-| `32` | `sf-help` | Docs/context/support | `32-sf-help` |
-| `33` | `sf-resume` | Docs/context/support | `33-sf-resume` |
-| `34` | `sf-changelog` | Docs/context/support | `34-sf-changelog` |
-| `35` | `sf-init` | Docs/context/support | `35-sf-init` |
-| `36` | `sf-scaffold` | Docs/context/support | `36-sf-scaffold` |
-| `37` | `sf-skills-refresh` | Docs/context/support | `37-sf-skills-refresh` |
-| `38` | `sf-status` | Docs/context/support | `38-sf-status` |
-| `39` | `sf-tasks` | Docs/context/support | `39-sf-tasks` |
-| `40` | `sf-audit` | Audit/quality/ops | `40-sf-audit` |
-| `41` | `sf-audit-code` | Audit/quality/ops | `41-sf-audit-code` |
-| `42` | `sf-deps` | Audit/quality/ops | `42-sf-deps` |
-| `43` | `sf-perf` | Audit/quality/ops | `43-sf-perf` |
-| `44` | `sf-migrate` | Audit/quality/ops | `44-sf-migrate` |
-| `45` | `sf-prod` | Audit/quality/ops | `45-sf-prod` |
-| `46` | `sf-audit-seo` | Audit/quality/ops | `46-sf-audit-seo` |
-| `47` | `sf-audit-translate` | Audit/quality/ops | `47-sf-audit-translate` |
-| `48` | `sf-audit-gtm` | Audit/quality/ops | `48-sf-audit-gtm` |
-| `49` | `sf-audit-a11y` | Audit/quality/ops | `49-sf-audit-a11y` |
-| `50` | `sf-design-from-scratch` | Design/components | `50-sf-design-from-scratch` |
-| `51` | `sf-design-playground` | Design/components | `51-sf-design-playground` |
-| `52` | `sf-audit-design` | Design/components | `52-sf-audit-design` |
-| `53` | `sf-audit-design-tokens` | Design/components | `53-sf-audit-design-tokens` |
-| `54` | `sf-audit-components` | Design/components | `54-sf-audit-components` |
-| `60` | `sf-local-cloud-sync` | Data/activation | `60-sf-local-cloud-sync` |
-| `61` | `sf-product-entitlements` | Data/activation | `61-sf-product-entitlements` |
-| `62` | `sf-platform-parity` | Data/activation | `62-sf-platform-parity` |
-| `70` | `sf-explore` | Pilotage/session | `70-sf-explore` |
-| `71` | `sf-backlog` | Pilotage/session | `71-sf-backlog` |
-| `72` | `sf-priorities` | Pilotage/session | `72-sf-priorities` |
-| `73` | `sf-review` | Pilotage/session | `73-sf-review` |
-| `74` | `sf-model` | Pilotage/session | `74-sf-model` |
-| `75` | `sf-conversation-audit` | Pilotage/session | `75-sf-conversation-audit` |
-| `76` | `continue` | Pilotage/session | `76-continue` |
-| `77` | `name` | Pilotage/session | `77-name` |
-| `78` | `tmux-capture-conversation` | Conversation/transcript | `78-tmux-capture-conversation` |
-| `79` | `clean-conversation-transcript` | Conversation/transcript | `79-clean-conversation-transcript` |
+| `000` | `shipflow` | `000-shipflow` | Master |
+| `001` | `sf-build` | `001-sf-build` | Master |
+| `002` | `sf-maintain` | `002-sf-maintain` | Master |
+| `003` | `sf-bug` | `003-sf-bug` | Master |
+| `004` | `sf-deploy` | `004-sf-deploy` | Master |
+| `005` | `sf-ship` | `005-sf-ship` | Master |
+| `006` | `sf-design` | `006-sf-design` | Master |
+| `007` | `sf-content` | `007-sf-content` | Master |
+| `008` | `sf-onboarding` | `008-sf-onboarding` | Master |
+| `009` | `sf-skill-build` | `009-sf-skill-build` | Master |
+| `100` | `sf-spec` | `100-sf-spec` | Lifecycle/proof |
+| `101` | `sf-ready` | `101-sf-ready` | Lifecycle/proof |
+| `102` | `sf-start` | `102-sf-start` | Lifecycle/proof |
+| `103` | `sf-verify` | `103-sf-verify` | Lifecycle/proof |
+| `104` | `sf-end` | `104-sf-end` | Lifecycle/proof |
+| `105` | `sf-check` | `105-sf-check` | Lifecycle/proof |
+| `106` | `sf-fix` | `106-sf-fix` | Lifecycle/proof |
+| `107` | `sf-test` | `107-sf-test` | Lifecycle/proof |
+| `108` | `sf-browser` | `108-sf-browser` | Lifecycle/proof |
+| `109` | `sf-auth-debug` | `109-sf-auth-debug` | Lifecycle/proof |
+| `200` | `sf-redact` | `200-sf-redact` | Content/research/copy |
+| `201` | `sf-enrich` | `201-sf-enrich` | Content/research/copy |
+| `202` | `sf-repurpose` | `202-sf-repurpose` | Content/research/copy |
+| `203` | `sf-research` | `203-sf-research` | Content/research/copy |
+| `204` | `sf-market-study` | `204-sf-market-study` | Content/research/copy |
+| `205` | `sf-veille` | `205-sf-veille` | Content/research/copy |
+| `206` | `sf-audit-copy` | `206-sf-audit-copy` | Content/research/copy |
+| `207` | `sf-audit-copywriting` | `207-sf-audit-copywriting` | Content/research/copy |
+| `300` | `sf-docs` | `300-sf-docs` | Docs/context/support |
+| `301` | `sf-context` | `301-sf-context` | Docs/context/support |
+| `302` | `sf-help` | `302-sf-help` | Docs/context/support |
+| `303` | `sf-resume` | `303-sf-resume` | Docs/context/support |
+| `304` | `sf-changelog` | `304-sf-changelog` | Docs/context/support |
+| `305` | `sf-init` | `305-sf-init` | Docs/context/support |
+| `306` | `sf-scaffold` | `306-sf-scaffold` | Docs/context/support |
+| `307` | `sf-skills-refresh` | `307-sf-skills-refresh` | Docs/context/support |
+| `308` | `sf-status` | `308-sf-status` | Docs/context/support |
+| `309` | `sf-tasks` | `309-sf-tasks` | Docs/context/support |
+| `400` | `sf-audit` | `400-sf-audit` | Audit/quality/ops |
+| `401` | `sf-audit-code` | `401-sf-audit-code` | Audit/quality/ops |
+| `402` | `sf-deps` | `402-sf-deps` | Audit/quality/ops |
+| `403` | `sf-perf` | `403-sf-perf` | Audit/quality/ops |
+| `404` | `sf-migrate` | `404-sf-migrate` | Audit/quality/ops |
+| `405` | `sf-prod` | `405-sf-prod` | Audit/quality/ops |
+| `406` | `sf-audit-seo` | `406-sf-audit-seo` | Audit/quality/ops |
+| `407` | `sf-audit-translate` | `407-sf-audit-translate` | Audit/quality/ops |
+| `408` | `sf-audit-gtm` | `408-sf-audit-gtm` | Audit/quality/ops |
+| `409` | `sf-audit-a11y` | `409-sf-audit-a11y` | Audit/quality/ops |
+| `500` | `sf-design-from-scratch` | `500-sf-design-from-scratch` | Design/components |
+| `501` | `sf-design-playground` | `501-sf-design-playground` | Design/components |
+| `502` | `sf-audit-design` | `502-sf-audit-design` | Design/components |
+| `503` | `sf-audit-design-tokens` | `503-sf-audit-design-tokens` | Design/components |
+| `504` | `sf-audit-components` | `504-sf-audit-components` | Design/components |
+| `600` | `sf-local-cloud-sync` | `600-sf-local-cloud-sync` | Data/activation |
+| `601` | `sf-product-entitlements` | `601-sf-product-entitlements` | Data/activation |
+| `602` | `sf-platform-parity` | `602-sf-platform-parity` | Data/activation |
+| `700` | `sf-explore` | `700-sf-explore` | Pilotage/session |
+| `701` | `sf-backlog` | `701-sf-backlog` | Pilotage/session |
+| `702` | `sf-priorities` | `702-sf-priorities` | Pilotage/session |
+| `703` | `sf-review` | `703-sf-review` | Pilotage/session |
+| `704` | `sf-model` | `704-sf-model` | Pilotage/session |
+| `705` | `sf-conversation-audit` | `705-sf-conversation-audit` | Pilotage/session |
+| `706` | `continue` | `706-continue` | Pilotage/session |
+| `707` | `name` | `707-name` | Pilotage/session |
+| `800` | `tmux-capture-conversation` | `800-tmux-capture-conversation` | Conversation/transcript |
+| `801` | `clean-conversation-transcript` | `801-clean-conversation-transcript` | Conversation/transcript |
 
 ## Maintenance
 
@@ -160,12 +149,14 @@ Run this after adding, removing, or renaming a skill:
 
 ```bash
 python3 tools/skill_code_index_lint.py
+python3 tools/skill_budget_audit.py --skills-root skills --format markdown
+tools/shipflow_sync_skills.sh --check --all
 ```
 
 The linter must fail when:
 
 - a code is duplicated
-- a skill appears twice
-- a listed skill directory is missing
+- a runtime skill appears twice
+- a listed runtime skill directory is missing
 - a `skills/*/SKILL.md` directory has no active code row
-- the display label does not equal `<code>-<skill>`
+- the runtime skill does not equal `<code>-<old-name>`

@@ -168,7 +168,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - `lib.sh::action_publish`: integration Caddy + DuckDNS.
 - `local/local.sh::main`: UX locale complete pour tunnels.
 - `lib.sh::action_flutter_web`: session Flutter Web interactive en tmux et hot reload.
-- `skills/sf-docs/SKILL.md`: logique de migration metadata et audit documentaire.
+- `skills/300-sf-docs/SKILL.md`: logique de migration metadata et audit documentaire.
 - `shipflow_data/technical/code-docs-map.md`: fichier partage qui mappe code, docs primaires, validations et triggers de mise a jour.
 
 ## Where To Edit What
@@ -180,7 +180,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - Changer les tunnels locaux : `local/local.sh` et `local/dev-tunnel.sh`.
 - Changer le mode Flutter Web interactif : `lib.sh` autour de `action_flutter_web`, puis `local/remote-helpers.sh` si le tunnel doit découvrir de nouveaux ports.
 - Changer le workflow d'agent : `skills/` + `shipflow-spec-driven-workflow.md`.
-- Changer les regles metadata : `skills/sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`, `shipflow-metadata-migration-guide.md`, `templates/artifacts/`.
+- Changer les regles metadata : `skills/300-sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`, `shipflow-metadata-migration-guide.md`, `templates/artifacts/`.
 - Changer la documentation technique proche du code : `shipflow_data/technical/code-docs-map.md` puis le doc primaire dans `shipflow_data/technical/`.
 - Changer la cartographie editoriale, les destinations de contenu ou les cocons semantiques : `shipflow_data/editorial/content-map.md`, puis `site/src/pages/docs.astro` ou les surfaces concernees.
 - Changer le positionnement, l'audience ou le scope produit : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/branding.md`.
@@ -193,11 +193,11 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - CLI principal : `CLAUDE.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow.sh`, `lib.sh`.
 - Install / bootstrap : `install.sh`, `config.sh`, `README.md`.
 - Skill / workflow : `README.md`, `shipflow-spec-driven-workflow.md`, puis la skill cible.
-- Metadata docs : `shipflow-metadata-migration-guide.md`, `skills/sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`.
+- Metadata docs : `shipflow-metadata-migration-guide.md`, `skills/300-sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`.
 - Docs techniques / code change : `shipflow_data/technical/code-docs-map.md`, puis le doc primaire mappe.
 - Tunnels / acces local : `local/README.md`, `local/local.sh`, `local/dev-tunnel.sh`.
 - Produit / business / site : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`, puis les registres `shipflow_data/business/project-competitors-and-inspirations.md` et `shipflow_data/business/affiliate-programs.md` si la tache touche marche, inspirations, differenciation ou monetisation partenaire.
-- Contenu / repurposing : `shipflow_data/editorial/content-map.md`, `skills/sf-repurpose/SKILL.md`, puis la surface cible.
+- Contenu / repurposing : `shipflow_data/editorial/content-map.md`, `skills/202-sf-repurpose/SKILL.md`, puis la surface cible.
 - Architecture / conventions : `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, `CLAUDE.md`.
 
 ## Linked Docs

@@ -85,9 +85,9 @@ Examples:
 Link to adjacent skills that naturally follow or complement this one.
 
 Examples:
-- `sf-spec` before `sf-start`
-- `sf-verify` after `sf-start`
-- `sf-docs` when the implementation changes user-facing behavior
+- `100-sf-spec` before `102-sf-start`
+- `103-sf-verify` after `102-sf-start`
+- `300-sf-docs` when the implementation changes user-facing behavior
 
 ---
 

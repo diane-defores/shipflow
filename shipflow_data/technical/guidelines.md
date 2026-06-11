@@ -114,7 +114,7 @@ This file defines stable engineering and documentation rules for working inside 
 - ShipFlow internal contracts use English by default: `SKILL.md` instructions, workflow steps, YAML/frontmatter keys, stable section headings, acceptance criteria, stop conditions, validation notes, and technical documentation.
 - User-facing interaction uses the user's active language: questions, short progress updates, final reports, and visible product copy should stay consistent with the language used by the user or configured for the project.
 - French user-facing output must use proper accents and natural French. Do not write accentless French unless a technical identifier, command, slug, or ASCII-only file format requires it.
-- Stable machine-readable labels stay English even inside otherwise localized content, for example `Status`, `Scope In`, `Acceptance Criteria`, `Skill Run History`, and command names such as `sf-build`.
+- Stable machine-readable labels stay English even inside otherwise localized content, for example `Status`, `Scope In`, `Acceptance Criteria`, `Skill Run History`, and command names such as `001-sf-build`.
 - Do not mix languages casually inside one artifact. If an internal English document needs to show a user prompt, quote the prompt in the user's language and label it clearly.
 - Legacy mixed-language artifacts do not require a broad migration. When editing a touched section, move it toward this doctrine without rewriting unrelated history.
 - Preserve the original language of quoted user input, source evidence, legal text, or externally sourced material.

@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-04"
 updated: "2026-06-10"
 status: active
-source_skill: sf-build
+source_skill: 001-sf-build
 scope: master-delegation-semantics
 owner: Diane
 confidence: high
@@ -14,15 +14,15 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - skills/shipflow/SKILL.md
-  - skills/sf-build/SKILL.md
-  - skills/sf-maintain/SKILL.md
-  - skills/sf-content/SKILL.md
-  - skills/sf-design/SKILL.md
-  - skills/sf-skill-build/SKILL.md
-  - skills/sf-deploy/SKILL.md
-  - skills/sf-bug/SKILL.md
-  - skills/sf-audit/SKILL.md
+  - skills/000-shipflow/SKILL.md
+  - skills/001-sf-build/SKILL.md
+  - skills/002-sf-maintain/SKILL.md
+  - skills/007-sf-content/SKILL.md
+  - skills/006-sf-design/SKILL.md
+  - skills/009-sf-skill-build/SKILL.md
+  - skills/004-sf-deploy/SKILL.md
+  - skills/003-sf-bug/SKILL.md
+  - skills/400-sf-audit/SKILL.md
   - skills/references/decision-quality-contract.md
   - skills/references/spec-driven-development-discipline.md
   - docs/technical/skill-runtime-and-lifecycle.md
@@ -34,17 +34,17 @@ depends_on:
     required_status: active
 supersedes: []
 evidence:
-  - "User decision 2026-05-04: the primary `shipflow` router should use direct main-thread handoff to selected master skills, not nested master-skill subagents."
+  - "User decision 2026-05-04: the primary `000-shipflow` router should use direct main-thread handoff to selected master skills, not nested master-skill subagents."
   - "User decision 2026-05-04: master skills keep the master conversation clean by delegating file, validation, closure, and ship work to bounded sequential subagents when available."
   - "User decision 2026-05-04: delegation/subagent execution is distinct from parallelism; parallelism means simultaneous subagents and requires ready Execution Batches."
   - "User decision 2026-05-04: short natural-language confirmations continue the current chantier in delegated sequential mode after diagnosis or proposal; they are interpreted by intent, not exact keyword."
-  - "User decision 2026-05-06: sf-design joins the master/orchestrator topology set."
+  - "User decision 2026-05-06: 006-sf-design joins the master/orchestrator topology set."
   - "User decision 2026-05-14: an `agents` argument should explicitly validate delegated sequential execution; parallelism remains spec-gated through `Execution Batches`, not an `agents parallel` shortcut."
   - "User decision 2026-05-24: delegated execution must optimize for quality, security, performance, and durability before speed or cost."
   - "User decision 2026-06-10: favor subagents broadly to keep the main conversation clean; sequential is the normal default, while parallel remains read-only or spec/batch-gated."
   - "User decision 2026-06-10: using a master skill counts as consent for bounded sequential subagents, and `spark`, `codex`, `sous-agent`/`subagent`, and `mini` arguments request model-specific subagent delegation."
 next_review: "2026-06-04"
-next_step: "/sf-verify master delegation semantics"
+next_step: "/103-sf-verify master delegation semantics"
 ---
 
 # Master Delegation Semantics
@@ -63,9 +63,9 @@ Do not narrate routine subagent orchestration; report outcomes, evidence, blocke
 
 ## Applies To
 
-This applies to master and orchestrator skills that pilot multiple phases, owner skills, or execution contexts, including `shipflow`, `sf-build`, `sf-maintain`, `sf-content`, `sf-design`, `sf-skill-build`, `sf-deploy`, `sf-bug`, and `sf-audit`.
+This applies to master and orchestrator skills that pilot multiple phases, owner skills, or execution contexts, including `000-shipflow`, `001-sf-build`, `002-sf-maintain`, `007-sf-content`, `006-sf-design`, `009-sf-skill-build`, `004-sf-deploy`, `003-sf-bug`, and `400-sf-audit`.
 
-`shipflow` is a special case: it is a primary router, not a lifecycle executor. It loads this reference to avoid invalid topology, then uses direct main-thread handoff to the selected skill. It must not launch selected master skills inside subagents.
+`000-shipflow` is a special case: it is a primary router, not a lifecycle executor. It loads this reference to avoid invalid topology, then uses direct main-thread handoff to the selected skill. It must not launch selected master skills inside subagents.
 
 Atomic owner skills may cite this reference only when they launch or coordinate subagents themselves.
 
@@ -87,7 +87,7 @@ Use one bounded subagent at a time. A small scope may use a mini-contract, but s
 
 When a master skill accepts an `agents`, `subagent`, `sous-agent`, `spark`, `codex`, or `mini` argument, treat it as a strict delegated sequential request for the current work item. If file work, validation, closure preparation, or ship preparation proceeds without a bounded subagent, the run must stop or report `degraded: subagents unavailable/not applied` with the reason. These arguments never mean parallel execution.
 
-For Codex/OpenAI subagents, the default bounded mission model is the smallest quality-equivalent model for the mission. Use `gpt-5.4-mini` only for low-risk bounded work where it can meet the quality and excellence bar. Use `gpt-5.3-codex-spark` when `spark` is requested and the mission is quality-equivalent on Spark, including concise summaries, text-only handoffs, micro-code, targeted UI/local edits, or other low-risk bounded work while Spark credits/availability permit. Use the `codex` implementation profile when `codex` is requested or the mission is long implementation, multi-file code work, refactor, hard debugging, or terminal-heavy execution; resolve that profile through `skills/sf-model/references/model-routing.md` rather than pinning it to a deprecated slug. Use `gpt-5.5` with the appropriate `low`, `medium`, `high`, or `xhigh` reasoning for non-implementation work when ambiguity, cross-system reasoning, governance, architecture, audits, product arbitration, security, business risk, or high error cost require it.
+For Codex/OpenAI subagents, the default bounded mission model is the smallest quality-equivalent model for the mission. Use `gpt-5.4-mini` only for low-risk bounded work where it can meet the quality and excellence bar. Use `gpt-5.3-codex-spark` when `spark` is requested and the mission is quality-equivalent on Spark, including concise summaries, text-only handoffs, micro-code, targeted UI/local edits, or other low-risk bounded work while Spark credits/availability permit. Use the `codex` implementation profile when `codex` is requested or the mission is long implementation, multi-file code work, refactor, hard debugging, or terminal-heavy execution; resolve that profile through `skills/704-sf-model/references/model-routing.md` rather than pinning it to a deprecated slug. Use `gpt-5.5` with the appropriate `low`, `medium`, `high`, or `xhigh` reasoning for non-implementation work when ambiguity, cross-system reasoning, governance, architecture, audits, product arbitration, security, business risk, or high error cost require it.
 
 Each delegated mission must include:
 

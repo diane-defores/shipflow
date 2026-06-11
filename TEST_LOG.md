@@ -1,5 +1,18 @@
 # Test Log
 
+## 2026-06-11 - Three Digit Runtime Skill Names manual picker proof
+
+- Scope: shipflow_data/workflow/specs/three-digit-runtime-skill-names.md
+- Environment: local runtime picker, fresh/reloaded Codex and Claude Code sessions
+- Tester: user
+- Source: 107-sf-test
+- Status: pass
+- Confidence: high
+- Result summary: User reported all manual picker scenarios pass: `001-sf-build` in Codex, `000-shipflow` in Claude Code, and no old active `sf-build` duplicate.
+- Bug pointer: none
+- Evidence pointer: chat confirmation; checklist `shipflow_data/workflow/test-checklists/three-digit-runtime-skill-names.md`
+- Follow-up: /103-sf-verify Three Digit Runtime Skill Names
+
 ## 2026-05-08 - ShipFlow menu startup and Health cleanup guard retest
 
 - Scope: BUG-2026-05-08-001, BUG-2026-05-08-002

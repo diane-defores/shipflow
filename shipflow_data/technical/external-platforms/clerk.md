@@ -15,9 +15,9 @@ security_impact: yes
 docs_impact: yes
 linked_systems:
   - skills/references/documentation-freshness-gate.md
-  - skills/sf-auth-debug/SKILL.md
-  - skills/sf-auth-debug/references/clerk.md
-  - skills/sf-auth-debug/references/convex-clerk.md
+  - skills/109-sf-auth-debug/SKILL.md
+  - skills/109-sf-auth-debug/references/clerk.md
+  - skills/109-sf-auth-debug/references/convex-clerk.md
   - templates/artifacts/project_platform_usage.md
 depends_on:
   - artifact: "shipflow_data/technical/external-platforms/README.md"

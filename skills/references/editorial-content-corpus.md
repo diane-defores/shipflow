@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-24"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: editorial-content-corpus
 owner: Diane
 confidence: high
@@ -22,8 +22,8 @@ linked_systems:
   - shipflow_data/business/gtm.md
   - site/src/pages/
   - site/src/content/
-  - skills/sf-repurpose/SKILL.md
-  - skills/sf-audit-copy/SKILL.md
+  - skills/202-sf-repurpose/SKILL.md
+  - skills/206-sf-audit-copy/SKILL.md
 depends_on:
   - artifact: "shipflow_data/editorial/README.md"
     artifact_version: "1.0.0"
@@ -34,10 +34,10 @@ depends_on:
 supersedes: []
 evidence:
   - "Ready spec requires a compact loading reference for editorial and content agents."
-  - "sf-docs first-run bootstrap and update adoption now treat missing editorial governance as recoverable bootstrap state when public surfaces exist."
+  - "300-sf-docs first-run bootstrap and update adoption now treat missing editorial governance as recoverable bootstrap state when public surfaces exist."
   - "Operator decision on 2026-05-24: monorepos use one root shipflow_data editorial corpus with scoped public surfaces."
 next_review: "2026-06-01"
-next_step: "/sf-docs audit editorial"
+next_step: "/300-sf-docs audit editorial"
 ---
 
 # Editorial Content Corpus
@@ -50,7 +50,7 @@ This reference tells content, copy, docs, and Editorial Reader agents how to loa
 
 1. Resolve the governance root first. In a monorepo, use the monorepo-root `shipflow_data/`, not a nested app/site/package `shipflow_data/`.
 2. Read `shipflow_data/editorial/content-map.md` first. It is the canonical public content routing map. Root `CONTENT_MAP.md` is a migration source only.
-3. Read `shipflow_data/editorial/README.md` for the editorial governance index when present; if it is missing on a public/content project, report an editorial governance bootstrap trigger and route to `/sf-docs editorial`. Legacy `docs/editorial/` is a migration source only.
+3. Read `shipflow_data/editorial/README.md` for the editorial governance index when present; if it is missing on a public/content project, report an editorial governance bootstrap trigger and route to `/300-sf-docs editorial`. Legacy `docs/editorial/` is a migration source only.
 4. Read `shipflow_data/editorial/public-surface-map.md` for public surfaces and update triggers.
 5. Read `shipflow_data/editorial/page-intent-map.md` for page jobs, CTAs, source contracts, and shared-file risk.
 6. Read `shipflow_data/editorial/claim-register.md` when public claims touch security, privacy, compliance, AI reliability, automation, speed, savings, availability, pricing, or business outcomes.
@@ -88,16 +88,16 @@ Astro runtime content must preserve the schema declared in `site/src/content.con
 
 These skills should use this corpus before changing or judging public content:
 
-- `skills/sf-docs/SKILL.md`
-- `skills/sf-repurpose/SKILL.md`
-- `skills/sf-audit-copy/SKILL.md`
-- `skills/sf-redact/SKILL.md`
-- `skills/sf-enrich/SKILL.md`
+- `skills/300-sf-docs/SKILL.md`
+- `skills/202-sf-repurpose/SKILL.md`
+- `skills/206-sf-audit-copy/SKILL.md`
+- `skills/200-sf-redact/SKILL.md`
+- `skills/201-sf-enrich/SKILL.md`
 
 ## Output Expectations
 
 - Missing `shipflow_data/editorial/README.md` on a public/content project: treat it as a first-run bootstrap trigger.
-- Existing project adoption: `sf-docs update` reports editorial governance as `created`, `already existed`, `needs audit`, `skipped - no editorial surfaces detected`, or `blocked`.
+- Existing project adoption: `300-sf-docs update` reports editorial governance as `created`, `already existed`, `needs audit`, `skipped - no editorial surfaces detected`, or `blocked`.
 - Public-content impact: produce an `Editorial Update Plan`.
 - Sensitive public claims: produce a `Claim Impact Plan`.
 - No public impact: state `no editorial impact` with a reason.

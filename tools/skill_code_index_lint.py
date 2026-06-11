@@ -10,8 +10,9 @@ from pathlib import Path
 
 
 ROW_RE = re.compile(
-    r"^\|\s*`(?P<code>\d{2})`\s*\|\s*`(?P<skill>[^`]+)`\s*\|\s*(?P<family>[^|]+?)\s*\|\s*`(?P<label>[^`]+)`\s*\|"
+    r"^\|\s*`(?P<code>\d{3})`\s*\|\s*`(?P<old>[^`]+)`\s*\|\s*`(?P<skill>[^`]+)`\s*\|\s*(?P<family>[^|]+?)\s*\|"
 )
+RUNTIME_NAME_RE = re.compile(r"^\d{3}-[a-z0-9](?:[a-z0-9-]{0,59}[a-z0-9])?$")
 
 
 def parse_args() -> argparse.Namespace:
@@ -46,9 +47,9 @@ def parse_index(index_path: Path) -> list[tuple[str, str, str, str, int]]:
         rows.append(
             (
                 match.group("code"),
+                match.group("old"),
                 match.group("skill"),
                 match.group("family").strip(),
-                match.group("label"),
                 lineno,
             )
         )
@@ -79,7 +80,7 @@ def main() -> int:
     indexed_skills: set[str] = set()
     existing_skills = skill_dirs(skills_root)
 
-    for code, skill, family, label, lineno in rows:
+    for code, old_name, skill, family, lineno in rows:
         if code in codes:
             errors.append(f"duplicate code {code}: lines {codes[code]} and {lineno}")
         codes[code] = lineno
@@ -92,11 +93,12 @@ def main() -> int:
         if not family:
             errors.append(f"empty family for {code}-{skill}: line {lineno}")
 
-        expected_label = f"{code}-{skill}"
-        if label != expected_label:
-            errors.append(
-                f"bad display label for {skill}: expected {expected_label}, got {label} on line {lineno}"
-            )
+        if not RUNTIME_NAME_RE.match(skill):
+            errors.append(f"bad runtime skill name: {skill} on line {lineno}")
+
+        expected_skill = f"{code}-{old_name}"
+        if skill != expected_skill:
+            errors.append(f"bad runtime name for {old_name}: expected {expected_skill}, got {skill} on line {lineno}")
 
         if skill not in existing_skills:
             errors.append(f"indexed skill does not exist: {skill} on line {lineno}")
@@ -112,7 +114,7 @@ def main() -> int:
         print_errors(errors)
         return 1
 
-    print(f"OK: {len(rows)} skill codes cover {len(existing_skills)} skills")
+    print(f"OK: {len(rows)} three-digit runtime skill codes cover {len(existing_skills)} skills")
     return 0
 
 

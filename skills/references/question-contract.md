@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-05"
 updated: "2026-06-10"
 status: active
-source_skill: sf-skill-build
+source_skill: 009-sf-skill-build
 scope: skill-question-contract
 owner: Diane
 confidence: high
@@ -33,7 +33,7 @@ evidence:
   - "User decision 2026-06-09: skills should be almost fully autonomous and professionally effective, asking fewer questions and only in plain decision language when the operator truly owns the decision."
   - "User decision 2026-06-10: autonomy and question rules should be compact enough to preserve the signal."
 next_review: "2026-06-05"
-next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
+next_step: "/103-sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
 
 # Question Contract

@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-30"
 updated: "2026-05-30"
 status: draft
-source_skill: sf-build
+source_skill: 001-sf-build
 scope: actionable_failure_contract
 owner: Diane
 confidence: high
@@ -14,14 +14,14 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - sf-build
-  - sf-verify
+  - 001-sf-build
+  - 103-sf-verify
 depends_on: []
 supersedes: []
 evidence:
   - "Need for deterministic owner routing and evidence requirements in reusable audit or support workflows."
 next_review: "2026-06-30"
-next_step: "/sf-ready Actionable Failure Contract"
+next_step: "/101-sf-ready Actionable Failure Contract"
 ---
 
 # Actionable Failure Contract
@@ -51,10 +51,10 @@ Use this checklist before producing a final failure report:
 
 ## Valid Owner Routing
 
-- `sf-skill-build`: contract or behavior definition updates.
-- `sf-docs`: doc/contract correction when public behavior or workflow text is misaligned.
-- `sf-verify`: missing evidence, proof gap, or incorrect assumptions.
-- `sf-spec`: when implementation surface is non-trivial and requires a new durable spec.
+- `009-sf-skill-build`: contract or behavior definition updates.
+- `300-sf-docs`: doc/contract correction when public behavior or workflow text is misaligned.
+- `103-sf-verify`: missing evidence, proof gap, or incorrect assumptions.
+- `100-sf-spec`: when implementation surface is non-trivial and requires a new durable spec.
 
 ## Non-Actionable Report Conditions
 

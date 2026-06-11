@@ -15,9 +15,9 @@ security_impact: yes
 docs_impact: yes
 linked_systems:
   - skills/references/documentation-freshness-gate.md
-  - skills/sf-prod/SKILL.md
-  - skills/sf-deploy/SKILL.md
-  - skills/sf-auth-debug/references/vercel-tooling.md
+  - skills/405-sf-prod/SKILL.md
+  - skills/004-sf-deploy/SKILL.md
+  - skills/109-sf-auth-debug/references/vercel-tooling.md
   - skills/references/project-development-mode.md
 depends_on:
   - artifact: "shipflow_data/technical/external-platforms/README.md"

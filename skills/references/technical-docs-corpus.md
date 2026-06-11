@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-24"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: technical-docs-corpus
 owner: Diane
 confidence: high
@@ -19,7 +19,7 @@ linked_systems:
   - shipflow_data/technical/external-platforms/
   - templates/artifacts/project_platform_usage.md
   - templates/artifacts/technical_module_context.md
-  - skills/sf-docs/SKILL.md
+  - skills/300-sf-docs/SKILL.md
 depends_on:
   - artifact: "shipflow_data/technical/code-docs-map.md"
     artifact_version: "1.1.0"
@@ -27,12 +27,12 @@ depends_on:
 supersedes: []
 evidence:
   - "Ready spec requires a skill-facing reference for technical docs loading."
-  - "sf-docs first-run bootstrap and update adoption now treat missing code-docs maps as recoverable bootstrap state."
+  - "300-sf-docs first-run bootstrap and update adoption now treat missing code-docs maps as recoverable bootstrap state."
   - "External platform corpus added for global Freshness Gate source notes and governance-root provider usage docs."
   - "Operator decision on 2026-05-24: provider usage notes are risk-driven, not mandatory per technology."
   - "Operator decision on 2026-05-24: monorepos use one root shipflow_data corpus with scoped app/package coverage."
 next_review: "2026-06-01"
-next_step: "/sf-docs technical audit"
+next_step: "/300-sf-docs technical audit"
 ---
 
 # Technical Docs Corpus
@@ -44,16 +44,16 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 ## Loading Rule
 
 1. Resolve the governance root first. In a monorepo, use the monorepo-root `shipflow_data/`, not a nested app/package `shipflow_data/`.
-2. Read `shipflow_data/technical/code-docs-map.md` first for any code-changing task when it exists; if it is missing, report a technical governance bootstrap trigger and route to `/sf-docs technical`. Legacy `docs/technical/code-docs-map.md` is a migration source only.
+2. Read `shipflow_data/technical/code-docs-map.md` first for any code-changing task when it exists; if it is missing, report a technical governance bootstrap trigger and route to `/300-sf-docs technical`. Legacy `docs/technical/code-docs-map.md` is a migration source only.
 3. Match changed or target paths to the map when present.
 4. Load only the primary technical doc and necessary secondary docs.
 5. Produce a `Documentation Update Plan` after every code-changing execution wave and again during end verification.
 6. Keep shared docs sequential unless the ready spec assigns disjoint ownership.
 7. When a task depends on an external provider, SDK, framework, hosting platform, API, or toolchain behavior, read the matching global note under `shipflow_data/technical/external-platforms/` when it exists. Then read the governance-root usage note under `shipflow_data/technical/platforms/` only when it exists or when the task is materially affected by project-specific provider configuration.
 
-## `sf-docs` Technical Mode Contract
+## `300-sf-docs` Technical Mode Contract
 
-`sf-docs technical` or `sf-docs technical audit` should:
+`300-sf-docs technical` or `300-sf-docs technical audit` should:
 
 - treat a missing `shipflow_data/technical/code-docs-map.md` as a first-run bootstrap trigger, not as an immediate read failure
 - create baseline `shipflow_data/technical/README.md` and `shipflow_data/technical/code-docs-map.md` governance scaffolding for code projects when safe
@@ -68,7 +68,7 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 - verify that `technical_module_context` files pass `tools/shipflow_metadata_lint.py`
 - fail or report a blocking gap when a mapped code area changed but no impacted doc appears in the `Documentation Update Plan`
 
-`sf-docs update` should also detect missing technical governance in existing projects and report one of `created`, `already existed`, `needs audit`, `skipped - no code areas detected`, or `blocked` with `/sf-docs technical` as the recovery command.
+`300-sf-docs update` should also detect missing technical governance in existing projects and report one of `created`, `already existed`, `needs audit`, `skipped - no code areas detected`, or `blocked` with `/300-sf-docs technical` as the recovery command.
 
 ## Documentation Update Plan
 
@@ -95,4 +95,4 @@ Use the global note to decide what current external sources to check. Use the go
 
 ## Maintenance Rule
 
-Update this reference when the technical docs map, template, Reader plan format, or `sf-docs` technical mode contract changes.
+Update this reference when the technical docs map, template, Reader plan format, or `300-sf-docs` technical mode contract changes.

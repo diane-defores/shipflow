@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-02"
 updated: "2026-05-02"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: technical-reader-role
 owner: Diane
 confidence: high
@@ -28,7 +28,7 @@ supersedes: []
 evidence:
   - "Ready spec requires a strict read-only Technical Reader role with code-docs mapping and a Documentation Update Plan."
 next_review: "2026-06-02"
-next_step: "/sf-verify sf-build Autonomous Master Skill"
+next_step: "/103-sf-verify 001-sf-build Autonomous Master Skill"
 ---
 
 # Technical Reader Agent Contract
@@ -83,7 +83,7 @@ Forbidden:
 - If behavior changed, identify whether docs require `none`, `review`, `update`, or `create`.
 - Identify linked systems that require revalidation.
 - Flag shared-file risks when parallel ownership is proposed.
-- If the map is missing on a code project, route to `/sf-docs technical`.
+- If the map is missing on a code project, route to `/300-sf-docs technical`.
 
 ## Documentation Update Plan Format
 
@@ -91,7 +91,7 @@ Forbidden:
 ## Documentation Update Plan
 
 - Code changed: `path/or/pattern`
-- Subsystem: `name`
+- Subsystem: `707-name`
 - Primary technical doc: `docs/technical/...`
 - Secondary docs: `...`
 - Required action: `none | review | update | create`

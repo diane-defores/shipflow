@@ -43,6 +43,7 @@
 🟢 [ShipFlow] task: Router les preuves hébergées manquantes vers un owner concret après un verdict `partial` | status: done | area: skills | spec: shipflow_data/workflow/specs/shipflow-hosted-proof-follow-through-and-user-report-discipline.md | next: none
 🟢 [ShipFlow] task: Forcer les exports et audits de conversation ShipFlow dans le repo ShipFlow | status: done | area: skills | spec: shipflow_data/workflow/specs/conversation-audit-canonical-storage-hardening.md | next: none
 🟢 [ShipFlow] task: Ajouter un index numerique canonique des skills sans renommer les invocations | status: done | area: skills | spec: shipflow_data/workflow/specs/numeric-skill-code-index.md | next: /sf-ship Numeric Skill Code Index
+🟢 [ShipFlow] task: Migrer les noms runtime des skills ShipFlow vers des prefixes a trois chiffres | status: done | area: skills | spec: shipflow_data/workflow/specs/three-digit-runtime-skill-names.md | next: /005-sf-ship Three Digit Runtime Skill Names
 🟢 [ShipFlow] task: Autoriser `sf-start` a enchaîner une auto-verification locale bornee quand la preuve restante est sure et non destructive | status: done | area: skills | spec: shipflow_data/workflow/specs/auto-follow-through-for-local-only-sf-start-verification.md | next: /sf-ship Auto-follow-through for local-only sf-start verification
 
 | Pri | Task | Status |

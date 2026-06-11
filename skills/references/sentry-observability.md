@@ -1,12 +1,12 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-11"
-updated: "2026-05-12"
+updated: "2026-06-11"
 status: active
-source_skill: sf-skills-refresh
+source_skill: 009-sf-skill-build
 scope: sentry-observability
 owner: unknown
 confidence: high
@@ -14,17 +14,20 @@ risk_level: medium
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - skills/sf-prod/SKILL.md
-  - skills/sf-deploy/SKILL.md
-  - skills/sf-auth-debug/SKILL.md
-  - skills/sf-browser/SKILL.md
-  - skills/sf-test/SKILL.md
-  - skills/sf-bug/SKILL.md
-  - skills/sf-fix/SKILL.md
-  - skills/sf-start/SKILL.md
-  - skills/sf-verify/SKILL.md
-  - skills/sf-audit-code/SKILL.md
-  - skills/sf-perf/SKILL.md
+  - skills/100-sf-spec/SKILL.md
+  - skills/101-sf-ready/SKILL.md
+  - skills/405-sf-prod/SKILL.md
+  - skills/004-sf-deploy/SKILL.md
+  - skills/109-sf-auth-debug/SKILL.md
+  - skills/108-sf-browser/SKILL.md
+  - skills/107-sf-test/SKILL.md
+  - skills/003-sf-bug/SKILL.md
+  - skills/106-sf-fix/SKILL.md
+  - skills/102-sf-start/SKILL.md
+  - skills/103-sf-verify/SKILL.md
+  - skills/305-sf-init/SKILL.md
+  - skills/401-sf-audit-code/SKILL.md
+  - skills/403-sf-perf/SKILL.md
 depends_on: []
 supersedes: []
 evidence:
@@ -37,8 +40,10 @@ evidence:
   - "Blacksmith docs 2026-05-11: Blacksmith runners transparently accelerate official cache actions and provide searchable CI logs for workflow/run/branch/job/step filters."
   - "User Sentry product update 2026-05-12: Sentry Alerts split into Monitors for detection/issue creation and Alerts for notification routing; Metric Alerts migrated to Metric Monitors."
   - "Sentry changelog/docs 2026-05-12: Monitors and Alerts are GA; Crons and Uptime live under Monitors."
-next_review: "2026-06-11"
-next_step: "/sf-verify Sentry observability doctrine"
+  - "User directive 2026-06-11: runtime projects should expose a safe diagnostics/log-copy surface so agents using browser proof can collect useful logs without asking the operator first."
+  - "User directive 2026-06-11: copied diagnostics and logs must start with the current commit/build identity and build date/time in Europe/Paris and UTC."
+next_review: "2026-06-25"
+next_step: "/103-sf-verify Sentry observability doctrine"
 ---
 
 # Sentry Observability
@@ -57,10 +62,26 @@ Skills never have direct Sentry dashboard access. Do not attempt to open or quer
 
 Use Sentry only through evidence that is visible in the app, logs, error boundaries, support screens, pasted by the operator, or otherwise already present in the working context. If no Sentry issue/event pointer is available, use local PM2 logs and redacted Doppler environment checks as supporting runtime evidence instead of pretending Sentry was checked.
 
+## Runtime Diagnostic Surface
+
+Runtime projects should expose a safe diagnostics surface for users/operators: error boundary, support screen, debug panel, or diagnostics modal with a `Copy diagnostics` / `Copy logs` action.
+
+Copied diagnostics/logs must start with build identity:
+
+```text
+commit/build: <sha or build id> <commit subject when safe>
+build_at_paris: YYYY-MM-DD HH:mm Europe/Paris
+build_at_utc: YYYY-MM-DD HH:mm UTC
+```
+
+Minimum useful payload after that: environment, release/build id, app version, route/screen, event timestamp, Sentry event/support id when present, and a short redacted client/server log summary. Never include secrets, cookies, tokens, auth codes, raw headers, full payloads, private user text, or PII.
+
+`305-sf-init` should record whether the project has Sentry and a diagnostics/log-copy surface. Runtime specs should either preserve/add that surface or document a static-site exception. Browser-capable skills (`108-sf-browser`, `109-sf-auth-debug`) should use the visible diagnostics/copy-log UI when it is present before asking the operator for logs.
+
 For Flutter apps, treat Sentry as useful only when both layers are true:
 
 - The SDK is initialized early enough to capture Flutter/native runtime failures.
-- The build, CI, or app diagnostics prove the expected DSN, environment, release, and dist/build identifiers are present without exposing secret values.
+- The build, CI, or app diagnostics prove the expected DSN, environment, release, dist/build identifiers, and Paris/UTC build timestamps are present without exposing secret values.
 
 ## Monitors And Alerts
 
@@ -132,7 +153,7 @@ Use this checklist for Flutter apps before recommending more Sentry work:
 - Confirm initialization happens before `runApp` and does not break local development when `SENTRY_DSN` is missing.
 - Confirm `sendDefaultPii=false` for privacy-sensitive apps unless the user explicitly accepts the data tradeoff.
 - Confirm screenshots, view hierarchy, session replay, and user feedback screenshots are disabled or deliberately configured when the app handles voice, keyboard, clipboard, auth, private text, or user-owned files.
-- Confirm the app records release/environment/build identifiers from CI, for example commit SHA, branch/ref, run ID, `SENTRY_ENVIRONMENT`, `release`, and `dist`.
+- Confirm the app records release/environment/build identifiers from CI, for example commit SHA, branch/ref, run ID, `SENTRY_ENVIRONMENT`, `release`, `dist`, and Paris/UTC build timestamps.
 - Confirm local error handlers preserve visible failures and do not swallow exceptions just because Sentry is installed.
 - Add route/navigation correlation when the app has meaningful screens. For `MaterialApp.router`/`GoRouter`, prefer a Sentry navigator observer or router-compatible integration if the local router supports it.
 - Add a deliberate verification event only in a controlled debug/test build, then remove or guard it. Do not ship a permanent button or startup crash test.
@@ -179,7 +200,7 @@ When any of those conditions stops being true, treat Sentry as required and foll
 ## Correlation Rules
 
 - When a Sentry pointer is supplied or visible, match it to the same environment being tested: `local`, `preview`, `production`, or project-specific equivalent.
-- When a Sentry pointer is supplied or visible, match it to the deployed release or commit SHA when `sf-prod`, `sf-deploy`, `sf-ship`, or `sf-verify` depends on hosted evidence.
+- When a Sentry pointer is supplied or visible, match it to the deployed release or commit SHA when `405-sf-prod`, `004-sf-deploy`, `005-sf-ship`, or `103-sf-verify` depends on hosted evidence.
 - When a Monitor-created issue or Alert notification is supplied, match monitor ID/name/type, issue/event ID, connected Alert/workflow ID, environment, release/commit, and trigger window before using it as proof.
 - For migrated Metric Alerts, request evidence of both sides when possible: the Metric Monitor detection threshold and the connected Alert routing/action. Do not treat a routed notification alone as proof that the monitor threshold is correct.
 - For Cron and Uptime monitors, match check-in or uptime result windows to the deploy/test window before claiming current production health.
@@ -200,6 +221,7 @@ When any of those conditions stops being true, treat Sentry as required and foll
 ## Skill Reporting Rules
 
 - Include Sentry evidence under `Evidence`, `Logs`, `Observability`, or `Limits` depending on the skill report shape.
+- When copied diagnostics/logs are used, report whether the first lines exposed commit/build and Paris/UTC build time.
 - If Sentry was expected but no issue/event pointer was available, say `Sentry: no direct dashboard access; no event pointer supplied`.
 - If monitoring or alerting proof matters and no monitor/alert evidence is supplied, say `Sentry Monitors/Alerts: no direct dashboard access; no operator evidence supplied`.
 - If a supplied/visible pointer was checked and no match was possible, say `Sentry: pointer not correlated to [environment/release/window]`.
@@ -209,9 +231,9 @@ When any of those conditions stops being true, treat Sentry as required and foll
 - If only one side is proven, say `Sentry: monitor proven but routing gap` or `Sentry: routing proven but monitor gap`.
 - If PM2/Doppler evidence was used instead, say `Sentry: no direct dashboard access; PM2/Doppler checked` and name the bounded evidence.
 - If Sentry is not expected because the target is a static site, say `Sentry: not expected for static site; no auth or user-specific runtime workflow`.
-- For Flutter apps, report Sentry state from app-visible diagnostics or build config when available: configured/initialized, environment, release, dist, and whether CI injected a masked `SENTRY_DSN`.
+- For Flutter apps, report Sentry state from app-visible diagnostics or build config when available: configured/initialized, environment, release, dist, Paris/UTC build timestamps, and whether CI injected a masked `SENTRY_DSN`.
 - For Blacksmith-hosted CI, include the GitHub Actions run ID and a precise log query hint when it helps the operator investigate, for example `branch:main level:error,warn workflow:"Flutter Android CI"`.
-- Do not let Sentry replace the owner skill proof: browser evidence still belongs to `sf-browser` / `sf-auth-debug`, deploy truth to `sf-prod`, manual QA to `sf-test`, and closure to `sf-verify`.
+- Do not let Sentry replace the owner skill proof: browser evidence still belongs to `108-sf-browser` / `109-sf-auth-debug`, deploy truth to `405-sf-prod`, manual QA to `107-sf-test`, and closure to `103-sf-verify`.
 
 ## Performance Notes
 

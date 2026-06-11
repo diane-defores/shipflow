@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-03"
 updated: "2026-06-10"
 status: active
-source_skill: sf-build
+source_skill: 001-sf-build
 scope: skill-reporting-contract
 owner: Diane
 confidence: high
@@ -33,7 +33,7 @@ evidence:
   - "User decision 2026-06-09: human-launched skills may keep technical evidence internally or in report=agent, but their default report must stay short, readable, and useful to a non-developer operator."
   - "User decision 2026-06-10: routine subagent orchestration should not be narrated to the user; results matter more than process."
 next_review: "2026-06-04"
-next_step: "/sf-verify shipflow-skill-reporting-and-proof-hardening"
+next_step: "/103-sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
 
 # Reporting Contract
@@ -155,7 +155,7 @@ Use this block in user mode:
 
 specs/example.md
 
-Flux: sf-spec ✅ -> sf-ready ✅ -> sf-start ✅ -> sf-verify ✅ -> sf-end ✅ -> sf-ship ✅🎯
+Flux: 100-sf-spec ✅ -> 101-sf-ready ✅ -> 102-sf-start ✅ -> 103-sf-verify ✅ -> 104-sf-end ✅ -> 005-sf-ship ✅🎯
 Reste a faire: <only if non-empty>
 Prochaine etape: <only if non-empty>
 ```
@@ -200,7 +200,7 @@ Concise does not mean vague. If a run is blocked, partial, or risky, include:
 Use these scenarios when changing reporting behavior or reviewing a skill report:
 
 - `SSRP-001 human success`: a directly launched skill succeeds. The user report is concise, in the user's active language, and includes outcome, proof summary, and no checklist dump.
-- `SSRP-002 human not-ready`: `sf-ready` finds blockers. The user report lists only blockers that require action, explains them plainly, and gives one next command.
+- `SSRP-002 human not-ready`: `101-sf-ready` finds blockers. The user report lists only blockers that require action, explains them plainly, and gives one next command.
 - `SSRP-003 human blocked safety`: a safety or security gate blocks work. The user report names the gate, summarizes redacted evidence, gives the safest next action, and does not expose secrets or bulk logs.
 - `SSRP-004 agent handoff`: another skill needs detailed evidence. The caller passes `report=agent`, and the report may include checklists, matrices, files, commands, and lifecycle internals.
 - `SSRP-005 proof limit`: a completion claim lacks full proof. The user report stays short but names the missing proof or explicit exception before claiming completion.

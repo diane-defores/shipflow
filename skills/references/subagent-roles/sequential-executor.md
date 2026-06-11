@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-02"
 updated: "2026-05-02"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: sequential-executor-role
 owner: Diane
 confidence: high
@@ -15,19 +15,19 @@ security_impact: yes
 docs_impact: yes
 linked_systems:
   - specs/
-  - skills/sf-start/SKILL.md
-  - skills/sf-verify/SKILL.md
+  - skills/102-sf-start/SKILL.md
+  - skills/103-sf-verify/SKILL.md
   - skills/references/subagent-roles/technical-reader.md
   - skills/references/subagent-roles/editorial-reader.md
 depends_on:
-  - artifact: "specs/sf-build-autonomous-master-skill.md"
+  - artifact: "specs/001-sf-build-autonomous-master-skill.md"
     artifact_version: "1.2.0"
     required_status: "ready"
 supersedes: []
 evidence:
   - "Ready spec requires delegated sequential execution as the default mode with one active write-capable executor."
 next_review: "2026-06-02"
-next_step: "/sf-verify sf-build Autonomous Master Skill"
+next_step: "/103-sf-verify 001-sf-build Autonomous Master Skill"
 ---
 
 # Sequential Executor Contract

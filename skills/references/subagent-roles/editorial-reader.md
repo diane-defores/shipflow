@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-01"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: editorial-reader-role
 owner: Diane
 confidence: high
@@ -31,7 +31,7 @@ supersedes: []
 evidence:
   - "Ready spec requires a separate read-only Editorial Reader role and no reader.md alias."
 next_review: "2026-06-01"
-next_step: "/sf-verify ShipFlow Editorial Content Governance Layer for AI Agents"
+next_step: "/103-sf-verify ShipFlow Editorial Content Governance Layer for AI Agents"
 ---
 
 # Editorial Reader Agent Contract

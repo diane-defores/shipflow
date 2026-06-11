@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 
-AGGREGATE_BUDGET = 8000
+AGGREGATE_BUDGET = 8500
 DESCRIPTION_TARGET_MAX = 120
 DESCRIPTION_WARNING_MAX = 140
 DESCRIPTION_HARD_MAX = 200

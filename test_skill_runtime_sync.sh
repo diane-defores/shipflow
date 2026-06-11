@@ -32,48 +32,48 @@ run_helper() {
 SHIPFLOW_ROOT_TEST="$TMP_DIR/shipflow"
 TARGET_HOME_TEST="$TMP_DIR/home"
 mkdir -p "$SHIPFLOW_ROOT_TEST/skills" "$TARGET_HOME_TEST"
-make_skill "$SHIPFLOW_ROOT_TEST" "sf-alpha"
-make_skill "$SHIPFLOW_ROOT_TEST" "sf-beta"
-make_skill "$SHIPFLOW_ROOT_TEST" "sf-gamma"
+make_skill "$SHIPFLOW_ROOT_TEST" "001-sf-alpha"
+make_skill "$SHIPFLOW_ROOT_TEST" "002-sf-beta"
+make_skill "$SHIPFLOW_ROOT_TEST" "003-sf-gamma"
 
-if run_helper --check --skill sf-alpha >/tmp/shipflow-sync-check.out 2>&1; then
+if run_helper --check --skill 001-sf-alpha >/tmp/shipflow-sync-check.out 2>&1; then
     echo "expected missing check to fail" >&2
     exit 1
 fi
-grep -q "missing runtime=claude skill=sf-alpha" /tmp/shipflow-sync-check.out
-grep -q "missing runtime=codex skill=sf-alpha" /tmp/shipflow-sync-check.out
-test ! -e "$TARGET_HOME_TEST/.claude/skills/sf-alpha"
+grep -q "missing runtime=claude skill=001-sf-alpha" /tmp/shipflow-sync-check.out
+grep -q "missing runtime=codex skill=001-sf-alpha" /tmp/shipflow-sync-check.out
+test ! -e "$TARGET_HOME_TEST/.claude/skills/001-sf-alpha"
 
-run_helper --repair --skill sf-alpha >/tmp/shipflow-sync-repair.out
-assert_link "$TARGET_HOME_TEST/.claude/skills/sf-alpha" "$SHIPFLOW_ROOT_TEST/skills/sf-alpha"
-assert_link "$TARGET_HOME_TEST/.codex/skills/sf-alpha" "$SHIPFLOW_ROOT_TEST/skills/sf-alpha"
+run_helper --repair --skill 001-sf-alpha >/tmp/shipflow-sync-repair.out
+assert_link "$TARGET_HOME_TEST/.claude/skills/001-sf-alpha" "$SHIPFLOW_ROOT_TEST/skills/001-sf-alpha"
+assert_link "$TARGET_HOME_TEST/.codex/skills/001-sf-alpha" "$SHIPFLOW_ROOT_TEST/skills/001-sf-alpha"
 grep -q "summary mode=repair" /tmp/shipflow-sync-repair.out
 
-run_helper --check --skill sf-alpha >/tmp/shipflow-sync-ok.out
-grep -q "ok runtime=claude skill=sf-alpha" /tmp/shipflow-sync-ok.out
-grep -q "ok runtime=codex skill=sf-alpha" /tmp/shipflow-sync-ok.out
+run_helper --check --skill 001-sf-alpha >/tmp/shipflow-sync-ok.out
+grep -q "ok runtime=claude skill=001-sf-alpha" /tmp/shipflow-sync-ok.out
+grep -q "ok runtime=codex skill=001-sf-alpha" /tmp/shipflow-sync-ok.out
 
-ln -sfn "$SHIPFLOW_ROOT_TEST/skills/sf-alpha" "$TARGET_HOME_TEST/.codex/skills/sf-beta"
-if run_helper --check --skill sf-beta --runtime codex >/tmp/shipflow-sync-stale.out 2>&1; then
+ln -sfn "$SHIPFLOW_ROOT_TEST/skills/001-sf-alpha" "$TARGET_HOME_TEST/.codex/skills/002-sf-beta"
+if run_helper --check --skill 002-sf-beta --runtime codex >/tmp/shipflow-sync-stale.out 2>&1; then
     echo "expected stale symlink check to fail" >&2
     exit 1
 fi
 grep -q "stale-or-broken-symlink" /tmp/shipflow-sync-stale.out
-run_helper --repair --skill sf-beta --runtime codex >/tmp/shipflow-sync-stale-repair.out
-assert_link "$TARGET_HOME_TEST/.codex/skills/sf-beta" "$SHIPFLOW_ROOT_TEST/skills/sf-beta"
-test ! -e "$TARGET_HOME_TEST/.claude/skills/sf-beta"
+run_helper --repair --skill 002-sf-beta --runtime codex >/tmp/shipflow-sync-stale-repair.out
+assert_link "$TARGET_HOME_TEST/.codex/skills/002-sf-beta" "$SHIPFLOW_ROOT_TEST/skills/002-sf-beta"
+test ! -e "$TARGET_HOME_TEST/.claude/skills/002-sf-beta"
 
-mkdir -p "$TARGET_HOME_TEST/.claude/skills/sf-gamma"
-if run_helper --repair --skill sf-gamma --runtime claude >/tmp/shipflow-sync-collision.out 2>&1; then
+mkdir -p "$TARGET_HOME_TEST/.claude/skills/003-sf-gamma"
+if run_helper --repair --skill 003-sf-gamma --runtime claude >/tmp/shipflow-sync-collision.out 2>&1; then
     echo "expected non-symlink collision to fail" >&2
     exit 1
 fi
 grep -q "non-symlink-existing" /tmp/shipflow-sync-collision.out
-test -d "$TARGET_HOME_TEST/.claude/skills/sf-gamma"
-test ! -L "$TARGET_HOME_TEST/.claude/skills/sf-gamma"
+test -d "$TARGET_HOME_TEST/.claude/skills/003-sf-gamma"
+test ! -L "$TARGET_HOME_TEST/.claude/skills/003-sf-gamma"
 
-run_helper --repair --skill sf-gamma --runtime claude --backup-existing >/tmp/shipflow-sync-backup.out
-assert_link "$TARGET_HOME_TEST/.claude/skills/sf-gamma" "$SHIPFLOW_ROOT_TEST/skills/sf-gamma"
+run_helper --repair --skill 003-sf-gamma --runtime claude --backup-existing >/tmp/shipflow-sync-backup.out
+assert_link "$TARGET_HOME_TEST/.claude/skills/003-sf-gamma" "$SHIPFLOW_ROOT_TEST/skills/003-sf-gamma"
 grep -q "backed-up-existing" /tmp/shipflow-sync-backup.out
 
 if run_helper --check --skill ../bad >/tmp/shipflow-sync-invalid.out 2>&1; then
@@ -89,12 +89,12 @@ fi
 grep -q "invalid skill name" /tmp/shipflow-sync-invalid2.out
 
 run_helper --repair --all --runtime codex >/tmp/shipflow-sync-all-codex.out
-assert_link "$TARGET_HOME_TEST/.codex/skills/sf-alpha" "$SHIPFLOW_ROOT_TEST/skills/sf-alpha"
-assert_link "$TARGET_HOME_TEST/.codex/skills/sf-beta" "$SHIPFLOW_ROOT_TEST/skills/sf-beta"
-assert_link "$TARGET_HOME_TEST/.codex/skills/sf-gamma" "$SHIPFLOW_ROOT_TEST/skills/sf-gamma"
+assert_link "$TARGET_HOME_TEST/.codex/skills/001-sf-alpha" "$SHIPFLOW_ROOT_TEST/skills/001-sf-alpha"
+assert_link "$TARGET_HOME_TEST/.codex/skills/002-sf-beta" "$SHIPFLOW_ROOT_TEST/skills/002-sf-beta"
+assert_link "$TARGET_HOME_TEST/.codex/skills/003-sf-gamma" "$SHIPFLOW_ROOT_TEST/skills/003-sf-gamma"
 
 if find "$HOME/.codex/skills" -maxdepth 0 >/dev/null 2>&1; then
-    test ! -e "$HOME/.codex/skills/sf-alpha-test-should-not-exist"
+    test ! -e "$HOME/.codex/skills/001-sf-alpha-test-should-not-exist"
 fi
 
 echo "test_skill_runtime_sync: passed"

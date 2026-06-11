@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-04-27"
 updated: "2026-05-24"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: canonical-path-resolution
 owner: unknown
 confidence: high
@@ -25,7 +25,7 @@ evidence:
   - "Project governance layout decision moved ShipFlow artifacts out of project roots and into shipflow_data/."
   - "Operator decision on 2026-05-24: monorepos must keep one governance corpus at the monorepo root instead of repeating shipflow_data in each app/package."
 next_review: "2026-05-27"
-next_step: "/sf-verify canonical path policy"
+next_step: "/103-sf-verify canonical path policy"
 ---
 
 # ShipFlow Canonical Paths

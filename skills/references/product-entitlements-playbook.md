@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-29"
 updated: "2026-05-30"
 status: active
-source_skill: sf-build
+source_skill: 001-sf-build
 scope: product-entitlements
 owner: Diane
 confidence: high
@@ -33,7 +33,7 @@ evidence:
   - "SocialGlowz implemented processor-agnostic entitlements, redemption codes, billing events, and Lifetime Deal activation UI."
   - "SocialGlowz adoption review on 2026-05-30 exposed the generic duplicate-ledger risk: a target product must adapt to an existing suite entitlement ledger instead of recreating partial local infrastructure."
 next_review: "2026-06-29"
-next_step: "/sf-verify product-entitlements-playbook"
+next_step: "/103-sf-verify product-entitlements-playbook"
 ---
 
 # Product Entitlements Playbook

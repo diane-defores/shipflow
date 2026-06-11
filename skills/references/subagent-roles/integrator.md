@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-02"
 updated: "2026-05-02"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: integrator-role
 owner: Diane
 confidence: high
@@ -20,14 +20,14 @@ linked_systems:
   - skills/references/subagent-roles/sequential-executor.md
   - skills/references/subagent-roles/wave-executor.md
 depends_on:
-  - artifact: "specs/sf-build-autonomous-master-skill.md"
+  - artifact: "specs/001-sf-build-autonomous-master-skill.md"
     artifact_version: "1.2.0"
     required_status: "ready"
 supersedes: []
 evidence:
   - "Ready spec requires an integrator role that resolves conflicts, enforces docs/content gates, and authorizes next waves only after proof."
 next_review: "2026-06-02"
-next_step: "/sf-verify sf-build Autonomous Master Skill"
+next_step: "/103-sf-verify 001-sf-build Autonomous Master Skill"
 ---
 
 # Integrator Contract

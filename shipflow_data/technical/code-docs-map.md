@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-01"
 updated: "2026-05-26"
 status: reviewed
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: code-docs-map
 owner: Diane
 confidence: high
@@ -30,7 +30,7 @@ evidence:
   - "External platform corpus and project platform usage template added for Freshness Gate source retention."
   - "GitHub Actions workflow files mapped to CI cost, cache, monorepo trigger, deploy, and artifact guardrails."
 next_review: "2026-06-01"
-next_step: "/sf-docs technical audit"
+next_step: "/300-sf-docs technical audit"
 ---
 
 # Code Docs Map
@@ -53,9 +53,9 @@ Shared files in this map are sequential integration files. Do not assign concurr
 | `install.sh`, `install-shipflow.sh` | Installer and user scope | `shipflow_data/technical/installer-and-user-scope.md` | `README.md`, `shipflow_data/technical/guidelines.md` | `bash -n install.sh install-shipflow.sh`; dry-run/review of touched installer branch | Root/user split, remote bootstrap, symlink, alias, MCP config, package install, or destructive behavior changes |
 | `tools/shipflow_sync_skills.sh`, `test_skill_runtime_sync.sh` | Skill runtime and installer user scope | `shipflow_data/technical/skill-runtime-and-lifecycle.md`, `shipflow_data/technical/installer-and-user-scope.md` | `README.md` | `bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh`; `bash test_skill_runtime_sync.sh`; `tools/shipflow_sync_skills.sh --check --all` | Runtime skill visibility, Claude/Codex symlink behavior, install-time selected-user skill linking, collision handling |
 | `skills/**/SKILL.md` | Skill runtime and lifecycle | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `shipflow-spec-driven-workflow.md`, `skills/references/technical-docs-corpus.md` | `python3 tools/skill_budget_audit.py --skills-root skills --format markdown` when skill surfaces change | Skill routing, lifecycle, validation, documentation gate, or model/topology behavior changes |
-| `skills/references/skill-code-index.md`, `tools/skill_code_index_lint.py` | Skill runtime and lifecycle | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `docs/skill-launch-cheatsheet.md`, `skills/sf-help/references/help-catalog.md` | `python3 tools/skill_code_index_lint.py`; metadata lint for the index and affected docs | Numeric skill-code family, code assignment, lookup semantics, or skill coverage changes |
-| `skills/sf-local-cloud-sync/**` | Local-to-cloud sync skill | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/sf-local-cloud-sync/references/local-cloud-sync-doctrine.md`, `skills/sf-local-cloud-sync/references/ux-security-checklist.md`, `skills/sf-local-cloud-sync/references/flutter-implementation-checklist.md`, `shipflow-spec-driven-workflow.md` | `rg -n "Sync Contract|Core Doctrine|Security And Privacy Rules|Proof Paths" skills/sf-local-cloud-sync`; `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`; `tools/shipflow_sync_skills.sh --check --skill sf-local-cloud-sync` | Local/cloud data promotion doctrine, account association, merge/conflict policy, sync UX, sensitive-data policy, or Flutter sync proof guidance changes |
-| `skills/sf-product-entitlements/**` | Product entitlements skill | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/references/product-entitlements-playbook.md`, `skills/sf-local-cloud-sync/SKILL.md`, `skills/sf-auth-debug/SKILL.md`, `shipflow-spec-driven-workflow.md` | `rg -n "product-entitlements|suite ledger|provider event|activation code|snapshot|mirror|backend authorization|sf-local-cloud-sync|sf-auth-debug" skills/sf-product-entitlements/SKILL.md`; `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`; `tools/shipflow_sync_skills.sh --check --skill sf-product-entitlements` | Product access ownership, provider/manual grant handling, activation codes, premium gates, support access flows, product-local mirrors, backend authorization, or entitlement-gated sync handoff changes |
+| `skills/references/skill-code-index.md`, `tools/skill_code_index_lint.py` | Skill runtime and lifecycle | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `docs/skill-launch-cheatsheet.md`, `skills/302-sf-help/references/help-catalog.md` | `python3 tools/skill_code_index_lint.py`; metadata lint for the index and affected docs | Numeric skill-code family, code assignment, lookup semantics, or skill coverage changes |
+| `skills/600-sf-local-cloud-sync/**` | Local-to-cloud sync skill | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/600-sf-local-cloud-sync/references/local-cloud-sync-doctrine.md`, `skills/600-sf-local-cloud-sync/references/ux-security-checklist.md`, `skills/600-sf-local-cloud-sync/references/flutter-implementation-checklist.md`, `shipflow-spec-driven-workflow.md` | `rg -n "Sync Contract|Core Doctrine|Security And Privacy Rules|Proof Paths" skills/600-sf-local-cloud-sync`; `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`; `tools/shipflow_sync_skills.sh --check --skill 600-sf-local-cloud-sync` | Local/cloud data promotion doctrine, account association, merge/conflict policy, sync UX, sensitive-data policy, or Flutter sync proof guidance changes |
+| `skills/601-sf-product-entitlements/**` | Product entitlements skill | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/references/product-entitlements-playbook.md`, `skills/600-sf-local-cloud-sync/SKILL.md`, `skills/109-sf-auth-debug/SKILL.md`, `shipflow-spec-driven-workflow.md` | `rg -n "product-entitlements|suite ledger|provider event|activation code|snapshot|mirror|backend authorization|600-sf-local-cloud-sync|109-sf-auth-debug" skills/601-sf-product-entitlements/SKILL.md`; `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`; `tools/shipflow_sync_skills.sh --check --skill 601-sf-product-entitlements` | Product access ownership, provider/manual grant handling, activation codes, premium gates, support access flows, product-local mirrors, backend authorization, or entitlement-gated sync handoff changes |
 | `skills/references/**` | Skill references | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/references/technical-docs-corpus.md` | Metadata lint for references with frontmatter; targeted rg checks | Reference doctrine or path-resolution behavior changes |
 | `templates/artifacts/**` | Artifact metadata and linter | `shipflow_data/technical/artifact-metadata-and-linter.md` | `shipflow-metadata-migration-guide.md` | `python3 tools/shipflow_metadata_lint.py templates/artifacts` | Template field, artifact type, or required metadata changes |
 | `tools/shipflow_metadata_lint.py` | Artifact metadata and linter | `shipflow_data/technical/artifact-metadata-and-linter.md` | `shipflow-metadata-migration-guide.md` | `python3 tools/shipflow_metadata_lint.py --help`; targeted lint command | Required fields, statuses, artifact types, default targets, or parse behavior changes |
@@ -76,7 +76,7 @@ Shared files in this map are sequential integration files. Do not assign concurr
 ## Documentation Update Plan
 
 - Code changed: `path/or/pattern`
-- Subsystem: `name`
+- Subsystem: `707-name`
 - Primary technical doc: `shipflow_data/technical/example.md`
 - Secondary docs: `...`
 - Required action: `none | review | update | create`

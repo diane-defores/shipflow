@@ -1,0 +1,214 @@
+---
+artifact: technical_guidelines
+metadata_schema_version: "1.0"
+artifact_version: "0.4.0"
+project: ShipFlow
+created: "2026-05-16"
+updated: "2026-05-24"
+status: draft
+source_skill: 102-sf-start
+scope: 300-sf-docs-mode-playbooks
+owner: unknown
+confidence: high
+risk_level: medium
+security_impact: none
+docs_impact: yes
+linked_systems:
+  - skills/300-sf-docs/SKILL.md
+  - shipflow_data/technical/
+  - shipflow_data/editorial/
+  - shipflow_data/workflow/specs/
+depends_on:
+  - artifact: "skills/300-sf-docs/references/core-governance.md"
+    artifact_version: "0.4.0"
+    required_status: "draft"
+supersedes: []
+evidence:
+  - "Extracted from 300-sf-docs SKILL.md during compact-skill pilot."
+  - "Technical docs mode extended with global external platform corpus and governance-root platform usage docs."
+  - "Operator decision on 2026-05-24: provider usage notes are risk-driven, not mandatory per technology."
+  - "Operator decision on 2026-05-24: monorepo documentation uses the root shipflow_data corpus with scoped app/package entries."
+next_review: "2026-06-16"
+next_step: "/103-sf-verify Compact ShipFlow Skill Instructions"
+---
+
+# 300-sf-docs Mode Playbooks
+
+## FILE MODE
+
+1. Read target file and one import level.
+2. Document non-obvious behavior (why, edge cases, public contract).
+3. Follow local style (JSDoc/TSDoc/docstrings/component header comments).
+4. Avoid documenting obvious code.
+
+## TECHNICAL DOCS MODE
+
+Load `skills/references/technical-docs-corpus.md`, then read the governance-root `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/code-docs-map.md`).
+
+Use mode variants:
+
+- bootstrap: missing technical layer
+- audit: verify layer coherency
+- update-plan: changed code paths require documentation update plan
+- monorepo audit: verify that one root `shipflow_data/` covers app/package scopes and nested copies are treated as migration debt
+
+Minimum checks:
+
+- mapped code areas have primary docs or explicit non-coverage
+- technical docs contain `Purpose`, `Owned Files`, `Entrypoints`, `Invariants`, `Validation`, `Reader Checklist`, `Maintenance Rule`
+- `code-docs-map.md` includes path patterns, validations, triggers
+- monorepos have one root `shipflow_data/` with app/package path scopes instead of repeated nested corpora
+- external provider behavior has a global source note under `shipflow_data/technical/external-platforms/` when it is common or repeated across projects
+- projects or monorepo surfaces that use an external provider have a governance-root usage note under `shipflow_data/technical/platforms/` only when provider behavior affects validation, auth, deploy, runtime, SDK, storage, security, migrations, observability, compliance, production proof, or local exceptions
+
+External platform docs use two layers:
+
+- global source note: `shipflow_data/technical/external-platforms/<provider>.md`
+- provider usage note: `<governance-root>/shipflow_data/technical/platforms/<provider>.md`
+
+Do not mirror vendor docs. Keep links to official sources, freshness anchors, ShipFlow decision rules, validation routes, and project-specific usage. Do not create filler project-local notes for standard, low-risk provider usage that is already clear from code/config and the global note.
+
+Output update plans with fields:
+
+- code changed
+- subsystem
+- primary doc
+- secondary docs
+- action (`none|review|update|create`)
+- priority
+- reason
+- owner role
+- parallel-safe
+- notes
+
+## EDITORIAL GOVERNANCE MODE
+
+Load `skills/references/editorial-content-corpus.md`, then governance-root editorial governance docs (`shipflow_data/editorial/*` fallback legacy `docs/editorial/*`).
+
+Use mode variants:
+
+- bootstrap: missing editorial governance with public surfaces detected
+- audit: verify claims/page intents/content map/gates
+- update-plan: changed public content requires editorial update plan
+
+Must check:
+
+- content-map coverage for public surfaces
+- claim register for sensitive claims and proof status
+- page intent map coherence
+- editorial gate expectations
+- runtime content schema compatibility
+- monorepos use the root `shipflow_data/editorial/` corpus for shared public/content surfaces, with entries scoped by app/site/package where needed
+
+If no public/editorial surfaces are detected, report `skipped - no editorial surfaces detected`.
+
+## README MODE
+
+Generate or update README using project evidence:
+
+- one-line project description
+- features
+- quick start
+- structure
+- stack
+- env vars
+- scripts
+- contributing
+
+If README exists and user preference is unclear, ask merge/replace/skip.
+
+## API MODE
+
+Document detected API endpoints:
+
+- method/path
+- auth expectations
+- request/response schemas
+- status codes
+- usage examples
+
+Prefer output location aligned with project (`docs/API.md` or local API docs pattern).
+
+## COMPONENTS MODE
+
+Document component contracts:
+
+- purpose
+- props/slots with real types
+- usage examples
+- dependencies
+
+Prefer project-native output (`docs/COMPONENTS.md` or local pattern).
+
+## AUDIT MODE
+
+Run documentation coherency audit:
+
+- inventory docs and doc-like surfaces
+- compare code vs docs for drift and missing coverage
+- validate metadata on applicable ShipFlow artifacts
+- validate professional bug model documentation
+- validate language doctrine
+- validate freshness of context docs and dependency versions when applicable
+
+Prioritize user-risk docs (install, auth, billing, migration, API, troubleshooting).
+
+## UPDATE MODE
+
+Run silent audit first, then apply selected remediations.
+
+Required gates:
+
+- preserve governance corpus ownership boundaries
+- only run skill-budget audit when scope touches skills/discovery metadata
+- persist conversation-derived durable decisions to proper docs surfaces
+- keep bug model documentation consistent
+- create/update canonical business/product/branding/architecture/gtm/content-map/guidelines docs when missing and justified
+
+Priority buckets:
+
+- P0 dangerous drift
+- P1 conventions
+- P2 stale docs
+- P3 missing coverage
+
+## LAYOUT MIGRATION MODE
+
+Move root legacy ShipFlow artifacts and nested monorepo `shipflow_data/` copies into canonical governance-root `shipflow_data/` paths without destructive overwrite.
+
+Rules:
+
+- classify each source as moveable/collision/external-root-ok/tracker/runtime-content
+- classify nested monorepo corpora as migrate/collision/standalone-exception
+- prefer `git mv` inside git repos
+- do not overwrite collisions silently
+- run metadata lint and legacy path grep checks
+
+## METADATA MODE
+
+Frontmatter migration is additive, not content rewrite.
+
+Rules:
+
+- load migration guide + metadata linter when available
+- define scope before edits
+- classify candidates (`migrate`, `already compliant`, `runtime content`, `tracker excluded`, `archive excluded`, `ambiguous`)
+- preserve body unchanged
+- infer only obvious metadata values, otherwise `unknown` and lower confidence
+- lint changed scope
+
+## AUTO MODE
+
+Detect likely gaps and ask user what to document next (README/API/components/env/changelog/missing docs).
+
+## Final Reporting Templates
+
+Keep user-facing reports concise by default. Include only sections that affect next action:
+
+- outcome
+- evidence
+- limits/gaps
+- next step
+- chantier block when relevant
+
+For blocked or explicit handoff runs, switch to detailed `report=agent` format.

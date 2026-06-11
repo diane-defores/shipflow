@@ -23,7 +23,7 @@ supersedes: []
 evidence:
   - "User request 2026-05-05: final reports need a visible Paris-time verdict timestamp so stale verdicts after crash or resume are not mistaken for current state."
 next_review: "2026-06-05"
-next_step: "/sf-verify final report timestamp contract"
+next_step: "/103-sf-verify final report timestamp contract"
 ---
 
 # Final Report Timestamp
@@ -39,7 +39,7 @@ Verdict final: <verdict or status>
 Horodatage du verdict: YYYY-MM-DD HH:mm Paris time
 ```
 
-If the skill already has a named verdict such as `Verdict sf-ready`, `Verdict sf-verify`, `Closure verdict`, `GO / NO-GO`, or `Chantier potentiel`, keep that exact label and place the timestamp immediately after the verdict.
+If the skill already has a named verdict such as `Verdict 101-sf-ready`, `Verdict 103-sf-verify`, `Closure verdict`, `GO / NO-GO`, or `Chantier potentiel`, keep that exact label and place the timestamp immediately after the verdict.
 
 ## Rules
 

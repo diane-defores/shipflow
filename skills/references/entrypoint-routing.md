@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-04"
 updated: "2026-05-06"
 status: active
-source_skill: sf-skill-build
+source_skill: 009-sf-skill-build
 scope: entrypoint-routing
 owner: Diane
 confidence: high
@@ -14,17 +14,17 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - skills/shipflow/SKILL.md
-  - skills/sf-build/SKILL.md
-  - skills/sf-maintain/SKILL.md
-  - skills/sf-bug/SKILL.md
-  - skills/sf-deploy/SKILL.md
-  - skills/sf-content/SKILL.md
-  - skills/sf-design/SKILL.md
-  - skills/sf-onboarding/SKILL.md
-  - skills/sf-local-cloud-sync/SKILL.md
-  - skills/sf-skill-build/SKILL.md
-  - skills/sf-audit/SKILL.md
+  - skills/000-shipflow/SKILL.md
+  - skills/001-sf-build/SKILL.md
+  - skills/002-sf-maintain/SKILL.md
+  - skills/003-sf-bug/SKILL.md
+  - skills/004-sf-deploy/SKILL.md
+  - skills/007-sf-content/SKILL.md
+  - skills/006-sf-design/SKILL.md
+  - skills/008-sf-onboarding/SKILL.md
+  - skills/600-sf-local-cloud-sync/SKILL.md
+  - skills/009-sf-skill-build/SKILL.md
+  - skills/400-sf-audit/SKILL.md
   - skills/references/master-delegation-semantics.md
   - skills/references/question-contract.md
   - docs/skill-launch-cheatsheet.md
@@ -42,19 +42,19 @@ depends_on:
     required_status: active
 supersedes: []
 evidence:
-  - "User decision 2026-05-04: create `shipflow` as the primary non-technical router across the existing skill taxonomy."
-  - "User decision 2026-05-04: `shipflow` should use direct main-thread handoff to selected master skills instead of nested master-skill subagents."
+  - "User decision 2026-05-04: create `000-shipflow` as the primary non-technical router across the existing skill taxonomy."
+  - "User decision 2026-05-04: `000-shipflow` should use direct main-thread handoff to selected master skills instead of nested master-skill subagents."
   - "User decision 2026-05-04: ambiguous routing questions should be numbered decision briefs with a responsible recommendation."
-  - "User decision 2026-05-06: design-related requests should route to a master `sf-design` lifecycle entrypoint."
+  - "User decision 2026-05-06: design-related requests should route to a master `006-sf-design` lifecycle entrypoint."
 next_review: "2026-06-04"
-next_step: "/sf-verify specs/shipflow-primary-router-skill.md"
+next_step: "/103-sf-verify specs/shipflow-primary-router-skill.md"
 ---
 
 # Entrypoint Routing
 
 ## Purpose
 
-This reference defines the shared routing rules for `shipflow`, the primary natural-language entrypoint for ShipFlow.
+This reference defines the shared routing rules for `000-shipflow`, the primary natural-language entrypoint for ShipFlow.
 
 It does not replace lifecycle, bug, release, content, maintenance, audit, or skill-maintenance owner contracts. It decides which existing contract should own the request.
 
@@ -66,7 +66,7 @@ Route to the smallest existing owner that can safely own the outcome.
 
 If the request needs more than one phase, route to the relevant master skill. If the request clearly names one specialist phase, route to that focused owner skill. If no file work or lifecycle action is needed, answer directly.
 
-Before natural-language routing, resolve numeric skill-code prefixes through `skills/references/skill-code-index.md`. Accepted forms include `01`, `01-sf-build`, `01sfbuild`, and `01 sf-build`. Codes point to canonical skill names; they do not rename runtime skills.
+Before natural-language routing, resolve three-digit skill-code prefixes through `skills/references/skill-code-index.md`. Accepted forms include `001`, `001-sf-build`, `001sfbuild`, and `001 sf-build`. Codes point to runtime skill names such as `001-sf-build`.
 
 ## Execution Topology
 
@@ -81,19 +81,19 @@ A read-only routing scout is allowed only for cheap classification evidence and 
 | Operator intent | Primary route |
 | --- | --- |
 | Pure question, explanation, model/help clarification, or advice with no files | Direct answer |
-| Numeric skill code such as `01`, `01-sf-build`, or `01sfbuild` | Canonical skill from `skills/references/skill-code-index.md` |
-| Build or change a user-facing feature and also think about onboarding, activation, beginner adoption, or first-success guidance | `sf-build` first; `sf-build` evaluates the post-implementation `sf-onboarding` gate |
-| Feature, product change, code work, site work, docs work, workflow improvement, broad bug-like goal without durable bug state | `sf-build` |
-| Recurring upkeep, dependency posture, docs drift, checks, audits, migrations, project hygiene, security maintenance | `sf-maintain` |
-| Observed defect, `BUG-ID`, retest, bug closure, bug fix state, bug ship risk | `sf-bug` |
-| Release confidence, preview/prod deployment, deployed truth, runtime logs, production health, post-deploy proof | `sf-deploy` |
-| Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, content apply/publish | `sf-content` |
-| Design request, UI/UX work, redesign, design tokens, design playground, accessibility design, component design, visual proof, or token migration | `sf-design` |
-| User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `sf-onboarding` |
-| Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `sf-local-cloud-sync` |
-| Product access, paid plans, premium gates, entitlement ledgers, provider events, activation codes, refunds/revokes, support access flows, or backend access gates | `sf-product-entitlements` |
-| New skill, skill modification, skill runtime visibility, skill public page, skill docs/help coherence | `sf-skill-build` |
-| One obvious audit domain only | relevant `sf-audit-*` or `sf-audit` |
+| Numeric skill code such as `001`, `001-sf-build`, or `001sfbuild` | Runtime skill from `skills/references/skill-code-index.md` |
+| Build or change a user-facing feature and also think about onboarding, activation, beginner adoption, or first-success guidance | `001-sf-build` first; `001-sf-build` evaluates the post-implementation `008-sf-onboarding` gate |
+| Feature, product change, code work, site work, docs work, workflow improvement, broad bug-like goal without durable bug state | `001-sf-build` |
+| Recurring upkeep, dependency posture, docs drift, checks, audits, migrations, project hygiene, security maintenance | `002-sf-maintain` |
+| Observed defect, `BUG-ID`, retest, bug closure, bug fix state, bug ship risk | `003-sf-bug` |
+| Release confidence, preview/prod deployment, deployed truth, runtime logs, production health, post-deploy proof | `004-sf-deploy` |
+| Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, content apply/publish | `007-sf-content` |
+| Design request, UI/UX work, redesign, design tokens, design playground, accessibility design, component design, visual proof, or token migration | `006-sf-design` |
+| User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `008-sf-onboarding` |
+| Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `600-sf-local-cloud-sync` |
+| Product access, paid plans, premium gates, entitlement ledgers, provider events, activation codes, refunds/revokes, support access flows, or backend access gates | `601-sf-product-entitlements` |
+| New skill, skill modification, skill runtime visibility, skill public page, skill docs/help coherence | `009-sf-skill-build` |
+| One obvious audit domain only | relevant `400-sf-audit-*` or `400-sf-audit` |
 | One obvious focused lane: checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, final ship | focused owner skill |
 | Ambiguous material route | Ask one concise numbered routing question |
 

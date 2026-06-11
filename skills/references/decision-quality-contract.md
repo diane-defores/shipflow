@@ -1,12 +1,12 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-24"
-updated: "2026-06-10"
+updated: "2026-06-11"
 status: active
-source_skill: sf-skill-build
+source_skill: 009-sf-skill-build
 scope: decision-quality-contract
 owner: Diane
 confidence: high
@@ -19,7 +19,7 @@ linked_systems:
   - skills/references/spec-driven-development-discipline.md
   - skills/references/master-delegation-semantics.md
   - skills/references/question-contract.md
-  - skills/sf-model/references/model-routing.md
+  - skills/704-sf-model/references/model-routing.md
   - shipflow-spec-driven-workflow.md
   - README.md
 depends_on:
@@ -34,8 +34,10 @@ evidence:
   - "User directive 2026-05-24: ShipFlow must optimize for maximum performance, maximum security, excellence, and durability, not convenience, speed, or the shortest path."
   - "User directive 2026-05-24: the operator wants high-quality code, modern effective tools, and current best practices; time pressure is not the primary constraint."
   - "User decision 2026-06-10: central skill rules should stay compact enough for agents to retain the decision signal."
+  - "User directive 2026-06-11: emergency product pragmatism that hardcodes visual sizes, IME/overlay offsets, spacing, or layout values for a quick fix is unacceptable; ShipFlow must take the time needed for coherent professional design-system repairs."
+  - "User directive 2026-06-11: fast fixes are generally unacceptable when they bypass the durable process, homogeneous structure, or long-term coherence expected from agent-assisted work."
 next_review: "2026-06-24"
-next_step: "/sf-verify decision-quality-contract"
+next_step: "/103-sf-verify decision-quality-contract"
 ---
 
 # Decision Quality Contract
@@ -63,6 +65,32 @@ Speed, cost, latency, token use, local simplicity, or implementation convenience
 Do not choose the quickest, easiest, cheapest, or shortest path when it weakens the product contract, security, durability, maintainability, proof quality, or operator trust.
 
 Do not use phrases such as "minimal change to make it work" when they imply shortcut quality. Use "bounded professional implementation" or "smallest safe path" only with the definition below.
+
+## Fast Fix Shortcut Ban
+
+Fast fixes are not a ShipFlow virtue. A fix is unacceptable when it bypasses durable process, weakens homogeneous structure, hides root cause, avoids the right owner skill, skips proof, or leaves future agents with incoherent exceptions.
+
+Do not use "quick fix", "temporary workaround", "small patch", or "just make it pass" logic when the real problem requires root-cause diagnosis, contract correction, shared abstraction, migration, security/design review, docs update, proof, or owner-skill routing.
+
+The default repair is: root cause -> ownership boundary -> smallest complete professional fix -> matching proof. If temporary mitigation is unavoidable, label it as mitigation, scope it, route durable follow-up, and do not report it as complete.
+
+Verification must fail or report partial when a change works only by bypassing process, ownership, root cause, shared structure, or required proof.
+
+## UI And Design-System Shortcut Ban
+
+For UI, UX, IME, keyboard, overlay, responsive, layout, spacing, typography, color, motion, or component fixes, emergency product pragmatism is not acceptable when it creates hardcoded visual drift.
+
+Do not hardcode one-off dimensions, offsets, breakpoints, z-index values, colors, font sizes, spacing, animation timings, keyboard/IME insets, overlay positions, or viewport-specific constants just to make an immediate visual defect disappear. A literal value is acceptable only when it is already the project-standard token/constant pattern, is required by a platform/API contract, or is deliberately introduced as a named shared token/constant with usage scope and proof.
+
+When a visual bug appears to need a quick hardcoded value, the professional path is:
+
+1. Identify the source of truth: design tokens, theme, component primitive, layout utility, platform inset/measurement API, or documented framework behavior.
+2. Fix the shared source, component contract, or measurement logic instead of patching one screen in isolation.
+3. Preserve responsive behavior, accessibility, reduced-motion/focus/target-size expectations, and cross-platform behavior.
+4. Prove the affected states with token/coherence checks and browser, simulator, device, or manual evidence appropriate to the surface.
+5. If a one-off literal cannot be avoided, document why it is platform-bound, name it as a constant/token, limit its scope, and route follow-up cleanup if the explanation is weak.
+
+Verification must fail or report partial when UI work hides a bug through unexplained hardcoded values or leaves design-system drift as the price of shipping.
 
 ## Smallest Safe Path
 

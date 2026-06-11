@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-02"
 updated: "2026-05-02"
 status: active
-source_skill: sf-fix
+source_skill: 106-sf-fix
 scope: playwright-mcp-runtime
 owner: unknown
 confidence: high
@@ -15,23 +15,23 @@ security_impact: none
 docs_impact: yes
 linked_systems:
   - install.sh
-  - skills/sf-browser/SKILL.md
-  - skills/sf-auth-debug/SKILL.md
-  - skills/sf-auth-debug/references/playwright-auth.md
+  - skills/108-sf-browser/SKILL.md
+  - skills/109-sf-auth-debug/SKILL.md
+  - skills/109-sf-auth-debug/references/playwright-auth.md
   - BUG-2026-05-02-001
 depends_on: []
 supersedes: []
 evidence:
   - "BUG-2026-05-02-001: Playwright MCP looked for Google Chrome stable at /opt/google/chrome/chrome on Linux ARM64."
   - "Fixed config points Playwright MCP to local Playwright Chromium with --executable-path."
-  - "sf-browser added as the generic non-auth consumer of browser evidence."
+  - "108-sf-browser added as the generic non-auth consumer of browser evidence."
 next_review: "2026-06-02"
-next_step: "/sf-test --retest BUG-2026-05-02-001"
+next_step: "/107-sf-test --retest BUG-2026-05-02-001"
 ---
 
 # Playwright MCP Runtime
 
-Use this reference before any ShipFlow skill calls Playwright MCP directly or uses browser-level evidence through `sf-browser` or `sf-auth-debug`.
+Use this reference before any ShipFlow skill calls Playwright MCP directly or uses browser-level evidence through `108-sf-browser` or `109-sf-auth-debug`.
 
 ## Invariant
 
@@ -65,7 +65,7 @@ find "$HOME/.cache/ms-playwright" -maxdepth 4 -type f \
 3. If config is bad, do not launch Playwright MCP as proof. Route to:
 
 ```text
-/sf-fix BUG-2026-05-02-001
+/106-sf-fix BUG-2026-05-02-001
 ```
 
 4. If config is good but MCP still errors with `/opt/google/chrome/chrome`, assume the current Codex/MCP process is stale and still using old args. Ask for a Codex/MCP reload before claiming browser evidence.

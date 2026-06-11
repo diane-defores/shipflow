@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-18"
 updated: "2026-05-24"
 status: active
-source_skill: sf-docs
+source_skill: 300-sf-docs
 scope: documentation-freshness-gate
 owner: Diane
 confidence: high
@@ -24,7 +24,7 @@ evidence:
   - "Operator decision on 2026-05-24: project-local provider usage notes are conditional on risk and project-specific behavior."
   - "Operator decision on 2026-05-24: monorepo provider usage notes live under the root governance corpus, scoped by affected app/package."
 next_review: "2026-06-24"
-next_step: "/sf-docs technical audit"
+next_step: "/300-sf-docs technical audit"
 ---
 
 # Documentation Freshness Gate

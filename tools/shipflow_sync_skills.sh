@@ -8,6 +8,7 @@ TARGET_HOME="${HOME:-}"
 SHIPFLOW_ROOT="${SHIPFLOW_ROOT:-${HOME:-}/shipflow}"
 BACKUP_EXISTING=0
 SKILL_NAME=""
+CLEAN_STALE=0
 
 checked=0
 ok=0
@@ -24,6 +25,7 @@ Options:
   --target-home <path>            Home directory containing .claude/.codex (default: $HOME)
   --shipflow-root <path>          ShipFlow repository root (default: $SHIPFLOW_ROOT or $HOME/shipflow)
   --backup-existing               Move non-symlink targets aside before repair
+  --clean-stale                   Remove stale symlinks in runtime skill dirs that point into ShipFlow skills
   -h, --help                      Show this help
 USAGE
 }
@@ -105,6 +107,55 @@ list_skills() {
         found=1
     done
     [ "$found" -eq 1 ] || fail "no valid source skills found in $SHIPFLOW_ROOT/skills"
+}
+
+clean_stale_runtime_links() {
+    local runtime="$1"
+    local target_dir
+    local link_path
+    local resolved_target
+    local resolved_skills
+    local base
+
+    [ "$MODE" = "repair" ] || return 0
+    [ "$CLEAN_STALE" -eq 1 ] || return 0
+
+    target_dir="$(runtime_dir "$runtime")" || fail "invalid runtime: $runtime"
+    [ -d "$target_dir" ] || return 0
+    resolved_skills="$(resolve_path "$SHIPFLOW_ROOT/skills")"
+    [ -n "$resolved_skills" ] || fail "cannot resolve skills root: $SHIPFLOW_ROOT/skills"
+
+    for link_path in "$target_dir"/*; do
+        [ -L "$link_path" ] || continue
+        base="$(basename "$link_path")"
+        case "$base" in
+            [0-9][0-9][0-9]-*) continue ;;
+        esac
+        resolved_target="$(resolve_path "$link_path")"
+        if [ -z "$resolved_target" ] || [ ! -e "$resolved_target" ]; then
+            rm -f "$link_path" || {
+                blocked=$((blocked + 1))
+                log "blocked runtime=$runtime skill=$base target=$link_path reason=cannot-remove-stale-symlink"
+                continue
+            }
+            repaired=$((repaired + 1))
+            log "repaired runtime=$runtime skill=$base target=$link_path reason=removed-stale-symlink"
+            continue
+        fi
+        case "$resolved_target" in
+            "$resolved_skills"/*)
+                if [ ! -f "$resolved_target/SKILL.md" ]; then
+                    rm -f "$link_path" || {
+                        blocked=$((blocked + 1))
+                        log "blocked runtime=$runtime skill=$base target=$link_path reason=cannot-remove-invalid-shipflow-symlink"
+                        continue
+                    }
+                    repaired=$((repaired + 1))
+                    log "repaired runtime=$runtime skill=$base target=$link_path reason=removed-invalid-shipflow-symlink"
+                fi
+                ;;
+        esac
+    done
 }
 
 check_one() {
@@ -235,6 +286,7 @@ while [ "$#" -gt 0 ]; do
             shift 2
             ;;
         --backup-existing) BACKUP_EXISTING=1; shift ;;
+        --clean-stale) CLEAN_STALE=1; shift ;;
         -h|--help) usage; exit 0 ;;
         *) fail "unknown argument: $1" ;;
     esac
@@ -258,6 +310,9 @@ case "$RUNTIME" in
 esac
 
 status=0
+for runtime in $runtimes; do
+    clean_stale_runtime_links "$runtime" || status=1
+done
 for skill in $skills; do
     for runtime in $runtimes; do
         check_one "$runtime" "$skill" || status=1

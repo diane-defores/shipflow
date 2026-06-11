@@ -109,7 +109,7 @@ Review any sensitive-keyword matches manually; generic warnings are allowed, rea
 - Public content or claim changed -> check `shipflow_data/editorial/` and the claim register.
 - Runtime content changed -> check `site/src/content.config.ts` and `shipflow_data/editorial/astro-content-schema-policy.md`.
 - Public docs route changed -> check README and workflow docs for consistency.
-- Governance layout copy changed -> check `shipflow_data/technical/decisions/project-governance-layout.md`, `skills/sf-docs/SKILL.md`, and `tools/shipflow_metadata_lint.py`.
+- Governance layout copy changed -> check `shipflow_data/technical/decisions/project-governance-layout.md`, `skills/300-sf-docs/SKILL.md`, and `tools/shipflow_metadata_lint.py`.
 - Internal technical docs mentioned publicly -> confirm the link is not publishing internal content.
 
 ## Maintenance Rule

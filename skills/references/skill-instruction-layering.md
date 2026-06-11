@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-16"
 updated: "2026-06-10"
 status: active
-source_skill: sf-skill-build
+source_skill: 009-sf-skill-build
 scope: skill-instruction-layering
 owner: Diane
 confidence: high
@@ -35,7 +35,7 @@ evidence:
   - "Repeated top-level doctrine across long skills was identified as instruction dilution risk."
   - "User decision 2026-06-10: keep SKILL.md contracts short and move detailed playbooks, examples, matrices, and edge cases to references."
 next_review: "2026-06-24"
-next_step: "/sf-verify skill instruction layering"
+next_step: "/103-sf-verify skill instruction layering"
 ---
 
 # Skill Instruction Layering
@@ -52,7 +52,7 @@ Each `SKILL.md` must stay independently understandable after required references
 
 Required local sections:
 
-1. Role and invocation contract (`name`, `description`, args hints).
+1. Role and invocation contract (`707-name`, `description`, args hints).
 2. `Canonical Paths` loader.
 3. `Trace category` and `Process role` when chantier tracking applies.
 4. Report mode contract and pointer to `skills/references/reporting-contract.md`.

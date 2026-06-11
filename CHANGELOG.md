@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-04-25"
 updated: "2026-06-10"
 status: draft
-source_skill: sf-docs
+source_skill: 300-sf-docs
 scope: documentation
 owner: "unknown"
 confidence: medium
@@ -22,7 +22,7 @@ linked_systems:
 depends_on: []
 supersedes: []
 evidence: []
-next_step: "/sf-docs audit CHANGELOG.md"
+next_step: "/300-sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
 
@@ -30,25 +30,25 @@ next_step: "/sf-docs audit CHANGELOG.md"
 
 ### Changed
 - Added veille/backlog references for Alpic MCP/ChatGPT Apps distribution, models.dev model metadata, and OpenPostern-style security signal routing as future ShipFlow skill/product directions.
-- Added bounded `sf-start` local auto-verification semantics so safe, tool-backed, non-destructive proof can run in the same local implementation flow while preview, production, browser/auth, manual QA, commit, push, and ship proof stays routed to owner skills.
-- Added a numeric skill-code discovery layer with a canonical `skills/references/skill-code-index.md` map, router/help guidance, and a linter that keeps codes aligned with the unchanged skill names.
+- Added bounded `102-sf-start` local auto-verification semantics so safe, tool-backed, non-destructive proof can run in the same local implementation flow while preview, production, browser/auth, manual QA, commit, push, and ship proof stays routed to owner skills.
+- Migrated ShipFlow skill runtime names to three-digit prefixes such as `000-shipflow` and `001-sf-build`, with a canonical `skills/references/skill-code-index.md` map, router/help guidance, validators, synced Codex/Claude runtime links, and manual picker proof.
 - Closed the project-aware editorial scoring chantier with sample rubric evidence covering schema-complete scoring plus duplicate, conflicting, and stale score rejection scenarios.
 - Documented project-aware editorial scoring across README, launch cheatsheet, help catalog, public skill pages, public mode cheatsheet, and editorial governance gates.
-- Hardened ShipFlow conversation audit storage so the `shipflow` tmux capture preset stays under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/` and project-local destinations are blocked.
+- Hardened ShipFlow conversation audit storage so the `000-shipflow` tmux capture preset stays under `$SHIPFLOW_ROOT/shipflow_data/workflow/conversations/` and project-local destinations are blocked.
 - Hardened human-mode ShipFlow skill reports so directly launched skills return concise operator-facing outcomes while keeping detailed evidence in `report=agent`.
 - Strengthened the shared question contract so skills choose safe professional defaults and ask only material numbered questions in plain decision language.
-- Tightened proof-first reporting and `sf-ready` readiness output with proof-gap language, compact user-mode readiness reports, atomic ready metadata transitions, and a pressure-scenario checklist.
+- Tightened proof-first reporting and `101-sf-ready` readiness output with proof-gap language, compact user-mode readiness reports, atomic ready metadata transitions, and a pressure-scenario checklist.
 - Added hosted-proof follow-through routing so `partial` verdicts name the proof owner, scenario, target or environment, and deploy-first ladder instead of leaving operators to infer the next skill.
 
 ## [2026-06-01]
 
 ### Changed
-- Clarified the project-aware editorial scoring chantier with a required `Test Contract` and kept closure partial until `sf-verify` has sample rubric output evidence.
+- Clarified the project-aware editorial scoring chantier with a required `Test Contract` and kept closure partial until `103-sf-verify` has sample rubric output evidence.
 
 ## [2026-05-30]
 
 ### Added
-- Added a ShipFlow conversation-audit loop with a `shipflow` tmux capture preset, canonical private transcript storage, a new `sf-conversation-audit` skill, deterministic fixture classification, and a `conversation_audit` artifact template.
+- Added a ShipFlow conversation-audit loop with a `000-shipflow` tmux capture preset, canonical private transcript storage, a new `705-sf-conversation-audit` skill, deterministic fixture classification, and a `conversation_audit` artifact template.
 - Added an actionable failure routing contract so support and lifecycle skills can map evidence-backed failures to concrete owner routes instead of passive reports.
 - Added a private batch conversation excellence audit report that turns selected `/home/claude` conversation transcripts into evidence-backed skill follow-up routes.
 
@@ -61,7 +61,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Added durable manual checklist artifacts for proof-first TDD workflows, including the canonical `shipflow_data/workflow/test-checklists/<scope>.md` path and parser-backed status handling for `PASS`, `FAIL`, `BLOCKED`, `NOT_RUN`, and `N/A`.
 
 ### Changed
-- Updated `sf-test`, README, workflow doctrine, FAQ, and launch-cheatsheet content so operators can fill checklist files directly while agents consume them as evidence instead of relying on chat copy-paste.
+- Updated `107-sf-test`, README, workflow doctrine, FAQ, and launch-cheatsheet content so operators can fill checklist files directly while agents consume them as evidence instead of relying on chat copy-paste.
 
 ## [2026-05-18]
 
@@ -69,29 +69,29 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Added a shared spec-driven development discipline for ShipFlow: specs, bug files, release scopes, and mini-contracts remain the source of truth while execution chooses a concrete proof path.
 
 ### Changed
-- Updated `sf-start`, `sf-fix`, `sf-bug`, `sf-skill-build`, and `sf-verify` to use proof paths such as `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof`.
+- Updated `102-sf-start`, `106-sf-fix`, `003-sf-bug`, `009-sf-skill-build`, and `103-sf-verify` to use proof paths such as `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof`.
 - Updated master lifecycle, delegation, and skill runtime documentation so delegated missions and completion claims carry proof-path evidence instead of relying on unqualified "done" claims.
 
 ## [2026-05-17]
 
 ### Changed
 - Audited the ShipFlow skill taxonomy and compacted 56 skill discovery descriptions, reducing average description length from 70.7 to 51.3 and the absolute discovery estimate from 7988/8000 to 6805/8000 while keeping all skill names, invocation paths, trace categories, and process roles stable.
-- Clarified `sf-docs` discovery wording to expose governance-layout compliance after a local transcript showed README/docs refresh could miss a layout migration gate.
+- Clarified `300-sf-docs` discovery wording to expose governance-layout compliance after a local transcript showed README/docs refresh could miss a layout migration gate.
 - Documented the current skill discovery family map in the technical lifecycle notes.
 
 ## [2026-05-16]
 
 ### Changed
 - Compacted the remaining oversized ShipFlow skills above 500 lines into concise activation contracts with skill-local workflow references, reducing `SKILL.md` line-count risks while preserving chantier, reporting, audit, SEO, copywriting, bootstrap, and source-faithfulness guardrails.
-- Compacted the next non-lifecycle token-risk skill batch (`sf-audit`, `sf-audit-a11y`, `sf-audit-copy`, `sf-audit-gtm`, `sf-auth-debug`, `sf-enrich`, `sf-market-study`, `sf-prod`, `sf-redact`), leaving only lifecycle skills `sf-spec` and `sf-start` in the token-risk list.
-- Compacted the lifecycle token-risk skills (`sf-spec`, `sf-start`) into concise activation contracts with skill-local workflow references, bringing the skill budget audit to zero body-size token risks while preserving spec-first, chantier, reporting, and execution-result semantics.
+- Compacted the next non-lifecycle token-risk skill batch (`400-sf-audit`, `409-sf-audit-a11y`, `206-sf-audit-copy`, `408-sf-audit-gtm`, `109-sf-auth-debug`, `201-sf-enrich`, `204-sf-market-study`, `405-sf-prod`, `200-sf-redact`), leaving only lifecycle skills `100-sf-spec` and `102-sf-start` in the token-risk list.
+- Compacted the lifecycle token-risk skills (`100-sf-spec`, `102-sf-start`) into concise activation contracts with skill-local workflow references, bringing the skill budget audit to zero body-size token risks while preserving spec-first, chantier, reporting, and execution-result semantics.
 - Documented the phase 2 compaction convention in the skill runtime lifecycle notes.
 
 ## [2026-05-14]
 
 ### Changed
-- `sf-build agents` now explicitly validates delegated sequential execution for file work, validation, closure preparation, and ship preparation; parallel agents remain controlled only by ready spec `Execution Batches`.
-- `sf-model`, `sf-start`, and shared master lifecycle references now treat `gpt-5.5` as the Codex/OpenAI premium default for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work.
+- `001-sf-build agents` now explicitly validates delegated sequential execution for file work, validation, closure preparation, and ship preparation; parallel agents remain controlled only by ready spec `Execution Batches`.
+- `704-sf-model`, `102-sf-start`, and shared master lifecycle references now treat `gpt-5.5` as the Codex/OpenAI premium default for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work.
 - Small bounded Codex/OpenAI subagent missions now default to `gpt-5.4-mini`, with `gpt-5.3-codex-spark` reserved for micro-code or targeted UI/local edits.
 - `gpt-5.3-codex` is now documented as the Codex/OpenAI default for long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution.
 - Delegated subagent mission contracts now require model, reasoning or alias behavior, fallback, and model application status when model overrides are available.
@@ -134,25 +134,25 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - ShipFlow now manages the local Caddy proxy in user mode with the PM2 app
   lifecycle instead of leaving the system Caddy service as the normal runtime
   path.
-- `sf-bug` now presents itself as a bug lifecycle executor that continues through owner skills and bounded subagents when safe, instead of a simple next-command router.
-- Repo docs, help text, launch cheatsheet, technical lifecycle docs, and public skill pages now use the same `sf-bug` lifecycle wording.
+- `003-sf-bug` now presents itself as a bug lifecycle executor that continues through owner skills and bounded subagents when safe, instead of a simple next-command router.
+- Repo docs, help text, launch cheatsheet, technical lifecycle docs, and public skill pages now use the same `003-sf-bug` lifecycle wording.
 
 ### Fixed
 - Health, Flutter Web, and Codex submenus now use explicit one-key actions for
   sensitive commands, preventing residual Enter/input from opening cleanup or
   launch actions accidentally.
-- Closed `BUG-2026-05-08-001` and `BUG-2026-05-08-002` after focused `sf-test`
+- Closed `BUG-2026-05-08-001` and `BUG-2026-05-08-002` after focused `107-sf-test`
   retests for menu startup and Health cleanup routing.
-- Cleared stale Astro content cache and confirmed the public site builds without the duplicate `sf-bug` content id warning.
+- Cleared stale Astro content cache and confirmed the public site builds without the duplicate `003-sf-bug` content id warning.
 
 ## [2026-05-06]
 
 ### Added
-- `sf-design` master design lifecycle skill for routing UI/UX, design-token, playground, component, accessibility, browser-proof, implementation, verification, and ship workflows from one design entrypoint.
-- Public `sf-design` skill page and launch-cheatsheet routing so design-related requests are discoverable from the site and repo docs.
+- `006-sf-design` master design lifecycle skill for routing UI/UX, design-token, playground, component, accessibility, browser-proof, implementation, verification, and ship workflows from one design entrypoint.
+- Public `006-sf-design` skill page and launch-cheatsheet routing so design-related requests are discoverable from the site and repo docs.
 
 ### Changed
-- `shipflow` routing now sends design-related operator requests to `sf-design`.
+- `000-shipflow` routing now sends design-related operator requests to `006-sf-design`.
 - Design playground and design-system creation guidance now call out the follow-up migration needed when centralized tokens are not yet consumed across pages and components.
 
 ## [2026-05-04]
@@ -160,22 +160,22 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ### Added
 - Shared skill reporting contract for concise default user reports (`report=user`) and explicit detailed handoff reports (`report=agent`).
 - Public and repo-level skill launch cheatsheet covering master skills, supporting skill lanes, and documented argument modes.
-- Public `sf-build` skill page so the recommended master build entrypoint appears in the skill catalog.
+- Public `001-sf-build` skill page so the recommended master build entrypoint appears in the skill catalog.
 - Standalone Markdown skill launch cheatsheet under `docs/skill-launch-cheatsheet.md`.
 
 ### Changed
 - Lifecycle, bug, deploy, skill-build, and audit skills now load the shared reporting contract and use compact chantier/report guidance by default.
-- `sf-ship` user reports now present outcome, evidence, and limits in order, match the operator's active language, and use sober status emojis for faster scanning.
+- `005-sf-ship` user reports now present outcome, evidence, and limits in order, match the operator's active language, and use sober status emojis for faster scanning.
 - Selected OpenAI skill metadata now uses exact invocation keys as display names so the skill picker matches typed skill commands.
-- `sf-build` Plan Mode questions now frame the root problem, business stakes, options, and best-practice recommendation before asking a business decision.
-- `sf-skill-build` now routes fuzzy skill ideas or placement uncertainty through `sf-explore` before creating a durable `sf-spec` contract.
+- `001-sf-build` Plan Mode questions now frame the root problem, business stakes, options, and best-practice recommendation before asking a business decision.
+- `009-sf-skill-build` now routes fuzzy skill ideas or placement uncertainty through `700-sf-explore` before creating a durable `100-sf-spec` contract.
 - Docs overview, skills hub, FAQ, content map, workflow doctrine, and editorial maps now route skill-mode questions to the launch cheatsheet instead of a narrow argument tutorial.
 
 ### Fixed
 - Public site layout now declares a favicon to avoid the browser `favicon.ico` 404 during checks.
 - Installer alias refresh now removes stale standalone ShipFlow aliases before writing the managed alias block.
 - Install report markdown now escapes the ARM64 Flutter release command example correctly.
-- `sf-build` now continues through `sf-end` and `sf-ship` after successful verification instead of handing those lifecycle steps back as manual next commands, unless a concrete blocker requires user input.
+- `001-sf-build` now continues through `104-sf-end` and `005-sf-ship` after successful verification instead of handing those lifecycle steps back as manual next commands, unless a concrete blocker requires user input.
 - Disk cleanup now escalates root disk pressure with warning/high/critical messages, before/after used percentages, and explicit VM freeze/build-stall guidance.
 - Fallback CLI headers now render ANSI colors with `printf` instead of passing escape codes through `sed`, avoiding visible `33[...m` fragments.
 - One-key menu input now emits a newline immediately after the keypress so the next screen cannot start on the prompt line.
@@ -187,15 +187,15 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-05-03]
 
 ### Added
-- `sf-bug` professional bug loop orchestrator, public skill page, and runtime visibility links for routing bug intake, dossiers, fixes, retests, verification, and ship risk.
-- `sf-deploy` release orchestrator skill, public skill page, and runtime visibility links for the `sf-check -> sf-ship -> sf-prod -> proof -> sf-verify -> sf-changelog` flow.
-- `sf-maintain` master maintenance lifecycle, public skill page, and runtime visibility links for carrying maintenance from triage through spec/readiness, delegated fixes, verification, and ship/deploy routing.
+- `003-sf-bug` professional bug loop orchestrator, public skill page, and runtime visibility links for routing bug intake, dossiers, fixes, retests, verification, and ship risk.
+- `004-sf-deploy` release orchestrator skill, public skill page, and runtime visibility links for the `105-sf-check -> 005-sf-ship -> 405-sf-prod -> proof -> 103-sf-verify -> 304-sf-changelog` flow.
+- `002-sf-maintain` master maintenance lifecycle, public skill page, and runtime visibility links for carrying maintenance from triage through spec/readiness, delegated fixes, verification, and ship/deploy routing.
 
 ### Changed
-- README, workflow doctrine, help, technical lifecycle docs, and chantier tracking now present `sf-bug` as the bug lifecycle router while preserving `sf-test`, `sf-fix`, `sf-auth-debug`, `sf-browser`, `sf-verify`, and `sf-ship` as phase owners.
-- README, workflow doctrine, help, technical lifecycle docs, and chantier tracking now present `sf-deploy` as the release lifecycle entrypoint while preserving atomic skills for direct expert use.
-- README, workflow doctrine, help, technical lifecycle docs, public skill content, and chantier tracking now present `sf-maintain` as a lifecycle master skill instead of a read-only router.
-- Several skill descriptions were compacted to keep the ShipFlow skill discovery budget under the hard runtime limit after adding `sf-deploy`.
+- README, workflow doctrine, help, technical lifecycle docs, and chantier tracking now present `003-sf-bug` as the bug lifecycle router while preserving `107-sf-test`, `106-sf-fix`, `109-sf-auth-debug`, `108-sf-browser`, `103-sf-verify`, and `005-sf-ship` as phase owners.
+- README, workflow doctrine, help, technical lifecycle docs, and chantier tracking now present `004-sf-deploy` as the release lifecycle entrypoint while preserving atomic skills for direct expert use.
+- README, workflow doctrine, help, technical lifecycle docs, public skill content, and chantier tracking now present `002-sf-maintain` as a lifecycle master skill instead of a read-only router.
+- Several skill descriptions were compacted to keep the ShipFlow skill discovery budget under the hard runtime limit after adding `004-sf-deploy`.
 
 ### Fixed
 - Closed the current-user runtime skill visibility bug after the active Codex runtime retest showed newly published ShipFlow skills are discoverable.
@@ -203,24 +203,24 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-05-02]
 
 ### Added
-- `sf-build` lifecycle skill as the user-facing master orchestrator from story intake through spec/readiness, implementation, verification, closure, and ship handoff.
+- `001-sf-build` lifecycle skill as the user-facing master orchestrator from story intake through spec/readiness, implementation, verification, closure, and ship handoff.
 - Dedicated internal subagent role contracts for technical reading, editorial reading, sequential execution, wave execution, and integration.
 
 ### Changed
-- README, workflow doctrine, help, and chantier tracking now present `sf-build` as the recommended end-user entrypoint while preserving atomic skills for expert control and recovery.
+- README, workflow doctrine, help, and chantier tracking now present `001-sf-build` as the recommended end-user entrypoint while preserving atomic skills for expert control and recovery.
 
 ## [Unreleased]
 
 ### Added
 - Shared `tools/shipflow_sync_skills.sh` helper for checking and repairing current-user Claude/Codex ShipFlow skill symlinks, with temp-home tests, installer reuse, and validation-skill routing.
 - Per-project Dart/Flutter Flox runtime provisioning for ShipFlow-managed `pubspec.yaml` projects, including strict package override validation, existing `.flox` repair, focused shell tests, and runtime/installer documentation.
-- Governance corpus lifecycle across `sf-init`, `sf-docs`, and the `sf-build` spec: init bootstraps technical/editorial corpus state, docs owns first-run adoption and audit, and `sf-build` now has a Governance Corpus Gate before implementation.
+- Governance corpus lifecycle across `305-sf-init`, `300-sf-docs`, and the `001-sf-build` spec: init bootstraps technical/editorial corpus state, docs owns first-run adoption and audit, and `001-sf-build` now has a Governance Corpus Gate before implementation.
 - Editorial content governance layer under `docs/editorial/`, covering public surface mapping, page intent, claim boundaries, editorial update gates, Astro content schema policy, and missing blog/article surface rules
 - Read-only Editorial Reader role and editorial content corpus reference for public-content impact, claim impact, and runtime content schema analysis
 - `editorial_content_context` artifact template and metadata-linter support for editorial governance artifacts
 - Internal `docs/technical/` layer with a code-to-docs map, subsystem technical docs, a technical module template, and a skill-facing technical docs corpus reference for agent handoffs
 - `technical_module_context` artifact support in the ShipFlow metadata linter and template set
-- `sf-docs technical` / `technical audit` contract for scaffolding, auditing, and planning code-proximate documentation updates
+- `300-sf-docs technical` / `technical audit` contract for scaffolding, auditing, and planning code-proximate documentation updates
 - Project development mode doctrine for ShipFlow skills, covering local development, Vercel preview-push validation, and hybrid validation workflows
 - Self-hosted public site font assets for Space Grotesk and IBM Plex Mono, removing the remaining Google Fonts runtime dependency
 - Professional bug management doctrine with compact `TEST_LOG.md`, compact `BUGS.md`, per-bug `bugs/BUG-ID.md` dossiers, and redacted `test-evidence/BUG-ID/` evidence directories
@@ -230,44 +230,44 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Skill-aligned artifact templates for specs, business context, brand context, audits, verification, readiness, review, research, and decision records
 - Spec-first chantier registry doctrine: specs now carry `source_model`, `Skill Run History`, and `Current Chantier Flow` so skill runs can be reviewed from the spec without reading chat history
 - Shared chantier tracking rules and an all-skills matrix covering mandatory, conditional, and non-applicable spec tracing behavior
-- Internal skill taxonomy for chantier intake, including `source-de-chantier` process roles and standard `Chantier potentiel` routing to `/sf-spec`
-- `sf-resume` — fast current-thread recap skill with task status bullets, close/keep-open verdict, and one critical reminder
-- `sf-auth-debug` — browser-auth diagnostic skill for Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, sessions, callbacks, protected routes, and Playwright-based reproduction
-- `sf-browser` — general non-auth browser verification skill for page-level assertions, visual checks, screenshots, console/network summaries, and safe browser evidence handoffs
-- `skills/sf-browser/README.md` as the internal README for the generic non-auth browser evidence workflow
-- `skills/sf-browser/references/browser-evidence.md` for redaction rules, verdict labels, screenshot/snapshot policy, console/network summary limits, and production read-only safety
+- Internal skill taxonomy for chantier intake, including `source-de-chantier` process roles and standard `Chantier potentiel` routing to `/100-sf-spec`
+- `303-sf-resume` — fast current-thread recap skill with task status bullets, close/keep-open verdict, and one critical reminder
+- `109-sf-auth-debug` — browser-auth diagnostic skill for Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, sessions, callbacks, protected routes, and Playwright-based reproduction
+- `108-sf-browser` — general non-auth browser verification skill for page-level assertions, visual checks, screenshots, console/network summaries, and safe browser evidence handoffs
+- `skills/108-sf-browser/README.md` as the internal README for the generic non-auth browser evidence workflow
+- `skills/108-sf-browser/references/browser-evidence.md` for redaction rules, verdict labels, screenshot/snapshot policy, console/network summary limits, and production read-only safety
 - Cross-project auth reference docs for the ContentFlow Flutter web ClerkJS bridge and the TubeFlow Next.js + Convex YouTube OAuth flow
 - Public site tutorial page explaining how ShipFlow skill arguments can act as mode switches, structured inputs, or free-form tasks
 - Dedicated public FAQ page for common ShipFlow questions around skills, docs scope, and workflow behavior
 - Local MCP OAuth helper with guided server IP and optional SSH key configuration for local tunnels and remote Codex MCP login
-- Durable `exploration_report` artifacts for `sf-explore`, including the reusable template and default `docs/explorations/` report location
+- Durable `exploration_report` artifacts for `700-sf-explore`, including the reusable template and default `docs/explorations/` report location
 - Skill discovery budget audit for ShipFlow skills, with strict checks for one-sentence descriptions, name/path metadata, listing budgets, and separate long-body risks
-- `sf-skill-build` master skill orchestrating skill lifecycle work (`sf-explore` when needed → `sf-spec` → SKILL.md → `sf-skills-refresh` → budget audit → `sf-verify` → `sf-docs/help` → `sf-ship`) and public catalog coherence updates
+- `009-sf-skill-build` master skill orchestrating skill lifecycle work (`700-sf-explore` when needed → `100-sf-spec` → SKILL.md → `307-sf-skills-refresh` → budget audit → `103-sf-verify` → `300-sf-docs/help` → `005-sf-ship`) and public catalog coherence updates
 
 ### Changed
 - Local SSH setup now resolves bare identity filenames from the menu launch directory, `~/.ssh/`, then the user's home directory, and saves the absolute path for later `ssh -i` / `autossh -i` use.
 - Local SSH server configuration now rejects invalid free-form hosts before asking for the SSH user, while still accepting valid IPv4 addresses, dotted domains, and exact aliases from `~/.ssh/config`.
 - Local menu one-key prompts now print a clean newline after hidden key reads, avoiding glued Termux output such as a prompt followed immediately by the next border.
-- README, workflow doctrine, corpus references, and skill lifecycle docs now explain that future projects should use `sf-init` and `sf-docs` for project-local governance corpora instead of rerunning ShipFlow's shipped governance specs per project.
+- README, workflow doctrine, corpus references, and skill lifecycle docs now explain that future projects should use `305-sf-init` and `300-sf-docs` for project-local governance corpora instead of rerunning ShipFlow's shipped governance specs per project.
 - README, workflow docs, content map, public docs page, technical docs, and content-focused skills now route public-content work through the editorial governance layer before strengthening public claims or editing Astro runtime content
 - Agent and workflow docs now route code-changing work through `docs/technical/code-docs-map.md` and require a `Documentation Update Plan` for mapped code changes
 - Ready specs with missing confidence or draft-style versions were normalized so the default ShipFlow metadata lint baseline passes again
-- `sf-start`, `sf-fix`, `sf-auth-debug`, `sf-test`, `sf-verify`, `sf-check`, `sf-end`, `sf-ship`, and `sf-prod` now distinguish local evidence from Vercel preview-push evidence and route through `sf-ship` -> `sf-prod` when remote validation is required
+- `102-sf-start`, `106-sf-fix`, `109-sf-auth-debug`, `107-sf-test`, `103-sf-verify`, `105-sf-check`, `104-sf-end`, `005-sf-ship`, and `405-sf-prod` now distinguish local evidence from Vercel preview-push evidence and route through `005-sf-ship` -> `405-sf-prod` when remote validation is required
 - Local tunnel tools now share SSH validation and remote PM2 port parsing through `local/remote-helpers.sh` to reduce drift between `local/local.sh`, `local/dev-tunnel.sh`, and `local/mcp-login.sh`
-- `sf-explore`, workflow docs, help docs, and public skill docs now explain when substantial explorations create or update durable reports without writing chantier spec history
+- `700-sf-explore`, workflow docs, help docs, and public skill docs now explain when substantial explorations create or update durable reports without writing chantier spec history
 - Codex TUI defaults now show remaining context with `context-remaining` and rate-limit status with `five-hour-limit` plus `weekly-limit`.
-- `sf-test`, `sf-fix`, `sf-verify`, `sf-ship`, `sf-docs`, and `sf-help` now share the same bug lifecycle, retest, evidence-redaction, and bug-gate rules
-- README, workflow docs, `sf-test` README, and public skill pages now describe the compact index plus detailed bug dossier model instead of treating `BUGS.md` as the full bug record
+- `107-sf-test`, `106-sf-fix`, `103-sf-verify`, `005-sf-ship`, `300-sf-docs`, and `302-sf-help` now share the same bug lifecycle, retest, evidence-redaction, and bug-gate rules
+- README, workflow docs, `107-sf-test` README, and public skill pages now describe the compact index plus detailed bug dossier model instead of treating `BUGS.md` as the full bug record
 - Existing Codex TUI spec migrated to the ShipFlow metadata frontmatter schema
-- `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, and `sf-ship` now report chantier status and trace lifecycle results when a unique spec-first chantier is identified
+- `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `104-sf-end`, and `005-sf-ship` now report chantier status and trace lifecycle results when a unique spec-first chantier is identified
 - Workflow documentation now links metadata doctrine to executable templates and linting
-- `sf-fix`, `sf-start`, `sf-verify`, and `sf-prod` now route auth/browser-flow uncertainty through `sf-auth-debug` when browser evidence is needed
-- `sf-start`, `sf-fix`, `sf-check`, `sf-test`, `sf-prod`, and `sf-verify` now route non-auth browser evidence through `sf-browser` instead of stretching `sf-auth-debug`
-- Public skill pages, the skills hub, and the FAQ now explain when to use `sf-browser` versus `sf-auth-debug`, `sf-test`, and `sf-prod`
-- Internal README docs and the public category plus chantier taxonomy specs now keep `sf-browser` aligned as a 49-page `Build & Fix` public skill and `source-de-chantier` process source
+- `106-sf-fix`, `102-sf-start`, `103-sf-verify`, and `405-sf-prod` now route auth/browser-flow uncertainty through `109-sf-auth-debug` when browser evidence is needed
+- `102-sf-start`, `106-sf-fix`, `105-sf-check`, `107-sf-test`, `405-sf-prod`, and `103-sf-verify` now route non-auth browser evidence through `108-sf-browser` instead of stretching `109-sf-auth-debug`
+- Public skill pages, the skills hub, and the FAQ now explain when to use `108-sf-browser` versus `109-sf-auth-debug`, `107-sf-test`, and `405-sf-prod`
+- Internal README docs and the public category plus chantier taxonomy specs now keep `108-sf-browser` aligned as a 49-page `Build & Fix` public skill and `source-de-chantier` process source
 - Playwright MCP setup now prefers local Playwright Chromium or Chromium fallback over Google Chrome stable on Linux ARM64, with a shared runtime preflight reference for browser-evidence skills
-- `sf-fix` now requires durable bug memory for direct fixes by creating or reusing a `BUG-ID` and per-bug dossier unless a narrow minor exception is explicitly justified
-- Internal and public skill documentation now explain when to use `sf-auth-debug` and which auth references it carries
+- `106-sf-fix` now requires durable bug memory for direct fixes by creating or reusing a `BUG-ID` and per-bug dossier unless a narrow minor exception is explicitly justified
+- Internal and public skill documentation now explain when to use `109-sf-auth-debug` and which auth references it carries
 - Internal linking across the public site now routes homepage, docs, about, and "Why not just prompts?" traffic toward the new skill-modes tutorial and FAQ surfaces
 - ShipFlow installer now targets selected eligible user accounts for AI configuration instead of mutating every `/home/*` account by default
 - ShipFlow installer now owns Claude/Codex autonomous defaults, AI aliases (`c`, `co`, `cask`, `coask`), and per-user npm bootstrap for selected users
@@ -277,7 +277,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 - Local SSH setup prompts now explain default values explicitly and save custom identity-file paths as stable absolute paths before using `ssh -i` / `autossh -i`.
 - Local tunnel startup now shows a polished animated SSH sonar scan while the menu checks the remote server, with `SHIPFLOW_NO_ANIMATION=1` as an opt-out for automated or slow terminals.
 - All current skill descriptions were compacted for Codex and Claude Code discovery: the strict audit now reports 49 skills, 0 hard violations, 0 warnings, a 7230-character absolute estimate, and an 88.4-character average description length
-- `sf-docs` and `sf-skills-refresh` now run the skill budget audit only when work touches skills, discovery wording, `agents/openai.yaml`, or Codex/Claude Code skill compatibility
+- `300-sf-docs` and `307-sf-skills-refresh` now run the skill budget audit only when work touches skills, discovery wording, `agents/openai.yaml`, or Codex/Claude Code skill compatibility
 
 ### Security
 - Replaced the operator server IP in SSH examples and recent branch history with documentation-only example addresses.
@@ -290,16 +290,16 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-04-25] - Contract metadata versioning across skills
 
 ### Added
-- `sf-ready` — new readiness gate for specs before implementation, with explicit user-story alignment, adversarial review, workflow bypass checks, documentation coherence, and proportional cybersecurity review
+- `101-sf-ready` — new readiness gate for specs before implementation, with explicit user-story alignment, adversarial review, workflow bypass checks, documentation coherence, and proportional cybersecurity review
 - Standard artifact versioning rules for ShipFlow documentation: `metadata_schema_version` for the metadata contract and `artifact_version` for the document's decision content
 - Versioned dependency tracking through `depends_on`, `required_status`, `next_review`, and `supersedes` so specs can declare which business and technical contracts they were built against
 - Active documentation-coherence checks across implementation, verification, audit, docs, business-content, and shipping skills
 
 ### Changed
-- `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`, `sf-docs`, and business/documentation-generating skills now treat business docs as versioned decision contracts, not passive context
+- `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `104-sf-end`, `300-sf-docs`, and business/documentation-generating skills now treat business docs as versioned decision contracts, not passive context
 - Audit skills now apply stronger product-coherence, user-story, documentation-drift, and security-risk scrutiny instead of limiting review to their narrow domain
-- `sf-verify` now checks whether work was implemented against current docs, outdated docs, unknown dependency versions, or non-applicable contracts
-- `sf-ship` now reports evidence limits explicitly and avoids claiming product, user-story, documentation, or security completion from commit/push alone
+- `103-sf-verify` now checks whether work was implemented against current docs, outdated docs, unknown dependency versions, or non-applicable contracts
+- `005-sf-ship` now reports evidence limits explicitly and avoids claiming product, user-story, documentation, or security completion from commit/push alone
 
 ## [2026-04-25] - ShipFlow artifact and business-documentation doctrine
 
@@ -324,29 +324,29 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-04-24] - Model routing and multi-agent execution topology
 
 ### Added
-- `sf-model` — new skill to choose between `gpt-5.4`, `gpt-5.4-mini`, `gpt-5.5`, `gpt-5.3-codex`, `gpt-5.3-codex-spark`, and `gpt-5.2` based on task profile, cost, latency, and execution risk
-- `skills/sf-model/references/model-routing.md` — shared routing matrix so model-selection guidance can be reused consistently across ShipFlow skills
+- `704-sf-model` — new skill to choose between `gpt-5.4`, `gpt-5.4-mini`, `gpt-5.5`, `gpt-5.3-codex`, `gpt-5.3-codex-spark`, and `gpt-5.2` based on task profile, cost, latency, and execution risk
+- `skills/704-sf-model/references/model-routing.md` — shared routing matrix so model-selection guidance can be reused consistently across ShipFlow skills
 
 ### Changed
-- `sf-start` now chooses an execution topology (`single-agent` vs `multi-agent`) before implementation, with explicit file ownership, group boundaries, and integration responsibility
-- `sf-start` now reads the shared `sf-model` routing reference, selects a primary execution model and reasoning effort, and can assign per-group model overrides for multi-agent runs
+- `102-sf-start` now chooses an execution topology (`single-agent` vs `multi-agent`) before implementation, with explicit file ownership, group boundaries, and integration responsibility
+- `102-sf-start` now reads the shared `704-sf-model` routing reference, selects a primary execution model and reasoning effort, and can assign per-group model overrides for multi-agent runs
 
 ## [2026-04-23] - One-pass workflow docs and fresh-context policy
 
 ### Changed
 - `README.md` now states the one-pass execution model explicitly: complete context before coding, no hidden dependency on chat history, and fresh-context escalation when needed
-- `shipflow-spec-driven-workflow.md` now documents that `sf-ready` and `sf-start` are the main points where a fresh context may be enforced for non-trivial execution
+- `shipflow-spec-driven-workflow.md` now documents that `101-sf-ready` and `102-sf-start` are the main points where a fresh context may be enforced for non-trivial execution
 - The workflow docs now treat prompt-and-correct as a bounded fallback, not the default operating mode
 - `CHANGELOG.md` records the fresh-context policy so the workflow shift is visible outside the skills themselves
 
 ## [2026-04-22] - Spec-driven workflow v3 and documentation cleanup
 
 ### Added
-- `shipflow-spec-driven-workflow.md` — living documentation for the ShipFlow V3 spec-driven workflow, including `sf-explore`, `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, and `sf-end`
+- `shipflow-spec-driven-workflow.md` — living documentation for the ShipFlow V3 spec-driven workflow, including `700-sf-explore`, `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, and `104-sf-end`
 - `archive/reports/README.md` and `archive/notes/README.md` — archive indexes for historical reports and obsolete notes
 
 ### Changed
-- `sf-spec`, `sf-start`, `sf-ready`, and `sf-verify` aligned around a stricter spec-driven execution model with `sf-verify` now able to classify, reroute, and remediate bounded gaps
+- `100-sf-spec`, `102-sf-start`, `101-sf-ready`, and `103-sf-verify` aligned around a stricter spec-driven execution model with `103-sf-verify` now able to classify, reroute, and remediate bounded gaps
 - Root documentation trimmed to living docs only; historical reports and obsolete notes moved out of the repository root into `archive/`
 - `README.md` rewritten to reflect the current ShipFlow architecture, core docs, and the V3 workflow
 - `archive/README.md` updated to distinguish living documentation from historical artifacts
@@ -354,39 +354,39 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-04-20] - Code audit: anti-duplication & convention drift
 
 ### Changed
-- `sf-audit-code`: new checks for duplication/context-miss and convention drift (System Fit & Reuse in file audits; Consistency & Reuse in project audits)
-- `sf-audit`: domain checklist paths updated to `$HOME/.codex/skills/...` (fixes stale `$HOME/dotfiles/...` references)
+- `401-sf-audit-code`: new checks for duplication/context-miss and convention drift (System Fit & Reuse in file audits; Consistency & Reuse in project audits)
+- `400-sf-audit`: domain checklist paths updated to `$HOME/.codex/skills/...` (fixes stale `$HOME/dotfiles/...` references)
 
 ## [2026-04-19] - Skills refresh for 2026 state of the art + new refresh meta-skill
 
 ### Added
-- `sf-skills-refresh` — new meta-skill that refreshes other skills with latest industry state of the art via parallel research agents; takes a skill name or prompts multi-select if no arg
+- `307-sf-skills-refresh` — new meta-skill that refreshes other skills with latest industry state of the art via parallel research agents; takes a skill name or prompts multi-select if no arg
 - `skills/REFRESH_LOG.md` — chronological log of skill refreshes, backfilled with today's entries
-- `sf-audit-seo`: new Phase 5.5 — AI Visibility (AEO / GEO) with llms.txt, AI crawler allowlist, citation-ready content structure, SpeakableSpecification / QAPage / HowTo / Person schemas, off-site signals (Wikipedia, Reddit)
-- `sf-audit-design`: new categories 9 (Modern CSS 2026 — container queries, `:has()`, view transitions, OKLCH, `color-mix()`, `light-dark()`, subgrid, `content-visibility`, anchor positioning) and 10 (AI-Generated Code Smells); new Phases 2.5 (Modern CSS Adoption) and 2.6 (AI-Generated Code Smells Scan)
-- `sf-audit-copy`: new categories 8-11 — AI-Voice Detection (EN+FR blacklists, structural tells), AI-era Trust Signals, LLM-Answer-Engine Readiness (Princeton GEO), Conversion Copy 2025-2026; Framework Reference section (StoryBrand > PAS > JTBD > 4Cs > AIDA > Kennedy)
-- `sf-enrich`: new Phase 4.5 — AI Visibility Layer with semantic chunking, Quick Answer, E-E-A-T concrete checklist, Schema.org matrix per page type; content decay scan in research phase
+- `406-sf-audit-seo`: new Phase 5.5 — AI Visibility (AEO / GEO) with llms.txt, AI crawler allowlist, citation-ready content structure, SpeakableSpecification / QAPage / HowTo / Person schemas, off-site signals (Wikipedia, Reddit)
+- `502-sf-audit-design`: new categories 9 (Modern CSS 2026 — container queries, `:has()`, view transitions, OKLCH, `color-mix()`, `light-dark()`, subgrid, `content-visibility`, anchor positioning) and 10 (AI-Generated Code Smells); new Phases 2.5 (Modern CSS Adoption) and 2.6 (AI-Generated Code Smells Scan)
+- `206-sf-audit-copy`: new categories 8-11 — AI-Voice Detection (EN+FR blacklists, structural tells), AI-era Trust Signals, LLM-Answer-Engine Readiness (Princeton GEO), Conversion Copy 2025-2026; Framework Reference section (StoryBrand > PAS > JTBD > 4Cs > AIDA > Kennedy)
+- `201-sf-enrich`: new Phase 4.5 — AI Visibility Layer with semantic chunking, Quick Answer, E-E-A-T concrete checklist, Schema.org matrix per page type; content decay scan in research phase
 
 ### Changed
-- `sf-audit-seo`: FID removed, INP < 200ms becomes the responsiveness metric; images upgraded from "WebP/AVIF" to explicit AVIF-first via `<picture>`; keyword density downgraded to semantic completeness + entity coverage
-- `sf-audit-design`: WCAG 2.2 target size rule refined with 8px spacing / 24px offset exemption; dark mode guidance updated to `light-dark()` + `color-scheme`
-- `sf-audit-copy`: sentence length adds variance check (robotic uniformity is AI tell); CTA rule tightened to "action verb + specific outcome + timeframe"; French typography rules made explicit
-- `sf-enrich`: internal linking expanded to topic cluster structure (pillar + 2-5 spokes); primary source preference added
+- `406-sf-audit-seo`: FID removed, INP < 200ms becomes the responsiveness metric; images upgraded from "WebP/AVIF" to explicit AVIF-first via `<picture>`; keyword density downgraded to semantic completeness + entity coverage
+- `502-sf-audit-design`: WCAG 2.2 target size rule refined with 8px spacing / 24px offset exemption; dark mode guidance updated to `light-dark()` + `color-scheme`
+- `206-sf-audit-copy`: sentence length adds variance check (robotic uniformity is AI tell); CTA rule tightened to "action verb + specific outcome + timeframe"; French typography rules made explicit
+- `201-sf-enrich`: internal linking expanded to topic cluster structure (pillar + 2-5 spokes); primary source preference added
 
 ## [2026-04-14] - No local builds in ship/verify flows
 
 ### Changed
-- `sf-ship`: Step 6 pre-checks now run typecheck + lint only — `npm run build` removed (build runs in CI/Vercel at push)
-- `sf-verify`: Step 7 technical checks replaces Build with Typecheck; explicit note to use `/sf-check` if a local build is really needed
+- `005-sf-ship`: Step 6 pre-checks now run typecheck + lint only — `npm run build` removed (build runs in CI/Vercel at push)
+- `103-sf-verify`: Step 7 technical checks replaces Build with Typecheck; explicit note to use `/105-sf-check` if a local build is really needed
 - Both skills now document why local builds are forbidden, so future edits don't reintroduce them
 
 ## [2026-03-29] - Design audit upgrade, Python env robustness
 
 ### Added
-- `sf-audit-design`: NN/g 10 usability heuristics as new audit category (section 7)
-- `sf-audit-design`: WCAG 2.2 criteria — Focus Appearance (2.4.11), Target Size (2.5.8), Dragging Movements (2.5.7), Consistent Help (3.2.6)
-- `sf-audit-design`: "Why it matters" — each finding now cites the UX principle or standard behind it
-- `sf-audit-design`: Quick Wins section in all 3 report formats (page, project, global) — max 5 high-impact/low-effort fixes
+- `502-sf-audit-design`: NN/g 10 usability heuristics as new audit category (section 7)
+- `502-sf-audit-design`: WCAG 2.2 criteria — Focus Appearance (2.4.11), Target Size (2.5.8), Dragging Movements (2.5.7), Consistent Help (3.2.6)
+- `502-sf-audit-design`: "Why it matters" — each finding now cites the UX principle or standard behind it
+- `502-sf-audit-design`: Quick Wins section in all 3 report formats (page, project, global) — max 5 high-impact/low-effort fixes
 - `python_runtime_command()` — detects best Python runtime (venv, .shipflow-pydeps, system) for project
 
 ### Changed
@@ -397,14 +397,14 @@ next_step: "/sf-docs audit CHANGELOG.md"
 ## [2026-03-23] - Skills overhaul: absorb OpenSpec/BMAD, new workflow skills, business context
 
 ### Added
-- `sf-explore` — mode réflexion avant action (inspiré OpenSpec explore)
-- `sf-spec` — spécification technique conversationnelle prête à implémenter (inspiré BMAD Quick-Flow)
-- `sf-verify` — vérification complétude/correctitude/cohérence/dépendances/risques avant ship (inspiré BMAD DoD + QA Gate)
-- `sf-prod` — vérification post-deploy via GitHub API + scraping logs Vercel/Netlify
-- `sf-docs audit` mode — vérifier cohérence code ↔ doc, conventions, fraîcheur
-- `sf-docs update` mode — harmoniser la doc existante + créer fichiers business/branding manquants
-- `sf-init` Step 5 — génération BUSINESS.md, BRANDING.md, GUIDELINES.md à l'initialisation
-- `sf-ship` Step 6 — pre-checks (typecheck, lint, build) avant commit
+- `700-sf-explore` — mode réflexion avant action (inspiré OpenSpec explore)
+- `100-sf-spec` — spécification technique conversationnelle prête à implémenter (inspiré BMAD Quick-Flow)
+- `103-sf-verify` — vérification complétude/correctitude/cohérence/dépendances/risques avant ship (inspiré BMAD DoD + QA Gate)
+- `405-sf-prod` — vérification post-deploy via GitHub API + scraping logs Vercel/Netlify
+- `300-sf-docs audit` mode — vérifier cohérence code ↔ doc, conventions, fraîcheur
+- `300-sf-docs update` mode — harmoniser la doc existante + créer fichiers business/branding manquants
+- `305-sf-init` Step 5 — génération BUSINESS.md, BRANDING.md, GUIDELINES.md à l'initialisation
+- `005-sf-ship` Step 6 — pre-checks (typecheck, lint, build) avant commit
 - Pre-check contexte business/marque dans 8 skills de contenu (audit-copy, audit-copywriting, audit-gtm, audit-design, audit-seo, enrich, market-study, redact)
 - Chargement BUSINESS.md/BRANDING.md dans 9 skills de contenu
 
@@ -415,7 +415,7 @@ next_step: "/sf-docs audit CHANGELOG.md"
 
 ### Removed
 - 10 skills OpenSpec (`openspec-*`) et commandes OPSX — workflow trop lourd pour solopreneur
-- `sf-deploy` — absorbé dans `sf-ship` (pre-checks) et `sf-prod` (vérification post-deploy)
+- `004-sf-deploy` — absorbé dans `005-sf-ship` (pre-checks) et `405-sf-prod` (vérification post-deploy)
 - `.kilocode/` — plus utilisé
 - `openspec/` (config, changes, specs)
 - BMAD de my-robots et winflowz (conservé dans `$HOME/bmad/`)

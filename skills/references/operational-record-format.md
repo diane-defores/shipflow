@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-22"
 updated: "2026-05-22"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: operational-record-format
 owner: Diane
 confidence: high
@@ -28,7 +28,7 @@ supersedes: []
 evidence:
   - "Traffic-first Markdown operational record spec approved on 2026-05-22."
 next_review: "2026-06-22"
-next_step: "/sf-start Traffic-first Markdown operational record format Batch 2"
+next_step: "/102-sf-start Traffic-first Markdown operational record format Batch 2"
 ---
 
 # Operational Record Format
@@ -131,7 +131,7 @@ When `--write` migration is required for a live source, zero unmapped/legacy-act
 ## Examples
 
 ```text
-🔴 [shipflow_app] task: Run /sf-verify for shipflow-github-managed-clone-indexer.md | status: todo | area: github-clone-indexer
+🔴 [shipflow_app] task: Run /103-sf-verify for shipflow-github-managed-clone-indexer.md | status: todo | area: github-clone-indexer
 🟠 [ShipFlow] audit: dependencies | date: 2026-04-27 | overall: C | issues: 0/1/2
-🟢 [ShipFlow] spec: ShipFlow Terminal TUI V1 | status: ready | path: shipflow_data/workflow/specs/shipflow-terminal-tui-v1.md | next: /sf-start ShipFlow Terminal TUI V1
+🟢 [ShipFlow] spec: ShipFlow Terminal TUI V1 | status: ready | path: shipflow_data/workflow/specs/shipflow-terminal-tui-v1.md | next: /102-sf-start ShipFlow Terminal TUI V1
 ```

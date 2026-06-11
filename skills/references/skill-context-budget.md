@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-04-29"
 updated: "2026-05-17"
 status: draft
-source_skill: sf-docs
+source_skill: 300-sf-docs
 scope: skill-context-budget
 owner: "unknown"
 confidence: high
@@ -27,11 +27,11 @@ evidence:
   - "Codex skills documentation checked on 2026-04-29"
   - "Claude Code skills documentation checked on 2026-04-29"
   - "Local ShipFlow skill inventory measured at about 50 skills and about 12.7k initial-list characters"
-  - "User decision 2026-05-01: sf-docs audit should verify skill budget compliance through a dedicated script"
+  - "User decision 2026-05-01: 300-sf-docs audit should verify skill budget compliance through a dedicated script"
   - "User decision 2026-05-01: keep skill budget reminders scoped to skill documentation and skill refresh workflows, not global agent context"
   - "2026-05-17 taxonomy audit compacted discovery descriptions to 3127 total description characters and a 51.3 average while preserving routing distinctions."
 next_review: "2026-05-29"
-next_step: "/sf-verify Audit And Compact Skill Taxonomy Descriptions"
+next_step: "/103-sf-verify Audit And Compact Skill Taxonomy Descriptions"
 ---
 
 # Skill Context Budget
@@ -42,7 +42,7 @@ ShipFlow has enough skills that the initial skill index can exceed the context b
 
 This does not mean every `SKILL.md` body is loaded at startup. The startup cost comes mainly from the skill discovery index:
 
-- skill `name`
+- skill `707-name`
 - skill `description`
 - skill file path
 - Claude Code also counts `when_to_use` when present
@@ -77,8 +77,8 @@ Claude.ai upload:
 
 Agent Skills specification:
 
-- `name`: required, 1 to 64 characters, lowercase letters, numbers, and hyphens only.
-- `name`: must not start or end with a hyphen, must not contain consecutive hyphens, and must match the parent directory.
+- `707-name`: required, 1 to 64 characters, lowercase letters, numbers, and hyphens only.
+- `707-name`: must not start or end with a hyphen, must not contain consecutive hyphens, and must match the parent directory.
 - `description`: required, 1 to 1024 characters.
 - `compatibility`: optional, 1 to 500 characters if present.
 - `SKILL.md`: keep under 500 lines and move detailed reference material to separate files.
@@ -97,9 +97,9 @@ Default targets:
 - `description`: hard ShipFlow maximum 200 characters unless there is a documented reason.
 - `description`: average across installed skills should stay around 100 to 104 characters while ShipFlow has about 49 to 50 skills.
 - `description`: never contain `Args:`; arguments belong in `argument-hint`.
-- `name`: keep stable, short, lowercase, and hyphenated.
-- `name`: maximum 64 characters and must match the skill directory name.
-- `name`: must not start or end with `-`, and must not contain `--`.
+- `707-name`: keep stable, short, lowercase, and hyphenated.
+- `707-name`: maximum 64 characters and must match the skill directory name.
+- `707-name`: must not start or end with `-`, and must not contain `--`.
 - `path`: keep the canonical shape `skills/<name>/SKILL.md`; path length counts in the discovery budget.
 - `when_to_use`: avoid by default; if used, `description + when_to_use` must stay under 1,536 characters.
 - `compatibility`: optional; if used, keep it under 500 characters.
@@ -108,7 +108,7 @@ Default targets:
 
 Descriptions must front-load trigger words because both Codex and Claude Code can shorten long descriptions.
 
-This policy should be enforced in skill-specific workflows such as `sf-docs` and `sf-skills-refresh`, plus the executable audit. Do not add broad reminders to general agent files such as `AGENT.md`, `CONTEXT.md`, or `GUIDELINES.md`; agents working on unrelated tasks should not carry this extra decision load.
+This policy should be enforced in skill-specific workflows such as `300-sf-docs` and `307-sf-skills-refresh`, plus the executable audit. Do not add broad reminders to general agent files such as `AGENT.md`, `CONTEXT.md`, or `GUIDELINES.md`; agents working on unrelated tasks should not carry this extra decision load.
 
 Good description pattern:
 
@@ -128,7 +128,7 @@ Arguments belong in `argument-hint` and the body, not in long descriptions.
 
 Description compliance and body-size compaction are linked but distinct:
 
-- Discovery metadata (`name`, `description`, path) protects startup routing quality.
+- Discovery metadata (`707-name`, `description`, path) protects startup routing quality.
 - `SKILL.md` body size protects progressive-disclosure quality during execution.
 
 Use `skills/references/skill-instruction-layering.md` as the canonical compaction contract for what must stay local vs what should move to shared or skill-local references.

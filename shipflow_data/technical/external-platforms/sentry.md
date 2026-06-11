@@ -16,8 +16,8 @@ docs_impact: yes
 linked_systems:
   - skills/references/documentation-freshness-gate.md
   - skills/references/sentry-observability.md
-  - skills/sf-prod/SKILL.md
-  - skills/sf-verify/SKILL.md
+  - skills/405-sf-prod/SKILL.md
+  - skills/103-sf-verify/SKILL.md
   - templates/artifacts/project_platform_usage.md
 depends_on:
   - artifact: "shipflow_data/technical/external-platforms/README.md"

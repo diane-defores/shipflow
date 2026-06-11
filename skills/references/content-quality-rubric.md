@@ -6,7 +6,7 @@ project: ShipFlow
 created: "2026-05-26"
 updated: "2026-05-26"
 status: active
-source_skill: sf-start
+source_skill: 102-sf-start
 scope: content-quality-rubric
 owner: Diane
 confidence: high
@@ -14,14 +14,14 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - skills/sf-content/SKILL.md
-  - skills/sf-repurpose/SKILL.md
-  - skills/sf-redact/SKILL.md
-  - skills/sf-enrich/SKILL.md
-  - skills/sf-audit-copy/SKILL.md
-  - skills/sf-audit-copywriting/SKILL.md
-  - skills/sf-audit-seo/SKILL.md
-  - skills/sf-verify/SKILL.md
+  - skills/007-sf-content/SKILL.md
+  - skills/202-sf-repurpose/SKILL.md
+  - skills/200-sf-redact/SKILL.md
+  - skills/201-sf-enrich/SKILL.md
+  - skills/206-sf-audit-copy/SKILL.md
+  - skills/207-sf-audit-copywriting/SKILL.md
+  - skills/406-sf-audit-seo/SKILL.md
+  - skills/103-sf-verify/SKILL.md
   - shipflow_data/business/business.md
   - shipflow_data/business/product.md
   - shipflow_data/business/branding.md
@@ -52,7 +52,7 @@ supersedes: []
 evidence:
   - "Ready spec grille-notation-editoriale-projet-skills-contenu.md requires one shared content-quality scoring contract across owner skills."
 next_review: "2026-06-26"
-next_step: "/sf-verify content quality rubric contract"
+next_step: "/103-sf-verify content quality rubric contract"
 ---
 
 # Content Quality Rubric
@@ -65,14 +65,14 @@ Use one shared editorial rubric for content skills so the final quality score, b
 
 Only these skills can produce or consume a rubric output:
 
-- `sf-content`
-- `sf-repurpose`
-- `sf-redact`
-- `sf-enrich`
-- `sf-audit-copy`
-- `sf-audit-copywriting`
-- `sf-audit-seo`
-- `sf-verify`
+- `007-sf-content`
+- `202-sf-repurpose`
+- `200-sf-redact`
+- `201-sf-enrich`
+- `206-sf-audit-copy`
+- `207-sf-audit-copywriting`
+- `406-sf-audit-seo`
+- `103-sf-verify`
 
 Any other caller must return `status: "blocked"` with `blocked_reasons.code: "unauthorized_evaluator"`.
 
@@ -100,7 +100,7 @@ If versions are missing or not loadable for a project-aware run, return `project
   "project_id": "<string>",
   "surface": "<blog|article|doc|newsletter|social|other>",
   "evaluator": {
-    "skill": "<sf-content|sf-repurpose|sf-redact|sf-enrich|sf-audit-copy|sf-audit-copywriting|sf-audit-seo|sf-verify>",
+    "skill": "<007-sf-content|202-sf-repurpose|200-sf-redact|201-sf-enrich|206-sf-audit-copy|207-sf-audit-copywriting|406-sf-audit-seo|103-sf-verify>",
     "role": "<producer|auditor|verifier>",
     "initiated_by": "<operator|workflow|unknown>"
   },
@@ -230,9 +230,9 @@ Recoverable/non-final states (never valid as verification proof):
 - Keep an audit summary without sensitive content: `run_id`, `run_signature`, `evaluator.skill`, `project_id`, `surface`, `status`, codes, rules revision, UTC timestamp.
 - Never log full private content, secrets, tokens, cookies, or unnecessary personal data.
 
-## sf-verify Consumption Rules
+## 103-sf-verify Consumption Rules
 
-`sf-verify` must reject rubric outputs when:
+`103-sf-verify` must reject rubric outputs when:
 
 - status is recoverable/non-final (`needs retry`, `duplicate_in_progress`, `conflicting_score_state`, `stale_or_mismatched_score`)
 - `run_signature` does not match current content/rules

@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-04-25"
 updated: "2026-05-29"
 status: draft
-source_skill: sf-docs
+source_skill: 300-sf-docs
 scope: readme
 owner: "unknown"
 confidence: medium
@@ -19,42 +19,42 @@ linked_systems:
   - config.sh
   - install.sh
   - skills
-  - skills/sf-deploy/SKILL.md
-  - skills/sf-maintain/SKILL.md
-  - skills/sf-content/SKILL.md
-  - skills/sf-design/SKILL.md
-  - skills/sf-onboarding/SKILL.md
-  - skills/sf-local-cloud-sync/SKILL.md
-  - skills/sf-browser/SKILL.md
-  - skills/sf-bug/SKILL.md
-  - skills/shipflow/SKILL.md
+  - skills/004-sf-deploy/SKILL.md
+  - skills/002-sf-maintain/SKILL.md
+  - skills/007-sf-content/SKILL.md
+  - skills/006-sf-design/SKILL.md
+  - skills/008-sf-onboarding/SKILL.md
+  - skills/600-sf-local-cloud-sync/SKILL.md
+  - skills/108-sf-browser/SKILL.md
+  - skills/003-sf-bug/SKILL.md
+  - skills/000-shipflow/SKILL.md
   - skills/references/decision-quality-contract.md
   - skills/references/question-contract.md
-  - site/src/content/skills/shipflow.md
+  - site/src/content/skills/000-shipflow.md
   - shipflow_data/technical
   - shipflow_data/editorial
 depends_on: []
 supersedes: []
 evidence:
-  - "Added sf-browser as the generic non-auth browser verification path."
-  - "Added sf-deploy as the release confidence orchestrator."
-  - "Added sf-maintain as the recurring project maintenance orchestrator."
-  - "Clarified sf-build business-context decision questions."
+  - "Added 108-sf-browser as the generic non-auth browser verification path."
+  - "Added 004-sf-deploy as the release confidence orchestrator."
+  - "Added 002-sf-maintain as the recurring project maintenance orchestrator."
+  - "Clarified 001-sf-build business-context decision questions."
   - "Added a public and repo-level skill launch cheatsheet for master skill modes."
   - "Added docs/skill-launch-cheatsheet.md as the standalone Markdown reference."
-  - "Clarified that sf-skill-build routes fuzzy skill-maintenance ideas through sf-explore before sf-spec."
-  - "Added sf-content as the master content lifecycle entrypoint."
-  - "Clarified sf-build delegated sequential subagent consent and separated subagents from parallelism."
+  - "Clarified that 009-sf-skill-build routes fuzzy skill-maintenance ideas through 700-sf-explore before 100-sf-spec."
+  - "Added 007-sf-content as the master content lifecycle entrypoint."
+  - "Clarified 001-sf-build delegated sequential subagent consent and separated subagents from parallelism."
   - "Added skills/references/master-delegation-semantics.md as the shared master/orchestrator delegation doctrine."
   - "Added skills/references/master-workflow-lifecycle.md as the shared lifecycle skeleton and clarified bug files as source of truth."
-  - "Documented shipflow <instruction> as the recommended non-technical router before direct sf-* expert entrypoints."
+  - "Documented 000-shipflow <instruction> as the recommended non-technical router before direct sf-* expert entrypoints."
   - "Documented the shared question/default contract for numbered questions and context-safe defaults."
-  - "Added sf-design as the master design lifecycle entrypoint."
-  - "Added sf-onboarding as the user activation lifecycle for first-success paths, setup guidance, recoverable states, and proof routing."
-  - "Added sf-local-cloud-sync as the local-first data promotion, merge, sync UX, and security contract skill."
-  - "Clarified sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
+  - "Added 006-sf-design as the master design lifecycle entrypoint."
+  - "Added 008-sf-onboarding as the user activation lifecycle for first-success paths, setup guidance, recoverable states, and proof routing."
+  - "Added 600-sf-local-cloud-sync as the local-first data promotion, merge, sync UX, and security contract skill."
+  - "Clarified 003-sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Added project competitors/inspirations and affiliate program registries to the business documentation frame."
-next_step: "/sf-docs audit README.md"
+next_step: "/300-sf-docs audit README.md"
 ---
 
 # ShipFlow
@@ -116,7 +116,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [shipflow_data/technical/guidelines.md](./shipflow_data/technical/guidelines.md) — technical rules, preferred patterns, anti-patterns, and validation expectations
 - [shipflow_data/technical/terminal-tui.md](./shipflow_data/technical/terminal-tui.md) — internal contract for the optional read-only terminal dashboard
 - [CLAUDE.md](./CLAUDE.md) — repository constraints and coding guidance
-- [shipflow-spec-driven-workflow.md](./shipflow-spec-driven-workflow.md) — ShipFlow V3 workflow for `sf-explore`, `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, and `sf-end`
+- [shipflow-spec-driven-workflow.md](./shipflow-spec-driven-workflow.md) — ShipFlow V3 workflow for `700-sf-explore`, `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, and `104-sf-end`
 - [shipflow-metadata-migration-guide.md](./shipflow-metadata-migration-guide.md) — how to adopt ShipFlow metadata and versioning in an existing project
 - [skills/references/canonical-paths.md](./skills/references/canonical-paths.md) — path resolution rules for ShipFlow-owned tools, references, templates, and project-local artifacts
 - [ECOSYSTEM-AND-PORTS.md](./ECOSYSTEM-AND-PORTS.md) — persistent PM2 ecosystem files and port management
@@ -315,7 +315,7 @@ Android/iOS rendering.
 
 Per-user configuration includes:
 - `~/.claude/skills/*` and `~/.codex/skills/*` symlinks for every ShipFlow skill
-- aliases in `~/.bashrc` for `shipflow`, `sf`, autonomous `c`/`co`, safe escape hatches `cask`/`coask`, shell reload (`re`/`reload`), and tmux pane cleanup (`ch` = `clear; tmux clear-history`)
+- aliases in `~/.bashrc` for `000-shipflow`, `sf`, autonomous `c`/`co`, safe escape hatches `cask`/`coask`, shell reload (`re`/`reload`), and tmux pane cleanup (`ch` = `clear; tmux clear-history`)
 - `shipflow_data/workflow/TASKS.md`, `shipflow_data/workflow/AUDIT_LOG.md`
 
 Skill runtime visibility can also be checked or repaired without rerunning the full installer:
@@ -365,10 +365,10 @@ Typical CLI actions:
 Recommended non-technical entrypoint in a skill-aware agent session:
 
 ```text
-shipflow <instruction>
+000-shipflow <instruction>
 ```
 
-Use `shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `sf-build`, upkeep to `sf-maintain`, bugs to `sf-bug`, release/deploy/prod proof to `sf-deploy`, content to `sf-content`, onboarding and activation work to `sf-onboarding`, local-to-cloud sync contract work to `sf-local-cloud-sync`, product-entitlement work to `sf-product-entitlements`, skill maintenance to `sf-skill-build`, and obvious specialist audits to `sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
+Use `000-shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `001-sf-build`, upkeep to `002-sf-maintain`, bugs to `003-sf-bug`, release/deploy/prod proof to `004-sf-deploy`, content to `007-sf-content`, onboarding and activation work to `008-sf-onboarding`, local-to-cloud sync contract work to `600-sf-local-cloud-sync`, product-entitlement work to `601-sf-product-entitlements`, skill maintenance to `009-sf-skill-build`, and obvious specialist audits to `400-sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
 
 Decision-quality rule: ShipFlow optimizes first for correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality. Speed, cost, token economy, local convenience, or the shortest path are tie-breakers only after that quality bar is already satisfied. "Smallest safe path" means the smallest complete professional implementation, never the fastest patch that merely works.
 
@@ -387,137 +387,137 @@ Skill launch cheatsheet:
 
 | Need | Launch | Useful modes |
 | --- | --- | --- |
-| Non-technical first command | `shipflow <instruction>` | Routes pure conversation directly; routes real work to the right master or specialist skill; uses context-safe defaults and asks one numbered decision question when ambiguity changes route, risk, scope, or proof. |
-| Non-trivial product, code, site, or docs work | `sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; `spark`, `codex`, `mini`, `agents`, and `sous-agent` strictly validate model-specific delegated sequential execution; for user-facing features, `sf-build` evaluates whether to suggest or route `/sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
-| Recurring project upkeep | `sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
-| Release confidence after implementation | `sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
-| Bug-loop lifecycle | `sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
-| Content management | `sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
-| User onboarding and activation | `sf-onboarding <feature, flow, or audit target>` | First-success paths, setup ordering, why/how guidance, recoverable states, docs impact, and proof routing. |
-| Local-to-cloud data sync | `sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
-| Product entitlements and access gates | `sf-product-entitlements <project or feature>` | Entitlement ownership, provider events, activation codes, product-local mirrors, backend authorization gates, support flows, and sync handoffs. |
-| Platform parity | `sf-platform-parity <project, feature, or platform set>` | Audit declared web, mobile, desktop, and native platform behavior; classify parity, adaptation, degradation, unsupported scope, and proof gaps before routing follow-up. |
-| Conversation quality audit | `sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit ShipFlow conversation transcripts and route repeatable findings to owner skills or specs. |
-| Skill creation or maintenance | `sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
-| Design lifecycle | `sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
-| Design system creation | `sf-design-from-scratch [target or mode]` | Build a complete professional token system from an existing UI; use `tokens-only` or `with-playground`. |
-| Manual expert lifecycle | `sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end` | Use when you intentionally want to drive each gate instead of using `sf-build`. |
-| Commit and push ready work | `sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |
-| Browser, auth, manual QA, or live deployment proof | `sf-browser`, `sf-auth-debug`, `sf-test`, `sf-prod` | Pick by proof type: non-auth browser evidence, auth/session diagnosis, durable manual QA, or deployment truth. |
+| Non-technical first command | `000-shipflow <instruction>` | Routes pure conversation directly; routes real work to the right master or specialist skill; uses context-safe defaults and asks one numbered decision question when ambiguity changes route, risk, scope, or proof. |
+| Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; `spark`, `codex`, `mini`, `agents`, and `sous-agent` strictly validate model-specific delegated sequential execution; for user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
+| Recurring project upkeep | `002-sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
+| Release confidence after implementation | `004-sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
+| Bug-loop lifecycle | `003-sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
+| Content management | `007-sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
+| User onboarding and activation | `008-sf-onboarding <feature, flow, or audit target>` | First-success paths, setup ordering, why/how guidance, recoverable states, docs impact, and proof routing. |
+| Local-to-cloud data sync | `600-sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
+| Product entitlements and access gates | `601-sf-product-entitlements <project or feature>` | Entitlement ownership, provider events, activation codes, product-local mirrors, backend authorization gates, support flows, and sync handoffs. |
+| Platform parity | `602-sf-platform-parity <project, feature, or platform set>` | Audit declared web, mobile, desktop, and native platform behavior; classify parity, adaptation, degradation, unsupported scope, and proof gaps before routing follow-up. |
+| Conversation quality audit | `705-sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit ShipFlow conversation transcripts and route repeatable findings to owner skills or specs. |
+| Skill creation or maintenance | `009-sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `700-sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
+| Design lifecycle | `006-sf-design <design question or goal>` | Master design entrypoint for UI/UX, tokens, playgrounds, component/a11y audits, implementation, browser proof, verification, and ship routing. |
+| Design system creation | `500-sf-design-from-scratch [target or mode]` | Build a complete professional token system from an existing UI; use `tokens-only` or `with-playground`. |
+| Manual expert lifecycle | `100-sf-spec -> 101-sf-ready -> 102-sf-start -> 103-sf-verify -> 104-sf-end` | Use when you intentionally want to drive each gate instead of using `001-sf-build`. |
+| Commit and push ready work | `005-sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |
+| Browser, auth, manual QA, or live deployment proof | `108-sf-browser`, `109-sf-auth-debug`, `107-sf-test`, `405-sf-prod` | Pick by proof type: non-auth browser evidence, auth/session diagnosis, durable manual QA, or deployment truth. |
 
 Bug loop entrypoint:
 
 ```text
-sf-bug -> sf-test -> bug file -> sf-fix -> sf-test --retest -> sf-verify -> sf-ship
+003-sf-bug -> 107-sf-test -> bug file -> 106-sf-fix -> 107-sf-test --retest -> 103-sf-verify -> 005-sf-ship
 ```
 
-Use `sf-bug` when you want the professional bug loop executed from a `BUG-ID`, a fresh bug report, a retest request, or a ship-risk question. It continues through narrower owner skills and bounded subagents when safe, without bypassing the bug file, retest, verification, or ship-risk gates.
+Use `003-sf-bug` when you want the professional bug loop executed from a `BUG-ID`, a fresh bug report, a retest request, or a ship-risk question. It continues through narrower owner skills and bounded subagents when safe, without bypassing the bug file, retest, verification, or ship-risk gates.
 
 Bug-first repair entrypoint:
 
 ```text
-sf-fix -> (fix directly or spec-first path)
+106-sf-fix -> (fix directly or spec-first path)
 ```
 
 Auth/browser diagnostic path:
 
 ```text
-sf-auth-debug -> sf-fix or sf-start -> sf-verify
+109-sf-auth-debug -> 106-sf-fix or 102-sf-start -> 103-sf-verify
 ```
 
-Use `sf-auth-debug` before guessing from static code when the bug involves Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, cookies, callbacks, protected routes, or Flutter web auth bridges. It can use Playwright where a real browser flow is accessible, and it carries local reference docs for the auth stacks ShipFlow projects use most often.
+Use `109-sf-auth-debug` before guessing from static code when the bug involves Clerk, OAuth, Google login, YouTube OAuth, Convex auth propagation, cookies, callbacks, protected routes, or Flutter web auth bridges. It can use Playwright where a real browser flow is accessible, and it carries local reference docs for the auth stacks ShipFlow projects use most often.
 
 General browser verification path:
 
 ```text
-sf-browser -> sf-fix, sf-test, sf-prod, sf-auth-debug, or sf-verify
+108-sf-browser -> 106-sf-fix, 107-sf-test, 405-sf-prod, 109-sf-auth-debug, or 103-sf-verify
 ```
 
-Use `sf-browser` when you need browser evidence for a non-auth URL, route, preview, or production page: visible assertions, quick visual inspection, console/network summaries, screenshots, and page-level checks. It keeps deployment truth in `sf-prod`, auth/session diagnosis in `sf-auth-debug`, and durable manual QA logs in `sf-test`.
+Use `108-sf-browser` when you need browser evidence for a non-auth URL, route, preview, or production page: visible assertions, quick visual inspection, console/network summaries, screenshots, and page-level checks. It keeps deployment truth in `405-sf-prod`, auth/session diagnosis in `109-sf-auth-debug`, and durable manual QA logs in `107-sf-test`.
 
 Fast thread recap:
 
 ```text
-sf-resume -> 3-5 bullets, task statuses, close/keep-open verdict
+303-sf-resume -> 3-5 bullets, task statuses, close/keep-open verdict
 ```
 
 Optional model-selection step:
 
 ```text
-sf-model -> choose model / reasoning / fallbacks before execution
+704-sf-model -> choose model / reasoning / fallbacks before execution
 ```
 
-`sf-model` is advisory for the active conversation and prescriptive for delegated missions when the runtime supports model overrides. Model choice follows the decision-quality contract first: faster or cheaper fallbacks are allowed only when quality-equivalent for the risk. In Codex/OpenAI, `gpt-5.4-mini` fits small bounded low-risk missions; `gpt-5.3-codex-spark` fits Spark-eligible summaries, text-only handoffs, micro-code, or targeted UI/local edits when it does not replace needed reasoning and credits/availability permit; the `codex` implementation profile fits long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` is the premium choice for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work, with `low`, `medium`, `high`, or `xhigh` reasoning calibrated to the task. The active main thread must not claim it can always switch its own model mid-run: it can recommend a next-run model, route through `sf-model`, or pass a selected model to a subagent when that override is actually supported.
+`704-sf-model` is advisory for the active conversation and prescriptive for delegated missions when the runtime supports model overrides. Model choice follows the decision-quality contract first: faster or cheaper fallbacks are allowed only when quality-equivalent for the risk. In Codex/OpenAI, `gpt-5.4-mini` fits small bounded low-risk missions; `gpt-5.3-codex-spark` fits Spark-eligible summaries, text-only handoffs, micro-code, or targeted UI/local edits when it does not replace needed reasoning and credits/availability permit; the `codex` implementation profile fits long implementation, multi-file coding, refactors, hard debugging, and terminal-heavy agentic execution; `gpt-5.5` is the premium choice for ambiguous, cross-project, governance-heavy, transverse audit, task-prioritization, prompt/docs migration, and business-risk synthesis work, with `low`, `medium`, `high`, or `xhigh` reasoning calibrated to the task. The active main thread must not claim it can always switch its own model mid-run: it can recommend a next-run model, route through `704-sf-model`, or pass a selected model to a subagent when that override is actually supported.
 
 Direct build entrypoint for non-trivial feature/code/docs work:
 
 ```text
-sf-build -> existing chantier check -> sf-spec/sf-ready loop -> sf-start -> sf-verify -> sf-end -> sf-ship
+001-sf-build -> existing chantier check -> 100-sf-spec/101-sf-ready loop -> 102-sf-start -> 103-sf-verify -> 104-sf-end -> 005-sf-ship
 ```
 
-`sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invoking a master skill authorizes bounded delegated sequential execution for the current chantier, and `sf-build agents <story>` makes that a strict validation gate for file work, validation, closure preparation, and ship preparation. `spark`, `codex`, `sous-agent`/`subagent`/`agents`, and `mini` request model-specific subagent delegation; they never mean parallel execution. If a strict subagent request is made but no bounded subagent runs, `sf-build` must stop or report degraded execution with the reason. Short natural-language confirmations continue the bounded sequential path after diagnosis by intent rather than exact keyword. Parallel agent execution is not an argument mode; it requires ready non-overlapping `Execution Batches` in the spec. `sf-build` keeps user interaction focused on decisions and progress; material questions are framed as business decision briefs with the root problem, business stakes, options, and a recommended best-practice answer. It skips the question only when the best default is safe, reversible, compatible with the current project context, aligned with best practices, and verifiable. After user-facing feature work, `sf-build` also evaluates whether a `/sf-onboarding` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
+`001-sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invoking a master skill authorizes bounded delegated sequential execution for the current chantier, and `001-sf-build agents <story>` makes that a strict validation gate for file work, validation, closure preparation, and ship preparation. `spark`, `codex`, `sous-agent`/`subagent`/`agents`, and `mini` request model-specific subagent delegation; they never mean parallel execution. If a strict subagent request is made but no bounded subagent runs, `001-sf-build` must stop or report degraded execution with the reason. Short natural-language confirmations continue the bounded sequential path after diagnosis by intent rather than exact keyword. Parallel agent execution is not an argument mode; it requires ready non-overlapping `Execution Batches` in the spec. `001-sf-build` keeps user interaction focused on decisions and progress; material questions are framed as business decision briefs with the root problem, business stakes, options, and a recommended best-practice answer. It skips the question only when the best default is safe, reversible, compatible with the current project context, aligned with best practices, and verifiable. After user-facing feature work, `001-sf-build` also evaluates whether a `/008-sf-onboarding` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
 
 Recommended release entrypoint after implementation:
 
 ```text
-sf-deploy -> sf-check -> sf-ship -> sf-prod -> sf-browser/sf-auth-debug/sf-test -> sf-verify -> sf-changelog
+004-sf-deploy -> 105-sf-check -> 005-sf-ship -> 405-sf-prod -> 108-sf-browser/109-sf-auth-debug/107-sf-test -> 103-sf-verify -> 304-sf-changelog
 ```
 
-`sf-deploy` is for release confidence, not just pushing code. It keeps technical checks, bounded shipping, deployment truth, post-deploy evidence, final verification, and optional release notes in one visible flow.
+`004-sf-deploy` is for release confidence, not just pushing code. It keeps technical checks, bounded shipping, deployment truth, post-deploy evidence, final verification, and optional release notes in one visible flow.
 
 Recommended maintenance entrypoint for existing projects:
 
 ```text
-sf-maintain -> triage -> sf-spec/sf-ready when needed -> delegated maintenance lanes -> sf-verify -> sf-deploy/sf-ship
+002-sf-maintain -> triage -> 100-sf-spec/101-sf-ready when needed -> delegated maintenance lanes -> 103-sf-verify -> 004-sf-deploy/005-sf-ship
 ```
 
-`sf-maintain` is the master maintenance lifecycle. It reviews bug risk, dependency posture, docs/governance drift, check coverage, audit freshness, migration candidates, and security posture, then carries needed work through spec/readiness, bounded delegated execution, verification, and ship/deploy routing. Use `/sf-maintain quick` for the old read-only triage behavior.
+`002-sf-maintain` is the master maintenance lifecycle. It reviews bug risk, dependency posture, docs/governance drift, check coverage, audit freshness, migration candidates, and security posture, then carries needed work through spec/readiness, bounded delegated execution, verification, and ship/deploy routing. Use `/002-sf-maintain quick` for the old read-only triage behavior.
 
 For ShipFlow skill maintenance, use the dedicated entrypoint:
 
 ```text
-sf-skill-build -> sf-explore when needed -> sf-spec -> skill contract edit/create -> runtime skill sync -> sf-skills-refresh -> skill budget audit -> sf-verify -> sf-docs/help update -> sf-ship
+009-sf-skill-build -> 700-sf-explore when needed -> 100-sf-spec -> skill contract edit/create -> runtime skill sync -> 307-sf-skills-refresh -> skill budget audit -> 103-sf-verify -> 300-sf-docs/help update -> 005-sf-ship
 ```
 
-`sf-skill-build` is scoped to creating or modifying `skills/*/SKILL.md` with explicit ambiguity-reduction, public-surface, documentation, and validation gates. If the skill idea or placement is too fuzzy for one targeted question to settle, it routes to `sf-explore` before creating the durable `sf-spec` contract.
+`009-sf-skill-build` is scoped to creating or modifying `skills/*/SKILL.md` with explicit ambiguity-reduction, public-surface, documentation, and validation gates. If the skill idea or placement is too fuzzy for one targeted question to settle, it routes to `700-sf-explore` before creating the durable `100-sf-spec` contract.
 
 For content management, use the dedicated lifecycle entrypoint:
 
 ```text
-sf-content -> CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> sf-verify -> sf-ship
+007-sf-content -> CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> 103-sf-verify -> 005-sf-ship
 ```
 
-`sf-content` routes content work through the right owner skill: `sf-repurpose` for source-faithful reuse, `sf-redact` for long-form drafting, `sf-enrich` for existing content upgrades, `sf-audit-copy` / `sf-audit-copywriting` / `sf-audit-seo` for review, and `sf-docs` for docs and editorial governance. It blocks undeclared blog/article surfaces with `surface missing: blog` instead of inventing paths.
+`007-sf-content` routes content work through the right owner skill: `202-sf-repurpose` for source-faithful reuse, `200-sf-redact` for long-form drafting, `201-sf-enrich` for existing content upgrades, `206-sf-audit-copy` / `207-sf-audit-copywriting` / `406-sf-audit-seo` for review, and `300-sf-docs` for docs and editorial governance. It blocks undeclared blog/article surfaces with `surface missing: blog` instead of inventing paths.
 
 When a workflow or spec asks whether content is good enough for a specific project, content owner skills use the shared `skills/references/content-quality-rubric.md` contract. The rubric loads project rules from `shipflow_data/business/*` and `shipflow_data/editorial/*`, then returns a global score, criterion scores, evidence, recommendations, confidence, and one of `ready`, `needs revision`, `blocked`, or `publishable with caveats`. Blocking claims, missing project context, stale score signatures, and undeclared surfaces override the numeric score.
 
 For user onboarding and feature activation, use the dedicated activation entrypoint:
 
 ```text
-sf-onboarding -> first-success path -> setup order -> states/recovery -> docs impact -> proof or sf-build
+008-sf-onboarding -> first-success path -> setup order -> states/recovery -> docs impact -> proof or 001-sf-build
 ```
 
-`sf-onboarding` helps turn shipped features into guided activation flows. Use it after or alongside feature work when users need context, setup guidance, permission or integration sequencing, skipped/blocked/recoverable states, and a proof path that shows they can reach value.
+`008-sf-onboarding` helps turn shipped features into guided activation flows. Use it after or alongside feature work when users need context, setup guidance, permission or integration sequencing, skipped/blocked/recoverable states, and a proof path that shows they can reach value.
 
 For local-first data promotion and cloud sync trust, use the dedicated sync entrypoint:
 
 ```text
-sf-local-cloud-sync -> data inventory -> account association -> promotion/hydration -> merge/conflict/tombstones -> sync UX/security -> proof or sf-build
+600-sf-local-cloud-sync -> data inventory -> account association -> promotion/hydration -> merge/conflict/tombstones -> sync UX/security -> proof or 001-sf-build
 ```
 
-`sf-local-cloud-sync` helps prevent data loss when local app usage becomes account-backed cloud usage. Use it before promising backup, reinstall recovery, multi-device sync, or account creation preserving local data.
+`600-sf-local-cloud-sync` helps prevent data loss when local app usage becomes account-backed cloud usage. Use it before promising backup, reinstall recovery, multi-device sync, or account creation preserving local data.
 
 For product access, paid plans, premium gates, provider events, activation codes, refunds, revokes, support access flows, and entitlement-backed backend authorization, use the dedicated entitlement entrypoint:
 
 ```text
-sf-product-entitlements -> identity/provider/access separation -> ledger ownership -> backend gates/support -> sync/auth handoff or sf-build
+601-sf-product-entitlements -> identity/provider/access separation -> ledger ownership -> backend gates/support -> sync/auth handoff or 001-sf-build
 ```
 
-`sf-product-entitlements` keeps identity, provider events, durable entitlements, product-local mirrors, and data sync responsibilities separate. Use it before adding product gates or entitlement-backed data access, especially in suite products where duplicate local ledgers and stale mirrors can create security or support risk.
+`601-sf-product-entitlements` keeps identity, provider events, durable entitlements, product-local mirrors, and data sync responsibilities separate. Use it before adding product gates or entitlement-backed data access, especially in suite products where duplicate local ledgers and stale mirrors can create security or support risk.
 
-If the bug is local and clear, `sf-fix` fixes it directly, then verifies.
+If the bug is local and clear, `106-sf-fix` fixes it directly, then verifies.
 That fast path should still attach the bug to durable project memory with a `bugs/BUG-ID.md` bug file, unless the issue is an explicitly justified minor exception such as a copy-only or purely cosmetic fix. `BUGS.md`, when present, is only a compact optional/generated triage view.
-If the bug is ambiguous or non-trivial, `sf-fix` routes to `sf-spec -> sf-ready -> sf-start`.
+If the bug is ambiguous or non-trivial, `106-sf-fix` routes to `100-sf-spec -> 101-sf-ready -> 102-sf-start`.
 
 ShipFlow keeps bug records split on purpose:
 
@@ -538,15 +538,15 @@ Use this layer for code-changing work. It keeps technical details close to the c
 Governance corpus lifecycle:
 
 ```text
-sf-init -> sf-docs -> sf-build
+305-sf-init -> 300-sf-docs -> 001-sf-build
 ```
 
-`sf-init` bootstraps `shipflow_data/technical/`, `shipflow_data/technical/code-docs-map.md`, `shipflow_data/editorial/content-map.md`, and applicable `shipflow_data/editorial/` files, or reports why a layer is skipped or blocked. `sf-docs` owns first-run bootstrap, adoption, update, and audit through `/sf-docs technical`, `/sf-docs editorial`, and `/sf-docs update`. `sf-build` consumes those project-local corpora as gates before implementation, closure, and ship; missing governance routes back to `sf-docs` instead of requiring the operator to rerun ShipFlow's shipped governance specs per project.
+`305-sf-init` bootstraps `shipflow_data/technical/`, `shipflow_data/technical/code-docs-map.md`, `shipflow_data/editorial/content-map.md`, and applicable `shipflow_data/editorial/` files, or reports why a layer is skipped or blocked. `300-sf-docs` owns first-run bootstrap, adoption, update, and audit through `/300-sf-docs technical`, `/300-sf-docs editorial`, and `/300-sf-docs update`. `001-sf-build` consumes those project-local corpora as gates before implementation, closure, and ship; missing governance routes back to `300-sf-docs` instead of requiring the operator to rerun ShipFlow's shipped governance specs per project.
 
 For expert manual control, the default non-trivial workflow is:
 
 ```text
-sf-explore -> exploration_report -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
+700-sf-explore -> exploration_report -> 100-sf-spec -> 101-sf-ready -> 102-sf-start -> 103-sf-verify -> 104-sf-end
 ```
 
 For spec-first work, the spec is also the chantier registry. It keeps a
@@ -560,13 +560,13 @@ is not an active doctrine location in this phase (legacy/migration-only context)
 Fast path for a small, explicit fix:
 
 ```text
-sf-start -> sf-verify -> sf-end
+102-sf-start -> 103-sf-verify -> 104-sf-end
 ```
 
 Bug fast path (recommended mental model):
 
 ```text
-sf-fix -> sf-verify -> sf-end
+106-sf-fix -> 103-sf-verify -> 104-sf-end
 ```
 
 The key rule is simple:
@@ -605,7 +605,7 @@ Legacy root files such as `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, 
 The current documentation structure is already solid on four axes:
 
 - technical: `CLAUDE.md`, `shipflow_data/technical/context.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/technical/guidelines.md`, and `shipflow_data/workflow/specs/`
-- workflow: `sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-docs`, and versioned metadata
+- workflow: `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `300-sf-docs`, and versioned metadata
 - product/business: `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, versioned docs, and `depends_on` relationships
 - editorial coherence: `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/`, public content, claims, page intent, and Astro content schema boundaries
 
@@ -652,7 +652,7 @@ created_at: "2026-04-25 10:30:00 UTC"
 updated: "2026-04-25"
 updated_at: "2026-04-25 10:30:00 UTC"
 status: draft
-source_skill: sf-spec
+source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
 scope: feature
 owner: "[user/team]"
@@ -667,14 +667,14 @@ depends_on:
     artifact_version: "1.0.0"
     required_status: reviewed
 evidence: []
-next_step: "/sf-ready [title]"
+next_step: "/101-sf-ready [title]"
 ```
 
 Specs also include a markdown `Skill Run History` table and a `Current Chantier Flow`.
-Lifecycle skills (`sf-spec`, `sf-ready`, `sf-start`, `sf-verify`, `sf-end`,
-`sf-ship`) write to that history when a unique spec-first chantier is in scope.
+Lifecycle skills (`100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `104-sf-end`,
+`005-sf-ship`) write to that history when a unique spec-first chantier is in scope.
 Cross-cutting skills write only when the run is attached to one clear chantier;
-helper skills such as `sf-help`, `sf-model`, `sf-status`, and `sf-resume` do not
+helper skills such as `302-sf-help`, `704-sf-model`, `308-sf-status`, and `303-sf-resume` do not
 write spec history.
 
 ShipFlow provides skill-aligned artifact templates in `templates/artifacts/` and a dependency-free linter:
@@ -776,17 +776,17 @@ Relevant docs may include:
 Stale documentation is a product bug when it causes users or operators to misunderstand setup, security, pricing, permissions, API behavior, migration steps, destructive actions, or support expectations.
 
 For medium and large changes, the contract is explicit:
-- `sf-spec` defines scope, dependencies, invariants, links, consequences, and execution notes
-- `sf-ready` rejects a spec that still depends on hidden assumptions
-- `sf-start` executes from that contract instead of rediscovering intent
-- `sf-start` now also selects a primary execution model and chooses execution topology before coding; master/orchestrator topology follows `skills/references/master-delegation-semantics.md`
-- `sf-verify` checks the implementation and the linked systems that could regress around it
+- `100-sf-spec` defines scope, dependencies, invariants, links, consequences, and execution notes
+- `101-sf-ready` rejects a spec that still depends on hidden assumptions
+- `102-sf-start` executes from that contract instead of rediscovering intent
+- `102-sf-start` now also selects a primary execution model and chooses execution topology before coding; master/orchestrator topology follows `skills/references/master-delegation-semantics.md`
+- `103-sf-verify` checks the implementation and the linked systems that could regress around it
 
 Success criterion:
 - a fresh agent should be able to pick up the task in one pass
 
 Operational rule:
-- for non-trivial work, `sf-ready` and `sf-start` are the places where a fresh context may be enforced
+- for non-trivial work, `101-sf-ready` and `102-sf-start` are the places where a fresh context may be enforced
 - if multiple agents are used, write ownership and final integration responsibility must be explicit
 
 ## TASKS vs BACKLOG

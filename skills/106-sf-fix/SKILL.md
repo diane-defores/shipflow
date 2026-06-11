@@ -1,0 +1,116 @@
+---
+name: 106-sf-fix
+description: "Triage and repair bugs, regressions, and failing behavior."
+argument-hint: <bug description, error message, or failing behavior>
+---
+
+## Canonical Paths
+
+Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+
+## Chantier Tracking
+
+Trace category: `conditionnel`.
+Process role: `source-de-chantier`.
+
+Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` when this run is attached to a spec-first chantier. If exactly one active `specs/*.md` chantier is identified, append the current run to `Skill Run History`, update `Current Chantier Flow` when the run changes the chantier state, and include a final `Chantier` block. If no unique chantier is identified, do not write to any spec; report `Chantier: non applicable` or `Chantier: non trace` with the reason.
+
+## Chantier Potential Intake
+
+Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the findings reveal non-trivial future work and no unique chantier owns it, add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, proposed title, reason, severity, scope, evidence, recommended `/100-sf-spec ...` command, and next step.
+
+## Required References
+
+Before any fix attempt, load:
+
+- `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`
+- `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`
+- `$SHIPFLOW_ROOT/skills/106-sf-fix/references/bug-fix-workflow.md`
+
+Load `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when the bug may depend on current framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
+
+Load `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` before deciding how the fix can be retested.
+
+Load only the relevant Supabase, Sentry, auth-debug, or browser references when the detailed workflow triggers those gates.
+
+## Mission
+
+Use bug language, not session language.
+
+`106-sf-fix` is the bug-oriented entrypoint that decides whether the issue should be fixed directly now or go through a spec-first path before implementation. Goal: close small, clear bugs efficiently without breaking the user promise, product coherence, security posture, performance expectations, maintainability, or durability.
+
+## Proof Path
+
+Choose a bug proof path before patching:
+
+- `regression-first` when reproduction and a practical failing regression test exist.
+- `evidence-first` when the only reliable proof is browser/manual/runtime evidence.
+- `exception-with-proof` when automated regression is impractical; record why, the root cause hypothesis, and the alternate proof.
+
+## Routing Rule
+
+Direct fix path is allowed only for small, local, clear bugs with obvious expected behavior, low ambiguity, no migration/auth/data contract change, and no material risk to permissions, visibility, workflow integrity, or external side effects.
+
+Spec-first path is required for multi-file or cross-system impact, unclear expected behavior, likely edge cases, migration/data/auth/perf implications, or ambiguity that could materially change behavior, scope, or security.
+
+Direct fix never means quick-fix shortcut. Apply the `Fast Fix Shortcut Ban`: root cause, owner boundary, durable structure, and proof path must remain intact.
+
+UI, IME, keyboard, overlay, responsive, spacing, typography, color, motion, target-size, or layout bugs are direct-fix eligible only when the bounded professional repair preserves the project's design-system source of truth. Do not hardcode one-off visual values to make a bug disappear. If the correct repair requires token/theme/component/measurement changes, route through `006-sf-design` or spec-first rather than accepting drift.
+
+## Bug Intake
+
+If `$ARGUMENTS` is provided, use it. If empty, ask: `Quel bug veux-tu corriger ?`
+
+Always reconstruct the bug as a tiny user story: actor, trigger, broken behavior, expected outcome/user value. Ask targeted clarification only when the missing answer changes visible behavior, scope, permission boundary, destructive side effects, retries, failure handling, data exposure, tenant isolation, or security posture.
+
+## BUG-ID And Bug Memory
+
+Direct bug fixes still require durable bug memory. `106-sf-fix` must finish with a bug reference and one Markdown bug file under `bugs/*.md` unless the issue is a narrow minor exception.
+
+Minor exceptions are limited to typo/copy-only fixes, purely cosmetic visual defects with no state/permission/data/interaction consequence, or duplicates of an already-tracked `BUG-ID` with no new diagnosis or fix history. Never use the exception for auth, data, workflow, permission, API, redirect, cache, payment, external effect, or stateful UI bugs.
+
+When a `BUG-ID` exists, open `bugs/BUG-ID.md` right before intake and treat it as source of truth. If no bug file exists and no exception applies, create or reserve a new durable bug record before or during the direct fix flow using the procedure in `bug-fix-workflow.md`.
+
+## Security And Data Gates
+
+Force `spec-first` if any unresolved point could change who can see/do the action, what data becomes visible/editable/deletable/triggerable, whether the workflow can be bypassed/replayed/left inconsistent, or whether external systems, billing, notifications, jobs, or automations behave differently.
+
+Direct fixes must preserve security-by-default: do not rely on UI-only protection, validate untrusted inputs where relevant, preserve auth/authz checks and tenant/resource boundaries, and prevent obvious replay, double-submit, stale-state, or invalid-order issues when relevant.
+
+## Execution
+
+If `direct`, implement the bounded professional repair, attach it to durable bug memory, append a `Fix Attempts` row, run relevant checks, and keep the bug status no stronger than `fix-attempted` until retest evidence exists.
+
+If `spec-first`, do not code; route to `/100-sf-spec`, `/101-sf-ready`, then `/102-sf-start`.
+
+If `diagnostic only`, do not code; route to `109-sf-auth-debug`, `108-sf-browser`, or a concrete next step as appropriate.
+
+## Stop Conditions
+
+- Ambiguity changes product meaning, data handling, permissions, security, destructive behavior, or external side effects.
+- A direct fix would repeat patch attempts without reproduction evidence and a cause-root hypothesis.
+- A practical regression/evidence path cannot be named.
+- Durable bug memory would be required but cannot be safely created or updated.
+- Preview-push validation is required and no matching deployment target is available.
+- Fresh external docs are required and unresolved.
+
+## Final Report
+
+Use the report shape in `bug-fix-workflow.md`: classification, reason, user story, bug reference/file, trace exception, proof path, root cause hypothesis, product/docs coherence, fresh docs, Sentry evidence, development mode, preview gate, security posture, bug status transition, retest evidence, action, next step, and scope estimate.
+
+## Rules
+
+- Prefer direct path for truly small and clear bugs; prefer spec-first when ambiguity could create rework or risk.
+- A direct fix must defend product coherence and security posture, not only pass the local repro.
+- A direct fix must not bypass durable process, root cause, owner routing, shared structure, or proof.
+- A direct visual fix must defend design-system coherence; unexplained hardcoded sizes, offsets, breakpoints, z-indexes, colors, font sizes, spacings, animation timings, IME/keyboard insets, or overlay positions are not acceptable proof of repair.
+- Do not close a bug without retest evidence in `bugs/BUG-ID.md`.
+- Do not treat a local retest as closure evidence when project mode requires Vercel preview-push validation.
+
+## Validation
+
+Validate this skill after edits with:
+
+- `rg -n "Trace category|Process role|Chantier Potential|spec-driven-development-discipline|decision-quality-contract|Direct fix|Spec-first|BUG-ID|Stop Conditions|bug-fix-workflow" skills/106-sf-fix/SKILL.md`
+- `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
+- `python3 tools/shipflow_metadata_lint.py skills/106-sf-fix/references/bug-fix-workflow.md`

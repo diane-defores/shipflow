@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-05-25"
 updated: "2026-06-10"
 status: active
-source_skill: sf-skill-build
+source_skill: 009-sf-skill-build
 scope: skill-execution-fidelity
 owner: "Diane"
 confidence: medium
@@ -34,7 +34,7 @@ evidence:
   - "User decision 2026-06-10: execution contracts should favor compact outcome-focused instructions and avoid routine process narration."
   - "User decision 2026-06-10: SKILL.md is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in references."
 next_review: "2026-06-25"
-next_step: "/sf-verify shipflow-skill-execution-fidelity-plugin-pilot"
+next_step: "/103-sf-verify shipflow-skill-execution-fidelity-plugin-pilot"
 ---
 
 # Skill Execution Fidelity
@@ -113,9 +113,9 @@ The operator tests only as a last resort. If the agent has the permission, crede
 
 Common proof routes:
 
-- If a deployment URL is known and ready, run browser proof through `sf-browser` or auth proof through `sf-auth-debug`.
-- If deployment truth is missing, route to `sf-prod` instead of asking the operator to inspect the deploy.
-- If preview-push mode requires remote proof, ship first, then route to `sf-prod`, then route to `sf-browser` / `sf-auth-debug` / `sf-test` as appropriate.
+- If a deployment URL is known and ready, run browser proof through `108-sf-browser` or auth proof through `109-sf-auth-debug`.
+- If deployment truth is missing, route to `405-sf-prod` instead of asking the operator to inspect the deploy.
+- If preview-push mode requires remote proof, ship first, then route to `405-sf-prod`, then route to `108-sf-browser` / `109-sf-auth-debug` / `107-sf-test` as appropriate.
 - If a backend deploy makes a frontend action available, retest the frontend action when the action is non-destructive and the target environment is available.
 - If the only remaining check is a local command, typecheck, lint, unit test, or deterministic script, run it instead of telling the operator to run it.
 
@@ -131,13 +131,13 @@ Weak:
 
 ```text
 You can retest the import now.
-Next step: /sf-browser
+Next step: /108-sf-browser
 ```
 
 Good outcome report:
 
 ```text
-Backend deployed; import retested through `sf-browser` against production.
+Backend deployed; import retested through `108-sf-browser` against production.
 ```
 
 Good blocked report:
