@@ -158,13 +158,11 @@ Contrôler :
   - cas limites
 - les prérequis de données, auth, permissions, feature flags, migrations ou config sont explicités si pertinents
 - runtime: Sentry/copy logs/build header, ou static exception
+- autonomie opérateur: diagnostic, test, vérification et preuve disent quoi collecter avant de demander à l'utilisateur
 - les non-goals de `Scope Out` bornent bien le travail
 - si la spec touche des artefacts ShipFlow, skills, rapports, docs techniques, prompts utilisateur ou copie visible produit, elle respecte la doctrine de langue ShipFlow issue de `shipflow_data/technical/guidelines.md` (fallback legacy `GUIDELINES.md`) et `shipflow-spec-driven-workflow.md` :
-  - contrats internes en anglais (`SKILL.md` instructions, workflow rules, YAML/frontmatter keys, stable section headings, acceptance criteria, stop conditions, validation notes, technical decision docs)
-  - interaction user-facing dans la langue active de l'utilisateur ou du projet
-  - français user-facing naturel et accentué quand la langue active est le français
-  - ancres machine stables en anglais même dans un artefact localisé (`Status`, `Scope In`, `Acceptance Criteria`, `Skill Run History`)
-  - pas de mélange casual de langues dans un même artefact; citations utilisateur, sources, texte légal et contenus externes gardent leur langue originale et sont labellisés
+  - contrats internes et ancres machine en anglais; user-facing dans la langue active du projet ou de l'utilisateur
+  - français visible naturel et accentué; citations, sources, texte légal et contenus externes gardent leur langue originale et sont labellisés
 
 Si un point change matériellement le comportement, le scope ou la sécurité et n'est ni prouvé par le code existant ni tranché par la spec, verdict `not ready`. Ne pas combler ce vide par inférence généreuse.
 

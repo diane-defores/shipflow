@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.11.1"
+artifact_version: "0.11.2"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-29"
+updated: "2026-06-11"
 status: draft
 source_skill: 300-sf-docs
 scope: readme
@@ -33,6 +33,9 @@ linked_systems:
   - site/src/content/skills/000-shipflow.md
   - shipflow_data/technical
   - shipflow_data/editorial
+  - shipflow_data/technical/codex-plugin-packaging.md
+  - site
+  - /home/claude/plugins/shipflow/
 depends_on: []
 supersedes: []
 evidence:
@@ -54,6 +57,8 @@ evidence:
   - "Added 600-sf-local-cloud-sync as the local-first data promotion, merge, sync UX, and security contract skill."
   - "Clarified 003-sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Added project competitors/inspirations and affiliate program registries to the business documentation frame."
+  - "Added Codex plugin packaging and sparse source bootstrap documentation."
+  - "Updated README to reflect the live public site and lightweight plugin distribution path."
 next_step: "/300-sf-docs audit README.md"
 ---
 
@@ -61,9 +66,10 @@ next_step: "/300-sf-docs audit README.md"
 
 ShipFlow is a unified framework for server delivery and AI-assisted execution discipline.
 
-It has two layers:
+It has three layers:
 - a CLI for managing project environments on a server
 - a skill system for structured coding workflows, audits, documentation, and shipping
+- a lightweight Codex plugin and public site for distribution, onboarding, and pack discovery
 
 It is built for solo founders and autonomous technical builders who want to launch, publish, and maintain software simply without losing context in agent handoffs.
 
@@ -104,6 +110,8 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [shipflow_data/editorial/README.md](./shipflow_data/editorial/README.md) — content governance layer for public content, claims, page intent, and Astro content schema boundaries
 - [shipflow_data/technical/README.md](./shipflow_data/technical/README.md) — internal technical documentation layer for code-proximate subsystem docs
 - [shipflow_data/technical/code-docs-map.md](./shipflow_data/technical/code-docs-map.md) — map from code paths to primary docs, validations, and documentation update triggers
+- [shipflow_data/technical/codex-plugin-packaging.md](./shipflow_data/technical/codex-plugin-packaging.md) — internal contract for the lightweight Codex plugin, sparse bootstrap, marketplace entry, and docs links
+- [shipflow_data/technical/public-site-and-content-runtime.md](./shipflow_data/technical/public-site-and-content-runtime.md) — internal contract for the Astro public site and public/private documentation boundary
 - [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
 - [skills/references/decision-quality-contract.md](./skills/references/decision-quality-contract.md) — shared doctrine for high-quality decisions, code, model routing, and fallback choices
 - [skills/references/master-delegation-semantics.md](./skills/references/master-delegation-semantics.md) — shared execution-topology doctrine for master/orchestrator skills
@@ -124,7 +132,17 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [tools/codebase-mcp/README.md](./tools/codebase-mcp/README.md) — local MCP server for codebase context management
 - [archive/README.md](./archive/README.md) — historical docs and old reports
 
-## Installation
+## Distribution and Installation
+
+The current public website is deployed at:
+
+```text
+https://shipflowzsite.vercel.app
+```
+
+It is the public explanation, docs, pricing hypothesis, FAQ, and skill-discovery surface. The GitHub repository remains the source of truth for the full ShipFlow skill and reference corpus.
+
+### Server CLI install
 
 ```bash
 # Install without manually cloning the repository
@@ -137,6 +155,20 @@ Manual equivalent:
 cd ~/shipflow
 sudo ./install.sh
 ```
+
+### Codex plugin alpha
+
+ShipFlow's Codex plugin path is intentionally lightweight. Users should not need to install many separate ShipFlow plugins to start. The main plugin exposes one `shipflow` entrypoint and can route to bundled or optional packs.
+
+In the current development workspace, the plugin alpha lives at `/home/claude/plugins/shipflow/` and is installed locally as `shipflow@personal`. Its behavior is documented in [`shipflow_data/technical/codex-plugin-packaging.md`](./shipflow_data/technical/codex-plugin-packaging.md).
+
+When the complete local ShipFlow corpus is needed, the plugin uses an explicit sparse Git checkout instead of packaging the whole repository:
+
+```bash
+/home/claude/plugins/shipflow/scripts/bootstrap_shipflow_repo.sh
+```
+
+The bootstrap target defaults to `${SHIPFLOW_ROOT:-$HOME/.shipflow/source}`. It includes `skills/`, `templates/`, `tools/`, `shipflow_data/`, `docs/`, `local/`, and `bugs/`, and excludes public-site assets, terminal UI assets, archives, research, generated builds, and dependency directories. It must not run silently; cloning or updating source requires explicit operator approval.
 
 ### Install Privilege Model
 
@@ -552,8 +584,8 @@ For expert manual control, the default non-trivial workflow is:
 For spec-first work, the spec is also the chantier registry. It keeps a
 `Skill Run History` and a `Current Chantier Flow`, so you can open the spec and
 see which lifecycle skills have run, which model was used, what result they
-recorded, and what the next ShipFlow command is. `shipflow_data/workflow/TASKS.md`,
-`shipflow_data/workflow/TASKS.md` and `shipflow_data/workflow/AUDIT_LOG.md` stay
+recorded, and what the next ShipFlow command is. `shipflow_data/workflow/TASKS.md`
+and `shipflow_data/workflow/AUDIT_LOG.md` stay
 operational trackers; they do not become the per-chantier history. `PROJECTS.md`
 is not an active doctrine location in this phase (legacy/migration-only context).
 
@@ -807,11 +839,14 @@ shipflow/
 ├── lib.sh
 ├── config.sh
 ├── install.sh
+├── install-shipflow.sh
 ├── README.md
 ├── CLAUDE.md
 ├── CHANGELOG.md
 ├── shipflow-spec-driven-workflow.md
 ├── ECOSYSTEM-AND-PORTS.md
+├── site/
+├── docs/
 ├── tui/
 ├── shipflow_data/
 │   ├── business/
@@ -823,6 +858,7 @@ shipflow/
 ├── skills/
 ├── local/
 ├── tools/
+├── templates/
 └── injectors/
 ```
 
@@ -832,12 +868,18 @@ shipflow/
 - `lib.sh` — shared shell library for ports, PM2, Flox, Caddy, validation, and tracking
 - `config.sh` — central configuration
 - `install.sh` — installation and machine setup
+- `install-shipflow.sh` — remote/bootstrap install helper
+- `site/` — Astro public website deployed to `https://shipflowzsite.vercel.app`
+- `docs/` — public or semi-public Markdown references such as the skill launch cheatsheet
 - `tui/` — optional read-only terminal dashboard for ShipFlow operators
 - `skills/` — ShipFlow skill library
 - `local/` — local machine tunnel scripts and setup docs
 - `tools/codebase-mcp/` — optional MCP server for token-efficient codebase work
+- `templates/` — ShipFlow artifact templates
 - `shipflow_data/workflow/research/` — research notes and evaluations
 - `archive/` — historical plans, reports, and obsolete documents kept for reference
+
+The current Codex plugin alpha is outside the repository at `/home/claude/plugins/shipflow/`. It should stay small and use the public GitHub repo plus sparse checkout when full local skill/reference access is needed.
 
 ## Key Features
 
@@ -850,6 +892,8 @@ shipflow/
 - public HTTPS publishing through Caddy and DuckDNS
 - local tunnel workflows
 - spec-driven AI-assisted development workflows
+- lightweight Codex plugin distribution with optional sparse source bootstrap
+- public Astro site for onboarding, docs, FAQ, pricing hypothesis, and skill discovery
 
 ## Tech Stack
 

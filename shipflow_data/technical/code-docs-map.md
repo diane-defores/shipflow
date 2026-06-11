@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.3.1"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-26"
+updated: "2026-06-11"
 status: reviewed
 source_skill: 102-sf-start
 scope: code-docs-map
@@ -29,7 +29,8 @@ evidence:
   - "ShipFlow remote bootstrap script added to installer mapping."
   - "External platform corpus and project platform usage template added for Freshness Gate source retention."
   - "GitHub Actions workflow files mapped to CI cost, cache, monorepo trigger, deploy, and artifact guardrails."
-next_review: "2026-06-01"
+  - "Codex plugin packaging and sparse source bootstrap mapped to technical docs."
+next_review: "2026-06-18"
 next_step: "/300-sf-docs technical audit"
 ---
 
@@ -51,6 +52,7 @@ Shared files in this map are sequential integration files. Do not assign concurr
 | `config.sh` | Runtime CLI | `shipflow_data/technical/runtime-cli.md` | `README.md` | `bash -n config.sh`; config validation smoke when changed | Config variable, default, or validation contract changes |
 | `local/**` | Local tunnels and MCP login | `shipflow_data/technical/local-tunnels-and-mcp-login.md` | `local/README.md`, `README.md` | `bash -n local/*.sh`; PowerShell syntax review when `.ps1` changes | SSH target, identity path, tunnel lifecycle, MCP OAuth, or local UX changes |
 | `install.sh`, `install-shipflow.sh` | Installer and user scope | `shipflow_data/technical/installer-and-user-scope.md` | `README.md`, `shipflow_data/technical/guidelines.md` | `bash -n install.sh install-shipflow.sh`; dry-run/review of touched installer branch | Root/user split, remote bootstrap, symlink, alias, MCP config, package install, or destructive behavior changes |
+| `/home/claude/plugins/shipflow/**`, `/home/claude/.agents/plugins/marketplace.json` | Codex plugin packaging | `shipflow_data/technical/codex-plugin-packaging.md` | `shipflow_data/workflow/specs/shipflow-main-plugin-and-pack-portability.md`, `shipflow_data/technical/public-site-and-content-runtime.md` | `python3 /home/claude/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py /home/claude/plugins/shipflow`; `bash -n /home/claude/plugins/shipflow/scripts/bootstrap_shipflow_repo.sh` | Plugin manifest, plugin routing skill, docs links, marketplace entry, sparse checkout, pack catalog, reference strategy, or public plugin packaging behavior changes |
 | `tools/shipflow_sync_skills.sh`, `test_skill_runtime_sync.sh` | Skill runtime and installer user scope | `shipflow_data/technical/skill-runtime-and-lifecycle.md`, `shipflow_data/technical/installer-and-user-scope.md` | `README.md` | `bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh`; `bash test_skill_runtime_sync.sh`; `tools/shipflow_sync_skills.sh --check --all` | Runtime skill visibility, Claude/Codex symlink behavior, install-time selected-user skill linking, collision handling |
 | `skills/**/SKILL.md` | Skill runtime and lifecycle | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `shipflow-spec-driven-workflow.md`, `skills/references/technical-docs-corpus.md` | `python3 tools/skill_budget_audit.py --skills-root skills --format markdown` when skill surfaces change | Skill routing, lifecycle, validation, documentation gate, or model/topology behavior changes |
 | `skills/references/skill-code-index.md`, `tools/skill_code_index_lint.py` | Skill runtime and lifecycle | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `docs/skill-launch-cheatsheet.md`, `skills/302-sf-help/references/help-catalog.md` | `python3 tools/skill_code_index_lint.py`; metadata lint for the index and affected docs | Numeric skill-code family, code assignment, lookup semantics, or skill coverage changes |
