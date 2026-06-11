@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.8.1"
+artifact_version: "1.9.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-06-11"
@@ -34,6 +34,7 @@ evidence:
   - "CrewAI global platform note added for agent orchestration, tools, memory, structured outputs, and dependency freshness."
   - "GitHub Actions technical note added for CI cost, cache, monorepo trigger, and workflow topology guardrails."
   - "Codex plugin packaging note added for the lightweight shipflow plugin and sparse source bootstrap."
+  - "Design-system authority technical artifact added for declaring project canonical token/theme/component sources."
 next_review: "2026-06-18"
 next_step: "/sf-docs technical audit"
 ---
@@ -76,6 +77,7 @@ This layer complements the existing docs:
 | `codex-plugin-packaging.md` | `/home/claude/plugins/shipflow/`, personal marketplace, plugin manifest, sparse source bootstrap |
 | `decisions.md` | ADR-style decisions, `decision_record` templates, durable decision routing |
 | `github-actions.md` | GitHub Actions workflow cost, caches, monorepo triggers, job topology, deploy guards, and artifacts |
+| `design-system-authority.md` | Project UI design-system authority: canonical token/theme source, component bridge, layout/motion authority, forbidden bypasses, and validation |
 | `blacksmith.md` | Blacksmith CI runners, APK build observability, logs, SSH debugging, monitors, metrics, cache, Testboxes |
 | `firebase-firestore-oidc-ci-playbook.md` | Firebase/Firestore CI setup with GitHub OIDC/WIF, step-by-step wiring and troubleshooting matrix |
 | `external-platforms/README.md` | Global provider/source corpus, Freshness Gate source policy, project-local platform usage template |

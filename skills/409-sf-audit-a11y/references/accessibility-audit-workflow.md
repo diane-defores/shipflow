@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-05-16"
+updated: "2026-06-11"
 status: draft
 source_skill: 102-sf-start
 scope: 409-sf-audit-a11y-accessibility-audit-workflow
@@ -23,6 +23,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from skills/409-sf-audit-a11y/SKILL.md during Compact ShipFlow Skill Instructions Phase 3."
+  - "2026-06-11 added design-system routing for visual accessibility remediation."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions Phase 3"
 ---
@@ -40,6 +41,10 @@ This reference preserves the detailed pre-compaction instructions for `409-sf-au
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+
+## Design-System Interaction
+
+When the audit recommends visual remediation, load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`. Fixes for contrast, focus rings, hit targets, typography, spacing, reduced motion, and component states must update or consume the central design-system authority. Do not prescribe one-off colors, shadows, dimensions, or local class hacks as the primary fix. If the token/component system cannot satisfy WCAG, report that as the defect and route to `006-sf-design`, `503-sf-audit-design-tokens`, or `500-sf-design-from-scratch`.
 
 ## Chantier Tracking
 

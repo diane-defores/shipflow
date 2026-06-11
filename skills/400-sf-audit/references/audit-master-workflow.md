@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-05-16"
+updated: "2026-06-11"
 status: draft
 source_skill: 102-sf-start
 scope: 400-sf-audit-audit-master-workflow
@@ -23,6 +23,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from skills/400-sf-audit/SKILL.md during Compact ShipFlow Skill Instructions Phase 3."
+  - "2026-06-11 added design-system authority as a systemic UI audit concern."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions Phase 3"
 ---
@@ -75,6 +76,7 @@ Use the shared skeleton for audit intake, finding-set work item resolution, read
 - The master audit evaluates whether the product still delivers its intended user story coherently across domains, not just whether isolated checks pass.
 - Treat workflow integrity, security posture, and product coherence as first-class audit concerns.
 - Treat documentation coherence as first-class when feature behavior, public promises, setup, API usage or support expectations changed.
+- Treat design-system authority as first-class for any UI product. A missing canonical token source, undocumented theme carrier, or local styling bypass is a systemic governance finding, not a cosmetic preference.
 - Treat ShipFlow business metadata versions as evidence. `BUSINESS.md`, `BRANDING.md`, and `GUIDELINES.md` are decision contracts; stale, missing, low-confidence, or unversioned contracts must reduce confidence and appear as proof gaps.
 - Prefer honest reporting over tidy grades. If proof is partial, say so explicitly and keep confidence bounded.
 - Keep orchestration practical: read-only audit fan-out is allowed only through the selected audit matrix, and write/fix follow-up must use delegated sequential or ready `Execution Batches`.
@@ -224,7 +226,7 @@ Then proceed to **GLOBAL MODE** with the selected projects (or all if "All proje
 Detect which domains apply to this project:
 
 - **Code** — always applicable
-- **Design** — if the project has a UI (web or mobile)
+- **Design** — if the project has a UI (web or mobile); include design-system authority, token drift, component bridge, and mobile/app responsiveness governance
 - **Copy** — if the project has user-facing content
 - **SEO** — if it's a web project with public pages
 - **GTM** — only if commercial intent (pricing, signup, analytics)

@@ -24,6 +24,10 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 - Package.json: !`cat package.json 2>/dev/null | head -40 || echo "no package.json"`
 - Project structure: !`find . -maxdepth 3 -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.astro" -o -name "*.vue" -o -name "*.py" -o -name "*.sh" \) 2>/dev/null | grep -v node_modules | grep -v .git | grep -v dist | sort | head -40`
 
+## Required References
+
+Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before scaffolding any `page`, `component`, or `layout`, or any artifact that introduces UI styling, design tokens, visual states, theming, typography, color, spacing, shadows, motion, or branding implementation.
+
 ## Mode detection
 
 Parse `$ARGUMENTS` for type and name:
@@ -103,6 +107,7 @@ Also read the nearest files that define the surrounding flow, not only files of 
 If the request appears to create a new public-facing surface, read enough nearby files to answer:
 - how this product currently names and groups similar flows
 - what level of polish/structure is expected
+- where the canonical design-system authority lives: brand contract, token source, theme carrier, component bridge, layout/motion authority, and forbidden bypasses
 - where auth, validation, analytics, SEO, and error handling are usually enforced
 
 If Supabase is detected and the scaffold touches auth, uploads, storage, or DB-backed CRUD, load only the relevant references among `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-storage.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-db.md` before generating code.
@@ -115,6 +120,7 @@ From the examples, extract:
 - **Import style**: relative vs alias (`@/`), named vs default
 - **Component structure**: function vs arrow, export style
 - **Styling approach**: Tailwind classes, CSS modules, scoped styles
+- **Design-system authority**: canonical tokens, theme/config files, component primitives, spacing/typography/color/shadow/motion rules, and validation command
 - **TypeScript patterns**: interface vs type, Props naming, generics
 - **Frontmatter**: Astro frontmatter patterns, metadata
 - **Framework patterns**: `getStaticPaths`, `loader`, `useQuery`, etc.
@@ -146,6 +152,7 @@ Create the new file matching EXACTLY the patterns found:
 
 Additional generation rules:
 - Preserve product coherence before speed. The scaffold must fit the surrounding user flow, naming, and quality bar.
+- Preserve design-system authority before local convenience. Do not introduce raw visual literals, one-off spacing, colors, shadows, font sizes, radii, animation values, or ad-hoc component variants unless they already resolve through the declared token/component system.
 - Preserve documentation coherence. If the scaffold introduces or changes feature behavior, create/update the matching doc surface only when the existing pattern is clear; otherwise report the doc gap.
 - Default to the safest existing pattern, not the loosest one.
 - For public-facing pages/components/content, include the states needed to avoid a broken or misleading experience: loading, empty, error, success, and permission-denied states when relevant.
@@ -154,6 +161,7 @@ Additional generation rules:
 - Never scaffold raw acceptance of untrusted input when the project uses validation/sanitization/allowlists elsewhere.
 - Never scaffold public artifacts with placeholder claims that could misrepresent pricing, security, compliance, availability, or product capabilities.
 - If no safe and coherent version can be inferred, refuse to generate and list the blocking questions.
+- If the project has UI but no discoverable design-system authority, refuse visual scaffolding and route to `300-sf-docs`, `006-sf-design`, or `500-sf-design-from-scratch` before generating styled UI. A behavior-only shell may be created only when it adds no new visual decisions.
 
 For ambiguous requests, produce a professional safe shell only when it is still useful and honest; never fake completeness:
 - `page`: route shell with explicit pending-decision markers for approved copy and behavior, plus safe empty/error structure
@@ -190,6 +198,7 @@ Safe path:
 
 - **Never invent patterns.** Always derive from existing files in the project.
 - **Consistency > creativity.** The generated file should look like it was written by the same developer.
+- **Tokens > local styling.** Visual scaffolds must consume existing tokens, primitives, theme variables, or component APIs; they must not create a parallel style system.
 - **User story > local convenience.** If a scaffold fits the code style but weakens the product flow or obscures the user outcome, it is not acceptable.
 - **Ask when behavior matters.** Use targeted user prompts whenever uncertainty changes the actor, trigger, permissions, scope, or expected outcome.
 - **Security by default.** Refuse to scaffold insecure defaults for public-facing, privileged, data-bearing, or externally exposed surfaces.

@@ -51,6 +51,8 @@ The page is **versioned** in the repo (other contributors get the tool too) but 
 
 Before scaffolding:
 
+0. Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`. The playground must read and write the canonical token source; it must not create a parallel design system or seed ad hoc tokens when a real source is missing.
+
 1. **Verify token system exists**: scan for `--fs-*`, `--space-*`, `--color-*`, `--duration-*` (or framework equivalent: Tailwind config, theme files, Flutter `Theme.of(context)`). If **no tokens found**, abort with:
 
    ```
@@ -111,6 +113,8 @@ Supported source formats:
 - **DTCG JSON** (`tokens.json` with `$value`/`$type`)
 
 If multiple sources coexist, report them all and ask the user which is **canonical** (single source of truth for the playground to write back to).
+
+Do not select a canonical source by convenience. Prefer the source already consumed by production UI components. If the project has tokens in one file and components consuming a different theme object, report design-system split-brain and route to `/006-sf-design "Unifier la source canonique des tokens design"` before save/export work.
 
 ---
 
@@ -302,6 +306,7 @@ If hardcoded design values remain across pages, layouts, or components, do not p
 - **Never** trust the client for the file path — the canonical path is hardcoded server-side at scaffold time
 - **Always** backup before overwriting the token file (the Save button is one click; mistakes happen)
 - The page is **versioned** (committed to repo) but the data it edits (the tokens file) is the source of truth — the playground is a UI on top, not a parallel store
+- **Never** add local playground-only token names that cannot be written back to the canonical source
 - Match the project's existing code style (TypeScript vs JavaScript, ESM vs CJS, indentation, naming)
 - If the project content is in French, the playground UI labels are in French too (read CLAUDE.md to detect language)
 - **Don't** add features not in this spec (component showcase, icon gallery, etc.) — those belong in dedicated skills

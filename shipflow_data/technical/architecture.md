@@ -1,10 +1,10 @@
 ---
 artifact: architecture_context
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: "shipflow"
 created: "2026-04-26"
-updated: "2026-05-11"
+updated: "2026-06-11"
 status: reviewed
 source_skill: manual
 scope: architecture
@@ -31,12 +31,14 @@ invariants:
   - "Project paths must be validated and absolute"
   - "ShipFlow artifact docs must use versioned metadata"
   - "Project governance artifacts must live under project-local shipflow_data/ subdirectories"
+  - "UI projects must declare a design-system authority before visual implementation changes"
 security_impact: yes
 docs_impact: yes
 evidence:
   - "Core files and function tree extracted from the repo"
   - "CLAUDE.md documents PM2 caching, port allocation, idempotence, and validation rules"
   - "2026-05-11 decision record project-governance-layout formalizes root-vs-shipflow_data placement."
+  - "2026-06-11 design-system authority contract separates brand direction from code-level token/theme authority."
 depends_on:
   - artifact: "shipflow_data/technical/guidelines.md"
     artifact_version: "1.0.0"
@@ -112,6 +114,7 @@ The repo is not split into small services. It is centered around shell-based orc
 - ShipFlow documentation is split into stable layers to keep runtime work and public/user-facing messaging independent:
 
   - `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, `shipflow_data/technical/context.md`, `AGENT.md`: global doctrine and topology contracts.
+  - `shipflow_data/technical/design-system-authority.md`: project UI authority for canonical token/theme/component/layout/motion sources.
   - `shipflow_data/technical/` and `shipflow_data/workflow/specs/`: subsystem technical contracts and durable workflow contracts.
   - Editorial/public pages under `shipflow_data/editorial/` and `site/`: public messaging, onboarding surfaces, and operator guides.
 

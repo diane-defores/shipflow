@@ -26,7 +26,7 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, findings-first, and focused on top issues, proof gaps, chantier potential, and the next real action. Use `report=agent`, `handoff`, `verbose`, or `full-report` for the detailed audit matrix, domain checklist output, command evidence, assumptions, confidence limits, and handoff notes.
 
-Before scoring token quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. The `UI And Design-System Shortcut Ban` makes unexplained hardcoded visual values a quality finding, not an acceptable quick fix.
+Before scoring token quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` and `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`. The `UI And Design-System Shortcut Ban` makes unexplained hardcoded visual values a quality finding, not an acceptable quick fix.
 
 
 ## Context
@@ -42,6 +42,7 @@ Before scoring token quality, load `$SHIPFLOW_ROOT/skills/references/decision-qu
 - Literal spacings outside tokens: !`grep -rn --include="*.{css,scss}" -E '(margin|padding|gap):\s*[0-9]+(\.[0-9]+)?(px|rem|em)' src/ 2>/dev/null | grep -v 'var(--' | grep -v node_modules | wc -l || echo "0"`
 - Literal motion outside tokens: !`grep -rn --include="*.{css,scss}" -E '(transition|animation):\s*' src/ 2>/dev/null | grep -v 'var(--' | grep -v node_modules | wc -l || echo "0"`
 - Hardcoded colors in components: !`grep -rn --include="*.{astro,vue,tsx,jsx,svelte,dart}" -E '#[0-9a-fA-F]{3,6}\b|rgb\(|rgba\(|oklch\(|Color\(0x' src/ lib/ 2>/dev/null | grep -v node_modules | wc -l || echo "0"`
+- Drift scan summary: !`python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/design_system_drift_check.py" --format markdown --warn-only 2>/dev/null | head -40 || echo "drift check unavailable"`
 - Theme mode detection: !`grep -rn --include="*.{ts,tsx,js,jsx,vue,astro,svelte,dart}" -E 'ThemeMode|prefers-color-scheme|color-scheme|themeMode|darkMode' src/ lib/ 2>/dev/null | grep -v node_modules | head -10 || echo "none found"`
 - Reduced-motion support count: !`grep -rn --include="*.{css,scss,ts,tsx,js,jsx,vue,astro,svelte}" -E 'prefers-reduced-motion' src/ 2>/dev/null | grep -v node_modules | wc -l || echo "0"`
 - Auth detected (theme sync rule): !`grep -rln --include="*.{ts,tsx,js,jsx}" -E "(next-auth|@clerk/|better-auth|@auth/|lucia|@supabase/auth|firebase/auth|getServerSession|useSession|useUser|currentUser)" src/ app/ pages/ 2>/dev/null | grep -v node_modules | head -3 || echo "none — server sync not required"`
@@ -185,6 +186,7 @@ Report:
 - **Cycles** : token A references token B which references token A → infinite loop or fallback hell
 - **Deep chains** : token references > 3 levels deep → indirection overhead, hard to debug
 - **Duplicate intent** : two tokens with different names resolving to the same value → consolidate (e.g., `--color-error` and `--color-danger` both = `oklch(0.55 0.2 25)`)
+- **Split-brain sources** : components consume a different theme object/file than the declared canonical token source → block migration claims until unified
 
 ### Phase 5 — Historical drift (git analysis)
 
@@ -222,6 +224,7 @@ Deep version of the `502-sf-audit-design #11 Theme System Architecture` checklis
 - [ ] **Settings UI** : grep for the theme selector component. Must be discoverable (in a primary settings page, not behind a debug flag).
 - [ ] **No `if (isDark)` branches in components** : grep `isDark\|isLight\|theme\s*===\s*['\"]dark` in component files. Every hit = violation (mode-switching logic belongs in tokens, not business code).
 - [ ] **Single-mode projects** : if only one mode declared, check for `BRANDING.md` justification. Absent = violation.
+- [ ] **No visual bypass channel** : component APIs and local styles do not expose unguarded `style`, inline maps, or arbitrary class/value props that let screens bypass tokens for colors, spacing, typography, shadows, motion, or layout constants.
 
 ### Severity rules (adaptive to project size)
 
@@ -322,5 +325,6 @@ After generating the report:
 - This skill is **called by `502-sf-audit-design` in deep mode** but can also run standalone via `/503-sf-audit-design-tokens`
 - Cross-platform : web (CSS custom properties, Tailwind, theme objects) + Flutter (`ThemeData`, `TextTheme`, `ColorScheme`) + native (any centralized token approach)
 - When auditing a Flutter project: map the concepts (`ThemeData` = theme mode, `TextTheme` = typography tokens, spacing via `EdgeInsets` constants, motion via `Duration`/`Curves` constants) — the audit logic is the same, only the vocabulary differs
+- For mobile/app projects, treat safe-area, keyboard/IME, touch target, adaptive breakpoint, density, and elevation constants as design-system values, not screen-local fixes
 - Term to use throughout the report: **"design tokens"**, never just "tokens" (avoid LLM/AI ambiguity)
 - Be ruthlessly honest — this is a pro audit, not a pep talk

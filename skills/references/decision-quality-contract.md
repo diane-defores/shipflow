@@ -19,6 +19,7 @@ linked_systems:
   - skills/references/spec-driven-development-discipline.md
   - skills/references/master-delegation-semantics.md
   - skills/references/question-contract.md
+  - skills/references/design-system-token-contract.md
   - skills/704-sf-model/references/model-routing.md
   - shipflow-spec-driven-workflow.md
   - README.md
@@ -37,6 +38,7 @@ evidence:
   - "User directive 2026-06-11: emergency product pragmatism that hardcodes visual sizes, IME/overlay offsets, spacing, or layout values for a quick fix is unacceptable; ShipFlow must take the time needed for coherent professional design-system repairs."
   - "User directive 2026-06-11: fast fixes are generally unacceptable when they bypass the durable process, homogeneous structure, or long-term coherence expected from agent-assisted work."
   - "User directive 2026-06-11: ShipFlow skills should reduce operator workload by gathering safe evidence, diagnostics, logs, checks, and proof themselves before asking the user."
+  - "User directive 2026-06-11: UI customization must not bypass centralized design-system tokens for spacing, typography, colors, shadows, motion, or mobile layout constants."
 next_review: "2026-06-24"
 next_step: "/103-sf-verify decision-quality-contract"
 ---
@@ -81,7 +83,7 @@ Verification must fail or report partial when a change works only by bypassing p
 
 For UI, UX, IME, keyboard, overlay, responsive, layout, spacing, typography, color, motion, or component fixes, emergency product pragmatism is not acceptable when it creates hardcoded visual drift.
 
-Do not hardcode one-off dimensions, offsets, breakpoints, z-index values, colors, font sizes, spacing, animation timings, keyboard/IME insets, overlay positions, or viewport-specific constants just to make an immediate visual defect disappear. A literal value is acceptable only when it is already the project-standard token/constant pattern, is required by a platform/API contract, or is deliberately introduced as a named shared token/constant with usage scope and proof.
+Before UI/design work, load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`. Do not hardcode one-off dimensions, offsets, breakpoints, z-index values, colors, font sizes, spacing, animation timings, keyboard/IME insets, overlay positions, or viewport-specific constants just to make an immediate visual defect disappear. A literal value is acceptable only when it is already the project-standard token/constant pattern, is required by a platform/API contract, or is deliberately introduced as a named shared token/constant with usage scope and proof.
 
 When a visual bug appears to need a quick hardcoded value, the professional path is:
 

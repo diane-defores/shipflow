@@ -65,6 +65,7 @@ Do not accept "different" merely because platforms differ. The default expectati
    - existing tests, manual checklists, CI/build surfaces, and known QA limits
 2. Build or update a parity matrix using `references/platform-parity-matrix.md`.
 3. Compare the intended product concept against platform implementation evidence.
+   - For UI platforms, compare the design-system authority across web/mobile/desktop: canonical token source, platform theme carrier, component bridge, layout/motion authority, accessibility states, and validation. Mark platform-specific local styling as a parity risk unless it is an intentional documented adaptation.
 4. Separate OS constraints from implementation debt:
    - OS/store/browser limitation
    - native integration missing
@@ -86,6 +87,7 @@ For every platform claim, collect at least one concrete evidence pointer:
 - code path, bridge, native host, permission, route, component, or config
 - automated test, build check, manual checklist, CI run, deployed proof, or device QA record
 - spec, task, changelog, README, platform behavior doc, or public page claim
+- design-system authority, token source, platform theme carrier, component primitive, or drift-check output for UI parity claims
 
 If evidence is absent, mark the cell `unknown` or `proof-gap`; do not infer support from a scaffold, dependency, permission string, or aspirational roadmap text.
 

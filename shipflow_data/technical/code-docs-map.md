@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.5.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-06-11"
@@ -31,6 +31,7 @@ evidence:
   - "GitHub Actions workflow files mapped to CI cost, cache, monorepo trigger, deploy, and artifact guardrails."
   - "Codex plugin packaging and sparse source bootstrap mapped to technical docs."
   - "900-shipflow-core internal skill and tools/audit_shipflow_skills.py mapped to skill runtime docs."
+  - "Design-system authority artifact and drift checker mapped for UI token/theme governance."
 next_review: "2026-06-18"
 next_step: "/300-sf-docs technical audit"
 ---
@@ -61,6 +62,7 @@ Shared files in this map are sequential integration files. Do not assign concurr
 | `skills/600-sf-local-cloud-sync/**` | Local-to-cloud sync skill | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/600-sf-local-cloud-sync/references/local-cloud-sync-doctrine.md`, `skills/600-sf-local-cloud-sync/references/ux-security-checklist.md`, `skills/600-sf-local-cloud-sync/references/flutter-implementation-checklist.md`, `shipflow-spec-driven-workflow.md` | `rg -n "Sync Contract|Core Doctrine|Security And Privacy Rules|Proof Paths" skills/600-sf-local-cloud-sync`; `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`; `tools/shipflow_sync_skills.sh --check --skill 600-sf-local-cloud-sync` | Local/cloud data promotion doctrine, account association, merge/conflict policy, sync UX, sensitive-data policy, or Flutter sync proof guidance changes |
 | `skills/601-sf-product-entitlements/**` | Product entitlements skill | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/references/product-entitlements-playbook.md`, `skills/600-sf-local-cloud-sync/SKILL.md`, `skills/109-sf-auth-debug/SKILL.md`, `shipflow-spec-driven-workflow.md` | `rg -n "product-entitlements|suite ledger|provider event|activation code|snapshot|mirror|backend authorization|600-sf-local-cloud-sync|109-sf-auth-debug" skills/601-sf-product-entitlements/SKILL.md`; `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`; `tools/shipflow_sync_skills.sh --check --skill 601-sf-product-entitlements` | Product access ownership, provider/manual grant handling, activation codes, premium gates, support access flows, product-local mirrors, backend authorization, or entitlement-gated sync handoff changes |
 | `skills/references/**` | Skill references | `shipflow_data/technical/skill-runtime-and-lifecycle.md` | `skills/references/technical-docs-corpus.md` | Metadata lint for references with frontmatter; targeted rg checks | Reference doctrine or path-resolution behavior changes |
+| `tools/design_system_drift_check.py`, UI source paths such as `site/src/styles/**`, `site/src/components/**`, app `src/**`, `app/**`, `pages/**`, `components/**`, `lib/**` | Design-system authority | `shipflow_data/technical/design-system-authority.md` | `shipflow_data/business/branding.md`, `shipflow_data/technical/guidelines.md`, `skills/references/design-system-token-contract.md` | `python3 tools/design_system_drift_check.py --changed --format markdown`; project build/lint; browser or device proof when visual behavior changes | Token/theme source, component bridge, layout/motion authority, visual constants, mobile safe-area/IME behavior, or design-system drift rules change |
 | `templates/artifacts/**` | Artifact metadata and linter | `shipflow_data/technical/artifact-metadata-and-linter.md` | `shipflow-metadata-migration-guide.md` | `python3 tools/shipflow_metadata_lint.py templates/artifacts` | Template field, artifact type, or required metadata changes |
 | `tools/shipflow_metadata_lint.py` | Artifact metadata and linter | `shipflow_data/technical/artifact-metadata-and-linter.md` | `shipflow-metadata-migration-guide.md` | `python3 tools/shipflow_metadata_lint.py --help`; targeted lint command | Required fields, statuses, artifact types, default targets, or parse behavior changes |
 | `tools/codebase-mcp/**` | Codebase MCP | `shipflow_data/technical/codebase-mcp.md` | `tools/codebase-mcp/README.md`, `tools/codebase-mcp/TIPS.md` | Python syntax check and focused MCP tool behavior review | Context budget, tool names, file indexing, memory, or setup behavior changes |

@@ -33,6 +33,7 @@ Load only the references needed for the active run:
 
 - `references/spec-creation-workflow.md`: detailed context gathering, user-story reconstruction, investigation, spec template, validation, metadata, acceptance criteria, and final report rules.
 - `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: required before choosing direct routing, spec scope, recommendations, or implementation-quality language.
+- `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`: required when the spec creates, changes, audits, verifies, or fixes UI, mobile/app design, visual components, layout, styling, design tokens, theming, shadows, typography, spacing, color, motion, or branding implementation.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`: required only when the spec depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
 - Supabase, Sentry, development-mode, or other shared references only when the workflow reference triggers their gate.
 
@@ -50,6 +51,7 @@ Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe pa
 - Specs are written for implementation, not brainstorming; avoid placeholders, vague tasks, and undocumented assumptions.
 - Specs must preserve the decision-quality and excellence bar: correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality before speed or convenience.
 - Runtime specs must include Sentry, safe diagnostics/log-copy, and commit/build + Paris/UTC build-time header expectations from `$SHIPFLOW_ROOT/skills/references/sentry-observability.md`, or document why the static-site exception applies.
+- UI/design specs must identify the project design-system authority before implementation: brand contract, canonical token source, technology carrier, component bridge, layout/motion authority, forbidden bypasses, and validation command. If this authority is missing, the spec must route to `300-sf-docs`, `006-sf-design`, or `500-sf-design-from-scratch` before any visual implementation task.
 - Specs must preserve the Operator Autonomy Standard from `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: implementation, diagnosis, test, and verification should gather safe evidence themselves before asking the operator.
 - `100-sf-spec` creates or updates the durable chantier spec only; it does not edit `TASKS.md`, `AUDIT_LOG.md`, or legacy `PROJECTS.md`.
 - Before creating or mutating a `spec:` operational summary line, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and keep the durable spec body separate from that one-line traffic-first record.

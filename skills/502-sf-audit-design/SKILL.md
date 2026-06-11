@@ -52,6 +52,7 @@ Always load:
 1. `$SHIPFLOW_ROOT/skills/502-sf-audit-design/references/audit-gates.md`
 2. `$SHIPFLOW_ROOT/skills/502-sf-audit-design/references/audit-checklists.md`
 3. `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`
+4. `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`
 
 Load on demand:
 
@@ -65,6 +66,7 @@ Load on demand:
 - Business metadata quality must be reported when it affects confidence (`artifact_version`, `status`, `updated`, `confidence`, `next_review`).
 - Preserve accessibility and safety guardrails; never soften critical findings to reduce effort.
 - Treat unexplained hardcoded visual values as design-system shortcut findings when they patch layout, spacing, typography, colors, motion, overlays, IME/keyboard behavior, responsive behavior, or component state outside the project's token/theme/component source of truth.
+- Treat any new color, typography, spacing, shadow/elevation, motion, breakpoint, safe-area, keyboard, or overlay literal outside the centralized design-system source as a drift finding unless a named platform-bound exception is documented.
 - Use file:line evidence and a one-line "Why it matters" principle for priority findings.
 
 ## Stop Conditions
@@ -85,5 +87,6 @@ Run focused checks for skill-contract coherence:
 
 ```bash
 rg -n "Trace category|Process role|Chantier potentiel|reporting-contract|skill-instruction-layering|references/" skills/502-sf-audit-design/SKILL.md
+python3 tools/design_system_drift_check.py --format markdown --warn-only
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 ```

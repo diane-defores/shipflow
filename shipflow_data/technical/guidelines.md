@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.5.0"
 project: "shipflow"
 created: "2026-04-26"
-updated: "2026-05-11"
+updated: "2026-06-11"
 status: reviewed
 source_skill: manual
 scope: guidelines
@@ -20,12 +20,14 @@ linked_systems:
   - "shipflow-spec-driven-workflow.md"
   - "templates/artifacts/"
   - "shipflow_data/technical/"
+  - "shipflow_data/technical/design-system-authority.md"
 security_impact: yes
 docs_impact: yes
 evidence:
   - "CLAUDE.md and current repo structure define active shell, workflow, and metadata conventions"
   - "User decision 2026-04-29: standardize ShipFlow internal contracts in English and user-facing interaction in the user's active language."
   - "User decision 2026-05-11: root ShipFlow governance Markdown is not compliant; canonical project artifacts live under shipflow_data/."
+  - "User decision 2026-06-11: managed applications need a declared design-system authority before agents customize UI implementation."
 depends_on: []
 supersedes: []
 next_review: "2026-05-26"
@@ -54,6 +56,7 @@ This file defines stable engineering and documentation rules for working inside 
 - Do not treat generated runtime config as primary source of truth.
 - Keep documentation contracts versioned when they guide implementation or audits.
 - Keep code-proximate technical docs aligned through `shipflow_data/technical/code-docs-map.md`.
+- For UI projects, declare the design-system authority before changing visual implementation.
 - Follow the ShipFlow language doctrine: English for internal contracts, the user's active language for user-facing interaction.
 - Keep ShipFlow governance artifacts under project-local `shipflow_data/`; root legacy governance files are migration sources only.
 
@@ -74,6 +77,7 @@ This file defines stable engineering and documentation rules for working inside 
 - Using trackers as if they were decision contracts.
 - Parallel edits to shared docs such as `shipflow_data/technical/code-docs-map.md`, `AGENT.md`, `shipflow_data/technical/context.md`, or workflow docs without explicit ready-spec ownership.
 - Shipping code changes while mapped technical docs are known stale or missing.
+- Changing application UI without a declared design-system authority for tokens, theme, component variants, layout, motion, and mobile constants.
 
 ## Validation Expectations
 
@@ -98,6 +102,7 @@ This file defines stable engineering and documentation rules for working inside 
 - `shipflow_data/technical/code-docs-map.md` maps code paths to primary docs, validation, and docs update triggers.
 - Every technical module doc needs owned files, entrypoints, invariants, validation, Reader checklist, and a maintenance rule.
 - Business, product, GTM, brand, architecture, and guidelines docs should each keep an exclusive role in their canonical `shipflow_data/` locations.
+- `shipflow_data/business/branding.md` owns visual identity; `shipflow_data/technical/design-system-authority.md` owns the code-level token/theme/component source of truth.
 
 ## Technical Docs Maintenance
 

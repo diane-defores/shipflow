@@ -44,6 +44,7 @@ Gather:
 - Flutter widget file count under `lib`
 - variant library detection: `class-variance-authority`, `cva`, `tailwind-variants`, `tv`, or `cva-zero`
 - headless library detection: Radix, Headless UI, Ariakit, React Aria, Ark UI, or Base UI
+- canonical token/theme source and whether components consume it directly or through variants
 - Tailwind and TypeScript signals
 - sorted sample of component/widget files
 - custom interactive primitive signals using ARIA roles
@@ -96,6 +97,8 @@ Recommend un-abstracting or re-abstracting with compound components, headless lo
 
 If Tailwind is used, component count is greater than 20, and no CVA/tailwind-variants-like library exists, recommend adopting one. If CVA exists, verify exhaustive variants, compound variants, and default variants. For Flutter, translate the goal to variants-as-data with `ButtonStyle`, `TextTheme`, `CardTheme`, and similar theme objects.
 
+Variant systems must consume centralized design tokens. Flag variants that introduce raw colors, spacing, typography, shadows/elevation, motion, breakpoints, safe-area, keyboard, or overlay constants instead of mapping semantic props to tokenized values.
+
 ### Phase 7 - Headless Primitives Adoption
 
 For custom interactive primitives, check whether a headless library or platform primitive should replace custom focus/ARIA behavior. Recommend migration for custom comboboxes, dialogs, menus, tabs, and similar primitives that miss focus management or keyboard behavior. Do not recommend a dependency when project policy forbids it; for Flutter, prefer platform widgets plus `Semantics`, `Focus`, `Shortcuts`, and `Actions`.
@@ -108,6 +111,8 @@ Flag components that encode layout parts as many props when children, slots, sni
 
 Audit naming consistency, boolean and enum prop contracts, required vs optional props, defaults, TypeScript strictness, forward refs for atoms, and `className`/`style` passthrough where appropriate.
 
+`className`, `style`, inline style maps, or Flutter style parameters are acceptable only with documented guardrails. Flag them when screens can bypass centralized tokens for core visual domains.
+
 ## Cross-Platform Adaptations
 
 For Flutter:
@@ -117,6 +122,7 @@ For Flutter:
 - flag build methods over 200 lines or constructors with more than 10 parameters
 - use import analysis or `dart analyze` for unused widgets
 - treat `ThemeData` and style objects as variant systems
+- flag inline `EdgeInsets`, `TextStyle`, `BoxDecoration`, `Color`, `Duration`, `Curve`, and `SizedBox` values when they bypass shared theme/tokens
 - verify custom interactive widgets use semantics/focus/shortcuts/actions
 - prefer composition through `child`, `children`, and widget parameters
 - check `const` constructors, named `required` parameters, and `key` forwarding

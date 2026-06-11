@@ -47,6 +47,7 @@ Cette skill applique la `Definition of Ready` du flow spec-driven :
 - systèmes liés et conséquences explicités
 - cohérence documentaire explicitée pour les changements de feature
 - doctrine de langue ShipFlow explicitée quand la spec touche des contrats internes, skills, docs, prompts ou copie user-facing
+- autorité design-system explicite quand la spec touche UI, design mobile/app, composants visuels, layout, styling, tokens, thèmes, typographie, couleurs, espacements, ombres, motion ou branding implémenté
 - critères d'acceptation vérifiables
 - revue adversariale suffisante pour empêcher une implémentation naïve ou contournable
 - sécurité proportionnée au scope, pensée dès la spec
@@ -156,6 +157,7 @@ Contrôler :
   - `Success Behavior`
   - `Error Behavior`
   - cas limites
+- si la spec touche UI/design, elle nomme le contrat design-system canonique du projet ou la tâche préalable qui le crée, couvrant brand contract, token source, technology carrier, component bridge, layout/motion authority, forbidden bypasses, et `tools/design_system_drift_check.py --changed --format markdown`
 - les prérequis de données, auth, permissions, feature flags, migrations ou config sont explicités si pertinents
 - runtime: Sentry/copy logs/build header, ou static exception
 - autonomie opérateur: diagnostic, test, vérification et preuve disent quoi collecter avant de demander à l'utilisateur
@@ -196,6 +198,7 @@ Critiquer la spec comme si tu voulais :
 - la spec s'appuie-t-elle sur un comportement externe récent sans preuve de docs officielles actuelles ?
 - le flow peut-il être bypassé par saut d'étape, replay, double soumission, ordre invalide, état périmé ou entrée concurrente ?
 - une hypothèse "UI = sécurité" existe-t-elle alors qu'un contrôle serveur ou backend devrait être requis ?
+- une hypothèse "style local rapide" existe-t-elle alors qu'un token, composant, primitive, thème ou contrat design-system centralisé devrait être modifié ?
 - la spec suppose-t-elle qu'un acteur restera honnête, qu'un identifiant sera valide, qu'une donnée externe sera propre, ou qu'un ordre d'événements sera respecté ?
 - une erreur partielle peut-elle laisser des données, permissions, statuts ou side effects dans un état incohérent ?
 - un rollback, retry, timeout, refresh, duplicate request ou reprise après échec est-il couvert ?
@@ -269,8 +272,6 @@ Le rapport détaillé ci-dessous est réservé à `report=agent`, aux runs bloqu
 ## Readiness: [spec title]
 
 Spec: [path]
-Current status: [draft/reviewed]
-
 Checklist:
 - Structure: [ok / fail]
 - Metadata: [ok / fail]
@@ -283,13 +284,11 @@ Checklist:
 - Error behavior: [ok / fail]
 - Documentation coherence: [ok / fail]
 - Language doctrine: [ok / fail / not applicable]
-- Fresh external docs: [ok / fail / not applicable]
 - Execution notes: [ok / fail]
 - Minimal behavior contract: [ok / fail]
 - Adversarial review: [ok / fail]
 - Security review: [ok / fail]
 - Test contract: [ok / fail / not applicable]
-- Open questions: [ok / fail]
 
 Not ready because:
 - [issue]
@@ -310,9 +309,6 @@ Verdict:
 Next step:
 - /102-sf-start [title] if ready
 - /100-sf-spec [title] if not ready
-Fresh context:
-- [subagent launched / ask user to open a new thread / not necessary]
-
 ## Chantier
 
 Skill courante: 101-sf-ready
@@ -342,12 +338,9 @@ Verdict 101-sf-ready:
 - Être strict sur les ambiguïtés bloquantes
 - Préférer `not ready` à une validation molle
 - En user-mode, traduire les gates en conséquences utilisateur et ne pas exposer la checklist complète si elle ne change pas la décision de l'opératrice
-- Toujours raisonner contre la user story avant de raisonner sur la solution
-- Toujours faire une passe "comment est-ce que ça casse ?" avant de conclure `ready`
-- Toujours expliciter le niveau de risque cyber sécurité, même si l'impact est nul ou faible
-- Toujours vérifier que les docs actives restent alignées quand une feature change
-- Toujours vérifier la doctrine de langue ShipFlow quand la spec touche des contrats internes, skills, docs, prompts ou copie user-facing
-- Toujours vérifier la Documentation Freshness Gate quand la spec dépend d'un framework, SDK, service, API, auth, build, migration ou intégration externe
+- Raisonner contre la user story, puis faire une passe "comment est-ce que ça casse ?" avant de conclure `ready`
+- Expliciter le niveau de risque cyber sécurité
+- Vérifier docs actives, doctrine de langue ShipFlow, autorité design-system, et Documentation Freshness Gate quand leur gate s'applique
 - Si une question manquante change le contrat ou la sécurité, bloquer au lieu de supposer
 - Donner des corrections actionnables, pas des critiques vagues
 - Refuser une spec qui dépend de clarifications futures pour être implémentée proprement

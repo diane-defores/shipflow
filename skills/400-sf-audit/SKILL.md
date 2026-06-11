@@ -47,6 +47,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Findings first; prioritize cross-domain P1/P2 clusters and systemic risk.
+- For projects with UI, treat missing or bypassed design-system authority as a systemic design/governance risk and ensure the Design lane checks `skills/references/design-system-token-contract.md`.
 - Evaluate `Chantier potentiel` when findings require multi-domain remediation, staged fixes, or owner-skill follow-up.
 - Use bounded read-only audit fan-out only when each lane has disjoint evidence scope and no file mutation.
 

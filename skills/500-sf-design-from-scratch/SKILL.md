@@ -23,6 +23,10 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, action-first, and focused on the resulting professional design system, files changed, validation, and the next real step. Use `report=agent`, `handoff`, `verbose`, or `full-report` only when another agent needs the inventory, token mapping, migration matrix, validation proof, or unresolved decisions.
 
+## Required References
+
+Load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` and `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before token planning or file edits.
+
 ## Mission
 
 `500-sf-design-from-scratch` creates a complete, professional design-system source of truth from an existing UI. It is for projects that have scattered fonts, colors, sizes, spacing, and motion values but no coherent centralized token layer.
@@ -58,6 +62,7 @@ Rejected scope:
 - replacing specialist audits: `502-sf-audit-design`, `503-sf-audit-design-tokens`, `504-sf-audit-components`, `409-sf-audit-a11y`
 - broad redesign across unrelated product flows without a ready spec
 - shipping unrelated dirty files
+- creating parallel token sources or screen-local token exceptions when a canonical source exists
 
 ## Entry Rules
 
@@ -138,6 +143,7 @@ Produce a concise professional token plan before editing:
 
 ```text
 Canonical token source: [file]
+Token authority: [CSS variables / Tailwind theme / Flutter ThemeData / theme object]
 Fonts kept: [<=5]
 Chromatic families kept: [<=3]
 Font sizes kept: [<=5]
@@ -149,6 +155,8 @@ Questions: [only if needed]
 ```
 
 If the choice changes the brand direction, ask the user. If it only consolidates obvious duplicates, proceed.
+
+If an existing canonical token/theme source is present, update it instead of creating a competing source. If multiple candidate sources exist, ask one targeted question or route to `006-sf-design` before editing.
 
 ### Phase 3: Create The Token Source
 
@@ -223,6 +231,7 @@ Use available project scripts rather than inventing commands. If no script exist
 Focused checks:
 
 ```bash
+python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/design_system_drift_check.py" --changed --format markdown
 rg -n "#[0-9a-fA-F]{3,6}\\b|rgb\\(|rgba\\(|oklch\\(" src app pages components 2>/dev/null
 rg -n "font-size:\\s*[0-9]|gap:\\s*[0-9]|padding:\\s*[0-9]|margin:\\s*[0-9]" src app pages components 2>/dev/null
 rg -n "prefers-reduced-motion|data-theme|color-scheme|darkMode|theme" src app pages components 2>/dev/null
@@ -256,6 +265,7 @@ Stop and report `blocked` only when:
 - broad migration needs a ready spec and none exists
 - validation fails and the fix is outside the approved scope
 - professional token constraints must be exceeded and the user has not approved the expansion
+- new hardcoded visual values remain outside the canonical token/theme/component source without a documented platform-bound exception
 - unrelated dirty files would enter ship scope
 
 Every `blocked` report must include one of:

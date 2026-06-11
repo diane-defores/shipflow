@@ -27,6 +27,8 @@ Before any fix attempt, load:
 - `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`
 - `$SHIPFLOW_ROOT/skills/106-sf-fix/references/bug-fix-workflow.md`
 
+Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual bug fixes.
+
 Load `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when the bug may depend on current framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
 
 Load `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` before deciding how the fix can be retested.
@@ -55,7 +57,7 @@ Spec-first path is required for multi-file or cross-system impact, unclear expec
 
 Direct fix never means quick-fix shortcut. Apply the `Fast Fix Shortcut Ban`: root cause, owner boundary, durable structure, and proof path must remain intact.
 
-UI, IME, keyboard, overlay, responsive, spacing, typography, color, motion, target-size, or layout bugs are direct-fix eligible only when the bounded professional repair preserves the project's design-system source of truth. Do not hardcode one-off visual values to make a bug disappear. If the correct repair requires token/theme/component/measurement changes, route through `006-sf-design` or spec-first rather than accepting drift.
+UI, IME, keyboard, overlay, responsive, spacing, typography, color, motion, target-size, or layout bugs are direct-fix eligible only when the bounded professional repair preserves the project's design-system source of truth and passes changed-file drift evidence. Do not hardcode one-off visual values to make a bug disappear. If the correct repair requires token/theme/component/measurement changes, route through `006-sf-design` or spec-first rather than accepting drift.
 
 ## Bug Intake
 
@@ -108,6 +110,7 @@ Use the report shape in `bug-fix-workflow.md`: classification, reason, user stor
 - A direct fix must defend product coherence and security posture, not only pass the local repro.
 - A direct fix must not bypass durable process, root cause, owner routing, shared structure, or proof.
 - A direct visual fix must defend design-system coherence; unexplained hardcoded sizes, offsets, breakpoints, z-indexes, colors, font sizes, spacings, animation timings, IME/keyboard insets, or overlay positions are not acceptable proof of repair.
+- For UI/design fixes, run `python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/design_system_drift_check.py" --changed --format markdown` or route the gap explicitly; unresolved new drift keeps the bug at most `fix-attempted`.
 - Do not close a bug without retest evidence in `bugs/BUG-ID.md`.
 - Do not treat a local retest as closure evidence when project mode requires Vercel preview-push validation.
 

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.6.0"
+artifact_version: "1.7.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-24"
+updated: "2026-06-11"
 status: active
 source_skill: 102-sf-start
 scope: technical-docs-corpus
@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - shipflow_data/technical/
   - shipflow_data/technical/code-docs-map.md
+  - shipflow_data/technical/design-system-authority.md
   - shipflow_data/technical/external-platforms/
   - templates/artifacts/project_platform_usage.md
   - templates/artifacts/technical_module_context.md
@@ -31,6 +32,7 @@ evidence:
   - "External platform corpus added for global Freshness Gate source notes and governance-root provider usage docs."
   - "Operator decision on 2026-05-24: provider usage notes are risk-driven, not mandatory per technology."
   - "Operator decision on 2026-05-24: monorepos use one root shipflow_data corpus with scoped app/package coverage."
+  - "Operator decision on 2026-06-11: UI projects need an explicit design-system authority so agents cannot bypass centralized tokens."
 next_review: "2026-06-01"
 next_step: "/300-sf-docs technical audit"
 ---
@@ -50,6 +52,7 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 5. Produce a `Documentation Update Plan` after every code-changing execution wave and again during end verification.
 6. Keep shared docs sequential unless the ready spec assigns disjoint ownership.
 7. When a task depends on an external provider, SDK, framework, hosting platform, API, or toolchain behavior, read the matching global note under `shipflow_data/technical/external-platforms/` when it exists. Then read the governance-root usage note under `shipflow_data/technical/platforms/` only when it exists or when the task is materially affected by project-specific provider configuration.
+8. For UI projects, read `shipflow_data/technical/design-system-authority.md` or the documented equivalent before UI/design implementation, audits, scaffolding, verification, or platform parity work. If it is missing, report a technical governance bootstrap trigger and route to `/300-sf-docs technical` or `/006-sf-design` before visual changes.
 
 ## `300-sf-docs` Technical Mode Contract
 
@@ -63,6 +66,7 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 - verify that every major code area in `code-docs-map.md` has a primary technical doc or explicit non-coverage reason
 - scaffold missing subsystem docs from `templates/artifacts/technical_module_context.md`
 - check stale path references, missing validations, missing `Maintenance Rule` sections, and missing Reader triggers
+- check whether UI projects declare `shipflow_data/technical/design-system-authority.md` or an equivalent authority covering brand contract, token source, theme carrier, component bridge, layout/motion authority, forbidden bypasses, and validation
 - check global external platform notes when provider behavior is part of the documented technical contract
 - report a governance-root platform usage gap only when provider use is project-specific enough to affect validation, auth, deploy, runtime, SDK behavior, storage, security, migrations, secrets handling, observability, compliance, or production proof
 - verify that `technical_module_context` files pass `tools/shipflow_metadata_lint.py`

@@ -35,6 +35,12 @@ Before resolving design lifecycle gates, load `$SHIPFLOW_ROOT/skills/references/
 
 `006-sf-design` is a master/orchestrator skill. It routes design work through owner skills and lifecycle gates rather than duplicating specialist internals.
 
+## Required References
+
+Load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` before route or implementation decisions.
+
+Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual proof work.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -78,7 +84,7 @@ intake
 
 ## Design Intent Routing
 
-Choose the smallest safe owner under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: the bounded professional route that preserves design quality, accessibility, performance, maintainability, and proof. Do not ask the user to choose a specialist when the request clearly names an intent.
+Choose the smallest safe owner under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` and `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`: the bounded professional route that preserves centralized design tokens, brand coherence, accessibility, performance, maintainability, and proof. Do not ask the user to choose a specialist when the request clearly names an intent.
 
 | Intent | Route |
 | --- | --- |
@@ -136,11 +142,13 @@ If the user only asks for the exact implementation command, recommend:
 
 ## Visual Shortcut Ban
 
-Before any design implementation, apply `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`, especially `UI And Design-System Shortcut Ban`.
+Before any design implementation, apply `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` and `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`.
 
 For IME, keyboard, overlay, responsive, spacing, typography, color, motion, target-size, or layout defects, do not accept a one-off hardcoded visual value as the default repair. Route the work to the source of truth: design tokens, theme constants, component primitives, layout utilities, platform inset/measurement APIs, or documented framework behavior.
 
 If a literal value is unavoidable because the platform/API contract requires it, it must be named, scoped, explained, and proven. Otherwise route to `500-sf-design-from-scratch`, `503-sf-audit-design-tokens`, `504-sf-audit-components`, `409-sf-audit-a11y`, or spec-first implementation instead of shipping drift.
+
+Any implementation handoff must name the canonical token/theme source for spacing, typography, colors, shadows/elevation, motion, and mobile/adaptive constants. If no source exists, route to `500-sf-design-from-scratch` before changing product UI.
 
 ## Scope And Readiness Rules
 
@@ -211,6 +219,7 @@ npm test
 Focused design evidence:
 
 ```bash
+python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/design_system_drift_check.py" --changed --format markdown
 rg -n "#[0-9a-fA-F]{3,6}\\b|rgb\\(|rgba\\(|box-shadow:|transition:|font-size:\\s*[0-9]|gap:\\s*[0-9]|padding:\\s*[0-9]|margin:\\s*[0-9]" src app pages components 2>/dev/null
 ```
 
@@ -240,6 +249,7 @@ Stop and report `blocked` when:
 - broad implementation lacks a ready spec
 - validation or specialist proof required by the design claim is missing
 - visual non-regression is claimed but browser proof was not collected
+- design-system drift scan finds unexplained new visual literals outside the canonical token/theme/component source
 - accessibility/focus/contrast/reduced-motion safety is uncertain after changes
 - ship scope includes unrelated dirty files without explicit approval
 

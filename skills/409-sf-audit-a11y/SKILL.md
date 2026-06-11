@@ -46,6 +46,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve WCAG 2.2, keyboard, focus, ARIA, screen-reader, target-size, and Flutter accessibility checks.
+- When proposing visual accessibility fixes, load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` and route color, spacing, focus, typography, target-size, and motion changes through the project design-system authority. Accessibility remains non-negotiable; if existing tokens cannot meet WCAG, report a token-system defect instead of adding local visual bypasses.
 - Evaluate `Chantier potentiel` for systemic accessibility findings, multi-surface remediation, or validation that exceeds a direct fix.
 - Do not treat visual appearance alone as accessibility proof.
 

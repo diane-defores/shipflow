@@ -57,6 +57,7 @@ Minimum checks:
 - mapped code areas have primary docs or explicit non-coverage
 - technical docs contain `Purpose`, `Owned Files`, `Entrypoints`, `Invariants`, `Validation`, `Reader Checklist`, `Maintenance Rule`
 - `code-docs-map.md` includes path patterns, validations, triggers
+- UI projects declare design-system authority in `shipflow_data/technical/design-system-authority.md` or a mapped scoped app doc
 - monorepos have one root `shipflow_data/` with app/package path scopes instead of repeated nested corpora
 - external provider behavior has a global source note under `shipflow_data/technical/external-platforms/` when it is common or repeated across projects
 - projects or monorepo surfaces that use an external provider have a governance-root usage note under `shipflow_data/technical/platforms/` only when provider behavior affects validation, auth, deploy, runtime, SDK, storage, security, migrations, observability, compliance, production proof, or local exceptions
@@ -164,6 +165,7 @@ Required gates:
 - persist conversation-derived durable decisions to proper docs surfaces
 - keep bug model documentation consistent
 - create/update canonical business/product/branding/architecture/gtm/content-map/guidelines docs when missing and justified
+- create/update `shipflow_data/technical/design-system-authority.md` when a project has UI code but no declared canonical token/theme/component authority
 
 Priority buckets:
 

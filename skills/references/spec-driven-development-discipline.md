@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.5.0"
 project: ShipFlow
 created: "2026-05-18"
-updated: "2026-06-10"
+updated: "2026-06-11"
 status: active
 source_skill: 102-sf-start
 scope: spec-driven-development-discipline
@@ -22,6 +22,7 @@ linked_systems:
   - skills/references/master-workflow-lifecycle.md
   - skills/references/master-delegation-semantics.md
   - skills/references/decision-quality-contract.md
+  - skills/references/design-system-token-contract.md
 depends_on:
   - artifact: "skills/references/decision-quality-contract.md"
     artifact_version: "1.1.0"
@@ -39,6 +40,7 @@ evidence:
   - "User decision 2026-05-24: for Flutter mobile work, prove common UI first with widget tests and Flutter Web smoke before asking for APK/device testing."
   - "Conversation audit 2026-06-09: UI and product behavior claims need an explicit proof path or proof gap before being reported as fixed."
   - "User decision 2026-06-10: proof-first instructions should preserve strong evidence requirements without verbose examples in the decision path."
+  - "User decision 2026-06-11: UI/design implementation must not create local visual decisions outside the centralized design-system authority."
 next_review: "2026-06-18"
 next_step: "/103-sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
@@ -60,7 +62,7 @@ Before implementation, name the proof path that fits the changed surface:
 - `test-first`: for behavior with a reasonable automated test surface. Start with a failing or focused test, then implement the smallest complete excellent professional change that makes it pass without weakening security, performance, maintainability, product coherence, or future evolution.
 - `regression-first`: for bugs. Capture reproduction and cause-root hypothesis first; add a failing regression test when practical.
 - `scenario-first`: for skill, prompt, routing, or governance contract changes. Define pressure scenarios or mechanical checks before editing the contract.
-- `evidence-first`: for UI, docs, auth, deployment, operational, visual, content, and integration work where automated TDD is not the right proof. Name concrete evidence before claiming completion.
+- `evidence-first`: for UI, docs, auth, deployment, operational, visual, content, and integration work where automated TDD is not the right proof. Name concrete evidence before claiming completion. For UI/design work, this includes design-system authority and drift-check evidence.
 - `exception-with-proof`: when the strongest path is not practical, record why and name the alternate evidence.
 
 The proof path is part of the execution contract. It does not replace the source-of-truth work item.
@@ -153,6 +155,7 @@ Stop, reroute, or report `partial`/`not verified` when:
 - a bug fix lacks reproduction or cause-root evidence
 - a skill contract change lacks pressure scenarios or mechanical checks
 - evidence-first work names no concrete evidence surface
+- UI/design implementation work has no declared design-system authority, token source, component bridge, or drift-check path
 - a final report claims a user-visible behavior, skill behavior, or workflow behavior is fixed without naming validation run or the remaining proof gap
 - proof collection would expose secrets, cookies, tokens, credentials, private payloads, production PII, or sensitive screenshots
 - a Flutter UI change routes straight to APK/manual device testing while widget tests or agent-run Flutter Web smoke via `108-sf-browser`/`109-sf-auth-debug` can reasonably prove the shared UI behavior

@@ -75,6 +75,7 @@ Mandatory explicit checks:
 - `Flutter Mobile Proof Ladder` pass/partial/fail/not applicable: widget tests -> agent-run Flutter Web smoke through `108-sf-browser`/`109-sf-auth-debug` -> APK/device proof order is respected for Flutter mobile UI work
 - `Bug Gate` (clear/partial-risk/blocks ship/not assessed)
 - `UI Design-System Shortcut Gate` pass/partial/fail/not applicable: UI, IME, keyboard, overlay, responsive, spacing, typography, color, motion, target-size, layout, or component work does not rely on unexplained one-off hardcoded visual values; any unavoidable literal is named, scoped, platform-bound, and proven.
+- `Design-System Drift Check` pass/partial/fail/not applicable: changed UI/design files were scanned with `tools/design_system_drift_check.py --changed` or equivalent specialist evidence, and any findings are resolved or justified by the canonical token/theme/component source.
 - `Runtime Diagnostics Gate` pass/partial/fail/not applicable: runtime projects preserve or add Sentry, safe diagnostics/log-copy, and commit/build + Paris/UTC build-time header, or document a valid static-site exception.
 - `Operator Autonomy Gate` pass/partial/fail: the agent used available safe tools, files, browser/app diagnostics, logs, and checks before asking the operator; any user request is limited to a real decision, secret, unavailable environment, device/manual-only proof, or unsafe side effect.
 - project development mode and validation surface
@@ -93,7 +94,8 @@ Always load:
 3. `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`
 4. `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`
 5. `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`
-6. `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md` when scope includes an editorial score or content quality gate.
+6. `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` when scope includes UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual proof work.
+7. `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md` when scope includes an editorial score or content quality gate.
 
 Load on demand:
 
@@ -142,6 +144,7 @@ Report `not verified` or `blocked` when:
 - the implementation is a shortcut that violates the decision-quality contract
 - the implementation is a quick-fix shortcut that bypasses durable process, ownership, root cause, shared structure, documentation, or required proof
 - UI/design work hides a defect through hardcoded sizes, offsets, breakpoints, z-indexes, colors, font sizes, spacing, animation timings, IME/keyboard insets, overlay positions, or viewport constants instead of repairing the token/theme/component/layout/measurement source of truth
+- changed UI/design files have unresolved drift-check findings outside the canonical design-system source of truth
 
 ## Validation
 

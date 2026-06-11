@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.2.0"
+artifact_version: "0.3.0"
 project: ShipFlow
 created: "2026-05-16"
 updated: "2026-06-11"
@@ -25,6 +25,7 @@ supersedes: []
 evidence:
   - "Extracted from skills/302-sf-help/SKILL.md during Compact ShipFlow Skill Instructions Phase 2."
   - "2026-06-11 added internal 900-shipflow-core operator skill discovery."
+  - "2026-06-11 added design-system authority discovery for UI/design workflow help."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions Phase 2"
 ---
@@ -142,6 +143,7 @@ Note: `/107-sf-test` supports a `checklist-first` mode: when a spec defines `shi
 Note: `/003-sf-bug` is the recommended entrypoint when you want the whole professional bug loop executed from a `BUG-ID`, retest, closure question, or ship-risk question.
 Note: `/102-sf-start` now reuses the `704-sf-model` routing matrix and can choose `single-agent` vs `multi-agent` execution with explicit file ownership and per-group model overrides.
 Note: `/100-sf-spec` → `/101-sf-ready` → `/102-sf-start` → `/103-sf-verify` now share a `User Story` contract and should ask targeted user questions whenever behavior, scope, or security is still ambiguous.
+Note: UI/design work must resolve through the project design-system authority. Use `/300-sf-docs technical` when the authority is missing, `/006-sf-design` for design lifecycle work, `/500-sf-design-from-scratch` to establish a tokenized system, `/503-sf-audit-design-tokens` to audit token health, and `/504-sf-audit-components` to audit component conformance.
 Note: `/shipflow` is the recommended first command for non-technical operators. It answers directly when no file work is needed, otherwise it hands off in the main conversation to the right owner skill; selected master skills own their own delegated sequential execution.
 Note: `/001-sf-build` is the recommended end-user entrypoint for non-trivial work; invocation authorizes bounded delegated sequential execution for the current chantier, while parallel execution requires ready non-overlapping `Execution Batches`.
 Note: `/004-sf-deploy` is the recommended release entrypoint when the operator wants the whole confidence loop after implementation: checks, bounded ship, deployment truth, post-deploy evidence routing, verification, and optional changelog.

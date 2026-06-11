@@ -45,6 +45,8 @@ Before asking a user-facing question, load `$SHIPFLOW_ROOT/skills/references/que
 
 Before `102-sf-start`, load `$SHIPFLOW_ROOT/skills/704-sf-model/references/model-routing.md` and choose model profile based on complexity, ambiguity, failure cost, expected duration, and topology.
 
+Before UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual proof work, load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` and route design-system changes through the canonical token/theme/component source.
+
 ## Mission
 
 `001-sf-build` is the user-facing lifecycle orchestrator. It keeps user interaction high level while executing:
@@ -102,6 +104,7 @@ Stop and ask or reroute when:
 - governance corpus state is missing/stale and unresolved
 - a change would alter existing behavior without explicit decision
 - proposed execution would act as a quick-fix shortcut instead of preserving root cause, owner routing, shared structure, and proof
+- proposed UI/design execution would add or tolerate visual values outside the centralized design-system source without drift-check evidence and a named exception
 - permission/data/security semantics remain ambiguous
 - docs freshness is required and unresolved
 - verification is insufficient for the promised user outcome

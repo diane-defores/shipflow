@@ -84,6 +84,7 @@ Preferred governance locations live under the canonical governance root. In a si
 
 - `shipflow_data/business/*`
 - `shipflow_data/technical/*`
+- `shipflow_data/technical/design-system-authority.md` for project UI design-system authority when the project has a UI
 - `shipflow_data/technical/external-platforms/*` for global external provider source notes
 - `shipflow_data/technical/platforms/*` for provider usage when local risk or complexity justifies a dedicated note
 - `shipflow_data/editorial/*`
@@ -118,6 +119,15 @@ Documentation must preserve the professional bug model:
 - `BUGS.md` is optional/generated triage view
 - `TEST_LOG.md` is compact QA tracker
 - heavy proof belongs in `test-evidence/BUG-ID/` with redaction
+
+## Design-System Governance Rule
+
+Projects with a UI need a declared design-system authority before agents change visual implementation.
+
+- `shipflow_data/business/branding.md` owns visual identity and brand direction.
+- `shipflow_data/technical/design-system-authority.md` owns the code-level design-system authority: canonical token/theme source, component bridge, layout/motion authority, forbidden bypasses, and validation.
+- In monorepos, keep one root `shipflow_data/technical/design-system-authority.md`; add scoped app entries there or in mapped `shipflow_data/technical/apps/<app>.md` docs instead of nested `shipflow_data/` copies.
+- If the authority is missing or split across competing files, `300-sf-docs technical` should create or flag the declaration before UI implementation proceeds.
 
 ## Language Doctrine
 

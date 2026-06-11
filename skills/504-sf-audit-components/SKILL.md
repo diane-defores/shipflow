@@ -30,6 +30,8 @@ Default to `report=user`: concise, findings-first, and focused on top issues, pr
 
 Load `$SHIPFLOW_ROOT/skills/504-sf-audit-components/references/component-audit-workflow.md` after the context pre-check passes. It contains the detailed project/file/global audit playbook, cross-platform adaptations, severity rules, tracking writes, and report matrix.
 
+Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before scoring component styling APIs, variants, theme passthrough, or design-system bypass risk.
+
 Before creating or mutating task or audit records, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`.
 
 ## Context
@@ -86,6 +88,7 @@ Right before each write, re-read the target tracker from disk and apply only the
 - When recommending abstraction, weigh against AHA: prefer duplication over the wrong abstraction when instances are not genuinely similar in behavior.
 - Be ruthlessly honest: A-level means production-grade component architecture, not merely "it works."
 - Respect documented project conventions such as one-file-per-component or no barrel exports.
+- Treat unguarded `style`, arbitrary class/value props, or component-local literals for colors, typography, spacing, shadows/elevation, motion, breakpoints, safe-area, keyboard, or overlay values as design-system bypass risks.
 
 ## Validation
 
