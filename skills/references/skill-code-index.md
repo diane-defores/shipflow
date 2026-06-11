@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "2.0.0"
+artifact_version: "2.1.0"
 project: ShipFlow
 created: "2026-06-10"
-updated: "2026-06-10"
+updated: "2026-06-11"
 status: active
 source_skill: 102-sf-start
 scope: skill-code-index
@@ -19,6 +19,7 @@ linked_systems:
   - skills/302-sf-help/SKILL.md
   - docs/skill-launch-cheatsheet.md
   - tools/skill_code_index_lint.py
+  - skills/900-shipflow-core/SKILL.md
 depends_on:
   - artifact: "shipflow_data/workflow/specs/three-digit-runtime-skill-names.md"
     artifact_version: "1.0.0"
@@ -29,6 +30,7 @@ supersedes:
 evidence:
   - "User decision 2026-06-10: use three digits directly before the skill name for the real runtime-visible skill identity."
   - "User decision 2026-06-10: no symbol-heavy names; keep lowercase letters, numbers, and hyphens only."
+  - "2026-06-11 900-shipflow-core added as an internal operator skill in the reserved meta band."
 next_review: "2026-07-10"
 next_step: "/103-sf-verify Three Digit Runtime Skill Names"
 ---
@@ -142,6 +144,7 @@ Frequency wins over family when a skill belongs to both. For example `007-sf-con
 | `707` | `name` | `707-name` | Pilotage/session |
 | `800` | `tmux-capture-conversation` | `800-tmux-capture-conversation` | Conversation/transcript |
 | `801` | `clean-conversation-transcript` | `801-clean-conversation-transcript` | Conversation/transcript |
+| `900` | `shipflow-core` | `900-shipflow-core` | Meta/internal |
 
 ## Maintenance
 

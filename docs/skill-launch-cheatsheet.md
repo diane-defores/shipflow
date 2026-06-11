@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.4.2"
+artifact_version: "1.5.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-06-10"
+updated: "2026-06-11"
 status: reviewed
 source_skill: 300-sf-docs
 scope: skill-launch-cheatsheet
@@ -38,6 +38,7 @@ evidence:
   - "003-sf-bug clarified as a lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Skill taxonomy description audit clarified runtime families while keeping public skill names and invocation paths stable."
   - "602-sf-platform-parity added as the platform parity/concordance audit and routing skill."
+  - "900-shipflow-core added as an internal operator-only ShipFlow Core audit skill."
 next_step: "/300-sf-docs audit docs/skill-launch-cheatsheet.md"
 ---
 
@@ -88,6 +89,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Bug/proof | Diagnose failures, validate behavior, or confirm deployment truth. | `003-sf-bug`, `106-sf-fix`, `107-sf-test`, `108-sf-browser`, `109-sf-auth-debug`, `405-sf-prod`, `105-sf-check`, `404-sf-migrate` |
 | Content/docs/support | Keep public content, documentation, scaffolding, changelogs, skill contracts, and governance surfaces coherent with shipped behavior. | `300-sf-docs`, `200-sf-redact`, `201-sf-enrich`, `202-sf-repurpose`, `304-sf-changelog`, `306-sf-scaffold`, `307-sf-skills-refresh`, `305-sf-init` |
 | Research/pilotage/helper | Clarify information, prioritize, summarize, route, or preserve context without owning full lifecycle closure. | `203-sf-research`, `204-sf-market-study`, `205-sf-veille`, `701-sf-backlog`, `702-sf-priorities`, `703-sf-review`, `309-sf-tasks`, `301-sf-context`, `704-sf-model`, `302-sf-help`, `308-sf-status`, `303-sf-resume`, `700-sf-explore`, `707-name` |
+| Internal/meta | Operator-only tools for maintaining ShipFlow itself. | `900-shipflow-core` |
 
 ## Master Skills
 
@@ -130,6 +132,7 @@ Content scoring examples:
 | Audit lane | `400-sf-audit*` | Choose the audit owner: code, design, copy, SEO, GTM, deps, perf, a11y, translation, components, or design tokens. |
 | Platform parity/concordance | `602-sf-platform-parity <project, feature, or spec path>` | Check product and technical parity across web, Android, iOS, Windows, macOS, and Linux; route gaps to `100-sf-spec`, `001-sf-build`, `107-sf-test`, `103-sf-verify`, `300-sf-docs`, or `005-sf-ship`. |
 | Conversation quality lane | `705-sf-conversation-audit` | Classify recurring conversation execution defects and route concrete owner follow-up paths. |
+| Internal ShipFlow Core audit | `900-shipflow-core` | Operator-only execution-fidelity and plugin-packaging readiness audit for ShipFlow itself; not a public user-plugin surface. |
 | Design system creation | `500-sf-design-from-scratch [target or mode]` | Use when no coherent professional token system exists; modes include `tokens-only` and `with-playground`. |
 | Dependency posture | `402-sf-deps` | Target dependency drift, vulnerabilities, licenses, or config. |
 | Framework migration | `404-sf-migrate [package[@version]]` | Use a structured package target such as `astro@5`, a package name, or no argument for discovery. |
@@ -151,6 +154,7 @@ Model routing note: `704-sf-model` recommends the right model for the current sc
 | `008-sf-onboarding` | feature, flow, shipped change, onboarding audit target; permission/setup focus; detailed report modes |
 | `600-sf-local-cloud-sync` | project, feature, data domains, sync question; audit; Flutter focus; secrets/sensitive-data focus; detailed report modes |
 | `009-sf-skill-build` | new skill idea; existing skill path; `700-sf-explore` reroute when placement or public promise is too fuzzy |
+| `900-shipflow-core` | `audit`; `packaging`; `help`; `report=agent` |
 | `705-sf-conversation-audit` | `latest`; `path <file-or-dir>`; `export shipflow`; `report=agent` |
 | `602-sf-platform-parity` | project, feature, or spec path; `platforms=web,android,ios,windows,macos,linux`; `report=agent` |
 | `500-sf-design-from-scratch` | no argument; target page/path; `tokens-only`; `with-playground`; detailed report modes |

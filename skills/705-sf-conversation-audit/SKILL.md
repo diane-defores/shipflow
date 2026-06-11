@@ -59,12 +59,12 @@ Audit stored ShipFlow conversation transcripts into private governance reports w
 3. Derive a cleaned classifier input that removes obvious terminal chrome, command output, diffs, JSON payloads, and long log/search noise while preserving user/agent turns.
 4. Classify the cleaned view with deterministic categories (below), while keeping raw unsafe detection tied to the original transcript.
 5. Write report to `$SHIPFLOW_ROOT/shipflow_data/workflow/conversation-audits/<slug>.md` using template `templates/artifacts/conversation_audit.md`.
-6. Run the plugin follow-through gate below before final reporting.
+6. Run the ShipFlow Core follow-through gate below before final reporting.
 7. Print top findings + evidence summary + routing recommendation + any automatic skill-contract audit result.
 
-## Plugin Follow-Through Gate
+## ShipFlow Core Follow-Through Gate
 
-Do not leave plugin follow-up as a manual operator action when the local tools are available.
+Do not leave skill-contract follow-up as a manual operator action when the local tools are available.
 
 After classifying a conversation, automatically run a ShipFlow skill-contract audit when one or more findings indicate that skills may be unclear, stale, or insufficiently enforceable:
 
@@ -77,24 +77,24 @@ After classifying a conversation, automatically run a ShipFlow skill-contract au
 Preferred route:
 
 ```text
-$000-shipflow-core audit local ShipFlow skills for the skill-contract gap found in this conversation
+$900-shipflow-core audit local ShipFlow skills for the skill-contract gap found in this conversation
 ```
 
-If the plugin skill is not available in the current session but the local plugin source exists, run the plugin audit script directly:
+If the skill is not available in the current session but the local ShipFlow source exists, run the versioned audit tool directly:
 
 ```bash
-python3 ~/plugins/shipflow-core/scripts/audit_shipflow_skills.py
+python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/audit_shipflow_skills.py"
 ```
 
 Scope the follow-through to read-only analysis. Do not rewrite ShipFlow skills from this skill unless the operator explicitly asks for an edit pass.
 
 The final report must include one of:
 
-- `shipflow_core_followup: run` with the top plugin audit result or relevant targeted finding,
-- `shipflow_core_followup: unavailable` with the missing path or missing plugin capability,
+- `shipflow_core_followup: run` with the top audit result or relevant targeted finding,
+- `shipflow_core_followup: unavailable` with the missing path or missing skill/tool capability,
 - `shipflow_core_followup: skipped` only when no finding category above was present.
 
-When a conversation finding names specific owner skills, map the plugin follow-up to those files first, then broaden to all local skills only if the owner skill is ambiguous.
+When a conversation finding names specific owner skills, map the ShipFlow Core follow-up to those files first, then broaden to all local skills only if the owner skill is ambiguous.
 
 ## Stable Finding Categories
 

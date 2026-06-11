@@ -90,6 +90,7 @@ Choose exactly one route unless the user explicitly asks for a dashboard or comp
 | Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `600-sf-local-cloud-sync <instruction>` |
 | Product access, paid plans, premium gates, entitlement ledgers, provider events, activation codes, refunds/revokes, support access flows, or backend access gates | `601-sf-product-entitlements <instruction>` |
 | Create, modify, rename, document, refresh, or validate ShipFlow skills | `009-sf-skill-build <instruction>` |
+| ShipFlow Core, internal skill execution-fidelity audit, or public-plugin packaging readiness for ShipFlow itself | `900-shipflow-core <instruction>` |
 | One obvious audit domain only | relevant `400-sf-audit-* <instruction>` or `400-sf-audit <instruction>` |
 | One obvious owner lane only, such as checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, or final ship | focused owner skill |
 | Ambiguous between two or more material routes | Ask one concise numbered routing question |

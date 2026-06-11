@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-05-06"
+updated: "2026-06-11"
 status: active
 source_skill: 009-sf-skill-build
 scope: entrypoint-routing
@@ -24,6 +24,7 @@ linked_systems:
   - skills/008-sf-onboarding/SKILL.md
   - skills/600-sf-local-cloud-sync/SKILL.md
   - skills/009-sf-skill-build/SKILL.md
+  - skills/900-shipflow-core/SKILL.md
   - skills/400-sf-audit/SKILL.md
   - skills/references/master-delegation-semantics.md
   - skills/references/question-contract.md
@@ -46,6 +47,7 @@ evidence:
   - "User decision 2026-05-04: `000-shipflow` should use direct main-thread handoff to selected master skills instead of nested master-skill subagents."
   - "User decision 2026-05-04: ambiguous routing questions should be numbered decision briefs with a responsible recommendation."
   - "User decision 2026-05-06: design-related requests should route to a master `006-sf-design` lifecycle entrypoint."
+  - "2026-06-11 ShipFlow Core natural-language routing added for internal 900-shipflow-core."
 next_review: "2026-06-04"
 next_step: "/103-sf-verify specs/shipflow-primary-router-skill.md"
 ---
@@ -93,6 +95,7 @@ A read-only routing scout is allowed only for cheap classification evidence and 
 | Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `600-sf-local-cloud-sync` |
 | Product access, paid plans, premium gates, entitlement ledgers, provider events, activation codes, refunds/revokes, support access flows, or backend access gates | `601-sf-product-entitlements` |
 | New skill, skill modification, skill runtime visibility, skill public page, skill docs/help coherence | `009-sf-skill-build` |
+| ShipFlow Core, internal skill execution-fidelity audit, or public-plugin packaging readiness for ShipFlow itself | `900-shipflow-core` |
 | One obvious audit domain only | relevant `400-sf-audit-*` or `400-sf-audit` |
 | One obvious focused lane: checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, final ship | focused owner skill |
 | Ambiguous material route | Ask one concise numbered routing question |

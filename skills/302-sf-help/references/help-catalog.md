@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.1.0"
+artifact_version: "0.2.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-05-16"
+updated: "2026-06-11"
 status: draft
 source_skill: 102-sf-start
 scope: 302-sf-help-help-catalog
@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - skills/302-sf-help/SKILL.md
   - skills/302-sf-help/references/help-catalog.md
+  - skills/900-shipflow-core/SKILL.md
 depends_on:
   - artifact: "skills/references/skill-instruction-layering.md"
     artifact_version: "0.1.0"
@@ -23,6 +24,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from skills/302-sf-help/SKILL.md during Compact ShipFlow Skill Instructions Phase 2."
+  - "2026-06-11 added internal 900-shipflow-core operator skill discovery."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions Phase 2"
 ---
@@ -78,7 +80,7 @@ Core codes:
 | `008` | `/008-sf-onboarding` |
 | `009` | `/009-sf-skill-build` |
 
-Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-399` docs/context/support, `400-499` audit/quality/ops, `500-599` design/components, `600-699` data/activation, `700-799` pilotage/session, `800-899` conversation/transcript.
+Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-399` docs/context/support, `400-499` audit/quality/ops, `500-599` design/components, `600-699` data/activation, `700-799` pilotage/session, `800-899` conversation/transcript, `900-999` rare internal/meta tools.
 
 ### Task & Workflow
 
@@ -88,6 +90,7 @@ Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-3
 | `/001-sf-build` | Master user-facing orchestrator from story to spec, implementation, verification, closure, and ship | `<story, bug, or goal>` |
 | `/705-sf-conversation-audit` | Audit workflow for recurring conversation execution defects and owner routing | `latest`, `path <file-or-dir>`, `export shipflow`, `report=agent` |
 | `/009-sf-skill-build` | Master skill-maintenance orchestrator for creating or modifying ShipFlow skills with optional exploration and lifecycle gates | `<new skill idea | existing skill path>` |
+| `/900-shipflow-core` | Internal operator audit tool for ShipFlow skill execution fidelity and plugin-packaging readiness | `audit`, `packaging`, `help`, `report=agent` |
 | `/002-sf-maintain` | Master maintenance lifecycle from triage through delegated fixes, verification, and ship | `quick`, `full`, `security`, `global`, `no-ship` |
 | `/007-sf-content` | Master content lifecycle for strategy, repurposing, drafting, enrichment, project-aware quality scoring, audits, docs, validation, and ship routing | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`, `score`, `quality gate`, `grille projet` |
 | `/006-sf-design` | Master design lifecycle for UI/UX, tokens, playgrounds, a11y, implementation, proof, and ship routing | `tokens`, `audit`, `playground`, page/route, or natural-language design goal |
@@ -148,6 +151,7 @@ Note: `/008-sf-onboarding` is the recommended entrypoint for user activation aft
 Note: `/600-sf-local-cloud-sync` is the recommended entrypoint when local-first user data must become account-backed cloud data: account association, promotion, hydration, merge/conflict policy, tombstones, sync/save UX states, sensitive-data exclusions, and proof routing.
 Note: `/601-sf-product-entitlements` is the recommended entrypoint when identity, provider events, paid plans, activation codes, refunds/revokes, product-local access mirrors, backend authorization gates, or entitlement-gated sync preconditions are in scope.
 Note: `/009-sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`700-sf-explore when needed -> 100-sf-spec -> SKILL.md -> 307-sf-skills-refresh -> budget audit -> 103-sf-verify -> 300-sf-docs/help update -> 005-sf-ship`).
+Note: `/900-shipflow-core` is internal and operator-only. Use it to audit ShipFlow skill execution fidelity or plugin-packaging readiness; do not include it in the public `shipflow` user plugin.
 Note: User-facing skill questions follow the shared question contract: ask only when the answer changes route, scope, risk, proof, closure, ship posture, public claims, or technical/product/editorial direction; otherwise proceed only with a context-safe, verifiable default.
 
 ### Professional Bug Loop (concise)
@@ -195,6 +199,7 @@ Internal role matrix:
 | `skills/304-sf-changelog/SKILL.md` | conditionnel | support-de-chantier | Supports release documentation; not a source by default. |
 | `skills/105-sf-check/SKILL.md` | conditionnel | source-de-chantier | Failed checks become a chantier when failures span domains, block release, or need staged remediation. |
 | `skills/705-sf-conversation-audit/SKILL.md` | conditionnel | source-de-chantier | Conversation evidence findings become a chantier when recurrence, repeatable routing gaps, or cross-owner quality risks appear. |
+| `skills/900-shipflow-core/SKILL.md` | conditionnel | support-de-chantier | Internal operator audit supports skill-execution fidelity and plugin-packaging readiness; it is not a public user-plugin surface. |
 | `skills/301-sf-context/SKILL.md` | non-applicable | helper | Context discovery is read-only; not a chantier source. |
 | `skills/402-sf-deps/SKILL.md` | conditionnel | source-de-chantier | Dependency findings become a chantier for critical/high risk, supply-chain trust, migration, or automation gaps. |
 | `skills/006-sf-design/SKILL.md` | obligatoire | lifecycle | Master design lifecycle for routing design requests through specialist owner skills, spec-first implementation, proof, verification, and ship. |

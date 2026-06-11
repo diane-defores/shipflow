@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.1"
+artifact_version: "1.2.0"
 project: "shipflow"
 created: "2026-05-25"
-updated: "2026-06-10"
+updated: "2026-06-11"
 status: active
 source_skill: 009-sf-skill-build
 scope: skill-execution-fidelity
@@ -17,7 +17,8 @@ linked_systems:
   - "skills/*/SKILL.md"
   - "skills/references/skill-instruction-layering.md"
   - "skills/references/spec-driven-development-discipline.md"
-  - "/home/claude/plugins/shipflow-core/scripts/audit_shipflow_skills.py"
+  - "skills/900-shipflow-core/SKILL.md"
+  - "tools/audit_shipflow_skills.py"
 depends_on:
   - artifact: "skills/references/skill-instruction-layering.md"
     artifact_version: "1.0.0"
@@ -29,6 +30,7 @@ supersedes: []
 evidence:
   - "User concern 2026-05-25: Codex has difficulty following ShipFlow skills exactly."
   - "shipflow-core pilot audit initially produced 70 noisy signals; after classification it found 0 hard findings, 5 review findings, and 5 style findings."
+  - "2026-06-11 shipflow-core was promoted from a plugin pilot into internal ShipFlow skill 900-shipflow-core with a versioned audit tool."
   - "Operational lesson: discovery budget compliance does not prove execution fidelity."
   - "User escalation 2026-05-26: agents keep asking the operator to continue or retest when browser/prod proof could be run by the agent."
   - "User decision 2026-06-10: execution contracts should favor compact outcome-focused instructions and avoid routine process narration."
@@ -236,9 +238,15 @@ python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 
 Use `tools/shipflow_sync_skills.sh --check --skill <skill>` when a runtime-discoverable skill changed.
 
-## Plugin Audit Relationship
+## ShipFlow Core Audit Relationship
 
-The `shipflow-core` plugin audit is a pilot signal, not the source of truth.
+The `shipflow-core` audit is an internal operator signal, not the source of truth.
+
+Run it through the versioned ShipFlow tool:
+
+```bash
+python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/audit_shipflow_skills.py"
+```
 
 Treat its classifications as:
 

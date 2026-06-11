@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.18.0"
+artifact_version: "1.19.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-06-10"
+updated: "2026-06-11"
 status: reviewed
 source_skill: 102-sf-start
 scope: skill-runtime-and-lifecycle
@@ -28,6 +28,7 @@ linked_systems:
   - skills/008-sf-onboarding/SKILL.md
   - skills/600-sf-local-cloud-sync/SKILL.md
   - skills/009-sf-skill-build/SKILL.md
+  - skills/900-shipflow-core/SKILL.md
   - skills/108-sf-browser/SKILL.md
   - skills/003-sf-bug/SKILL.md
   - skills/305-sf-init/SKILL.md
@@ -39,6 +40,7 @@ linked_systems:
   - skills/references/content-quality-rubric.md
   - skills/references/question-contract.md
   - skills/references/sentry-observability.md
+  - tools/audit_shipflow_skills.py
   - specs/001-sf-build-autonomous-master-skill.md
   - specs/skill-reporting-modes-and-compact-reports.md
   - shipflow-spec-driven-workflow.md
@@ -92,6 +94,7 @@ evidence:
 - "Skill instruction layering refreshed: SKILL.md is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in references."
 - "Codex model wording refreshed to use the current `codex` implementation profile instead of pinning long implementations to a deprecated slug."
 - "102-sf-start local auto-verify contract added: eligible local, tool-backed, non-destructive verification can run inside 102-sf-start, while hosted/browser/manual/production/ship proof stays with owner skills and 001-sf-build remains full lifecycle orchestrator."
+- "900-shipflow-core added as an internal operator skill for skill execution-fidelity audits and plugin-packaging readiness, backed by tools/audit_shipflow_skills.py."
 next_review: "2026-06-01"
 next_step: "/300-sf-docs technical audit skills"
 ---
@@ -132,6 +135,7 @@ Current family boundaries:
 - Research/strategy/source: `203-sf-research`, `204-sf-market-study`, `205-sf-veille`.
 - Pilotage: `701-sf-backlog`, `702-sf-priorities`, `703-sf-review`, `309-sf-tasks`, `706-continue`.
 - Helper/session/router: `000-shipflow`, `301-sf-context`, `704-sf-model`, `302-sf-help`, `308-sf-status`, `303-sf-resume`, `700-sf-explore`, `707-name`, `800-tmux-capture-conversation`, `801-clean-conversation-transcript`.
+- Internal/meta: `900-shipflow-core` for operator-only ShipFlow skill execution-fidelity and plugin-packaging audits.
 
 Keep overlap intentional and explicit: master skills orchestrate, specialists prove or repair, support skills document or scaffold, and helper skills route or summarize without owning lifecycle state.
 
@@ -147,6 +151,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/references/master-workflow-lifecycle.md` | Shared master/orchestrator lifecycle skeleton and work item model | Load before master skills resolve intake, readiness, model/topology, validation, verification, closure, or ship/deploy routes |
 | `skills/references/decision-quality-contract.md` | Shared high-quality decision doctrine: correctness, security, performance, maintainability, durability, best practices, and proof before speed/cost/convenience | Load before routing, model/fallback selection, implementation, fixes, skill-contract changes, verification, or recommended defaults |
 | `skills/references/skill-code-index.md` | Canonical numeric lookup from memorable codes to unchanged skill names | Update whenever a skill is added, removed, or renamed; validate with `python3 tools/skill_code_index_lint.py` |
+| `skills/900-shipflow-core/SKILL.md` | Internal operator skill for ShipFlow execution-fidelity audits and plugin-packaging readiness | Keep out of public plugin packaging and public skill pages unless the operator explicitly changes the policy |
 | `skills/references/spec-driven-development-discipline.md` | Shared spec-first/proof-first discipline | Load before execution or verification when behavior, bug, skill contract, UI/docs/auth/deploy, operational, or integration work needs a proof path |
 | `skills/references/content-quality-rubric.md` | Shared project-aware content quality scoring schema and blocked-code contract | Load when content owner skills or `103-sf-verify` produce/consume editorial quality gates |
 | `skills/references/reporting-contract.md` | Shared final-report mode contract | Default user reports are concise; detailed reports require explicit handoff mode |
@@ -156,6 +161,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `skills/600-sf-local-cloud-sync/references/*.md` | Local-to-cloud sync doctrine, UX/security checklist, and Flutter implementation checklist | Load when projects touch local data promotion, cloud hydration, merge/conflict policy, sync state UX, sensitive-data exclusions, or reinstall recovery |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
+| `tools/audit_shipflow_skills.py` | Versioned ShipFlow skill execution-fidelity audit helper used by `900-shipflow-core` and conversation follow-through gates | Keep read-only by default; audit findings classify risk but do not authorize broad edits without scenario-first triage |
 | `tools/skill_code_index_lint.py` | Numeric skill-code index validator | Run after changing `skills/references/skill-code-index.md` or the skill set |
 | `shipflow-spec-driven-workflow.md` | Global workflow doctrine | Sequential shared file |
 | `templates/artifacts/*.md` | Durable artifact templates | Keep linter-compatible |
@@ -184,6 +190,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 - `601-sf-product-entitlements`: product access lifecycle contract (`identity/provider/access separation -> ledger ownership -> backend gates/support -> sync/auth handoff or 001-sf-build`).
 - `500-sf-design-from-scratch`: design-system creation skill for extracting an existing UI into a complete professional token system before playground or token audit work.
 - `009-sf-skill-build`: dedicated orchestrator for ShipFlow skill maintenance (`700-sf-explore when needed -> 100-sf-spec -> SKILL.md -> runtime skill links -> 307-sf-skills-refresh -> budget audit -> 103-sf-verify -> 300-sf-docs/help -> 005-sf-ship`).
+- `900-shipflow-core`: internal operator skill for local ShipFlow skill execution-fidelity audits and public-plugin packaging readiness checks. It is repo-synced, not a public user plugin surface.
 - `tools/shipflow_sync_skills.sh --check|--repair`: reusable local helper for current-user Claude/Codex skill visibility and install-time selected-user linking.
 - `005-sf-ship` and `405-sf-prod`: shipping and deployed verification.
 - `skills/references/master-delegation-semantics.md`: shared execution-topology doctrine for master/orchestrator skills.

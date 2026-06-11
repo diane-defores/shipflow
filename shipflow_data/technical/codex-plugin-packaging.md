@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-06-11"
 updated: "2026-06-11"
@@ -20,6 +20,7 @@ linked_systems:
   - /home/claude/plugins/shipflow/assets/docs-links.json
   - /home/claude/.agents/plugins/marketplace.json
   - shipflow_data/workflow/specs/shipflow-main-plugin-and-pack-portability.md
+  - skills/900-shipflow-core/SKILL.md
 depends_on:
   - artifact: "shipflow_data/workflow/specs/shipflow-main-plugin-and-pack-portability.md"
     artifact_version: "1.0.0"
@@ -29,6 +30,7 @@ evidence:
   - "2026-06-11 shipflow plugin installed as shipflow@personal."
   - "2026-06-11 sparse bootstrap script tested with /tmp/shipflow-sparse-bootstrap-test."
   - "2026-06-11 source/cache plugin validation and diff passed."
+  - "2026-06-11 shipflow-core was removed from the personal marketplace path and promoted to internal repo skill 900-shipflow-core."
 next_review: "2026-06-18"
 next_step: "/300-sf-docs technical audit codex-plugin-packaging"
 ---
@@ -41,6 +43,8 @@ next_step: "/300-sf-docs technical audit codex-plugin-packaging"
 
 The plugin must stay useful without a huge bundle. When a workflow needs the full local ShipFlow corpus, the plugin exposes an explicit sparse checkout route into `${SHIPFLOW_ROOT:-$HOME/.shipflow/source}`.
 
+`900-shipflow-core` is not part of the public plugin surface. It is an internal operator skill in the ShipFlow repo for skill execution-fidelity audits and packaging-readiness checks. The old `shipflow-core` plugin source may remain as local pilot history, but public users should install or discover `shipflow`, not `shipflow-core`.
+
 ## Owned Files
 
 - `/home/claude/plugins/shipflow/.codex-plugin/plugin.json` declares the plugin identity, public homepage, repository, and version.
@@ -51,6 +55,7 @@ The plugin must stay useful without a huge bundle. When a workflow needs the ful
 - `/home/claude/plugins/shipflow/scripts/bootstrap_shipflow_repo.sh` creates or updates the sparse ShipFlow source checkout.
 - `/home/claude/plugins/shipflow/scripts/audit_shipflow_packaging.py` checks package readiness and hard reference issues.
 - `/home/claude/.agents/plugins/marketplace.json` registers the personal plugin during local development.
+- `skills/900-shipflow-core/SKILL.md` and `tools/audit_shipflow_skills.py` are internal repo-synced operator tools, not public plugin files.
 
 ## Entrypoints
 
@@ -58,6 +63,7 @@ The plugin must stay useful without a huge bundle. When a workflow needs the ful
 - Users invoke the plugin through the contributed `shipflow` skill.
 - The optional full-corpus path is `/home/claude/plugins/shipflow/scripts/bootstrap_shipflow_repo.sh`.
 - Hosted docs are optional support material at `https://shipflowzsite.vercel.app/docs`.
+- Operators use `900-shipflow-core` from a synced ShipFlow repo when auditing ShipFlow itself; that skill should not be required by public plugin users.
 
 ## Control Flow
 
@@ -72,6 +78,7 @@ The plugin must stay useful without a huge bundle. When a workflow needs the ful
 ## Invariants
 
 - Public users must not need to install many separate plugins to begin using ShipFlow.
+- Public users must not need to install `shipflow-core`; it is an internal operator skill.
 - The plugin must not assume `/home/claude/shipflow` exists.
 - The plugin must not silently clone or update a repository. Network and filesystem changes require explicit user approval in Codex.
 - Execution-critical contracts stay local to the plugin or the sparse checkout. Hosted docs are optional, not the runtime source of truth.
