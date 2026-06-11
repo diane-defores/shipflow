@@ -63,6 +63,8 @@ If `$ARGUMENTS` is provided, use it. If empty, ask: `Quel bug veux-tu corriger ?
 
 Always reconstruct the bug as a tiny user story: actor, trigger, broken behavior, expected outcome/user value. Ask targeted clarification only when the missing answer changes visible behavior, scope, permission boundary, destructive side effects, retries, failure handling, data exposure, tenant isolation, or security posture.
 
+Before asking the operator for logs, reproduction detail, screenshots, status, or validation, apply the Operator Autonomy Standard: inspect safe project files, bug memory, git diff, local checks, browser/app diagnostics, copyable logs, and bounded runtime logs yourself. Ask only for decisions, secrets, accounts/devices, manual-only proof, unavailable environments, or unsafe side effects.
+
 ## BUG-ID And Bug Memory
 
 Direct bug fixes still require durable bug memory. `106-sf-fix` must finish with a bug reference and one Markdown bug file under `bugs/*.md` unless the issue is a narrow minor exception.
@@ -98,7 +100,7 @@ For runtime errors, error boundaries, 5xx, crashes, or visible support states, u
 
 ## Final Report
 
-Use the report shape in `bug-fix-workflow.md`: classification, reason, user story, bug reference/file, trace exception, proof path, root cause hypothesis, product/docs coherence, fresh docs, Sentry evidence, diagnostics/logs evidence, development mode, preview gate, security posture, bug status transition, retest evidence, action, next step, and scope estimate.
+Use the report shape in `bug-fix-workflow.md`: classification, reason, user story, bug reference/file, trace exception, proof path, root cause hypothesis, product/docs coherence, fresh docs, Sentry evidence, diagnostics/logs evidence, operator autonomy, development mode, preview gate, security posture, bug status transition, retest evidence, action, next step, and scope estimate.
 
 ## Rules
 

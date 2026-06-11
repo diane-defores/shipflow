@@ -156,6 +156,8 @@ Run the evidence owner before fixing when the missing proof matters:
 
 Do not invent reproduction results, browser evidence, screenshots, account roles, console logs, or user confirmations.
 
+Before marking a bug `needs-info`, apply the Operator Autonomy Standard from `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: gather safe evidence yourself from bug files, specs, git diff, browser/app diagnostics, copyable logs, local checks, PM2/server logs, or visible runtime output. Ask the operator only for a real decision, credential/secret, unavailable environment, device/manual-only proof, or unsafe action.
+
 Set the bug proof path before dispatching the owner skill:
 
 - `regression-first`: reproduction exists and a failing automated regression test is practical before the fix.
@@ -225,6 +227,7 @@ Evidence posture: [sufficient / missing / sensitive-blocked / not needed]
 Proof path: [regression-first / evidence-first / exception-with-proof / not chosen]
 Sentry posture: [supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / not applicable]
 Diagnostics/logs posture: [copied header verified / copied header missing / surface missing / not applicable]
+Operator autonomy: [safe evidence gathered / operator input genuinely needed / gap]
 Security posture: [ok / risk]
 Decision: [executed / routed / blocked / no action]
 

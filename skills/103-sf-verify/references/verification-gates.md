@@ -214,6 +214,7 @@ Include compact but explicit sections:
 - Sentry observability status when applicable
 - runtime diagnostics/log-copy/build-header status when applicable
 - runtime diagnostic surface reuse/adoption status when applicable: existing helper/component reused, or a scoped new helper added from `runtime-diagnostics-surface.md`
+- operator autonomy status: safe evidence gathered by the agent vs genuinely unavailable inputs requiring the operator
 - bug gate verdict
 - workflow next step
 - chantier block

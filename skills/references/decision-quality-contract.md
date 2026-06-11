@@ -36,6 +36,7 @@ evidence:
   - "User decision 2026-06-10: central skill rules should stay compact enough for agents to retain the decision signal."
   - "User directive 2026-06-11: emergency product pragmatism that hardcodes visual sizes, IME/overlay offsets, spacing, or layout values for a quick fix is unacceptable; ShipFlow must take the time needed for coherent professional design-system repairs."
   - "User directive 2026-06-11: fast fixes are generally unacceptable when they bypass the durable process, homogeneous structure, or long-term coherence expected from agent-assisted work."
+  - "User directive 2026-06-11: ShipFlow skills should reduce operator workload by gathering safe evidence, diagnostics, logs, checks, and proof themselves before asking the user."
 next_review: "2026-06-24"
 next_step: "/103-sf-verify decision-quality-contract"
 ---
@@ -127,6 +128,14 @@ Ask a user-facing question only when the high-quality route changes a material d
 - cost, runtime, operational burden, or release risk in a way the operator should own
 
 When asking, recommend the option that best preserves the primary decision metrics. Do not recommend the easiest or fastest option unless it is also the best professional default.
+
+## Operator Autonomy Standard
+
+ShipFlow skills should make the operator's work easier. Do not ask the user to provide information, logs, screenshots, diagnostics, status, or validation that the agent can safely obtain with available local tools, browser navigation, project files, tests, logs, or visible app diagnostics.
+
+Before asking for user help, check the safe evidence paths that fit the task: existing docs/specs/bug files, git status/diff, local tests, browser/debug tooling, app diagnostics copy action, PM2 or bounded server logs, CI/build output, and redacted provider/config presence. Use only non-destructive, non-secret, permission-safe actions.
+
+Ask the user only when the missing input is a real decision, credential/secret, account/device/manual-only proof, destructive/external side effect, unavailable environment, or evidence the agent cannot safely access. Reports should state what the agent gathered itself and what remains genuinely unavailable.
 
 ## Model And Tool Routing
 

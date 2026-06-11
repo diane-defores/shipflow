@@ -76,6 +76,7 @@ Mandatory explicit checks:
 - `Bug Gate` (clear/partial-risk/blocks ship/not assessed)
 - `UI Design-System Shortcut Gate` pass/partial/fail/not applicable: UI, IME, keyboard, overlay, responsive, spacing, typography, color, motion, target-size, layout, or component work does not rely on unexplained one-off hardcoded visual values; any unavoidable literal is named, scoped, platform-bound, and proven.
 - `Runtime Diagnostics Gate` pass/partial/fail/not applicable: runtime projects preserve or add Sentry, safe diagnostics/log-copy, and commit/build + Paris/UTC build-time header, or document a valid static-site exception.
+- `Operator Autonomy Gate` pass/partial/fail: the agent used available safe tools, files, browser/app diagnostics, logs, and checks before asking the operator; any user request is limited to a real decision, secret, unavailable environment, device/manual-only proof, or unsafe side effect.
 - project development mode and validation surface
 - fresh external docs verdict (`fresh-docs checked|not needed|gap|conflict`)
 - documentation coherence verdict

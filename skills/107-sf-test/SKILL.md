@@ -28,6 +28,8 @@ Before generating or logging manual QA, load:
 
 If a scenario fails with a crash, error boundary, 5xx, visible Sentry/support event ID, or runtime exception, load `$SHIPFLOW_ROOT/skills/references/sentry-observability.md` before logging evidence.
 
+If a runtime app exposes settings, support, diagnostics, error boundary, or copy-log UI, load `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md`. When the agent can safely navigate the app or use tooling itself, collect/copy reachable diagnostics before asking the operator for logs.
+
 ## Mission
 
 Run a guided manual test campaign for the current work, then log the evidence.
@@ -43,6 +45,8 @@ Never invent test results.
 If you did not observe the behavior yourself with tooling and the user has not reported the result, the status is `not run`.
 
 Do not log a result before the user answers unless browser/tool evidence was directly collected in this run.
+
+Apply the Operator Autonomy Standard from `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: gather safe evidence, diagnostics, logs, app status, and tool/browser proof yourself before asking the operator. Ask only for real manual-only validation, device/account access, secrets, unavailable environments, decisions, or unsafe side effects.
 
 ## Development Mode Gate
 

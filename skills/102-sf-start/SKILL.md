@@ -72,6 +72,7 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 - Read only the files needed for the execution contract and linked systems that can change correctness.
 - Prefer fresh-context execution for non-trivial spec-first work when available, but keep the main thread responsible for integration, validation, and user-facing truth.
 - Do not weaken documentation, security, redaction, chantier, or validation gates to finish faster.
+- Apply the `Operator Autonomy Standard`: gather safe local evidence, diagnostics, logs, status, and validation yourself before asking the operator; ask only for real decisions, secrets, device/manual-only proof, unavailable environments, or unsafe side effects.
 
 ## Stop Conditions
 

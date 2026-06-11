@@ -47,6 +47,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve deployment evidence, health check, log completeness, redaction, Sentry/PM2, diagnostics/log-copy, Blacksmith, and preview handoff rules.
+- Apply the Operator Autonomy Standard: gather safe deploy/build/runtime evidence, diagnostics, logs, health checks, and visible support IDs yourself before asking the operator; ask only for access, secrets, unavailable dashboards, manual/device-only proof, or unsafe external actions.
 - Evaluate `Chantier potentiel` for outage, deploy, runtime, rollback, observability, or monitoring follow-up.
 - Never expose secrets, cookies, tokens, private logs, unredacted env values, or unrelated customer data.
 
