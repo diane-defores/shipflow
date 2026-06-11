@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.19.0"
+artifact_version: "1.20.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-06-11"
@@ -93,8 +93,9 @@ evidence:
 - "Decision quality contract added: ShipFlow optimizes for correctness, security, performance, maintainability, durability, professional best practices, and proof quality before speed, cost, or convenience."
 - "Skill instruction layering refreshed: SKILL.md is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in references."
 - "Codex model wording refreshed to use the current `codex` implementation profile instead of pinning long implementations to a deprecated slug."
-- "102-sf-start local auto-verify contract added: eligible local, tool-backed, non-destructive verification can run inside 102-sf-start, while hosted/browser/manual/production/ship proof stays with owner skills and 001-sf-build remains full lifecycle orchestrator."
-- "900-shipflow-core added as an internal operator skill for skill execution-fidelity audits and plugin-packaging readiness, backed by tools/audit_shipflow_skills.py."
+  - "102-sf-start local auto-verify contract added: eligible local, tool-backed, non-destructive verification can run inside 102-sf-start, while hosted/browser/manual/production/ship proof stays with owner skills and 001-sf-build remains full lifecycle orchestrator."
+  - "900-shipflow-core added as an internal operator skill for skill execution-fidelity audits and plugin-packaging readiness, backed by tools/audit_shipflow_skills.py."
+  - "310-sf-github-hygiene added as the git/GitHub sync, stale branch, PR drift, and Dependabot hygiene skill."
 next_review: "2026-06-01"
 next_step: "/300-sf-docs technical audit skills"
 ---
@@ -131,7 +132,7 @@ Current family boundaries:
 - Data trust/source: `600-sf-local-cloud-sync`, `601-sf-product-entitlements`.
 - Audit/source: `400-sf-audit*`, `402-sf-deps`, `403-sf-perf`.
 - Bug/proof/source: `003-sf-bug`, `106-sf-fix`, `107-sf-test`, `108-sf-browser`, `109-sf-auth-debug`, `405-sf-prod`, `105-sf-check`, `404-sf-migrate`.
-- Content/docs/support: `300-sf-docs`, `200-sf-redact`, `201-sf-enrich`, `202-sf-repurpose`, `304-sf-changelog`, `306-sf-scaffold`, `307-sf-skills-refresh`, `305-sf-init`.
+- Content/docs/support: `300-sf-docs`, `200-sf-redact`, `201-sf-enrich`, `202-sf-repurpose`, `304-sf-changelog`, `306-sf-scaffold`, `307-sf-skills-refresh`, `305-sf-init`, `310-sf-github-hygiene`.
 - Research/strategy/source: `203-sf-research`, `204-sf-market-study`, `205-sf-veille`.
 - Pilotage: `701-sf-backlog`, `702-sf-priorities`, `703-sf-review`, `309-sf-tasks`, `706-continue`.
 - Helper/session/router: `000-shipflow`, `301-sf-context`, `704-sf-model`, `302-sf-help`, `308-sf-status`, `303-sf-resume`, `700-sf-explore`, `707-name`, `800-tmux-capture-conversation`, `801-clean-conversation-transcript`.
@@ -177,6 +178,7 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 - `300-sf-docs`: documentation generation, audit, metadata, and technical-docs mode.
 - `300-sf-docs technical`: technical governance bootstrap, code-docs map creation, and audit.
 - `300-sf-docs editorial`: editorial governance scaffolding and audit for public-content drift, claim register, page intent, and runtime content schema preservation.
+- `310-sf-github-hygiene`: git/GitHub hygiene lane for sync drift, stale branches, PR drift, and Dependabot backlog triage with bounded safe fixes.
 - `003-sf-bug`: professional bug loop lifecycle executor (`107-sf-test -> bug file -> 106-sf-fix -> 107-sf-test --retest -> 103-sf-verify -> 005-sf-ship`).
 - `002-sf-maintain`: master project maintenance lifecycle for bugs, dependencies, docs, checks, audits, migrations, tasks, security posture, delegated remediation, verification, and ship/deploy routing.
 - `108-sf-browser`: generic non-auth browser verification through Playwright MCP for URLs, page-level assertions, screenshots, console summaries, and network summaries.
@@ -328,6 +330,7 @@ Content lifecycle flow:
 - `004-sf-deploy` owns release orchestration only; `005-sf-ship` owns commit/push, `405-sf-prod` owns deployed truth, and proof skills own observed behavior.
 - `003-sf-bug` owns bug lifecycle execution through owner skills and bounded subagents; phase skills still own bug record mutation, diagnosis, retest evidence, verification, and shipping internals.
 - `002-sf-maintain` owns the maintenance lifecycle; bugs, dependencies, docs, checks, audits, migrations, tasks, security review, repair, verification, and ship still run through their specialist owner skills and gates.
+- `310-sf-github-hygiene` owns focused git/GitHub hygiene; commit/push stays with `005-sf-ship`, dependency risk stays with `402-sf-deps`, major upgrade lanes stay with `404-sf-migrate`, and CI diagnosis stays with `github:gh-fix-ci`.
 - `007-sf-content` owns content-management orchestration; repurposing, drafting, enrichment, copy audit, copywriting audit, SEO audit, docs, veille, market study, browser proof, verification, and ship still run through their specialist owner skills and gates.
 - Content owner skills (`007-sf-content`, `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-audit-seo`) and `103-sf-verify` must use one shared rubric contract from `skills/references/content-quality-rubric.md`; recoverable score states (`needs retry`, `duplicate_in_progress`, `conflicting_score_state`, `stale_or_mismatched_score`) are never valid verification proof.
 - `006-sf-design` owns design lifecycle orchestration; UI/UX audits, token audits, component audits, accessibility audits, playground tooling, design-system creation, browser proof, implementation, verification, and ship still run through their specialist owner skills and gates.

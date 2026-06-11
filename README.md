@@ -436,6 +436,7 @@ Skill launch cheatsheet:
 | Manual expert lifecycle | `100-sf-spec -> 101-sf-ready -> 102-sf-start -> 103-sf-verify -> 104-sf-end` | Use when you intentionally want to drive each gate instead of using `001-sf-build`. |
 | Commit and push ready work | `005-sf-ship [mode]` | no special argument, `skip-check`, `end la tache`/`end`/`fin`/`close task`, `all-dirty`/`ship-all`/`tout-dirty`. |
 | Browser, auth, manual QA, or live deployment proof | `108-sf-browser`, `109-sf-auth-debug`, `107-sf-test`, `405-sf-prod` | Pick by proof type: non-auth browser evidence, auth/session diagnosis, durable manual QA, or deployment truth. |
+| Git/GitHub hygiene | `310-sf-github-hygiene [mode]` | `audit`, `branches`, `dependabot`, `fix`, plus current-repo or workspace scope. |
 
 Bug loop entrypoint:
 

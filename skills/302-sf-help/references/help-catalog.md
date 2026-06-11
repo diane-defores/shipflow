@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.3.0"
+artifact_version: "0.4.0"
 project: ShipFlow
 created: "2026-05-16"
 updated: "2026-06-11"
@@ -26,6 +26,7 @@ evidence:
   - "Extracted from skills/302-sf-help/SKILL.md during Compact ShipFlow Skill Instructions Phase 2."
   - "2026-06-11 added internal 900-shipflow-core operator skill discovery."
   - "2026-06-11 added design-system authority discovery for UI/design workflow help."
+  - "2026-06-11 added 310-sf-github-hygiene for git/GitHub sync drift, stale branches, and Dependabot hygiene."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions Phase 2"
 ---
@@ -105,6 +106,7 @@ Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-3
 | `/107-sf-test` | Guided manual QA: prompts the user through real flow tests, logs evidence, and opens bug records | `[feature]`, `--retest BUG-ID`, `--prod` |
 | `/704-sf-model` | Choose model, reasoning level, and quality-equivalent fallbacks before execution | `<task description>` or `<spec path>` |
 | `/309-sf-tasks` | Track work, check off items, suggest next | `[focus area]` |
+| `/310-sf-github-hygiene` | Audit and maintain git sync, stale branches, PR drift, and Dependabot hygiene | `audit`, `fix`, `branches`, `dependabot`, `current repo`, `workspace` |
 | `/702-sf-priorities` | Re-rank by impact/effort matrix | `impact`, `effort`, `blockers`, `high-roi` / `quick-wins` |
 | `/701-sf-backlog` | Capture ideas, defer non-urgent | `add "idea"`, `defer`, `review`, `clean` |
 | `/703-sf-review` | Session summary, update docs | `daily`, `weekly`, `sprint`, `release` |
@@ -134,6 +136,7 @@ Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-3
 | `/105-sf-check` | Typecheck + lint + build + test | `[check types]`, `fix`, `nofix` |
 | `/004-sf-deploy` | Release orchestrator: check → ship → prod → browser/manual proof → verify | `skip-check`, `--preview`, `--prod`, `no-changelog` |
 | `/308-sf-status` | Cross-project git dashboard | (none) |
+| `/310-sf-github-hygiene` | Git/GitHub hygiene lane for stale branches, sync drift, and Dependabot backlog | `audit`, `branches`, `dependabot`, `fix` |
 
 Note: `/103-sf-verify` now includes guided next-step prompting when verdict is not ready (`corriger maintenant`, `repasser par spec`, `stop/reprendre`).
 Note: `/109-sf-auth-debug` is the required diagnostic path for auth bugs that need browser evidence before implementation.
@@ -153,6 +156,7 @@ Note: `/008-sf-onboarding` is the recommended entrypoint for user activation aft
 Note: `/600-sf-local-cloud-sync` is the recommended entrypoint when local-first user data must become account-backed cloud data: account association, promotion, hydration, merge/conflict policy, tombstones, sync/save UX states, sensitive-data exclusions, and proof routing.
 Note: `/601-sf-product-entitlements` is the recommended entrypoint when identity, provider events, paid plans, activation codes, refunds/revokes, product-local access mirrors, backend authorization gates, or entitlement-gated sync preconditions are in scope.
 Note: `/009-sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`700-sf-explore when needed -> 100-sf-spec -> SKILL.md -> 307-sf-skills-refresh -> budget audit -> 103-sf-verify -> 300-sf-docs/help update -> 005-sf-ship`).
+Note: `/310-sf-github-hygiene` is the focused entrypoint when the problem is git/GitHub hygiene rather than general maintenance: branch sync, stale refs, PR drift, and Dependabot backlog triage with bounded safe fixes.
 Note: `/900-shipflow-core` is internal and operator-only. Use it to audit ShipFlow skill execution fidelity or plugin-packaging readiness; do not include it in the public `shipflow` user plugin.
 Note: User-facing skill questions follow the shared question contract: ask only when the answer changes route, scope, risk, proof, closure, ship posture, public claims, or technical/product/editorial direction; otherwise proceed only with a context-safe, verifiable default.
 
@@ -236,6 +240,7 @@ Internal role matrix:
 | `skills/306-sf-scaffold/SKILL.md` | conditionnel | support-de-chantier | Supports implementation; not a source by default. |
 | `skills/005-sf-ship/SKILL.md` | obligatoire | lifecycle | Ships an existing chantier; not a source. |
 | `skills/307-sf-skills-refresh/SKILL.md` | conditionnel | support-de-chantier | Supports skill maintenance; route to spec for broad policy changes only. |
+| `skills/310-sf-github-hygiene/SKILL.md` | non-applicable | helper | Focused git/GitHub hygiene for sync drift, stale branches, PR drift, and Dependabot backlog; it does not own chantier lifecycle state. |
 | `skills/100-sf-spec/SKILL.md` | obligatoire | lifecycle | Creates or updates the chantier spec and initial history row. |
 | `skills/009-sf-skill-build/SKILL.md` | obligatoire | lifecycle | Executes the skill-maintenance lifecycle for new or modified ShipFlow skills. |
 | `skills/102-sf-start/SKILL.md` | obligatoire | lifecycle | Executes an existing chantier; not a source. |

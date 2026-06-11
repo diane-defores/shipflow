@@ -91,6 +91,10 @@ const supportSkillCheatsheet = [
     when: "Use focused owner skills when you need one lane: checks, docs, audit, dependency posture, or framework migration."
   },
   {
+    command: "sf-github-hygiene [mode]",
+    when: "Use when the problem is git/GitHub hygiene: sync drift, stale branches, PR drift, or Dependabot backlog triage."
+  },
+  {
     command: "sf-platform-parity <project, feature, or spec>",
     when: "Use when platform claims, implementations, or QA proof may drift across web, mobile, desktop, or native surfaces."
   },
@@ -123,8 +127,8 @@ const runtimeFamilies = [
   },
   {
     title: "Content/docs/support",
-    use: "Keep public content, docs, scaffolding, changelogs, and skill maintenance coherent.",
-    examples: "sf-docs, sf-redact, sf-enrich, sf-repurpose, sf-changelog, sf-scaffold, sf-skills-refresh, sf-init"
+    use: "Keep public content, docs, scaffolding, changelogs, skill maintenance, and git/GitHub hygiene coherent.",
+    examples: "sf-docs, sf-redact, sf-enrich, sf-repurpose, sf-changelog, sf-scaffold, sf-skills-refresh, sf-init, sf-github-hygiene"
   },
   {
     title: "Research/pilotage/helper",

@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.5.0"
+artifact_version: "1.6.0"
 project: ShipFlow
 created: "2026-05-04"
 updated: "2026-06-11"
@@ -39,6 +39,7 @@ evidence:
   - "Skill taxonomy description audit clarified runtime families while keeping public skill names and invocation paths stable."
   - "602-sf-platform-parity added as the platform parity/concordance audit and routing skill."
   - "900-shipflow-core added as an internal operator-only ShipFlow Core audit skill."
+  - "310-sf-github-hygiene added as the git/GitHub sync, stale branch, PR drift, and Dependabot hygiene skill."
 next_step: "/300-sf-docs audit docs/skill-launch-cheatsheet.md"
 ---
 
@@ -87,7 +88,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Data trust/source | Frame local-first data becoming account-backed cloud data and product access becoming entitlement-backed. | `600-sf-local-cloud-sync`, `601-sf-product-entitlements` |
 | Audit/source | Expose quality, security, performance, SEO, copy, design, dependency, parity, or GTM risk that may deserve a chantier. | `400-sf-audit*`, `402-sf-deps`, `403-sf-perf`, `602-sf-platform-parity` |
 | Bug/proof | Diagnose failures, validate behavior, or confirm deployment truth. | `003-sf-bug`, `106-sf-fix`, `107-sf-test`, `108-sf-browser`, `109-sf-auth-debug`, `405-sf-prod`, `105-sf-check`, `404-sf-migrate` |
-| Content/docs/support | Keep public content, documentation, scaffolding, changelogs, skill contracts, and governance surfaces coherent with shipped behavior. | `300-sf-docs`, `200-sf-redact`, `201-sf-enrich`, `202-sf-repurpose`, `304-sf-changelog`, `306-sf-scaffold`, `307-sf-skills-refresh`, `305-sf-init` |
+| Content/docs/support | Keep public content, documentation, scaffolding, changelogs, skill contracts, governance surfaces, and git/GitHub hygiene coherent with shipped behavior. | `300-sf-docs`, `200-sf-redact`, `201-sf-enrich`, `202-sf-repurpose`, `304-sf-changelog`, `306-sf-scaffold`, `307-sf-skills-refresh`, `305-sf-init`, `310-sf-github-hygiene` |
 | Research/pilotage/helper | Clarify information, prioritize, summarize, route, or preserve context without owning full lifecycle closure. | `203-sf-research`, `204-sf-market-study`, `205-sf-veille`, `701-sf-backlog`, `702-sf-priorities`, `703-sf-review`, `309-sf-tasks`, `301-sf-context`, `704-sf-model`, `302-sf-help`, `308-sf-status`, `303-sf-resume`, `700-sf-explore`, `707-name` |
 | Internal/meta | Operator-only tools for maintaining ShipFlow itself. | `900-shipflow-core` |
 
@@ -129,6 +130,7 @@ Content scoring examples:
 | Deployment truth | `405-sf-prod` | Target deployment URL, build logs, runtime logs, preview/prod health, or live readiness. |
 | Technical checks | `105-sf-check` | Target typecheck, lint, build, tests, dependency checks, or shell validation. |
 | Documentation work | `300-sf-docs [mode or target]` | `readme`, `api`, `components`, `audit`, `update`, `metadata`, `technical`, `editorial`, or a file path. |
+| Git/GitHub hygiene | `310-sf-github-hygiene [mode]` | `audit`, `branches`, `dependabot`, `fix`, plus current-repo or workspace scope. |
 | Audit lane | `400-sf-audit*` | Choose the audit owner: code, design, copy, SEO, GTM, deps, perf, a11y, translation, components, or design tokens. |
 | Platform parity/concordance | `602-sf-platform-parity <project, feature, or spec path>` | Check product and technical parity across web, Android, iOS, Windows, macOS, and Linux; route gaps to `100-sf-spec`, `001-sf-build`, `107-sf-test`, `103-sf-verify`, `300-sf-docs`, or `005-sf-ship`. |
 | Conversation quality lane | `705-sf-conversation-audit` | Classify recurring conversation execution defects and route concrete owner follow-up paths. |
@@ -154,6 +156,7 @@ Model routing note: `704-sf-model` recommends the right model for the current sc
 | `008-sf-onboarding` | feature, flow, shipped change, onboarding audit target; permission/setup focus; detailed report modes |
 | `600-sf-local-cloud-sync` | project, feature, data domains, sync question; audit; Flutter focus; secrets/sensitive-data focus; detailed report modes |
 | `009-sf-skill-build` | new skill idea; existing skill path; `700-sf-explore` reroute when placement or public promise is too fuzzy |
+| `310-sf-github-hygiene` | no argument/`audit`; `branches`; `dependabot`; `fix`; `current repo`; `workspace` |
 | `900-shipflow-core` | `audit`; `packaging`; `help`; `report=agent` |
 | `705-sf-conversation-audit` | `latest`; `path <file-or-dir>`; `export shipflow`; `report=agent` |
 | `602-sf-platform-parity` | project, feature, or spec path; `platforms=web,android,ios,windows,macos,linux`; `report=agent` |

@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "2.1.0"
+artifact_version: "2.2.0"
 project: ShipFlow
 created: "2026-06-10"
 updated: "2026-06-11"
@@ -31,6 +31,7 @@ evidence:
   - "User decision 2026-06-10: use three digits directly before the skill name for the real runtime-visible skill identity."
   - "User decision 2026-06-10: no symbol-heavy names; keep lowercase letters, numbers, and hyphens only."
   - "2026-06-11 900-shipflow-core added as an internal operator skill in the reserved meta band."
+  - "2026-06-11 310-sf-github-hygiene added as the git/GitHub sync, stale branch, PR drift, and Dependabot hygiene skill."
 next_review: "2026-07-10"
 next_step: "/103-sf-verify Three Digit Runtime Skill Names"
 ---
@@ -116,6 +117,7 @@ Frequency wins over family when a skill belongs to both. For example `007-sf-con
 | `307` | `sf-skills-refresh` | `307-sf-skills-refresh` | Docs/context/support |
 | `308` | `sf-status` | `308-sf-status` | Docs/context/support |
 | `309` | `sf-tasks` | `309-sf-tasks` | Docs/context/support |
+| `310` | `sf-github-hygiene` | `310-sf-github-hygiene` | Docs/context/support |
 | `400` | `sf-audit` | `400-sf-audit` | Audit/quality/ops |
 | `401` | `sf-audit-code` | `401-sf-audit-code` | Audit/quality/ops |
 | `402` | `sf-deps` | `402-sf-deps` | Audit/quality/ops |
