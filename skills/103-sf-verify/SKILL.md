@@ -97,6 +97,7 @@ Always load:
 Load on demand:
 
 - `$SHIPFLOW_ROOT/skills/references/sentry-observability.md` when runtime failures/observability/deployed behavior are in scope.
+- `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md` when verifying a runtime app, support/error handling, settings, auth callback, Sentry, browser-debug, log-copy, or deploy-proof surface.
 - `/109-sf-auth-debug` evidence for auth/session/callback/protected-route proof.
 - `/108-sf-browser` evidence for non-auth browser proof.
 

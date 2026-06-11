@@ -26,6 +26,14 @@ next_step: "/300-sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
 
+## [2026-06-11]
+
+### Added
+- Added a reusable runtime diagnostics surface reference requiring runtime apps to expose safe copyable diagnostics with commit/build and Paris/UTC build-time headers.
+
+### Changed
+- Updated browser, auth-debug, start, verify, init, production, and code-audit skills to favor, use, and verify diagnostics/log-copy surfaces before asking operators for logs.
+
 ## [2026-06-10]
 
 ### Changed

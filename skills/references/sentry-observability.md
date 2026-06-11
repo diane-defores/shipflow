@@ -14,6 +14,7 @@ risk_level: medium
 security_impact: yes
 docs_impact: yes
 linked_systems:
+  - skills/references/runtime-diagnostics-surface.md
   - skills/100-sf-spec/SKILL.md
   - skills/101-sf-ready/SKILL.md
   - skills/405-sf-prod/SKILL.md
@@ -77,6 +78,8 @@ build_at_utc: YYYY-MM-DD HH:mm UTC
 Minimum useful payload after that: environment, release/build id, app version, route/screen, event timestamp, Sentry event/support id when present, and a short redacted client/server log summary. Never include secrets, cookies, tokens, auth codes, raw headers, full payloads, private user text, or PII.
 
 `305-sf-init` should record whether the project has Sentry and a diagnostics/log-copy surface. Runtime specs should either preserve/add that surface or document a static-site exception. Browser-capable skills (`108-sf-browser`, `109-sf-auth-debug`) should use the visible diagnostics/copy-log UI when it is present before asking the operator for logs.
+
+When implementation or audit work needs a concrete reusable pattern, load `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md`. Prefer reusing the project's existing diagnostics component/helper before creating a new UI.
 
 For Flutter apps, treat Sentry as useful only when both layers are true:
 

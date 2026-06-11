@@ -53,6 +53,28 @@ This reference keeps `108-sf-browser` concise while defining how browser evidenc
 
 Prefer the least sensitive evidence that proves the objective.
 
+## Diagnostics Copy Rule
+
+When the agent can browse or navigate the target app and the target is runtime, do not wait for the operator to paste logs if the app can expose them safely. This rule is tool-agnostic: Playwright, another browser tool, or an app-visible debug surface all count when they allow safe navigation.
+
+Actively inspect likely entry points:
+
+- Settings / Parametres
+- Support / Help
+- Diagnostics / Debug
+- error boundary fallback
+- overflow or native debug menu
+- buttons named `Copy diagnostics`, `Copy logs`, `Copier`, or equivalent localized copy
+
+If a copy action is reachable and does not mutate product data:
+
+1. Click it.
+2. Read clipboard text when the browser/tooling permits it, or read the visible diagnostic text.
+3. Verify the first lines include `commit/build`, `build_at_paris`, and `build_at_utc`.
+4. Summarize only redacted, useful lines: build identity, environment, route, visible event/support id, and short log/error family.
+
+Ask the operator for logs only when the diagnostics surface is absent, auth-blocked, unsafe to open, or inaccessible to Playwright/clipboard extraction.
+
 ## Verdict Labels
 
 - `pass`: requested objective was observed and no material blocker was found.

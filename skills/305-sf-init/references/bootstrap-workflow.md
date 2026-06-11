@@ -132,11 +132,11 @@ Use **AskUserQuestion** to let the user review and confirm:
 
 ### Step 2.5: Record ShipFlow development mode
 
-Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md`.
+Read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md`, `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md`, and `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/runtime-diagnostics-surface.md`.
 
 Every initialized project should have a project-local `## ShipFlow Development Mode` section in `CLAUDE.md`. If `CLAUDE.md` is skipped or absent, create or update `SHIPFLOW.md` with the same section.
 
-For runtime projects, record Sentry, the safe diagnostics/log-copy surface, and whether copied logs start with commit/build identity plus Paris/UTC build time. Static sites may use the Sentry static-site exception only when they have no auth, account state, protected routes, checkout/payment, server-handled forms, webhooks, jobs, or user-specific runtime workflow.
+For runtime projects, record Sentry, the safe diagnostics/log-copy surface, the concrete component/helper/route that owns it, and whether copied logs start with commit/build identity plus Paris/UTC build time. Static sites may use the Sentry static-site exception only when they have no auth, account state, protected routes, checkout/payment, server-handled forms, webhooks, jobs, or user-specific runtime workflow.
 
 If Vercel is detected, ask which mode this project uses:
 - **Local dev** — "Tests run on local dev server; Vercel is checked after shipping"

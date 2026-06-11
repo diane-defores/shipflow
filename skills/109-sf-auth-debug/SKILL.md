@@ -34,6 +34,7 @@ Default to `report=user`: concise, findings-first for audits and failures, outco
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/auth-debug-workflow.md`: Auth debug workflow, provider-reference routing, reproduction strategy, Playwright proof, Sentry/PM2 evidence, and report details.
+- `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md`: required when the auth target exposes settings, support, diagnostics, callback error pages, error boundaries, or copy-log UI.
 
 ## Mode Detection
 
@@ -46,7 +47,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve auth/session/callback/provider, tenant, cookie, redirect, token, secret, and redaction safety rules.
-- When the app exposes diagnostics/log-copy UI, use it as redacted evidence and confirm the commit/build + Paris/UTC build-time header before asking the operator for logs.
+- When the agent can safely navigate the app with Playwright or any other browser/tooling path, proactively look for diagnostics/log-copy UI, use it as redacted evidence, and confirm the commit/build + Paris/UTC build-time header before asking the operator for logs.
 - Evaluate `Chantier potentiel` for auth/session/callback/provider/tenant risk beyond a direct local fix.
 - Never log secrets, cookies, tokens, OTPs, private env values, or unredacted user auth data.
 

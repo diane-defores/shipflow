@@ -151,7 +151,7 @@ Run the evidence owner before fixing when the missing proof matters:
 - Auth, OAuth, cookies, sessions, callbacks, tenants, protected routes -> `/109-sf-auth-debug [BUG-ID or title]`
 - Non-auth route, visible state, console, network, screenshot, or page assertion -> `/108-sf-browser [URL or scope] [objective]`
 - Full user flow, human confirmation, durable test record, or retest -> `/107-sf-test [scope]` or `/107-sf-test --retest BUG-ID`
-- Runtime crash, error boundary, 5xx, visible Sentry/support event ID, or production exception -> load `$SHIPFLOW_ROOT/skills/references/sentry-observability.md`, then attach a redacted Sentry issue/event pointer to the bug evidence when available
+- Runtime crash, error boundary, 5xx, visible Sentry/support event ID, production exception, or copyable diagnostics/logs -> load `$SHIPFLOW_ROOT/skills/references/sentry-observability.md` and `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md`, then attach a redacted Sentry issue/event pointer or copied diagnostic summary to the bug evidence when available
 - Unclear expected behavior, permission contract, data contract, or product rule -> `/100-sf-spec [bug title]`
 
 Do not invent reproduction results, browser evidence, screenshots, account roles, console logs, or user confirmations.
@@ -159,7 +159,7 @@ Do not invent reproduction results, browser evidence, screenshots, account roles
 Set the bug proof path before dispatching the owner skill:
 
 - `regression-first`: reproduction exists and a failing automated regression test is practical before the fix.
-- `evidence-first`: the reliable proof is browser, manual, runtime, Sentry/PM2, screenshot, or retest evidence.
+- `evidence-first`: the reliable proof is browser, manual, runtime, copied diagnostics/logs, Sentry/PM2, screenshot, or retest evidence.
 - `exception-with-proof`: automated regression is impractical; the bug file or report must say why and name the alternate proof.
 
 If the bug has repeated fix attempts without root cause evidence, route to deeper diagnosis instead of another patch.
@@ -192,7 +192,7 @@ For `--close BUG-ID`:
 ## Security And Evidence Rules
 
 - Never print or persist raw secrets, tokens, cookies, private keys, raw auth headers, private payloads, production PII, or sensitive screenshots.
-- Never print or persist raw Sentry payloads, breadcrumbs, replay contents, headers, private URLs, user lists, or PII; keep only redacted issue/event pointers and short summaries.
+- Never print or persist raw Sentry payloads, breadcrumbs, replay contents, copied diagnostic payloads, headers, private URLs, user lists, or PII; keep only redacted issue/event pointers, commit/build header status, and short summaries.
 - Keep `TEST_LOG.md` and optional `BUGS.md` compact.
 - Keep full detail in `bugs/BUG-ID.md`.
 - Store only redacted large evidence under `test-evidence/BUG-ID/`.
@@ -224,6 +224,7 @@ Development mode: [local / vercel-preview-push / hybrid / unknown]
 Evidence posture: [sufficient / missing / sensitive-blocked / not needed]
 Proof path: [regression-first / evidence-first / exception-with-proof / not chosen]
 Sentry posture: [supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / not applicable]
+Diagnostics/logs posture: [copied header verified / copied header missing / surface missing / not applicable]
 Security posture: [ok / risk]
 Decision: [executed / routed / blocked / no action]
 

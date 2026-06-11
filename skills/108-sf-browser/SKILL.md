@@ -45,6 +45,8 @@ Load `$SHIPFLOW_ROOT/skills/108-sf-browser/references/browser-evidence.md` when 
 
 Load `$SHIPFLOW_ROOT/skills/references/sentry-observability.md` when the browser check sees a crash, error boundary, 5xx, unhandled console exception, visible diagnostics/log-copy UI, or visible Sentry/support event ID. Skills do not have direct Sentry dashboard access; use only visible/supplied issue or event pointers and redacted copied diagnostics.
 
+Load `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md` when a runtime app may expose settings, support, debug, diagnostics, error boundary, or copy-log UI. When the agent can navigate/click safely with Playwright or any other browser/tooling path, actively look for that surface and use its copy action before asking the operator for logs.
+
 Read `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` and inspect `CLAUDE.md` or `SHIPFLOW.md` before treating local browser proof as authoritative for changed behavior.
 
 ## Input Triage
@@ -89,10 +91,13 @@ In those cases, do not diagnose the app. Report the runtime or ShipFlow installa
 4. Capture an accessibility snapshot first when useful.
 5. Capture a screenshot only when visual evidence adds value or the user asks for it.
 6. Review console messages or network requests only when relevant to the objective or when visible evidence is partial.
-7. If diagnostics/log-copy UI or a Sentry/support event ID is visible or supplied, collect the safe visible/copied diagnostic summary, confirm the commit/build + Paris/UTC build-time header when present, correlate only that pointer, and summarize it without raw payloads.
-8. Avoid raw dumps. Prefer targeted, redacted summaries.
-9. Decide a narrow verdict for the requested objective only.
-10. Route the next step based on the evidence.
+7. For runtime apps, proactively look for safe diagnostics entry points such as Settings, Support, Diagnostics, Debug, error fallback, overflow menu, or `Copy diagnostics` / `Copy logs`. Use any available browser/navigation tool, but only reversible navigation/clicks.
+8. If a diagnostics/log-copy action is reachable, click it, read the copied text from clipboard when tooling/browser permissions allow it, or read the visible diagnostic text. Confirm whether the first lines contain commit/build plus Paris/UTC build time.
+9. Do not ask the operator for logs while the diagnostics surface is reachable and safe to use. Ask only when the surface is missing, blocked by auth/permissions, unsafe to open, or clipboard/text extraction fails.
+10. If a Sentry/support event ID is visible or supplied, correlate only that pointer and summarize it without raw payloads.
+11. Avoid raw dumps. Prefer targeted, redacted summaries.
+12. Decide a narrow verdict for the requested objective only.
+13. Route the next step based on the evidence.
 
 ## Read-Only Default
 
@@ -106,6 +111,7 @@ Allowed by default:
 - console summary
 - network request summary
 - reversible clicks such as opening menus, tabs, accordions, or local navigation
+- opening diagnostics/support/settings/debug panels and clicking `Copy diagnostics` / `Copy logs` when it does not mutate product data
 
 Not allowed without explicit approval:
 - form submission that creates or changes data

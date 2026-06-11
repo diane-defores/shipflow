@@ -47,6 +47,7 @@ Load only the references needed for the active run:
 - `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`: required before implementation when the task changes behavior, fixes a bug, changes a skill contract, or needs a proof path. Choose `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof` before editing and report the chosen proof path.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`: required only when the task depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
 - `$SHIPFLOW_ROOT/skills/references/project-development-mode.md`: required before deriving the execution contract for project validation surface.
+- `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md`: required when the task touches a runtime app, support/error handling, settings, auth callbacks, deploy proof, Sentry, browser debugging, or log collection.
 - Supabase, Sentry, auth-debug, browser, or model-routing references only when the workflow reference triggers their gate.
 
 ## Mode Detection
@@ -66,6 +67,7 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 - Follow the decision-quality contract: choose bounded excellent professional implementation, not the fastest/easiest patch. Speed, cost, and local convenience are secondary after correctness, security, performance, maintainability, durability, excellence, and proof quality.
 - Obey the `Fast Fix Shortcut Ban`: do not bypass root cause, owner routing, shared structure, documentation, or proof to make a local symptom disappear.
 - For UI, IME, keyboard, overlay, responsive, layout, spacing, typography, color, motion, or component work, obey the `UI And Design-System Shortcut Ban`: do not hardcode one-off visual values as an emergency shortcut; fix the token, theme, component primitive, layout utility, or measurement source unless a named platform-bound constant is explicitly justified and proven.
+- For runtime apps, preserve or add the safe diagnostics/log-copy surface from `runtime-diagnostics-surface.md`; prefer the existing project component/helper and ensure copied diagnostics start with commit/build plus Paris/UTC build time.
 - For testable behavior, prefer a `test-first` proof path. For skill/governance changes, use `scenario-first`. For UI/docs/auth/deploy/operational work, use `evidence-first`. If the strongest path is impractical, record `exception-with-proof` and the alternate evidence.
 - Read only the files needed for the execution contract and linked systems that can change correctness.
 - Prefer fresh-context execution for non-trivial spec-first work when available, but keep the main thread responsible for integration, validation, and user-facing truth.

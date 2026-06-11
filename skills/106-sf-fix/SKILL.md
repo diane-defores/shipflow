@@ -31,7 +31,7 @@ Load `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when the
 
 Load `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` before deciding how the fix can be retested.
 
-Load only the relevant Supabase, Sentry, auth-debug, or browser references when the detailed workflow triggers those gates.
+Load only the relevant Supabase, Sentry, runtime diagnostics, auth-debug, or browser references when the detailed workflow triggers those gates.
 
 ## Mission
 
@@ -85,6 +85,8 @@ If `spec-first`, do not code; route to `/100-sf-spec`, `/101-sf-ready`, then `/1
 
 If `diagnostic only`, do not code; route to `109-sf-auth-debug`, `108-sf-browser`, or a concrete next step as appropriate.
 
+For runtime errors, error boundaries, 5xx, crashes, or visible support states, use the app's diagnostics/log-copy surface when reachable. Confirm the copied text starts with commit/build plus Paris/UTC build time, and treat missing or unsafe diagnostics as part of the bug evidence posture.
+
 ## Stop Conditions
 
 - Ambiguity changes product meaning, data handling, permissions, security, destructive behavior, or external side effects.
@@ -96,7 +98,7 @@ If `diagnostic only`, do not code; route to `109-sf-auth-debug`, `108-sf-browser
 
 ## Final Report
 
-Use the report shape in `bug-fix-workflow.md`: classification, reason, user story, bug reference/file, trace exception, proof path, root cause hypothesis, product/docs coherence, fresh docs, Sentry evidence, development mode, preview gate, security posture, bug status transition, retest evidence, action, next step, and scope estimate.
+Use the report shape in `bug-fix-workflow.md`: classification, reason, user story, bug reference/file, trace exception, proof path, root cause hypothesis, product/docs coherence, fresh docs, Sentry evidence, diagnostics/logs evidence, development mode, preview gate, security posture, bug status transition, retest evidence, action, next step, and scope estimate.
 
 ## Rules
 

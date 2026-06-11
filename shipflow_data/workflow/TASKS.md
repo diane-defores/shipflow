@@ -45,6 +45,7 @@
 🟢 [ShipFlow] task: Ajouter un index numerique canonique des skills sans renommer les invocations | status: done | area: skills | spec: shipflow_data/workflow/specs/numeric-skill-code-index.md | next: /sf-ship Numeric Skill Code Index
 🟢 [ShipFlow] task: Migrer les noms runtime des skills ShipFlow vers des prefixes a trois chiffres | status: done | area: skills | spec: shipflow_data/workflow/specs/three-digit-runtime-skill-names.md | next: /005-sf-ship Three Digit Runtime Skill Names
 🟢 [ShipFlow] task: Autoriser `sf-start` a enchaîner une auto-verification locale bornee quand la preuve restante est sure et non destructive | status: done | area: skills | spec: shipflow_data/workflow/specs/auto-follow-through-for-local-only-sf-start-verification.md | next: /sf-ship Auto-follow-through for local-only sf-start verification
+🟢 [ShipFlow] task: Renforcer les skills pour exiger et utiliser une surface diagnostics copiable dans les apps runtime | status: done | area: skills-observability | next: none
 
 | Pri | Task | Status |
 |-----|------|--------|

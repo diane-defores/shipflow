@@ -519,6 +519,8 @@ Quick architecture-level checks only:
 #### 6.3 Observability
 - [ ] Structured logging (not just `console.log`)
 - [ ] Sentry instrumentation and monitor coverage are configured unless the project documents an explicit static-site exception
+- [ ] Runtime apps expose a safe diagnostics/support surface with a visible copy action, preferably by reusing an existing project helper/component from `runtime-diagnostics-surface.md`
+- [ ] Copied diagnostics/logs start with commit/build plus Paris/UTC build time and include only redacted useful runtime context
 - [ ] Sentry release, environment, dist/build id, source maps/debug IDs, issue/event IDs, and monitor/alert source scope are usable for production or preview incidents
 - [ ] Monitors and Alerts are treated separately in evidence: Monitors define detection thresholds and issue creation; Alerts define sources, triggers, filters, and actions
 - [ ] Metric Monitors for critical flows use appropriate datasets and thresholds across errors, spans, logs, releases, or application metrics, with fixed/change/dynamic thresholds chosen from expected traffic patterns

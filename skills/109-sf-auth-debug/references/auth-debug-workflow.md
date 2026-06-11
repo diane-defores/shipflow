@@ -104,6 +104,7 @@ Références locales à charger selon le contexte:
 - `references/flutter-web-clerkjs-bridge.md` pour le pattern ContentFlow: Flutter web + routes HTML ClerkJS + bridge Dart
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` pour savoir si la preuve auth doit se faire en local ou après push sur preview Vercel
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/sentry-observability.md` quand le flow auth échoue avec une exception runtime, un error boundary, un 5xx, un event ID, ou un signal Sentry côté client/serveur
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/runtime-diagnostics-surface.md` quand l'app peut exposer une page/panneau diagnostics, support, settings, callback error, error boundary, ou bouton `Copy diagnostics` / `Copy logs`; l'agent doit l'utiliser lui-même s'il peut naviguer sans action dangereuse
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/supabase-auth.md` pour Supabase Auth, `@supabase/ssr`, cookies, redirects, callbacks et limites `getUser()` / `getSession()`
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/flutter-web-clerkjs-auth-pattern.md` comme documentation technique transverse à réutiliser dans les autres repos Flutter
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/tubeflow-youtube-oauth-nextjs-convex-pattern.md` comme documentation technique transverse pour YouTube OAuth via Next.js + Convex

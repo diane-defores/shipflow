@@ -34,7 +34,7 @@ Default to `report=user`: concise, findings-first for audits and failures, outco
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/production-verification-workflow.md`: Production and preview verification workflow, deployment status, health checks, logs, Blacksmith evidence, reporting, and stop rules.
-- `references/actionable-failure-contract.md`: when findings are identified, route each failure to a concrete owner with evidence and impact.
+- `$SHIPFLOW_ROOT/skills/references/actionable-failure-contract.md`: when findings are identified, route each failure to a concrete owner with evidence and impact.
 
 ## Mode Detection
 

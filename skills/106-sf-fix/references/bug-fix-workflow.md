@@ -91,7 +91,7 @@ For auth, protected routes, OAuth redirects, Clerk/Supabase session state, callb
 
 For non-auth browser reproduction, prefer `108-sf-browser` evidence before patching when observable runtime behavior matters.
 
-For crashes, error boundaries, 5xx, visible Sentry/support event IDs, production exceptions, or deployed-runtime failures, load Sentry observability. Never paste raw payloads, breadcrumbs, replay contents, headers, cookies, tokens, private URLs, or PII into bug files or reports.
+For crashes, error boundaries, 5xx, visible Sentry/support event IDs, production exceptions, deployed-runtime failures, or copyable diagnostics/logs, load Sentry observability and runtime diagnostics surface. Use the app's copy action when reachable, verify the commit/build + Paris/UTC header, and never paste raw payloads, breadcrumbs, replay contents, headers, cookies, tokens, private URLs, or PII into bug files or reports.
 
 ## Direct Fix Execution
 
@@ -135,6 +135,7 @@ Product coherence: [ok / risk]
 Documentation coherence: [ok / risk / not impacted]
 Fresh external docs: [checked / not needed / gap / conflict]
 Sentry evidence: [supplied pointer correlated / no pointer supplied / PM2-Doppler fallback / not applicable]
+Diagnostics/logs evidence: [copied header verified / copied header missing / surface missing / not applicable]
 Development mode: [local / vercel-preview-push / hybrid / unknown-vercel]
 Preview verification gate: [not needed / requires 005-sf-ship -> 405-sf-prod / completed]
 Security posture: [ok / risk]
