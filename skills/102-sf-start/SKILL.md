@@ -4,6 +4,8 @@ description: "Execute ready specs or clear local tasks with guardrails."
 argument-hint: <task description or TASKS.md item>
 ---
 
+Primary artifact type: `specialist-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.

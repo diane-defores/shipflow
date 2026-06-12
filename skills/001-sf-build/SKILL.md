@@ -49,7 +49,7 @@ Before UI, mobile, component, layout, typography, spacing, color, shadow/elevati
 
 ## Mission
 
-`001-sf-build` is the user-facing lifecycle orchestrator. It keeps user interaction high level while executing:
+`001-sf-build` is the user-facing lifecycle orchestrator (`master-workflow`) and keeps user interaction high level while executing:
 
 `intake -> existing chantier check -> spec/readiness loop -> governance corpus gate -> model routing gate -> start -> verify -> end -> ship`
 

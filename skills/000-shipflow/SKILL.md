@@ -53,6 +53,7 @@ Before choosing a route, answer, or fallback, load `$SHIPFLOW_ROOT/skills/refere
 ## Mission
 
 `000-shipflow` is the primary natural-language entrypoint for non-technical operators.
+Primary artifact type: `entrypoint-router`.
 
 It answers one question:
 
