@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-06-12"
 created_at: "2026-06-12 23:40:00 UTC"
 updated: "2026-06-12"
-updated_at: "2026-06-13 00:02:00 UTC"
+updated_at: "2026-06-13 00:07:00 UTC"
 status: ready
 source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
@@ -61,7 +61,7 @@ evidence:
   - "The artifact taxonomy requires each touched skill to keep one primary artifact type, one dominant question, and one owner boundary."
   - "Current `002-sf-maintain`, `003-sf-bug`, and `004-sf-deploy` are functionally strong but still semantically heavy and easy to blur because they each orchestrate neighboring specialist lanes."
   - "The user explicitly requested the next batch and selected D1."
-next_step: "/005-sf-ship shipflow_data/workflow/specs/semantic-compaction-of-maintenance-and-release-master-skills.md"
+next_step: "none"
 ---
 
 # Title
@@ -306,6 +306,7 @@ None.
 | 2026-06-12 23:52:00 UTC | 102-sf-start | GPT-5 Codex | Compacted the D1 master-family activation contracts inside the owned skill set and ran the required local validations | implemented | /103-sf-verify shipflow_data/workflow/specs/semantic-compaction-of-maintenance-and-release-master-skills.md |
 | 2026-06-12 23:55:00 UTC | 103-sf-verify | GPT-5 Codex | Verified D1 maintenance, bug-loop, and release-confidence boundary preservation against the spec contract and required local validations | verified | /104-sf-end shipflow_data/workflow/specs/semantic-compaction-of-maintenance-and-release-master-skills.md |
 | 2026-06-13 00:02:00 UTC | 104-sf-end | GPT-5 Codex | Closed D1 bookkeeping, updated the canonical trackers and changelog, and confirmed ship as the remaining lifecycle step | closed | /005-sf-ship shipflow_data/workflow/specs/semantic-compaction-of-maintenance-and-release-master-skills.md |
+| 2026-06-13 00:07:00 UTC | 005-sf-ship | GPT-5 Codex | Shipped the bounded D1 master-family semantic compaction with a task-scoped commit and push after final local checks | shipped | none |
 
 ## Current Chantier Flow
 
@@ -314,5 +315,5 @@ None.
 - 102-sf-start: implemented
 - 103-sf-verify: verified
 - 104-sf-end: closed
-- 005-sf-ship: pending
-- Next step: `/005-sf-ship shipflow_data/workflow/specs/semantic-compaction-of-maintenance-and-release-master-skills.md`
+- 005-sf-ship: shipped
+- Next step: `none`
