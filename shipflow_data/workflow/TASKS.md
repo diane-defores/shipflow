@@ -156,3 +156,6 @@
 
 ## Audit Findings
 <!-- Populated by /sf-audit — dated sections with Fixed: / Remaining: -->
+🟠 [ShipFlow] task: Migrer les valeurs visuelles hardcodees du site ShipFlow vers des design tokens semantiques centralises dans `site/src/styles/global.css` et leurs usages partages | status: todo | area: site-design-system | spec: shipflow_data/workflow/specs/shipflow-site-token-hardening-and-visual-standardization.md | next: /102-sf-start ShipFlow site token hardening and visual standardization
+🟠 [ShipFlow] task: Completer le socle des design tokens ShipFlow avec palette semantique, surfaces et motion pour le site public | status: todo | area: site-design-tokens | spec: shipflow_data/workflow/specs/shipflow-site-token-hardening-and-visual-standardization.md | next: /102-sf-start ShipFlow site token hardening and visual standardization
+🟡 [ShipFlow] task: Justifier explicitement le mode unique du theme site dans la gouvernance ou ajouter une couverture multi-mode et une architecture de preference coherente | status: todo | area: site-theme-architecture | spec: shipflow_data/workflow/specs/shipflow-site-token-hardening-and-visual-standardization.md | next: /102-sf-start ShipFlow site token hardening and visual standardization

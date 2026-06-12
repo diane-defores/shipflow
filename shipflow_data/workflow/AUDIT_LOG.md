@@ -7,3 +7,4 @@
 | 2026-04-29 | project | — | — | — | — | — | — | B | — | 0 critical / 2 high fixed / 2 medium fixed / 1 high open / 1 medium open |
 
 🟢 [ShipFlow] audit: Translate public site French locale | date: 2026-06-11 | overall: accepted | issues: main routes translated; skill Markdown intentionally remains English for agent contract reliability | scope: site
+🟠 [ShipFlow] audit: Site design tokens | date: 2026-06-12 | overall: D | issues: 3 high / 4 medium | scope: site

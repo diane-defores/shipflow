@@ -264,6 +264,7 @@ None.
 |----------|-------|-------|--------|--------|-----------|
 | 2026-06-11 16:05:00 UTC | 100-sf-spec | GPT-5 Codex | create | ready | /101-sf-ready ShipFlow site token hardening and visual standardization |
 | 2026-06-11 16:05:00 UTC | 101-sf-ready | GPT-5 Codex | readiness-check | ready | /102-sf-start ShipFlow site token hardening and visual standardization |
+| 2026-06-12 20:44:44 UTC | 503-sf-audit-design-tokens | GPT-5 Codex | audit | issues found | /102-sf-start ShipFlow site token hardening and visual standardization |
 
 ## Current Chantier Flow
 
