@@ -17,14 +17,43 @@ const otherLocale = locale === "fr" ? "en" : "fr";
     <span>ShipFlow</span>
   </a>
 
-  <nav class="topnav" aria-label={copy.aria}>
-    {copy.links.map(([label, href]) => <a href={pathFor(href, locale)}>{label}</a>)}
-  </nav>
+  <div class="topbar-desktop">
+    <nav class="topnav" aria-label={copy.aria}>
+      {copy.links.map(([label, href]) => <a href={pathFor(href, locale)}>{label}</a>)}
+    </nav>
 
-  <a class="button button-secondary topbar-cta" href="https://github.com/dianedef/ShipFlow">
-    {copy.github}
-  </a>
-  <a class="language-link" href={alternatePath(currentPath, otherLocale)} hreflang={otherLocale}>
-    {copy.language}
-  </a>
+    <a class="button button-secondary topbar-cta" href="https://github.com/dianedef/ShipFlow">
+      {copy.github}
+    </a>
+    <a class="language-link" href={alternatePath(currentPath, otherLocale)} hreflang={otherLocale}>
+      {copy.language}
+    </a>
+  </div>
+
+  <details class="mobile-nav">
+    <summary class="mobile-nav-toggle">
+      <span class="mobile-nav-toggle-label">{copy.mobileToggle}</span>
+      <span class="sr-only mobile-nav-state mobile-nav-state-open">{copy.mobileOpen}</span>
+      <span class="sr-only mobile-nav-state mobile-nav-state-close">{copy.mobileClose}</span>
+      <span class="mobile-nav-toggle-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </summary>
+
+    <nav class="mobile-nav-panel" aria-label={copy.aria}>
+      <div class="mobile-nav-links">
+        {copy.links.map(([label, href]) => <a href={pathFor(href, locale)}>{label}</a>)}
+      </div>
+      <div class="mobile-nav-meta">
+        <a class="button button-secondary mobile-nav-cta" href="https://github.com/dianedef/ShipFlow">
+          {copy.github}
+        </a>
+        <a class="language-link mobile-nav-language" href={alternatePath(currentPath, otherLocale)} hreflang={otherLocale}>
+          {copy.language}
+        </a>
+      </div>
+    </nav>
+  </details>
 </header>

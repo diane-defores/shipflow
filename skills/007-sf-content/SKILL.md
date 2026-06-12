@@ -4,6 +4,8 @@ description: "Content lifecycle."
 argument-hint: '[goal | source | file | mode: plan, repurpose, draft, enrich, audit, seo, editorial, apply, ship]'
 ---
 
+Primary artifact type: `master-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, internal scripts, and public skill content must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
@@ -38,6 +40,10 @@ Use the shared skeleton for intake, content work item resolution, readiness, mod
 ## Mission
 
 `007-sf-content` is the master lifecycle for content management. It decides which content lane should run, applies governance gates, and carries content work toward validation and ship routing.
+
+It is the content lifecycle master (`master-workflow`): it decides how source, surface, claim, specialist-owner, validation, and ship work should stay coherent from intake to publishable output.
+
+`007-sf-content` owns content lifecycle coherence across source, surface, claims, quality, and ship, not generic writing detached from governance.
 
 It orchestrates existing owner skills:
 

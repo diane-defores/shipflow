@@ -4,6 +4,8 @@ description: "UI/UX design lifecycle."
 argument-hint: <design question | audit | tokens | playground | redesign | migration | page/route>
 ---
 
+Primary artifact type: `master-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
@@ -60,6 +62,10 @@ Load `$SHIPFLOW_ROOT/skills/600-sf-local-cloud-sync/references/sync-guidance-ove
 ## Mission
 
 `006-sf-design` is the recommended entrypoint for design-related work.
+
+It is the design lifecycle master (`master-workflow`): it decides how design-system, UI/UX, and visual-proof work should move across specialist owners, spec-first implementation, verification, and ship.
+
+`006-sf-design` owns design lifecycle routing and proof posture, not generic implementation or standalone browser verification.
 
 The operator should be able to ask a natural design question:
 

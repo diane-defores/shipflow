@@ -116,6 +116,22 @@ Update this artifact whenever the project adds a frontend, changes styling techn
 
 ## WinFlowz Surface Declarations (2026-06-12)
 
+- `shipflow_site`:
+  - status: `declared`
+  - brand_contract: `shipflow_data/business/branding.md`
+  - canonical_source: `site/src/styles/global.css`
+  - technology_carrier: `css-custom-properties`
+  - component_bridge: `site/src/components/NavBar.astro`, `site/src/components/Hero.astro`, and the shared component set under `site/src/components`
+  - layout_authority: `site/src/styles/global.css` plus shared page composition in `site/src/pages/index.astro` and `site/src/pages/fr/index.astro`
+  - motion_authority: `site/src/styles/global.css`
+  - forbidden_bypass:
+    - inline visual literals inside Astro components when a shared CSS rule or token can own the decision
+    - mobile-nav, hero, spacing, shadow, or elevation values created directly in page/component markup
+    - locale-specific visual overrides that diverge from the shared home component system without explicit proof
+  - validation:
+    - `python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/design_system_drift_check.py" --root "${SHIPFLOW_ROOT:-$HOME/shipflow}/site" --changed --format markdown`
+    - `npm --prefix "${SHIPFLOW_ROOT:-$HOME/shipflow}/site" run build`
+    - browser/mobile proof on `/` and `/fr/` when home or navigation visuals change
 - `winflowz_app`:
   - status: `declared`
   - canonical_source: `winflowz_app/lib/core/theme/winflowz_theme_tokens.dart` + `winflowz_app/lib/core/theme/app_theme.dart`

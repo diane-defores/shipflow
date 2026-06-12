@@ -46,6 +46,9 @@ export function siteUrl(path: string): string {
 export const navCopy = {
   en: {
     aria: "Primary",
+    mobileToggle: "Menu",
+    mobileOpen: "Open navigation menu",
+    mobileClose: "Close navigation menu",
     links: [
       ["Skills", "/skills"],
       ["About", "/about"],
@@ -61,6 +64,9 @@ export const navCopy = {
   },
   fr: {
     aria: "Navigation principale",
+    mobileToggle: "Menu",
+    mobileOpen: "Ouvrir le menu de navigation",
+    mobileClose: "Fermer le menu de navigation",
     links: [
       ["Skills", "/skills"],
       ["À propos", "/about"],
@@ -79,6 +85,9 @@ export const navCopy = {
   links: [string, string][];
   github: string;
   language: string;
+  mobileToggle: string;
+  mobileOpen: string;
+  mobileClose: string;
 }>;
 
 export const footerCopy = {
