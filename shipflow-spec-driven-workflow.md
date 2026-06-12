@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.18.1"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-05-29"
+updated: "2026-06-12"
 status: draft
 source_skill: 300-sf-docs
 scope: spec-driven-workflow
@@ -394,6 +394,20 @@ That artifact doctrine also sharpens the boundary between three categories:
 - active decision docs that govern implementation and audits
 - trackers and registries that stay lightweight and operational
 - runtime content that must preserve the application schema
+
+## Canonical Artifact Taxonomy
+
+ShipFlow-owned artifacts map to seven primary types:
+
+- `entrypoint-router`: request intake and safe initial handoff, exemplified by `000-shipflow`.
+- `master-workflow`: chantier orchestration from intake to proof handoff (`100-sf-spec -> 101-sf-ready -> 102-sf-start -> 103-sf-verify -> ...`).
+- `specialist-workflow`: bounded domain execution inside a selected master flow.
+- `contract`: reusable, mandatory rule text that must stay stable across contexts.
+- `reference`: support map, checklist, index, playbook, or examples that help apply a contract.
+- `template`: reusable structure with fixed required fields, placeholders, and naming conventions.
+- `record`: durable one-case or one-event trace of a specific chantier or durable decision.
+
+To keep boundaries usable, each file should keep one primary type. If a file materially performs two primary roles, the safe outcome is split/extract before adding new content.
 
 Operational tracking files are not ShipFlow decision artifacts and do not require metadata frontmatter:
 

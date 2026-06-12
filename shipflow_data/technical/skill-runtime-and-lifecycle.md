@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.20.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-06-11"
+updated: "2026-06-12"
 status: reviewed
 source_skill: 102-sf-start
 scope: skill-runtime-and-lifecycle
@@ -167,6 +167,30 @@ Keep overlap intentional and explicit: master skills orchestrate, specialists pr
 | `shipflow-spec-driven-workflow.md` | Global workflow doctrine | Sequential shared file |
 | `templates/artifacts/*.md` | Durable artifact templates | Keep linter-compatible |
 | `AGENT.md`, `AGENTS.md` | Agent entrypoint and compatibility alias | `AGENT.md` canonical; `AGENTS.md` symlink only |
+
+## Canonical Artifact Taxonomy
+
+ShipFlow-owned artifacts are classified into seven primary types:
+
+- `entrypoint-router`: request intake and safe routing, including `000-shipflow` and similar router surfaces.
+- `master-workflow`: lifecycle orchestration and delegation for chantiers.
+- `specialist-workflow`: domain execution under a selected master workflow.
+- `contract`: authoritative governance or behavioral doctrine that must be consistently reusable.
+- `reference`: support documentation, indexes, checklists, or maps that help apply contracts.
+- `template`: schema-rich documents used to create durable artifacts with predictable shape.
+- `record`: one durable case entry for a specific operation, scope, or decision trace.
+
+### Type-by-Type Boundaries
+
+- `entrypoint-router` resolves user intent and delegates once; it should not own lifecycle proof logic or durable domain policy.
+- `master-workflow` owns `100-sf-spec` -> `101-sf-ready` -> `102-sf-start` -> `103-sf-verify` orchestration and must hand execution to specialists rather than execute policy-specific fixes directly.
+- `specialist-workflow` executes a bounded set of domain tasks and hands back outcomes; it should not redefine router or master-level ownership.
+- `contract` defines what must be true across contexts and is the anchor for reusable standards.
+- `reference` supports application of contracts and should avoid introducing new mandatory policy that does not already exist in a contract.
+- `template` defines structure and required fields; behavior and policy stay in contracts or SKILL-specific instructions.
+- `record` captures facts of one case; method and doctrine must come from contract/reference siblings.
+
+When a file materially performs two serious primary jobs, split or extract before adding further content.
 
 ## Entrypoints
 
