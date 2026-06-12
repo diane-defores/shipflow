@@ -30,6 +30,7 @@ Default to `report=user`: concise, outcome-first, active user language, and comp
 
 Load only the references required by the active run:
 
+- `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` before choosing refresh scope, novelty, doctrine, or whether a proposed change is worth adding at all.
 - `$SHIPFLOW_ROOT/skills/references/question-contract.md` before any user-facing skill selection or scope question.
 - `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md` before launching or coordinating delegated research/execution contexts.
 - `$SHIPFLOW_ROOT/skills/references/skill-context-budget.md` before changing discovery metadata, `agents/openai.yaml`, public skill pages, or materially expanding a `SKILL.md`.
@@ -66,6 +67,7 @@ Refresh one or more skills against both current external practice and current Sh
 
 Before reading external sources, compare each target skill against the current ShipFlow baseline:
 
+- `decision-quality-contract` and the structure-replacement doctrine: a refresh must replace part of the current structure with less friction, more speed, or less maintenance; reject novelty that adds churn without operator leverage
 - `Canonical Paths`
 - `Instruction Layering` when the skill is compacted or may grow
 - `Trace category` and `Process role`
@@ -100,6 +102,7 @@ Choose the smallest evidence path that fits the target:
 - For local governance/doc/freshness skills, read local shared references first. External research is optional unless a domain claim depends on current external behavior.
 - For domain skills that drift with external standards, run the Documentation Freshness Gate and use current official docs or primary sources.
 - Use delegated research contexts only when allowed by the active runtime and after loading `$SHIPFLOW_ROOT/skills/references/master-delegation-semantics.md`. Parallel research requires non-overlapping read-only missions or a ready batch plan; otherwise keep the run sequential.
+- Reject research-driven additions whose only value is novelty or completeness theater. A new check, phase, or doctrine sentence must earn its place by replacing current friction, wasted time, latency, ambiguity, or maintenance burden in real ShipFlow use.
 
 Each agent prompt MUST include:
 
@@ -155,6 +158,7 @@ For each returned report:
 - Never reword a check purely for style — only substantive updates.
 - Preserve legacy structure and author tone, but apply the ShipFlow language doctrine to touched sections: write new internal contracts in English, keep user-facing prompts/examples in the active user/project language, keep stable machine-readable labels in English, and preserve quoted/source/legal/external text in its original language.
 - Preserve the author's tone — additive edits only.
+- Reject decorative doctrine, trend-driven additions, and "good idea" checks that do not replace an actual weakness in the current structure, decision path, speed, or maintenance cost.
 - If a new check replaces an outdated one (e.g., FID → INP), update in place. Don't leave both.
 - When refreshing French user-facing output, fix missing accents in touched text. Treat accentless French as an error unless the text is a technical identifier, command, slug, or ASCII-only format.
 - Flag inappropriate casual language mixing as a refresh finding; do not launch a broad legacy rewrite unless the user explicitly requests it.
@@ -239,6 +243,7 @@ If any research agent returned findings that need human judgment (ambiguous, con
 - **Cadence**: designed for ~monthly runs. More frequent wastes research effort; less frequent means drift.
 - **Parallel research is the whole point.** Never do searches yourself sequentially — delegate to agents.
 - **Additive mindset**: a skill that accumulates every check ever written becomes unwieldy. When a check is strictly obsoleted by a newer one, update in place instead of stacking both.
+- **Business doctrine**: every refresh must answer a hard operator-value question before it lands: does this replace part of the current structure with less friction, more speed, or less maintenance? If not, do not add it.
 - **Skill budget compliance stays scoped here**: enforce Codex/Claude Code skill budget rules during skill refreshes, not through broad reminders in unrelated agent guidelines.
 - **Never touch `name:` in frontmatter.** It's the invocation key.
 - **ShipFlow language doctrine**: internal contracts use English; user-facing interaction uses the active user/project language; stable machine-readable labels stay English; quoted user input, source evidence, legal text, and external material keep their original language.

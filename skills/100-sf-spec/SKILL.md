@@ -39,7 +39,7 @@ Load only the references needed for the active run:
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe path as defined by `decision-quality-contract`: the smallest complete professional contract, not the fastest/easiest route.
+Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe path as defined by `decision-quality-contract`: the smallest complete professional contract, not the fastest/easiest route. Apply the `Structure Replacement Doctrine`: write or expand a spec when it replaces repeated ambiguity, coordination friction, or maintenance burden; do not create process weight that adds no real operator leverage.
 
 - New non-trivial work or a `Chantier potentiel` intake: load `references/spec-creation-workflow.md` and create or update a durable spec.
 - Small/local work where a spec would add no useful contract: report `Chantier: non applicable` and route directly to the owner skill.
@@ -50,6 +50,7 @@ Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe pa
 - A ready spec must be autonomous enough for a fresh agent: user story, minimal behavior contract, success/error behavior, scope, tasks, acceptance criteria, risks, linked systems, documentation impact, and run history.
 - Specs are written for implementation, not brainstorming; avoid placeholders, vague tasks, and undocumented assumptions.
 - Specs must preserve the decision-quality and excellence bar: correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality before speed or convenience.
+- Specs must improve the current operating structure, not merely document motion: when a direct owner route is already clear and durable, avoid creating a spec that adds ceremony without reducing friction, delay, or maintenance cost.
 - Runtime specs must include Sentry, safe diagnostics/log-copy, and commit/build + Paris/UTC build-time header expectations from `$SHIPFLOW_ROOT/skills/references/sentry-observability.md`, or document why the static-site exception applies.
 - UI/design specs must identify the project design-system authority before implementation: brand contract, canonical token source, technology carrier, component bridge, layout/motion authority, forbidden bypasses, and validation command. If this authority is missing, the spec must route to `300-sf-docs`, `006-sf-design`, or `500-sf-design-from-scratch` before any visual implementation task.
 - Specs must preserve the Operator Autonomy Standard from `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: implementation, diagnosis, test, and verification should gather safe evidence themselves before asking the operator.

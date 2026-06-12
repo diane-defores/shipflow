@@ -33,13 +33,13 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 The canonical `Chantier Registry` doctrine lives in `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md`; this skill only summarizes it for help output.
 
-The canonical decision-quality doctrine lives in `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`; this skill summarizes it when users ask about quality, minimal changes, shortcuts, model choice, best practices, security, performance, or engineering standards.
+The canonical decision-quality doctrine lives in `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`; this skill summarizes it when users ask about quality, minimal changes, shortcuts, model choice, best practices, security, performance, engineering standards, or the rule "does this replace part of the current structure with less friction, more speed, or less maintenance?"
 
 The canonical numeric skill-code index lives in `$SHIPFLOW_ROOT/skills/references/skill-code-index.md`; load it when users ask about skill codes, numeric prefixes, shortcuts, faster skill lookup, or exact skill discovery.
 
 ## Mode Detection
 
-Parse `$ARGUMENTS` and choose the smallest safe mode as defined by `decision-quality-contract`: bounded and professional, never shortcut quality.
+Parse `$ARGUMENTS` and choose the smallest safe mode as defined by `decision-quality-contract`: bounded and professional, never shortcut quality. When the question is about doctrine or tradeoffs, answer through the `Structure Replacement Doctrine` rather than treating novelty, tooling, or extra process as value by default.
 
 - If the user asks a direct help question, answer concisely from the top-level route and `references/help-catalog.md` as needed.
 - If the user asks for skill codes, numeric prefixes, or shortcut lookup, load `skill-code-index.md` and answer from the code table without renaming canonical skills.

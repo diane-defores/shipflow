@@ -4,6 +4,21 @@ Chronological log of skill refreshes via `/307-sf-skills-refresh`. Most recent f
 
 ---
 
+## 2026-06-12 — 307-sf-skills-refresh
+
+**Added:**
+- [required references] `307-sf-skills-refresh` now loads `decision-quality-contract.md` before refresh-scope and novelty decisions
+- [phase 0] New structure-replacement gate requiring refreshes to replace friction, speed loss, or maintenance cost in the current structure
+- [phase 2/rules] Explicit rejection of novelty-only, decorative, or completeness-theater additions during skill refresh
+
+**Updated:**
+- [doctrine] Shared `decision-quality-contract.md` now names the structure-replacement doctrine explicitly for cross-skill decision quality
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow governance contracts and operator doctrine)
+
 ## 2026-06-12 — 600-sf-local-cloud-sync
 
 **Added:**

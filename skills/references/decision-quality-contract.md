@@ -63,6 +63,20 @@ Optimize first for:
 
 Speed, cost, latency, token use, local simplicity, or implementation convenience may decide only between options that are already equivalent on correctness, security, performance, maintainability, durability, excellence, and evidence.
 
+## Structure Replacement Doctrine
+
+In all circumstances, prefer changes that replace part of the current structure with less friction, more speed, or less maintenance while preserving the primary decision metrics.
+
+Do not add process, doctrine, tools, checks, phases, dependencies, or storage layers merely because they are current, fashionable, available, or intellectually neat. Novelty is not value. Activity is not progress.
+
+For operator-facing decisions, ask the hard business question explicitly when the answer is not obvious:
+
+- does this replace an existing weak point, repeated manual step, slow path, ambiguity, or maintenance burden
+- does it improve execution speed without lowering correctness, security, durability, maintainability, excellence, or proof
+- does it reduce operational cost, drift, or future complexity rather than creating another layer to maintain
+
+If the answer is no, do not add it.
+
 ## Forbidden Optimizations
 
 Do not choose the quickest, easiest, cheapest, or shortest path when it weakens the product contract, security, durability, maintainability, proof quality, or operator trust.

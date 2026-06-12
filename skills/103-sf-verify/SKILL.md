@@ -71,6 +71,7 @@ Mandatory explicit checks:
 - `Success Behavior` pass/partial/fail/not demonstrated
 - `Error Behavior` pass/partial/fail/not demonstrated
 - `Proof Path Fit` pass/partial/fail/not chosen: test-first, regression-first, scenario-first, evidence-first, or exception-with-proof matches the changed surface
+- `Structure Replacement Fit` pass/partial/fail: the chosen implementation or workflow change reduces current friction, ambiguity, latency, or maintenance burden when that was part of the stated problem; reject decorative new layers that add churn without operator leverage.
 - `Fast Fix Shortcut Gate` pass/partial/fail: implementation does not bypass root cause, owner routing, shared structure, documentation, or required proof to make a symptom disappear.
 - `Flutter Mobile Proof Ladder` pass/partial/fail/not applicable: widget tests -> agent-run Flutter Web smoke through `108-sf-browser`/`109-sf-auth-debug` -> APK/device proof order is respected for Flutter mobile UI work
 - `Bug Gate` (clear/partial-risk/blocks ship/not assessed)

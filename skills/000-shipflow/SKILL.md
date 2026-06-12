@@ -48,7 +48,7 @@ Use that reference as the canonical routing matrix. Do not duplicate specialist 
 
 When `$ARGUMENTS` begins with a three-digit skill code or a three-digit runtime skill name, load `$SHIPFLOW_ROOT/skills/references/skill-code-index.md` before natural-language classification. Resolve `NNN`, `NNN-skill`, `NNNskill`, or `NNN skill` to the runtime skill name from that index, then hand off to that skill.
 
-Before choosing a route, answer, or fallback, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Routing must prefer the owner path that preserves correctness, security, performance, maintainability, durability, excellence, and proof quality; do not route to the fastest or easiest owner when that would weaken the work.
+Before choosing a route, answer, or fallback, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Routing must prefer the owner path that preserves correctness, security, performance, maintainability, durability, excellence, and proof quality; do not route to the fastest or easiest owner when that would weaken the work. Apply the `Structure Replacement Doctrine`: prefer the route that removes current operator friction, ambiguity, or maintenance burden when it remains quality-equivalent.
 
 ## Mission
 

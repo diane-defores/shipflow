@@ -113,3 +113,18 @@ Stop or report `partial` when:
 ## Maintenance Rule
 
 Update this artifact whenever the project adds a frontend, changes styling technology, introduces a token pipeline, changes component primitives, changes theme mode behavior, or accepts a documented platform-bound exception.
+
+## WinFlowz Surface Declarations (2026-06-12)
+
+- `winflowz_app`:
+  - status: `declared`
+  - canonical_source: `winflowz_app/lib/core/theme/winflowz_theme_tokens.dart` + `winflowz_app/lib/core/theme/app_theme.dart`
+  - technology_carrier: `flutter-theme`
+  - component_bridge: `AppColors`, `AppTypography`, `AppSpacing`, `AppInsets`, `AppNavigationMetrics` in `winflowz_app/lib/core/theme/app_theme.dart`
+  - layout_authority: `winflowz_app/lib/presentation/**/*` and `winflowz_app/lib/features/**/*` must consume `App*` helpers before screen-local values.
+- `winflowz_site`:
+  - status: `declared`
+  - canonical_source: `winflowz_site/src/assets/styles/global.css` + `winflowz_site/tailwind.config.mjs`
+  - technology_carrier: `tailwind-theme`
+  - component_bridge: shared component primitives under `winflowz_site/src/components`
+  - layout_authority: `winflowz_site/src/layouts`, `winflowz_site/src/pages`, and component-level theme aliases must avoid arbitrary one-off visual literals.

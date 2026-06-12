@@ -5,8 +5,8 @@ artifact_version: "1.0.0"
 project: "shipflow"
 created: "2026-06-11"
 created_at: "2026-06-11 00:00:00 UTC"
-updated: "2026-06-11"
-updated_at: "2026-06-11 17:33:00 UTC"
+updated: "2026-06-12"
+updated_at: "2026-06-12 08:18:00 UTC"
 status: ready
 source_skill: plugin-creator
 source_model: "GPT-5 Codex"
@@ -49,7 +49,11 @@ evidence:
   - "2026-06-11 new-thread runtime proof captured in docs/conversations/conversation-shipflow-shipflow-help-20260611-164357.md confirms the single plugin entrypoint answers help, packs, and shipflow-main."
   - "2026-06-11 009-sf-skill-build added public partial-mode `shipflow-main` intent contracts for spec, ready, start, verify, check, and fix behind the single `shipflow` plugin skill."
   - "2026-06-11 plugin source/cache validation passed after reinstalling `shipflow@personal` as 0.1.0+codex.20260611173309."
-next_step: "Open a new Codex thread and runtime-test `$shipflow spec`, `$shipflow ready`, `$shipflow start`, `$shipflow verify`, `$shipflow check`, and `$shipflow fix`."
+  - "2026-06-12 new-thread runtime proof captured in docs/conversations/conversation-shipflow-shipflow-spec-20260612-034955.md confirms `$shipflow spec`, `$shipflow ready`, `$shipflow start`, `$shipflow verify`, `$shipflow check`, and `$shipflow fix` route through the bundled `shipflow-main-intents.md` contract."
+  - "2026-06-12 009-sf-skill-build added `scripts/stage_shipflow_pack.py`, staged `shipflow-main` into `/tmp/shipflow-pack-stage-20260612-shipflow-main/shipflow-main`, validated the generated plugin candidate, and refreshed `shipflow@personal` to 0.1.0+codex.20260612035839."
+  - "2026-06-12 009-sf-skill-build added `scripts/refresh_shipflow_pack.py` and `references/pack-maintenance-playbook.md`, refreshed `shipflow-main` into `/home/claude/.shipflow/staged-packs/shipflow-main`, validated the generated plugin candidate, and refreshed `shipflow@personal` to 0.1.0+codex.20260612043936."
+  - "2026-06-12 operator decision recorded in technical docs: keep one public `shipflow` plugin filled as much as possible; treat pack generation as internal infrastructure and not a near-term multi-pack product commitment."
+next_step: "Test sparse bootstrap from a clean path, then continue enriching the single public `shipflow` plugin before revisiting public pack distribution."
 ---
 
 # Spec: ShipFlow Main Plugin and Pack Portability
@@ -93,11 +97,13 @@ The plugin should remain small. When a user needs the complete ShipFlow skill an
 ## Pack Strategy
 
 - `shipflow`: one public plugin and user-facing entrypoint.
-- `shipflow-main`: first useful public pack, targeted next.
+- `shipflow-main`: internal packaging/staging boundary and first useful public-capability cluster, but still routed through the single public `shipflow` plugin.
 - `shipflow-proof`: deploy, browser, auth, prod, and QA proof pack.
 - `shipflow-build`: implementation lifecycle pack.
 - `shipflow-content`, `shipflow-design`, `shipflow-quality`, `shipflow-product`: later domain packs.
 - `shipflow-governance`: internal-first pack; public surface requires separate review.
+
+Product rule: do not expose a multi-pack public product by default. The near-term product is one plugin, `shipflow`, with pack generation kept as internal infrastructure unless real runtime constraints later justify separate public install surfaces.
 
 ## Bootstrap Strategy
 
@@ -137,19 +143,27 @@ The plugin should remain small. When a user needs the complete ShipFlow skill an
 - [x] Packaging audit now prefers bundled plugin skills over internal source skills for portability reports.
 - [x] Public partial-mode intent contracts added behind `$shipflow` for `spec`, `ready`, `start`, `verify`, `check`, and `fix`.
 - [x] Plugin source and installed cache refreshed to `0.1.0+codex.20260611173309`.
+- [x] Pack generation script added at `/home/claude/plugins/shipflow/scripts/stage_shipflow_pack.py`.
+- [x] `shipflow-main` staged successfully as a generated plugin candidate with 0 hard findings and 8 review findings.
+- [x] Generated `shipflow-main` plugin candidate passed plugin validation.
+- [x] Plugin source and installed cache refreshed to `0.1.0+codex.20260612035839`.
+- [x] One-command pack refresh helper added at `/home/claude/plugins/shipflow/scripts/refresh_shipflow_pack.py`.
+- [x] Pack maintenance playbook added at `/home/claude/plugins/shipflow/skills/shipflow/references/pack-maintenance-playbook.md`.
+- [x] Default staged pack output moved outside the plugin source tree to `/home/claude/.shipflow/staged-packs/`.
+- [x] Plugin source and installed cache refreshed to `0.1.0+codex.20260612043936`.
 
 ## Remaining Work
 
-- [ ] Add a pack generation script that can stage one pack from the catalog.
+- [x] Add a pack generation script that can stage one pack from the catalog.
 - [x] Decide whether `shipflow-main` should be bundled or delegated to the bootstrapped repo for the next pass.
 - [ ] Test sparse bootstrap from a machine/path without an existing ShipFlow checkout.
 - [x] Continue porting `shipflow-main` candidates with the `302-sf-help` plugin-local pattern.
-- [ ] Runtime-test public partial-mode `shipflow-main` intents in a fresh Codex thread.
+- [x] Runtime-test public partial-mode `shipflow-main` intents in a fresh Codex thread.
 - [ ] Replace placeholder docs base URL with the real public ShipFlow docs domain when available.
 - [ ] Publish optional hosted docs for public explanations after the local pack works offline.
-- [ ] Validate generated plugin cache after adding `shipflow-main`.
+- [x] Validate generated plugin candidate after staging `shipflow-main`.
 - [x] Open a new Codex thread and test `$shipflow help`, `$shipflow packs`, and `$shipflow shipflow-main`.
-- [ ] Decide whether optional packs are separate installable plugins or lazy-bundled modules inside one `shipflow` plugin.
+- [x] Decide current product posture: single public `shipflow` plugin first; packs remain internal packaging infrastructure unless later constraints justify public distribution splits.
 
 ## Acceptance Criteria
 
@@ -165,15 +179,19 @@ The plugin should remain small. When a user needs the complete ShipFlow skill an
 - [x] First public `shipflow-main` capability is bundled through `shipflow` without relying on `/home/claude/shipflow`.
 - [x] `shipflow-main` public help/routing can be used in a new Codex thread without relying on `/home/claude/shipflow`.
 - [x] `shipflow-main` public intent contracts are bundled through `shipflow` without exposing numbered skills as the public route.
+- [x] `shipflow-main` public partial-mode intents route correctly in a new Codex thread.
+- [x] A catalog pack can be staged as a structurally valid local plugin candidate with an explicit audit report.
 - [x] Public user journey remains one primary install and one plugin skill entrypoint.
 
 ## Validation Commands
 
 ```bash
 python3 /home/claude/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py /home/claude/plugins/shipflow
-python3 /home/claude/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py /home/claude/.codex/plugins/cache/personal/shipflow/0.1.0+codex.20260611173309
+python3 /home/claude/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py /home/claude/.codex/plugins/cache/personal/shipflow/0.1.0+codex.20260612035839
 python3 /home/claude/plugins/shipflow/scripts/audit_shipflow_packaging.py
 python3 /home/claude/plugins/shipflow/scripts/audit_shipflow_packaging.py --pack shipflow-main --matrix
+python3 /home/claude/plugins/shipflow/scripts/refresh_shipflow_pack.py shipflow-main
+python3 /home/claude/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py /home/claude/.shipflow/staged-packs/shipflow-main
 codex plugin list
 ```
 
@@ -187,6 +205,10 @@ codex plugin list
 | 2026-06-11 15:05:01 UTC | 103-sf-verify | GPT-5 Codex | Verified plugin source/cache manifests, installed cache parity, local plugin enablement, metadata lint, stale internal-reference scan, and `shipflow-main` packaging audit. | partial | Open a new Codex thread and test `$shipflow help`, `$shipflow packs`, and `$shipflow shipflow-main`. |
 | 2026-06-11 16:48:14 UTC | 103-sf-verify | GPT-5 Codex | Accepted new-thread runtime proof from `docs/conversations/conversation-shipflow-shipflow-help-20260611-164357.md` for `$shipflow help`, `$shipflow packs`, and `$shipflow shipflow-main`. | verified | Continue porting `shipflow-main` execution candidates behind `$shipflow`. |
 | 2026-06-11 17:33:00 UTC | 009-sf-skill-build | GPT-5 Codex + Spark subagents | Added plugin-local public partial-mode intent contracts for `$shipflow spec`, `ready`, `start`, `verify`, `check`, and `fix`; refreshed installed plugin cache. | implemented | Runtime-test the six public intents in a fresh Codex thread. |
+| 2026-06-12 03:50:00 UTC | 103-sf-verify | GPT-5 Codex Spark | Accepted new-thread runtime proof from `docs/conversations/conversation-shipflow-shipflow-spec-20260612-034955.md` for `$shipflow spec`, `$shipflow ready`, `$shipflow start`, `$shipflow verify`, `$shipflow check`, and `$shipflow fix`. | verified | Add pack generation script or clean-path sparse bootstrap test. |
+| 2026-06-12 03:59:00 UTC | 009-sf-skill-build | GPT-5 Codex | Added `stage_shipflow_pack.py`, staged `shipflow-main`, validated the generated plugin candidate, and refreshed the installed `shipflow` plugin cache. | implemented | Test sparse bootstrap from a clean path. |
+| 2026-06-12 04:39:00 UTC | 009-sf-skill-build | GPT-5 Codex | Added one-command pack refresh helper and durable maintenance playbook; refreshed and validated `shipflow-main` from source skills into `/home/claude/.shipflow/staged-packs/shipflow-main`. | implemented | Test sparse bootstrap from a clean path. |
+| 2026-06-12 08:18:00 UTC | 300-sf-docs | GPT-5 Codex | Recorded the single-plugin-first product decision in technical packaging docs and aligned the active portability spec with that posture. | implemented | Test sparse bootstrap from a clean path, then continue enriching the single public plugin. |
 
 ## Current Chantier Flow
 

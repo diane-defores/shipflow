@@ -6,7 +6,7 @@ project: "WinFlowz"
 created: "2026-06-11"
 created_at: "2026-06-11 18:20:00 UTC"
 updated: "2026-06-11"
-updated_at: "2026-06-11 18:20:00 UTC"
+updated_at: "2026-06-12 04:02:18 UTC"
 status: ready
 source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
@@ -40,7 +40,7 @@ evidence:
   - "`winflowz_site/src/components/Button.astro` and `winflowz_site/src/pages/[...lang]/bio.astro` show direct visual literals in critical UI paths."
   - "Flutter theme screens still contain inline style paths outside canonical wrappers in edge cases (`keyboard_theme_studio_screen.dart` flagged by audit)."
 supersedes: []
-next_step: "/102-sf-start WinFlowz app/site token hardening and visual standardization"
+next_step: "/104-sf-end WinFlowz app/site token hardening and visual standardization"
 ---
 
 # Title
@@ -229,20 +229,21 @@ Create and execute a cross-surface hardening path:
 
 ## Open Questions
 
-None.
-
 ## Skill Run History
 
 | Date UTC | Skill | Model | Action | Result | Next step |
 |----------|-------|-------|--------|--------|-----------|
 | 2026-06-11 18:20:00 UTC | 100-sf-spec | GPT-5 Codex | create | ready | /101-sf-ready WinFlowz app/site token hardening and visual standardization |
 | 2026-06-11 18:20:00 UTC | 101-sf-ready | GPT-5 Codex | readiness-check | ready | /102-sf-start WinFlowz app/site token hardening and visual standardization |
+| 2026-06-12 03:58:56 UTC | 102-sf-start | GPT-5 Codex | implementation | implemented | /103-sf-verify WinFlowz app/site token hardening and visual standardization |
+| 2026-06-12 04:02:18 UTC | 103-sf-verify | GPT-5 Codex | verify | partial | /104-sf-end WinFlowz app/site token hardening and visual standardization |
+| 2026-06-12 04:02:18 UTC | 104-sf-end | GPT-5 Codex | end | deferred | /107-sf-test WinFlowz app/site token hardening and visual standardization |
 
 ## Current Chantier Flow
 
 - 100-sf-spec: done
 - 101-sf-ready: done
-- 102-sf-start: not launched
-- 103-sf-verify: not launched
-- 104-sf-end: not launched
+- 102-sf-start: implemented
+- 103-sf-verify: partial
+- 104-sf-end: deferred
 - 005-sf-ship: not launched

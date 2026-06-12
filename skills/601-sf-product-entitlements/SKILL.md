@@ -29,6 +29,7 @@ Load only the references needed for the active mode:
 
 - `skills/references/decision-quality-contract.md` before ownership and proof choices.
 - `skills/references/product-entitlements-playbook.md` as the primary doctrine.
+- `skills/references/winflowz-suite-product-registry.md` when the task mentions WinFlowz suite products, free products, default access, sync eligibility, or future products operated by Diane.
 - `skills/references/spec-driven-development-discipline.md` before non-trivial output.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when provider/webhook/API behavior affects entitlement state.
 - `skills/references/chantier-tracking.md` for lifecycle trace updates.
@@ -68,6 +69,7 @@ For all non-debug, non-auth flows, load `skills/references/product-entitlements-
 - Authentication proves identity only; it must not grant product access.
 - External providers and marketplaces are event sources, not runtime authorization sources.
 - For suite products, prefer the canonical suite entitlement ledger; add product_id/product surface as extension, not second durable ledger.
+- For WinFlowz suite products, load the WinFlowz suite product registry before deciding default-free product ids or aliases.
 - Any durable access write must use normalized `product_id`, `plan_id`, `source`, and `environment`.
 - Access is active only when status maps to grant semantics (`active`, `trialing`, etc. mapped explicitly).
 - Store raw claims, localStorage, cookies, and client payloads as non-authoritative access signals.

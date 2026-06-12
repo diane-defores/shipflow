@@ -32,6 +32,7 @@ Load only the references required by the active run:
 - `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md` before routing non-trivial sync implementation through lifecycle gates.
 - `$SHIPFLOW_ROOT/skills/references/question-contract.md` before asking user-facing decisions.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when provider, SDK, auth, storage, offline, encryption, or platform behavior affects the sync design.
+- `$SHIPFLOW_ROOT/skills/references/winflowz-suite-product-registry.md` when WinFlowz suite free products, account-backed sync eligibility, or product access preconditions are mentioned.
 - `references/local-cloud-sync-doctrine.md` for account promotion, merge, conflict, tombstone, and queue doctrine.
 - `references/ux-security-checklist.md` for user-visible state, sensitive-data policy, tenant/account boundaries, logging, and abuse controls.
 - `references/sync-guidance-overlay-and-merge-pattern.md` when designing, auditing, or implementing a SocialGlowz-style real-time sync guidance overlay with post-auth hydration, local/cloud merge decisions, durable queue, and ready feedback.
@@ -132,6 +133,7 @@ Every sync recommendation or implementation contract must cover:
 - **Visible states**: sync and settings-save state should show loading, saved/synced, pending, retrying, blocked, and error states when relevant.
 - **Proof before promise**: reinstall/relogin recovery must not be claimed until durable remote write and hydration are proven.
 - **Access gating**: unresolved or inactive entitlement state is not a sync boundary pass; treat as denied until entitlement ownership is explicit.
+- **WinFlowz suite free access**: when WinFlowz sync depends on product access, load the suite product registry before interpreting local-only, inactive-access, or free-account states.
 
 ## Security And Privacy Rules
 

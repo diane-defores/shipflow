@@ -1,11 +1,11 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-06-11"
-updated: "2026-06-11"
-status: reviewed
+updated: "2026-06-12"
+status: active
 source_skill: 300-sf-docs
 scope: codex-plugin-packaging
 owner: Diane
@@ -31,6 +31,7 @@ evidence:
   - "2026-06-11 sparse bootstrap script tested with /tmp/shipflow-sparse-bootstrap-test."
   - "2026-06-11 source/cache plugin validation and diff passed."
   - "2026-06-11 shipflow-core was removed from the personal marketplace path and promoted to internal repo skill 900-shipflow-core."
+  - "2026-06-12 operator decision: prefer one public `shipflow` plugin filled as much as possible; treat pack generation as internal packaging infrastructure, not a near-term public multi-pack product."
 next_review: "2026-06-18"
 next_step: "/300-sf-docs technical audit codex-plugin-packaging"
 ---
@@ -43,6 +44,8 @@ next_step: "/300-sf-docs technical audit codex-plugin-packaging"
 
 The plugin must stay useful without a huge bundle. When a workflow needs the full local ShipFlow corpus, the plugin exposes an explicit sparse checkout route into `${SHIPFLOW_ROOT:-$HOME/.shipflow/source}`.
 
+Current product posture: ShipFlow is single-plugin-first. The public experience should stay `Install ShipFlow` then `$shipflow <instruction>`. Pack generation remains available as internal packaging infrastructure for staging, validation, and future optional distribution only. It is not a commitment to ship many public plugins now.
+
 `900-shipflow-core` is not part of the public plugin surface. It is an internal operator skill in the ShipFlow repo for skill execution-fidelity audits and packaging-readiness checks. The old `shipflow-core` plugin source may remain as local pilot history, but public users should install or discover `shipflow`, not `shipflow-core`.
 
 ## Owned Files
@@ -54,6 +57,8 @@ The plugin must stay useful without a huge bundle. When a workflow needs the ful
 - `/home/claude/plugins/shipflow/assets/docs-links.json` records the public docs base URL.
 - `/home/claude/plugins/shipflow/scripts/bootstrap_shipflow_repo.sh` creates or updates the sparse ShipFlow source checkout.
 - `/home/claude/plugins/shipflow/scripts/audit_shipflow_packaging.py` checks package readiness and hard reference issues.
+- `/home/claude/plugins/shipflow/scripts/stage_shipflow_pack.py` stages a catalog pack as a local plugin candidate.
+- `/home/claude/plugins/shipflow/scripts/refresh_shipflow_pack.py` refreshes and validates a staged local plugin candidate.
 - `/home/claude/.agents/plugins/marketplace.json` registers the personal plugin during local development.
 - `skills/900-shipflow-core/SKILL.md` and `tools/audit_shipflow_skills.py` are internal repo-synced operator tools, not public plugin files.
 
@@ -62,6 +67,7 @@ The plugin must stay useful without a huge bundle. When a workflow needs the ful
 - Codex loads the plugin through `shipflow@personal` or a future public plugin install.
 - Users invoke the plugin through the contributed `shipflow` skill.
 - The optional full-corpus path is `/home/claude/plugins/shipflow/scripts/bootstrap_shipflow_repo.sh`.
+- The optional staged-pack workspace is `${HOME}/.shipflow/staged-packs/`.
 - Hosted docs are optional support material at `https://shipflowzsite.vercel.app/docs`.
 - Operators use `900-shipflow-core` from a synced ShipFlow repo when auditing ShipFlow itself; that skill should not be required by public plugin users.
 
@@ -75,9 +81,31 @@ The plugin must stay useful without a huge bundle. When a workflow needs the ful
 6. The sparse checkout includes `skills/`, `templates/`, `tools/`, `shipflow_data/`, `docs/`, `local/`, and `bugs/`.
 7. The sparse checkout excludes `site/`, `tui/`, `archive/`, `research/`, generated builds, and dependency directories.
 
+For pack maintenance:
+
+1. Source skills remain the source of truth under `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/`.
+2. `refresh_shipflow_pack.py <pack-id>` rebuilds the staged pack snapshot under `${HOME}/.shipflow/staged-packs/<pack-id>/`.
+3. The staged pack report records hard/review findings and whether the generated candidate is structurally valid.
+4. Staged packs are for internal staging and validation unless a later product decision promotes them to a public install surface.
+
+## Product Position
+
+ShipFlow should not optimize for a multi-pack public product until a concrete Codex limitation or user need requires it.
+
+Current decision:
+
+- one public plugin: `shipflow`
+- one public entrypoint: `$shipflow`
+- maximize useful bundled capability inside that plugin first
+- use the complete-corpus route when the plugin is not enough
+- keep pack generation as internal infrastructure for validation and future optional distribution
+
+This means technical pack boundaries may still exist in the catalog, but they are not the primary user-facing mental model.
+
 ## Invariants
 
 - Public users must not need to install many separate plugins to begin using ShipFlow.
+- Public product wording must not imply that Codex marketplace limits already force a multi-pack strategy unless that limit is directly observed and documented.
 - Public users must not need to install `shipflow-core`; it is an internal operator skill.
 - The plugin must not assume `/home/claude/shipflow` exists.
 - The plugin must not silently clone or update a repository. Network and filesystem changes require explicit user approval in Codex.
@@ -85,6 +113,7 @@ The plugin must stay useful without a huge bundle. When a workflow needs the ful
 - The GitHub repository remains the source of truth for the full ShipFlow corpus.
 - Public plugin packaging must not rely on symlinks into a developer checkout.
 - Private transcripts, secrets, local caches, dependency directories, and generated builds must not be packaged.
+- Staged pack directories must stay outside the main plugin source tree so local packaging experiments do not bloat the installed `shipflow` plugin.
 
 ## Failure Modes
 
@@ -93,6 +122,7 @@ The plugin must stay useful without a huge bundle. When a workflow needs the ful
 - If the sparse checkout is missing required paths, treat the plugin as not portable until the bootstrap script or pack contents are fixed.
 - If hosted docs drift from local references, local plugin and repository references win for execution behavior.
 - If a pack assumes local absolute paths, mark it as review-only until the path dependency is removed.
+- If pack strategy is debated again, the default fallback is still single-plugin-first unless a documented runtime constraint overrides it.
 
 ## Security Notes
 

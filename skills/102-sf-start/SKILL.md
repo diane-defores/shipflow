@@ -66,6 +66,7 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 - Preserve the user story outcome over task-checkbox completion.
 - Preserve the spec or mini-contract as the source of truth; tests and evidence prove the contract, they do not redefine it.
 - Follow the decision-quality contract: choose bounded excellent professional implementation, not the fastest/easiest patch. Speed, cost, and local convenience are secondary after correctness, security, performance, maintainability, durability, excellence, and proof quality.
+- Apply the `Structure Replacement Doctrine`: when two implementation paths are quality-equivalent, prefer the one that removes repeated operator friction, hidden manual steps, ambiguity, or maintenance burden from the current structure.
 - Obey the `Fast Fix Shortcut Ban`: do not bypass root cause, owner routing, shared structure, documentation, or proof to make a local symptom disappear.
 - For UI, IME, keyboard, overlay, responsive, layout, spacing, typography, color, motion, or component work, obey the `UI And Design-System Shortcut Ban`: do not hardcode one-off visual values as an emergency shortcut; fix the token, theme, component primitive, layout utility, or measurement source unless a named platform-bound constant is explicitly justified and proven.
 - For any UI/design implementation, run or route the changed-file drift check from `design-system-token-contract.md`. New literals outside the canonical token/theme/component source block a clean completion claim unless documented as platform-bound exceptions.

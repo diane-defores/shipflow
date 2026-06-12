@@ -69,6 +69,8 @@ Load this playbook before:
 
 Also load `documentation-freshness-gate.md` when provider API behavior, webhook signatures, OAuth, app-store purchase validation, or current marketplace rules matter.
 
+For WinFlowz suite products, free products, default access, account-backed sync eligibility, or product aliases such as `winflowz_android`, also load `skills/references/winflowz-suite-product-registry.md` before deciding product ids or grant behavior.
+
 ## Canonical Ledger Preflight
 
 Before adding entitlement tables, billing event tables, redemption-code tables, access queries, provider webhooks, or premium gates inside a target project, first prove whether a canonical entitlement ledger already exists for the product family.
@@ -274,6 +276,7 @@ WinFlowz current safe default:
 - Keep identity, entitlement, and product data namespace separate.
 - Firestore product data requires a server-owned access mirror.
 - Firebase/Clerk/Polar/app-store ids are provider references, not product authorization.
+- Default free suite products and aliases are governed by `skills/references/winflowz-suite-product-registry.md`; `winflowz_android` resolves to `winflowz_app`, not a separate durable `product_id`.
 
 ## Non-Goals
 
