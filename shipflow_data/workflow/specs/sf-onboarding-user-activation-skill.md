@@ -1,10 +1,10 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: ShipFlow
 created: "2026-05-31"
-updated: "2026-05-31"
+updated: "2026-06-12"
 status: ready
 source_skill: sf-spec
 scope: skill
@@ -28,6 +28,7 @@ linked_systems:
   - skills/references/spec-driven-development-discipline.md
   - skills/references/skill-context-budget.md
   - skills/references/skill-instruction-layering.md
+  - skills/008-sf-onboarding/references/onboarding-progress-overlay-pattern.md
   - site/src/content/skills/sf-onboarding.md
   - site/src/content/skills/shipflow.md
   - site/src/pages/skill-modes.astro
@@ -54,7 +55,7 @@ evidence:
   - "User request 2026-05-31: create a reusable onboarding skill so agents stop needing the same principles repeated after feature work."
   - "WinFlowz onboarding implementation on 2026-05-31 introduced independent setup steps, why/how copy, active/validated/skipped visual states, permission recovery actions, refresh actions, and a final accessibility ordering decision."
   - "Existing `sf-design` owns UI/UX lifecycle, but does not specialize in user activation, progressive education, contextual setup, or feature-adoption handoff after implementation."
-next_step: "/sf-skill-build sf-onboarding"
+next_step: "/103-sf-verify onboarding-progress-overlay-pattern"
 ---
 
 # Spec: sf-onboarding User Activation Skill
@@ -306,7 +307,9 @@ None. The user explicitly proposed `onboarding`; placement evidence supports `sf
 | 2026-05-31 21:42:00 UTC | sf-skill-build | GPT-5 Codex | Added progressive disclosure, small-step sequencing, visual cue semantics, and visual ambiguity stop conditions to `sf-onboarding`. | refined and validated locally | no commit requested |
 | 2026-05-31 21:46:04 UTC | sf-skill-build | GPT-5 Codex | Added a post-implementation onboarding gate to `sf-build` and mixed build-plus-onboarding routing guidance to `shipflow`. | refined and validated locally | no commit requested |
 | 2026-05-31 21:49:41 UTC | sf-ship | GPT-5 Codex | Quick-shipped the `sf-onboarding` skill, public page, routing/docs integration, and `sf-build` post-implementation onboarding gate. | shipped | pushed to `origin/main` |
+| 2026-06-12 02:02:51 UTC | 009-sf-skill-build | GPT-5 Codex | Added the onboarding progress overlay pattern reference from WinFlowz and Temu, connected it to `008-sf-onboarding`, updated the public skill page, and logged the refresh. | implemented | `/103-sf-verify onboarding-progress-overlay-pattern` |
+| 2026-06-12 02:11:03 UTC | 009-sf-skill-build | GPT-5 Codex | Renamed the shared reference around onboarding, expanded it into a detailed popup/sections blueprint with code skeletons, state priority, persistence, copy, proof scenarios, and source-copy guidance. | implemented | `/103-sf-verify onboarding-progress-overlay-pattern` |
 
 ## Current Chantier Flow
 
-sf-spec ✅ -> sf-ready ✅ -> sf-skill-build ✅ -> sf-verify ✅ -> sf-docs/help ✅ -> sf-ship ✅🎯
+sf-spec ✅ -> sf-ready ✅ -> 009-sf-skill-build ✅ -> 307-sf-skills-refresh ✅ -> local validation ✅ -> sf-verify pending -> sf-ship pending

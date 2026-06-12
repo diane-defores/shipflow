@@ -34,6 +34,7 @@ Load only the references required by the active run:
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when provider, SDK, auth, storage, offline, encryption, or platform behavior affects the sync design.
 - `references/local-cloud-sync-doctrine.md` for account promotion, merge, conflict, tombstone, and queue doctrine.
 - `references/ux-security-checklist.md` for user-visible state, sensitive-data policy, tenant/account boundaries, logging, and abuse controls.
+- `references/sync-guidance-overlay-and-merge-pattern.md` when designing, auditing, or implementing a SocialGlowz-style real-time sync guidance overlay with post-auth hydration, local/cloud merge decisions, durable queue, and ready feedback.
 - `references/flutter-implementation-checklist.md` when the target project uses Flutter, Riverpod, Firebase, secure storage, local stores, or mobile/web proof surfaces.
 
 ## Context
@@ -74,6 +75,7 @@ Parse `$ARGUMENTS` as a sync target.
 | --- | --- |
 | Read-only sync architecture advice for a clear project | Produce a Sync Contract in the final report |
 | Audit an existing local/cloud sync plan or implementation | Review against the doctrine and report findings plus chantier potential |
+| Real-time sync guidance widget, post-auth sync overlay, or SocialGlowz-style local/cloud merge UX | Load the Sync Guidance Overlay And Merge Pattern reference, then produce or route the implementation contract |
 | Non-trivial implementation across data stores, auth, cloud, UI, docs, or tests | Route to `100-sf-spec -> 101-sf-ready -> 001-sf-build/102-sf-start` |
 | Access control, entitlement gating, or entitlement precondition ambiguity | Route access decisions to `601-sf-product-entitlements` before final sync contract |
 | Existing ready spec already owns the sync work | Attach to that spec and support the active lifecycle |
@@ -202,6 +204,7 @@ For skill-contract changes, validate with:
 ```bash
 rg -n "name: 600-sf-local-cloud-sync|Sync Contract|Core Doctrine|Security And Privacy Rules|Proof Paths|Stop Conditions" skills/600-sf-local-cloud-sync/SKILL.md
 rg -n "account association|cross-account|secrets|tombstones|latest-wins|reinstall|Flutter|Riverpod" skills/600-sf-local-cloud-sync/references
+test -f skills/600-sf-local-cloud-sync/references/sync-guidance-overlay-and-merge-pattern.md
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 tools/shipflow_sync_skills.sh --check --skill 600-sf-local-cloud-sync
 ```

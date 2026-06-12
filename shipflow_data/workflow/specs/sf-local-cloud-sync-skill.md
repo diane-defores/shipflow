@@ -1,12 +1,12 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: ShipFlow
 created: "2026-06-01"
 created_at: "2026-06-01 00:00:00 UTC"
-updated: "2026-06-01"
-updated_at: "2026-06-01 00:00:00 UTC"
+updated: "2026-06-12"
+updated_at: "2026-06-12 03:36:35 UTC"
 status: ready
 source_skill: sf-spec
 source_model: GPT-5 Codex
@@ -20,6 +20,8 @@ docs_impact: yes
 linked_systems:
   - skills/sf-local-cloud-sync/SKILL.md
   - skills/sf-local-cloud-sync/references/
+  - skills/600-sf-local-cloud-sync/SKILL.md
+  - skills/600-sf-local-cloud-sync/references/sync-guidance-overlay-and-merge-pattern.md
   - skills/sf-help/references/help-catalog.md
   - shipflow_data/technical/skill-runtime-and-lifecycle.md
   - shipflow_data/technical/code-docs-map.md
@@ -47,7 +49,7 @@ evidence:
   - "WinFlowz local-to-cloud promotion chantier exposed repeatable risks: account creation must not erase local data, cloud seeding requires account association, secrets should be excluded by default, and conflict resolution needs reliable metadata."
   - "Project-local playbooks were created after the WinFlowz chantier, but their doctrine should become reusable across future projects."
   - "Existing ShipFlow skills do not own local/cloud data promotion and merge semantics."
-next_step: "/sf-start shipflow_data/workflow/specs/sf-local-cloud-sync-skill.md"
+next_step: "/103-sf-verify sync-guidance-overlay-and-merge-pattern"
 ---
 
 # Title
@@ -223,12 +225,10 @@ None.
 | 2026-06-01 | sf-skill-build | GPT-5 Codex | Created `sf-local-cloud-sync`, skill-local references, runtime links, public page, help, router, README, workflow, and technical docs updates. | implemented | `/sf-verify shipflow_data/workflow/specs/sf-local-cloud-sync-skill.md` |
 | 2026-06-01 | sf-skills-refresh | GPT-5 Codex | Refreshed new skill against local ShipFlow governance, context budget, runtime visibility, public surface, and routing coherence. | implemented | `/sf-verify shipflow_data/workflow/specs/sf-local-cloud-sync-skill.md` |
 | 2026-06-01 | sf-verify | GPT-5 Codex | Verified scenario-first proof, metadata lint, budget audit, runtime links, site build, routing/docs coherence, and diff hygiene. | verified | `/sf-ship "Add sf-local-cloud-sync skill"` |
+| 2026-06-12 03:36:35 UTC | 009-sf-skill-build | GPT-5 Codex | Added the SocialGlowz-inspired sync guidance overlay and merge pattern reference, connected it to `600-sf-local-cloud-sync`, updated the public skill page, and logged the refresh. | implemented | `/103-sf-verify sync-guidance-overlay-and-merge-pattern` |
+| 2026-06-12 04:03:04 UTC | 103-sf-verify | GPT-5 Codex | Verified the SocialGlowz-inspired sync guidance overlay reference, skill routing, public page, refresh log, metadata, runtime sync, site build, scenario scans, secret scan, and diff hygiene. | verified | `/005-sf-ship "Add SocialGlowz sync guidance reference"` |
+| 2026-06-12 04:19:44 UTC | 005-sf-ship | GPT-5 Codex | Quick-shipped the SocialGlowz-inspired sync guidance reference, `600-sf-local-cloud-sync` routing, `006-sf-design` cloud-sync bridge, public skill docs, and refresh log. | shipped | pushed to `origin/main` |
 
 ## Current Chantier Flow
 
-- sf-spec: ready
-- sf-ready: ready
-- sf-start: implemented via sf-skill-build
-- sf-verify: verified
-- sf-end: pending
-- sf-ship: pending
+sf-spec ✅ -> sf-ready ✅ -> 009-sf-skill-build ✅ -> 307-sf-skills-refresh ✅ -> local validation ✅ -> sf-verify ✅ -> sf-ship ✅🎯

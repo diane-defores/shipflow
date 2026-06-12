@@ -15,6 +15,7 @@ when_to_use:
   - "After shipping a feature that users need to discover, configure, or understand"
   - "Before implementing a setup flow, checklist, permissions guide, empty state, or recovery path"
   - "When onboarding copy, docs, support text, and in-app states need to match"
+  - "When you want a reusable stepped setup overlay with progress icons and recoverable state"
 what_you_give:
   - "A feature, flow, shipped change, or existing onboarding surface"
   - "Any known user segment, setup requirement, permission, integration, or value moment"
@@ -24,6 +25,7 @@ what_you_get:
   - "A small-step progression with progressive disclosure"
   - "Required versus optional setup sequencing"
   - "Why/how guidance, visual cues, state semantics, recovery paths, and proof obligations"
+  - "A reusable onboarding progress overlay pattern when the product needs first-run setup guidance"
   - "Routes to design, build, docs, content, browser, or manual QA owner skills when needed"
 example_prompts:
   - "/sf-onboarding onboard users after the new keyboard permissions flow"
@@ -42,6 +44,9 @@ argument_modes:
   - argument: "visual states / progressive disclosure"
     effect: "Focuses on small steps, current-step emphasis, icons, colors, badges, and visible completed/skipped/blocked states."
     consequence: "Useful when users may be overwhelmed or when status differences need to be obvious at a glance."
+  - argument: "onboarding popup / progress overlay"
+    effect: "Uses the reusable onboarding progress overlay pattern from the WinFlowz and Temu implementations."
+    consequence: "Useful when future apps need a proven popup with sections, progress icons, state priority, actions, and recovery instead of rebuilding the interaction model from scratch."
 limits:
   - "It does not replace sf-design for visual polish, layout, token systems, or component architecture"
   - "It does not implement broad onboarding UI without a ready spec and build lifecycle"
@@ -65,3 +70,9 @@ skips or blocked states, and reach value quickly?"
 
 It is especially useful for flows with permissions, integrations, optional
 modules, empty states, or setup steps that need clear why/how guidance.
+
+For first-run setup overlays, `sf-onboarding` can also use the shared
+onboarding progress overlay pattern: a popup with sections, one icon per step,
+neutral pending state, orange current state, green completed state even while
+selected, red skipped state,
+and explicit resume/recovery behavior.

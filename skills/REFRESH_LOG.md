@@ -4,6 +4,47 @@ Chronological log of skill refreshes via `/307-sf-skills-refresh`. Most recent f
 
 ---
 
+## 2026-06-12 — 600-sf-local-cloud-sync
+
+**Added:**
+- [reference] New SocialGlowz-inspired sync guidance overlay and merge pattern covering post-auth stage feedback, local/cloud decisions, payload validation, durable queue, retry, and proof scenarios
+- [public docs] Public `sf-local-cloud-sync` page now exposes the reusable real-time sync overlay mode
+
+**Updated:**
+- [skill] `600-sf-local-cloud-sync` now loads the detailed sync guidance reference for SocialGlowz-style real-time sync widgets and merge/hydration flows
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local SocialGlowz implementation plus ShipFlow governance contracts)
+
+## 2026-06-12 — 006-sf-design
+
+**Added:**
+- [routing] Cloud-sync widgets, sync status surfaces, post-auth sync overlays, local/cloud merge UI, reinstall-recovery feedback, and sync/save guidance components now route through or load the SocialGlowz sync guidance reference before visual design
+
+**Updated:**
+- [skill] `006-sf-design` now explicitly bridges design requests for cloud-sync UI to `600-sf-local-cloud-sync`
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow skill contracts and SocialGlowz sync reference)
+
+## 2026-06-12 — 008-sf-onboarding
+
+**Added:**
+- [reference] New onboarding progress overlay pattern preserving the WinFlowz and Temu popup/section onboarding implementation lessons for future app onboarding work
+- [public docs] Public `sf-onboarding` page now exposes the reusable onboarding popup/progress-overlay mode
+
+**Updated:**
+- [skill] `008-sf-onboarding` now loads the onboarding overlay pattern reference for stepped first-run/setup flows and codifies completed-over-current state priority
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local WinFlowz and Temu implementations plus ShipFlow governance contracts)
+
 ## 2026-06-01 — 600-sf-local-cloud-sync
 
 **Added:**

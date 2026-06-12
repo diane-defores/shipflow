@@ -32,6 +32,7 @@ Load only the references required by the active run:
 - `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md` before routing non-trivial onboarding implementation through lifecycle gates.
 - `$SHIPFLOW_ROOT/skills/references/question-contract.md` before asking user-facing decisions.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when onboarding depends on current platform permissions, billing/provider rules, app-store policy, accessibility standards, SDK behavior, or external integration behavior.
+- `$SHIPFLOW_ROOT/skills/008-sf-onboarding/references/onboarding-progress-overlay-pattern.md` when designing, auditing, or implementing a popup-style stepped onboarding overlay with progress icons, completed/skipped/current states, or reusable app-onboarding code.
 
 ## Context
 
@@ -71,6 +72,7 @@ Parse `$ARGUMENTS` as an onboarding target.
 | --- | --- |
 | Read-only onboarding advice for a clear feature | Produce an Onboarding Contract in the final report |
 | Audit an existing onboarding flow | Review against Activation Principles and report findings |
+| Reusable stepped setup overlay or progress-icon onboarding | Load the Onboarding Progress Overlay Pattern reference, then produce or route the implementation contract |
 | Onboarding implementation across UI, routing, data, permissions, docs, or multiple surfaces | Route to `100-sf-spec -> 101-sf-ready -> 001-sf-build/102-sf-start` |
 | Visual hierarchy, layout, component polish, or design-system quality dominates | Route to `006-sf-design` |
 | Product copy, public docs, FAQ, support, public claims, or content surfaces dominate | Route to `007-sf-content` or `300-sf-docs` |
@@ -91,7 +93,7 @@ Every onboarding recommendation or implementation contract should cover:
 - **Dependency order**: required prerequisites before advanced or fragile setup.
 - **Required vs optional**: separate core value from enhancers and nice-to-have modules.
 - **User control**: defer, skip, revisit, or disable optional setup without punishment.
-- **Visual cues**: use quickly identifiable icons, colors, badges, and affordances for current, completed, skipped, blocked, and warning states.
+- **Visual cues**: use quickly identifiable icons, colors, badges, and affordances for current, completed, skipped, blocked, and warning states; completed state must visually win over current state when both are true.
 - **Visible state**: current, completed, skipped, blocked, unsupported, revoked, and recoverable states when relevant.
 - **Recovery**: refresh/recheck actions, settings deep links, resume paths, and clear next actions after leaving the app.
 - **Progressive depth**: beginner path first; shortcuts or expert details only when useful.
@@ -182,6 +184,7 @@ For skill-contract changes, validate with:
 
 ```bash
 rg -n "name: 008-sf-onboarding|Activation Principles|Onboarding Contract|First success|Proof Paths|Stop Conditions" skills/008-sf-onboarding/SKILL.md
+test -f skills/008-sf-onboarding/references/onboarding-progress-overlay-pattern.md
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 tools/shipflow_sync_skills.sh --check --skill 008-sf-onboarding
 ```

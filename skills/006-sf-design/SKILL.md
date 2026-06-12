@@ -41,6 +41,8 @@ Load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` before rout
 
 Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual proof work.
 
+Load `$SHIPFLOW_ROOT/skills/600-sf-local-cloud-sync/references/sync-guidance-overlay-and-merge-pattern.md` or route through `600-sf-local-cloud-sync` before designing, auditing, or implementing a cloud-sync widget, sync status surface, post-auth sync overlay, local/cloud merge UI, reinstall-recovery feedback, or sync/save guidance component.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -95,6 +97,7 @@ Choose the smallest safe owner under `$SHIPFLOW_ROOT/skills/references/decision-
 | Broad UI/UX audit, visual hierarchy, layout, responsive quality, trust, product coherence | `502-sf-audit-design` |
 | Component variants, duplication, component API, design-system component architecture | `504-sf-audit-components` |
 | Accessibility, contrast, focus, keyboard, reduced motion, target size, WCAG evidence | `409-sf-audit-a11y` |
+| Cloud-sync widget, sync status surface, post-auth sync overlay, local/cloud merge UI, reinstall-recovery feedback, or sync/save guidance component | Load the `600-sf-local-cloud-sync` SocialGlowz sync guidance reference or route through `600-sf-local-cloud-sync` before visual design |
 | Non-auth visual proof, screenshots, console/network summary for UI pages | `108-sf-browser` |
 | Auth/protected UI visual issue where login/session/provider state matters | `109-sf-auth-debug` |
 | Broad implementation, redesign, multi-page migration, or product-critical UI change | `001-sf-build` or `100-sf-spec -> 101-sf-ready -> 102-sf-start` |

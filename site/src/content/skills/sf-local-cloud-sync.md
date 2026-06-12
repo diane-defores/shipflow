@@ -15,6 +15,7 @@ when_to_use:
   - "Before adding accounts or cloud sync to a local-first product"
   - "When local data must be promoted, merged, hydrated, exported, imported, or recovered"
   - "When sync UI needs saved, synced, pending, retrying, blocked, and error states"
+  - "When you want a SocialGlowz-style real-time sync guidance overlay after sign-in"
   - "When secrets, clipboard content, private settings, or tenant boundaries are in scope"
 what_you_give:
   - "The project, feature, or data domains that need sync"
@@ -25,6 +26,7 @@ what_you_get:
   - "A promotion, hydration, merge, conflict, and tombstone decision matrix"
   - "Security and privacy stop conditions"
   - "UX guidance for sync/save state, refresh, retry, and recovery"
+  - "A reusable SocialGlowz-inspired sync guidance overlay and local/cloud merge pattern when the product needs real-time post-auth feedback"
   - "Routes to spec/build, onboarding, docs, browser/auth proof, or manual QA when needed"
 example_prompts:
   - "/sf-local-cloud-sync plan sync for clipboard snippets and settings"
@@ -43,6 +45,9 @@ argument_modes:
   - argument: "secrets / sensitive data"
     effect: "Focuses on default exclusions, privacy, logging, consent, and secure future-spec boundaries."
     consequence: "Useful when clipboard content, tokens, credentials, private settings, or regulated data may appear."
+  - argument: "sync overlay / SocialGlowz"
+    effect: "Uses the reusable SocialGlowz sync guidance overlay and merge pattern."
+    consequence: "Useful when future apps need a polished post-auth overlay with real-time stages, cloud/local decisions, durable retry, and ready feedback."
 limits:
   - "It does not replace sf-build for implementation lifecycle"
   - "It does not replace sf-onboarding for broad activation and setup guidance"
@@ -69,3 +74,8 @@ safely become account-backed cloud data.
 It is especially useful before account creation flows, backup promises,
 reinstall recovery, multi-device sync, clipboard/settings sync, or any flow
 where a user expects local work to survive sign-in.
+
+For guided post-auth sync, it can also use the shared SocialGlowz-inspired
+sync guidance pattern: a real-time overlay with explicit stages, local/cloud
+merge decisions, payload validation, durable retry queue, restart/ready
+feedback, and proof scenarios.
