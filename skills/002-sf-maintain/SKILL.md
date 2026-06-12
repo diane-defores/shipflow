@@ -4,6 +4,8 @@ description: "Orchestrate project maintenance from triage to ship."
 argument-hint: [optional: quick | full | security | deps | docs | audits | global | no-ship | report=agent]
 ---
 
+Primary artifact type: `master-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
@@ -62,7 +64,7 @@ It answers one operational question:
 What maintenance work needs to be handled, and how do we carry it through to verified, shippable completion?
 ```
 
-The goal is not another report. `002-sf-maintain` should keep the operator out of command-stitching by piloting maintenance intake, spec/readiness when needed, bounded delegated execution, verification, and ship/deploy routing.
+The goal is not another report. `002-sf-maintain` owns maintenance scope selection and lifecycle continuation across the right owner lanes. It should keep the operator out of command-stitching by piloting maintenance intake, spec/readiness when needed, bounded delegated execution, verification, and ship/deploy routing.
 
 ## Ownership Boundaries
 
@@ -80,6 +82,8 @@ Orchestrate existing skills; do not duplicate their internals.
 - `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `104-sf-end`, and `005-sf-ship` own lifecycle gates.
 
 `002-sf-maintain` may execute through these owner skills and bounded subagents. It must not silently bypass their gates, but it should not stop at recommendations when the user asked maintenance to be handled.
+
+Keep the boundary explicit: `002-sf-maintain` decides what existing-project upkeep to carry through, not generic feature implementation, standalone bug-loop ownership, or release-proof ownership.
 
 ## Execution Modes
 

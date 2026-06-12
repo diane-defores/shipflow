@@ -4,6 +4,8 @@ description: "Bug lifecycle for intake, dossiers, fixes, retests, and ship risk.
 argument-hint: [optional: BUG-ID | bug summary | --fix BUG-ID | --retest BUG-ID | --verify BUG-ID | --ship BUG-ID]
 ---
 
+Primary artifact type: `master-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
@@ -66,6 +68,8 @@ intake -> 107-sf-test -> bug file -> 106-sf-fix -> 107-sf-test --retest -> 103-s
 The goal is fewer manual decisions and fewer manual commands, not weaker gates. When scope, evidence, and risk are clear, `003-sf-bug` should keep executing the lifecycle in delegated sequential mode instead of ending with a command for the operator to run next.
 
 `003-sf-bug` must not treat a bug as closed just because code changed, a retest was requested, a deploy succeeded, or the operator wants to move on.
+
+Its dominant job is bug-work-item state interpretation and continuation. Keep the boundary explicit: `003-sf-bug` owns one bug lifecycle at a time, not generic project maintenance, direct code-fix ownership, or broad release orchestration.
 
 ## Ownership Boundaries
 
