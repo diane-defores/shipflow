@@ -1030,27 +1030,128 @@ print_usage_bar() {
 }
 
 cleanup_disk_light() {
-    rm -rf "$HOME/.cache/yarn" \
-        "$HOME/.cache/pip" \
-        "$HOME/.cache/pnpm" \
-        "$HOME/.npm/_cacache" \
-        "$HOME/.chromium-browser-snapshots" \
-        "$HOME/.rustup/tmp"/* 2>/dev/null || true
+    local path
+    while IFS= read -r path; do
+        [ -n "$path" ] || continue
+        rm -rf -- "$path" 2>/dev/null || true
+    done < <(disk_cleanup_light_paths)
 }
 
 cleanup_disk_aggressive() {
     cleanup_disk_light
-    rm -rf "$HOME/.npm" \
-        "$HOME/.local/share/pnpm" \
-        "$HOME/.cache" 2>/dev/null || true
-    # Clean Rust/Tauri build artifacts (target/ dirs)
-    local dir
+    local path
+    while IFS= read -r path; do
+        [ -n "$path" ] || continue
+        rm -rf -- "$path" 2>/dev/null || true
+    done < <(disk_cleanup_aggressive_paths)
+
+    cleanup_workspace_build_artifacts
+}
+
+disk_cleanup_light_paths() {
+    printf '%s\n' \
+        "$HOME/.cache/yarn" \
+        "$HOME/.cache/pip" \
+        "$HOME/.cache/pnpm" \
+        "$HOME/.cache/dotslash" \
+        "$HOME/.npm/_cacache" \
+        "$HOME/.npm/_npx" \
+        "$HOME/.pub-cache/_temp" \
+        "$HOME/.android/cache" \
+        "$HOME/.gradle/.tmp" \
+        "$HOME/.gradle/kotlin-profile" \
+        "$HOME/.rustup/tmp" \
+        "$HOME/.chromium-browser-snapshots"
+}
+
+disk_cleanup_aggressive_paths() {
+    printf '%s\n' \
+        "$HOME/.cache" \
+        "$HOME/.npm" \
+        "$HOME/.pub-cache" \
+        "$HOME/.gradle/caches" \
+        "$HOME/.gradle/wrapper" \
+        "$HOME/.dartServer" \
+        "$HOME/.local/state/augment" \
+        "$HOME/.local/state/nvim" \
+        "$HOME/.local/share/nvim" \
+        "$HOME/.local/share/MyNeovim" \
+        "$HOME/.local/share/claude" \
+        "$HOME/.local/share/pnpm"
+}
+
+disk_cleanup_workspace_patterns() {
+    printf '%s\n' \
+        ".dart_tool" \
+        "build" \
+        "dist" \
+        ".astro" \
+        ".vite" \
+        "node_modules" \
+        "venv" \
+        ".venv" \
+        ".pytest_cache" \
+        ".mypy_cache" \
+        ".ruff_cache" \
+        ".turbo" \
+        ".next" \
+        ".nuxt"
+}
+
+cleanup_workspace_build_artifacts() {
+    local dir pattern project_root
+
     for dir in "$HOME"/*/src-tauri/target "$HOME"/*/target; do
         if [ -d "$dir" ] && [ -f "${dir%/target}/Cargo.toml" ]; then
             echo -e "  ${CYAN}Cleaning${NC} $dir"
-            rm -rf "$dir" 2>/dev/null || true
+            rm -rf -- "$dir" 2>/dev/null || true
         fi
     done
+
+    for project_root in "$HOME"/*; do
+        [ -d "$project_root" ] || continue
+        case "$(basename "$project_root")" in
+            .*|Android|Mail|plugins)
+                continue
+                ;;
+        esac
+        for pattern in $(disk_cleanup_workspace_patterns); do
+            if [ -e "$project_root/$pattern" ]; then
+                echo -e "  ${CYAN}Cleaning${NC} $project_root/$pattern"
+                rm -rf -- "$project_root/$pattern" 2>/dev/null || true
+            fi
+            if compgen -G "$project_root/*/$pattern" >/dev/null 2>&1; then
+                local nested
+                for nested in "$project_root"/*/"$pattern"; do
+                    [ -e "$nested" ] || continue
+                    echo -e "  ${CYAN}Cleaning${NC} $nested"
+                    rm -rf -- "$nested" 2>/dev/null || true
+                done
+            fi
+        done
+    done
+}
+
+paths_total_bytes() {
+    local total=0
+    local path size
+
+    while IFS= read -r path; do
+        [ -n "$path" ] || continue
+        size=$(path_size_bytes "$path")
+        [ -n "$size" ] || size=0
+        total=$((total + size))
+    done
+
+    printf '%s' "$total"
+}
+
+disk_cleanup_light_bytes() {
+    disk_cleanup_light_paths | paths_total_bytes
+}
+
+disk_cleanup_aggressive_bytes() {
+    disk_cleanup_aggressive_paths | paths_total_bytes
 }
 
 path_size_bytes() {
@@ -1371,6 +1472,9 @@ disk_cleanup_menu() {
     agent_7_bytes=$(agent_history_old_bytes 7)
     agent_14_bytes=$(agent_history_old_bytes 14)
     agent_cache_bytes=$(agent_cache_log_bytes)
+    local light_cleanup_bytes aggressive_cleanup_bytes
+    light_cleanup_bytes=$(disk_cleanup_light_bytes)
+    aggressive_cleanup_bytes=$(disk_cleanup_aggressive_bytes)
     local pm2_log_bytes
     pm2_log_bytes=$(pm2_logs_bytes)
 
@@ -1384,8 +1488,8 @@ disk_cleanup_menu() {
     echo -e "  ${CYAN}a)${NC} Agent histories - keep last 7 days (${YELLOW}up to $(format_bytes "$agent_7_bytes")${NC})"
     echo -e "  ${CYAN}b)${NC} Agent histories - keep last 14 days (${YELLOW}up to $(format_bytes "$agent_14_bytes")${NC})"
     echo -e "  ${CYAN}c)${NC} Agent caches/logs only (${YELLOW}up to $(format_bytes "$agent_cache_bytes")${NC})"
-    echo -e "  ${CYAN}l)${NC} Light disk cleanup - package/browser disk caches"
-    echo -e "  ${CYAN}g)${NC} Aggressive disk cleanup - includes npm + pnpm caches"
+    echo -e "  ${CYAN}l)${NC} Light disk cleanup - safe dev caches (${YELLOW}up to $(format_bytes "$light_cleanup_bytes")${NC})"
+    echo -e "  ${CYAN}g)${NC} Aggressive disk cleanup - heavy caches + workspace artifacts (${YELLOW}up to $(format_bytes "$aggressive_cleanup_bytes")${NC} + project builds)"
     echo ""
     echo -e "  ${CYAN}x)${NC} Back"
     echo ""
@@ -1459,9 +1563,15 @@ disk_cleanup_menu() {
         echo -e "  ${CYAN}•${NC} ~/.cache/yarn"
         echo -e "  ${CYAN}•${NC} ~/.cache/pip"
         echo -e "  ${CYAN}•${NC} ~/.cache/pnpm (PNPM disk cache)"
+        echo -e "  ${CYAN}•${NC} ~/.cache/dotslash"
         echo -e "  ${CYAN}•${NC} ~/.npm/_cacache"
+        echo -e "  ${CYAN}•${NC} ~/.npm/_npx"
+        echo -e "  ${CYAN}•${NC} ~/.pub-cache/_temp"
+        echo -e "  ${CYAN}•${NC} ~/.android/cache"
+        echo -e "  ${CYAN}•${NC} ~/.gradle/.tmp and ~/.gradle/kotlin-profile"
         echo -e "  ${CYAN}•${NC} ~/.chromium-browser-snapshots"
-        echo -e "  ${CYAN}•${NC} ~/.rustup/tmp/*"
+        echo -e "  ${CYAN}•${NC} ~/.rustup/tmp"
+        echo -e "${GREEN}Protected:${NC} full Gradle caches, pub cache packages, Dart analysis cache, project directories, build outputs, node_modules, venvs."
         echo ""
         if ! ui_confirm "Proceed with light cleanup?"; then
             echo -e "${BLUE}Cancelled${NC}"
@@ -1472,11 +1582,17 @@ disk_cleanup_menu() {
         echo -e "${YELLOW}This will remove:${NC}"
         echo -e "  ${CYAN}•${NC} ~/.cache (entire cache directory)"
         echo -e "  ${CYAN}•${NC} ~/.npm"
+        echo -e "  ${CYAN}•${NC} ~/.pub-cache"
+        echo -e "  ${CYAN}•${NC} ~/.gradle/caches and ~/.gradle/wrapper"
+        echo -e "  ${CYAN}•${NC} ~/.dartServer"
+        echo -e "  ${CYAN}•${NC} ~/.local/state/augment"
+        echo -e "  ${CYAN}•${NC} ~/.local/state/nvim, ~/.local/share/nvim, ~/.local/share/MyNeovim"
+        echo -e "  ${CYAN}•${NC} ~/.local/share/claude"
         echo -e "  ${CYAN}•${NC} ~/.local/share/pnpm (PNPM disk store/cache)"
-        echo -e "  ${CYAN}•${NC} ~/.chromium-browser-snapshots"
-        echo -e "  ${CYAN}•${NC} ~/.rustup/tmp/*"
+        echo -e "  ${CYAN}•${NC} common project artifacts in home workspaces: node_modules, venv/.venv, .dart_tool, build, dist, .astro, .vite, .next, .nuxt, .turbo, pytest/mypy/ruff caches"
         echo -e "  ${CYAN}•${NC} Rust/Tauri target/ build artifacts"
         echo -e "  ${CYAN}•${NC} PM2 daemon/app logs + pm2-logrotate"
+        echo -e "${GREEN}Protected:${NC} git repos, source files, auth/config, skills, memories, Flutter SDK, Rust toolchains, Google Cloud SDK."
         echo ""
         if [ "$before_level" = "critical" ] || [ "$before_level" = "high" ]; then
             echo -e "${RED}This cleanup is recommended: current disk pressure is ${before_level}.${NC}"
