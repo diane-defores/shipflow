@@ -8,6 +8,12 @@ argument-hint: <URL, route, environment, or visible objective>
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
+Primary artifact type: `specialist-workflow`.
+
+## Instruction Layering
+
+This `SKILL.md` is the activation contract. Before editing or expanding this skill, load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md` and keep bulky workflow detail in skill-local references.
+
 ## Chantier Tracking
 
 Trace category: `conditionnel`.
@@ -19,7 +25,7 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the browser evidence reveals non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/100-sf-spec ...` command, and next step. If the finding is only informational, a narrow direct fix, or already belongs to the current chantier, state `Chantier potentiel: non` with the concrete reason.
 
-## Purpose
+## Mission
 
 `108-sf-browser` answers one question:
 
@@ -28,6 +34,8 @@ What did a real browser actually see on this target for this objective?
 ```
 
 Use it for one-off browser navigation, visual checks, accessibility snapshots, screenshots, console summaries, network summaries, and visible assertions on local, preview, or production surfaces.
+
+`108-sf-browser` answers one browser-visible objective and routes broader work away.
 
 Do not use it as the specialist for auth, manual QA, deployment discovery, production logs, or code fixes:
 - Auth, OAuth, cookies, sessions, callbacks, tenants, and protected-route breaks route to `/109-sf-auth-debug`.

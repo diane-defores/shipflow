@@ -8,6 +8,12 @@ argument-hint: <bug description, error message, or failing behavior>
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
+Primary artifact type: `specialist-workflow`.
+
+## Instruction Layering
+
+This `SKILL.md` is the activation contract. Before editing or expanding this skill, load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md` and keep bulky workflow detail in skill-local references.
+
 ## Chantier Tracking
 
 Trace category: `conditionnel`.
@@ -39,6 +45,8 @@ Load only the relevant Supabase, Sentry, runtime diagnostics, auth-debug, or bro
 
 Use bug language, not session language.
 
+`106-sf-fix` answers one question: `Ce bug est-il assez clair et borné pour un correctif direct sûr ?`
+
 `106-sf-fix` is the bug-oriented entrypoint that decides whether the issue should be fixed directly now or go through a spec-first path before implementation. Goal: close small, clear bugs efficiently without breaking the user promise, product coherence, security posture, performance expectations, maintainability, or durability.
 
 ## Proof Path
@@ -52,6 +60,8 @@ Choose a bug proof path before patching:
 ## Routing Rule
 
 Direct fix path is allowed only for small, local, clear bugs with obvious expected behavior, low ambiguity, no migration/auth/data contract change, and no material risk to permissions, visibility, workflow integrity, or external side effects.
+
+`106-sf-fix` may repair directly only when the bug is small, clear, and low-risk.
 
 Spec-first path is required for multi-file or cross-system impact, unclear expected behavior, likely edge cases, migration/data/auth/perf implications, or ambiguity that could materially change behavior, scope, or security.
 

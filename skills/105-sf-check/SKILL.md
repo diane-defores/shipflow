@@ -9,6 +9,12 @@ argument-hint: [fix|nofix]
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
+Primary artifact type: `specialist-workflow`.
+
+## Instruction Layering
+
+This `SKILL.md` is the activation contract. Before editing or expanding this skill, load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md` and keep bulky workflow detail in references.
+
 ## Chantier Tracking
 
 Trace category: `conditionnel`.
@@ -20,6 +26,11 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the findings reveal non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/100-sf-spec ...` command, and next step. If the work is only a direct local fix or already belongs to the current chantier, state `Chantier potentiel: non` with the concrete reason.
 
+## Mission
+
+`105-sf-check` answers one question: `Quels checks techniques apportent une confiance proportionnée sur cette surface ?`
+
+Run and interpret technical checks without overstating what they prove. `105-sf-check` is a technical confidence pass, not product proof, not a browser/manual QA substitute, and not a generic bug-fix owner.
 
 ## Context
 

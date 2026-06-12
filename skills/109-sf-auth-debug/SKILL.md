@@ -8,6 +8,8 @@ argument-hint: <bug auth, URL, provider, ou flow à diagnostiquer>
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
+Primary artifact type: `specialist-workflow`.
+
 ## Instruction Layering
 
 This `SKILL.md` is the activation contract. Before editing or expanding this skill, load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md` and keep bulky workflow detail in skill-local references.
@@ -28,6 +30,12 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
 
 Default to `report=user`: concise, findings-first for audits and failures, outcome-first for successful support runs, and in the user's active language. Use `report=agent`, `handoff`, `verbose`, or `full-report` only when detailed evidence is needed.
+
+## Mission
+
+`109-sf-auth-debug` answers one question: `Quel composant auth/session/callback explique ce comportement ?`
+
+This skill is the auth/session specialist, not the generic browser fallback. Use it for auth, OAuth, cookies, callbacks, sessions, redirects, tenants, and protected-route behavior when browser proof or runtime evidence must stay inside an auth-safe debugging lane.
 
 ## Required References
 

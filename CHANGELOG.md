@@ -30,6 +30,7 @@ next_step: "/300-sf-docs audit CHANGELOG.md"
 
 ### Changed
 - Clarified the core lifecycle gate skills so `100-sf-spec`, `101-sf-ready`, `103-sf-verify`, `104-sf-end`, and `005-sf-ship` state tighter artifact roles, owner boundaries, and lifecycle semantics without changing their delegated workflow behavior.
+- Clarified the source specialist skill family so `105-sf-check`, `106-sf-fix`, `107-sf-test`, `108-sf-browser`, and `109-sf-auth-debug` keep sharper proof, fix, browser, and auth boundaries without changing their underlying routing roles.
 
 ## [2026-06-11]
 
