@@ -49,6 +49,7 @@
 🟢 [ShipFlow] task: Renforcer les skills pour exiger et utiliser une surface diagnostics copiable dans les apps runtime | status: done | area: skills-observability | next: none
 🟢 [ShipFlow] task: Compacter semantiquement le Batch C des skills specialists source (`105`, `106`, `107`, `108`, `109`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-source-specialist-skills.md | next: none
 🟢 [ShipFlow] task: Compacter semantiquement le Batch D1 des master skills maintenance/release (`002`, `003`, `004`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-maintenance-and-release-master-skills.md | next: none
+🟢 [ShipFlow] task: Compacter semantiquement le Batch D2 des master skills design/content/skill-build (`006`, `007`, `009`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md | next: none
 
 | Pri | Task | Status |
 |-----|------|--------|

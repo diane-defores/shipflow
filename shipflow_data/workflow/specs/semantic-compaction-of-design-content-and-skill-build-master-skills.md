@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-06-12"
 created_at: "2026-06-12 23:10:00 UTC"
 updated: "2026-06-12"
-updated_at: "2026-06-12 23:18:00 UTC"
+updated_at: "2026-06-12 23:32:00 UTC"
 status: ready
 source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
@@ -67,7 +67,7 @@ evidence:
   - "The artifact taxonomy requires each touched skill to keep one primary artifact type, one dominant question, and one owner boundary."
   - "Current `006-sf-design`, `007-sf-content`, and `009-sf-skill-build` are strong but still semantically dense because they orchestrate broad families of downstream owners."
   - "The user explicitly requested the next batch after D1."
-next_step: "/102-sf-start shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md"
+next_step: "/005-sf-ship shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md"
 ---
 
 # Title
@@ -238,7 +238,7 @@ The batch should:
   - Validate with: `rg -n "Ideal Master Matrix|006-sf-design|007-sf-content|009-sf-skill-build" shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md`
   - Notes: This task completes with the spec itself.
 
-- [ ] Task 2: Compact the master activation contracts.
+- [x] Task 2: Compact the master activation contracts.
   - Files: `skills/006-sf-design/SKILL.md`, `skills/007-sf-content/SKILL.md`, `skills/009-sf-skill-build/SKILL.md`
   - Action: Add or align primary artifact type, mission emphasis, and compact owner-boundary wording while preserving behavior.
   - User story link: Reduces confusion between design, content, and skill-maintenance orchestration.
@@ -246,7 +246,7 @@ The batch should:
   - Validate with: `rg -n "Primary artifact type|Mission|Trace category|Process role|Master Delegation|Master Workflow Lifecycle" skills/006-sf-design/SKILL.md skills/007-sf-content/SKILL.md skills/009-sf-skill-build/SKILL.md`
   - Notes: Keep the write set skill-local unless readiness explicitly expands scope.
 
-- [ ] Task 3: Verify family boundaries and proof rules.
+- [x] Task 3: Verify family boundaries and proof rules.
   - Files: touched skill files and any touched docs if needed.
   - Action: Run lint/audit/sync checks and a manual overlap review focused on design-vs-content-vs-skill-maintenance boundaries.
   - User story link: Prevents semantic compaction from collapsing adjacent master lanes.
@@ -254,7 +254,7 @@ The batch should:
   - Validate with: `python3 tools/skill_budget_audit.py --skills-root skills --format markdown` and `tools/shipflow_sync_skills.sh --check --all`
   - Notes: Verification must explicitly check that design, content, and skill-build still own distinct lifecycle semantics.
 
-- [ ] Task 4: Decide whether shared-contract or doc follow-up is needed.
+- [x] Task 4: Decide whether shared-contract or doc follow-up is needed.
   - File: `shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md`
   - Action: Record whether a later shared-reference/doc integration batch is unnecessary or required.
   - User story link: Keeps this batch bounded and prevents hidden scope growth.
@@ -264,11 +264,17 @@ The batch should:
 
 # Acceptance Criteria
 
-- [ ] AC 1: Given the touched family, when an agent reads each activation contract, then one primary `master-workflow` role is explicit in every touched skill.
-- [ ] AC 2: Given `006-sf-design`, when an agent scans the mission and boundary language, then it is clear this skill owns design lifecycle routing and not generic implementation or standalone browser proof.
-- [ ] AC 3: Given `007-sf-content`, when an agent scans the mission and boundary language, then it is clear this skill owns content lifecycle coherence across source, surface, claims, quality, and ship rather than generic writing.
-- [ ] AC 4: Given `009-sf-skill-build`, when an agent scans the mission and boundary language, then it is clear this skill owns ShipFlow skill-maintenance lifecycle work and not broad repository or product execution.
-- [ ] AC 5: Given the final diff, when validations run, then metadata lint, skill budget audit, runtime skill sync, and targeted family-boundary grep checks all pass.
+- [x] AC 1: Given the touched family, when an agent reads each activation contract, then one primary `master-workflow` role is explicit in every touched skill.
+- [x] AC 2: Given `006-sf-design`, when an agent scans the mission and boundary language, then it is clear this skill owns design lifecycle routing and not generic implementation or standalone browser proof.
+- [x] AC 3: Given `007-sf-content`, when an agent scans the mission and boundary language, then it is clear this skill owns content lifecycle coherence across source, surface, claims, quality, and ship rather than generic writing.
+- [x] AC 4: Given `009-sf-skill-build`, when an agent scans the mission and boundary language, then it is clear this skill owns ShipFlow skill-maintenance lifecycle work and not broad repository or product execution.
+- [x] AC 5: Given the final diff, when validations run, then metadata lint, skill budget audit, runtime skill sync, and targeted family-boundary grep checks all pass.
+
+## Verification Notes
+
+- Manual family-boundary review passed: `006` remains design-lifecycle routing, `007` remains content-lifecycle coherence, and `009` remains ShipFlow skill-maintenance lifecycle work.
+- No shared-reference drift was found that required widening this batch.
+- No documentation follow-up was required because the documented public/runtime routes stayed unchanged.
 
 ## Skill Run History
 
@@ -276,13 +282,16 @@ The batch should:
 |----------|-------|-------|--------|--------|-----------|
 | 2026-06-12 23:10:00 UTC | 100-sf-spec | GPT-5 Codex | Created the Batch D2 semantic-compaction spec for `006/007/009` and froze the family matrix, scope, proof contract, and guardrails. | implemented | /101-sf-ready shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md |
 | 2026-06-12 23:18:00 UTC | 101-sf-ready | GPT-5 Codex | Validated the Batch D2 contract as ready: scope is bounded to `006/007/009`, proof is defined, and no shared-reference rewrite is required. | ready | /102-sf-start shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md |
+| 2026-06-12 23:24:00 UTC | 102-sf-start | GPT-5 Codex | Compacted the activation contracts of `006-sf-design`, `007-sf-content`, and `009-sf-skill-build` with explicit `master-workflow` identity and sharper owner-boundary wording. | implemented | /103-sf-verify shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md |
+| 2026-06-12 23:29:00 UTC | 103-sf-verify | GPT-5 Codex | Verified the family boundaries with metadata lint, skill budget audit, runtime skill sync, targeted grep, diff hygiene, and manual semantic review. | verified | /104-sf-end shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md |
+| 2026-06-12 23:32:00 UTC | 104-sf-end | GPT-5 Codex | Closed the chantier state, recorded validation outcomes, and confirmed that no shared-reference or documentation follow-up is required. | closed | /005-sf-ship shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md |
 
 ## Current Chantier Flow
 
 - 100-sf-spec: implemented
 - 101-sf-ready: ready
-- 102-sf-start: pending
-- 103-sf-verify: pending
-- 104-sf-end: pending
+- 102-sf-start: implemented
+- 103-sf-verify: verified
+- 104-sf-end: closed
 - 005-sf-ship: pending
-- Next step: `/102-sf-start shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md`
+- Next step: `/005-sf-ship shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md`

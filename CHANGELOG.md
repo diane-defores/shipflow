@@ -32,6 +32,7 @@ next_step: "/300-sf-docs audit CHANGELOG.md"
 - Clarified the core lifecycle gate skills so `100-sf-spec`, `101-sf-ready`, `103-sf-verify`, `104-sf-end`, and `005-sf-ship` state tighter artifact roles, owner boundaries, and lifecycle semantics without changing their delegated workflow behavior.
 - Clarified the source specialist skill family so `105-sf-check`, `106-sf-fix`, `107-sf-test`, `108-sf-browser`, and `109-sf-auth-debug` keep sharper proof, fix, browser, and auth boundaries without changing their underlying routing roles.
 - Clarified the maintenance and release master family so `002-sf-maintain`, `003-sf-bug`, and `004-sf-deploy` state explicit `master-workflow` roles and sharper boundaries between project upkeep, one-bug lifecycle execution, and release-confidence orchestration.
+- Formalized and closed the Batch D2 semantic-compaction chantier for the design/content/skill-build master family after verifying that `006-sf-design`, `007-sf-content`, and `009-sf-skill-build` match the intended `master-workflow` boundaries.
 
 ## [2026-06-11]
 
