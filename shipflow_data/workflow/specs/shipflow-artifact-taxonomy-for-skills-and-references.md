@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-06-12"
 created_at: "2026-06-12 08:52:46 UTC"
 updated: "2026-06-12"
-updated_at: "2026-06-12 12:30:36 UTC"
+updated_at: "2026-06-12 12:31:22 UTC"
 status: ready
 source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
@@ -380,6 +380,7 @@ None.
 | 2026-06-12 10:36:11 UTC | 102-sf-start | GPT-5 Codex | Added canonical seven-type taxonomy, ideal matrix, anti-pattern matrix, representative mapping, structural debt list, and aligned runtime workflow docs | implemented | /103-sf-verify shipflow_data/workflow/specs/shipflow-artifact-taxonomy-for-skills-and-references.md |
 | 2026-06-12 10:55:00 UTC | 103-sf-verify | GPT-5 Codex | Verified user-story fit, taxonomy coherence, documentation alignment, metadata validity, runtime skill sync, and proof-path adequacy for the artifact-taxonomy chantier | verified | /104-sf-end shipflow_data/workflow/specs/shipflow-artifact-taxonomy-for-skills-and-references.md |
 | 2026-06-12 12:30:36 UTC | 104-sf-end | GPT-5 Codex | Updated this spec history and completed remaining trace closure after rerunning metadata lint and targeted taxonomy checks for this chantier. | closed | /005-sf-ship shipflow_data/workflow/specs/shipflow-artifact-taxonomy-for-skills-and-references.md |
+| 2026-06-12 12:31:22 UTC | 005-sf-ship | GPT-5 Codex | Shipped the bounded governance-surface updates for this chantier only; validation checks passed and unrelated dirty files were intentionally left out of this ship. | shipped | none |
 
 # Current Chantier Flow
 
@@ -388,5 +389,5 @@ None.
 - 102-sf-start: implemented
 - 103-sf-verify: verified
 - 104-sf-end: closed
-- 005-sf-ship: pending
-- Next step: /104-sf-end shipflow_data/workflow/specs/shipflow-artifact-taxonomy-for-skills-and-references.md
+- 005-sf-ship: shipped
+- Next step: none
