@@ -39,6 +39,7 @@
 🟢 [ShipFlow] task: Integrer le TDD proof-first et les checklists manuelles durables dans les skills | status: done | area: skills
 🟢 [ShipFlow] task: Ajouter une boucle d'audit des conversations et d'auto-evolution des skills | status: done | area: skills
 🟢 [ShipFlow] task: Auditer en batch les conversations Markdown pour identifier les travers agents et router les améliorations | status: done | area: skills
+🟢 [ShipFlow] task: Compacter semantiquement le Batch A des skills lifecycle (`100`, `101`, `103`, `104`, `005`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md | next: none
 🟢 [ShipFlow] task: Durcir les retours humains des skills, l'autonomie des questions, les claims de preuve et la sortie `sf-ready` | status: done | area: skills | spec: shipflow_data/workflow/specs/shipflow-skill-reporting-and-proof-hardening.md | next: /sf-ship shipflow-skill-reporting-and-proof-hardening
 🟢 [ShipFlow] task: Router les preuves hébergées manquantes vers un owner concret après un verdict `partial` | status: done | area: skills | spec: shipflow_data/workflow/specs/shipflow-hosted-proof-follow-through-and-user-report-discipline.md | next: none
 🟢 [ShipFlow] task: Forcer les exports et audits de conversation ShipFlow dans le repo ShipFlow | status: done | area: skills | spec: shipflow_data/workflow/specs/conversation-audit-canonical-storage-hardening.md | next: none

@@ -4,9 +4,15 @@ description: "Validate spec readiness, user-story fit, and secure scope."
 argument-hint: <spec path or task name>
 ---
 
+Primary artifact type: `specialist-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+
+## Instruction Layering
+
+This `SKILL.md` is the activation contract. Keep the readiness gate here; detailed spec heuristics stay in the body only when they materially change verdict quality.
 
 ## Chantier Tracking
 
@@ -23,6 +29,10 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, readiness verdict first, blockers only when they require user action, and using the compact chantier block. Do not show the full checklist to a human by default. The detailed checklist report below is for `report=agent`, blocked runs, explicit handoff, or explicit verbose/full-report requests.
 
+## Mission
+
+`101-sf-ready` is the lifecycle gate that decides whether a spec is safe to hand to `102-sf-start`. It owns readiness verdicts and scope integrity; it does not write implementation, claim proof completeness, close the chantier, or ship code.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -36,7 +46,7 @@ Default to `report=user`: concise, readiness verdict first, blockers only when t
 
 Valider qu'une spec est réellement prête avant `/102-sf-start`.
 
-Cette gate s'applique surtout au cadrage initial. Si `103-sf-verify` découvre plus tard un petit delta de cadrage, il peut jouer localement le rôle d'une mini gate de readiness après mise à jour de la spec.
+Cette gate s'applique surtout au cadrage initial. Si `103-sf-verify` découvre plus tard un petit delta de cadrage, il peut jouer localement le rôle d'une mini gate de readiness apres mise a jour de la spec, sans absorber le role de `101-sf-ready`.
 
 Cette skill applique la `Definition of Ready` du flow spec-driven :
 - zéro ambiguïté bloquante
@@ -244,6 +254,8 @@ Sinon :
 - laisser le statut inchangé ou le remettre à `reviewed`
 - garder le frontmatter cohérent avec le verdict : `status: reviewed` ou `status: draft`, `next_step: "/100-sf-spec [title]"`
 - rapporter `not ready` avec corrections concrètes
+
+Ne pas faire semblant de "sauver" une spec par inference genereuse. Si le contrat n'est pas assez net pour un agent frais, le bon resultat est `not ready`, pas une approbation optimiste.
 
 ### Rapport attendu
 

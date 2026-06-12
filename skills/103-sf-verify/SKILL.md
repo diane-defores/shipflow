@@ -4,13 +4,15 @@ description: "Verify ship readiness, correctness, coherence, and risk."
 argument-hint: [optional: tâche ou scope à vérifier]
 ---
 
+Primary artifact type: `specialist-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
 
 ## Instruction Layering
 
-Load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md` before execution. This skill keeps local verdict semantics and six verification dimensions, while detailed gate playbooks are loaded from references.
+This `SKILL.md` is the activation contract. Load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md` before execution; keep local verdict semantics and verification dimensions here, and load detailed gate playbooks from references.
 
 ## Chantier Tracking
 
@@ -42,7 +44,7 @@ Use `report=agent` for handoff, blocked runs, or explicit verbose request.
 
 ## Mission
 
-Verify ship readiness against the user story, implementation completeness, correctness, coherence, dependencies, proof quality, and risk.
+`103-sf-verify` judges proof quality and ship-readiness against the user story, implementation completeness, correctness, coherence, dependencies, and risk. It may repair stable local issues when needed, but it must keep verification verdict ownership distinct from `102-sf-start` implementation, `104-sf-end` closure, and `005-sf-ship` commit/push.
 
 ## Context
 

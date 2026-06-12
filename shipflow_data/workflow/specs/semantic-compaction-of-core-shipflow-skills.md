@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-06-12"
 created_at: "2026-06-12 12:51:11 UTC"
 updated: "2026-06-12"
-updated_at: "2026-06-12 15:06:05 UTC"
+updated_at: "2026-06-12 17:48:48 UTC"
 status: ready
 source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
@@ -245,23 +245,23 @@ The pilot is mandatory because it tests the method across the three highest-risk
   - Validate with: `rg -n "Execution Batches|Sequential continuation|parallel-safe|integration owner" shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md`
   - Notes: This run keeps execution sequential and closes at pilot scope pending explicit approval for broader batch execution.
 
-- [ ] Task 5: Batch A, lifecycle gate skills.
+- [x] Task 5: Batch A, lifecycle gate skills.
   - Files: `skills/100-sf-spec/SKILL.md`, `skills/101-sf-ready/SKILL.md`, `skills/103-sf-verify/SKILL.md`, `skills/104-sf-end/SKILL.md`, `skills/005-sf-ship/SKILL.md`
   - Action: Align semantic role language and remove duplicate or misplaced doctrine without changing lifecycle behavior.
   - User story link: Clarifies the lifecycle spine after the pilot proves the method.
   - Depends on: Task 4.
   - Validate with: `rg -n "Trace category|Process role|Report Modes|Result|Verdict|Chantier|next step" skills/100-sf-spec/SKILL.md skills/101-sf-ready/SKILL.md skills/103-sf-verify/SKILL.md skills/104-sf-end/SKILL.md skills/005-sf-ship/SKILL.md`
-  - Notes: May be parallel only if no shared reference edits are included in this batch.
+  - Notes: Use one bounded execution batch with skill-local edits only; if any touched skill requires a shared-reference rewrite, stop Batch A and move that doctrine to Task 6 instead of widening the write set in-flight.
 
-- [ ] Task 6: Batch B, shared contracts and docs integration.
+- [x] Task 6: Batch B, shared contracts and docs integration.
   - Files: `skills/references/skill-instruction-layering.md`, relevant `skills/references/*.md`, `shipflow_data/technical/skill-runtime-and-lifecycle.md`, `shipflow-spec-driven-workflow.md`
   - Action: Move or clarify reusable semantic doctrine discovered during skill edits.
   - User story link: Keeps shared doctrine in the right artifact type.
   - Depends on: Task 4 and any batch that discovers shared-reference drift.
   - Validate with: `python3 tools/shipflow_metadata_lint.py <changed-frontmatter-artifacts>`
-  - Notes: This batch is not parallel-safe with any skill batch that also edits the same references.
+  - Notes: No shared-reference drift was discovered during Batch A, so this batch closed as not needed for this run.
 
-- [ ] Task 7: Final integration and proof.
+- [x] Task 7: Final integration and proof.
   - Files: all touched skill, reference, and docs files.
   - Action: Run full validations, review final diffs for role drift, update current chantier flow, and route to `103-sf-verify`.
   - User story link: Ensures the final system is clearer, not only shorter.
@@ -318,6 +318,10 @@ The pilot is mandatory because it tests the method across the three highest-risk
   - Batch A: lifecycle gate skills (`100`, `101`, `103`, `104`, `005`) with no shared-reference writes.
   - Batch B: docs/reference integration, sequential or isolated after Batch A findings.
   - Batch C: optional downstream specialist families only after a separate ready update to this spec.
+- Batch A execution rule:
+  - preferred topology: one subagent may edit disjoint skill files in parallel only if each file change stays skill-local and no shared reference, taxonomy artifact, or lifecycle doc needs mutation
+  - integration owner: the main agent reviews every diff together before verification
+  - automatic fallback: if semantic cleanup in `100`, `101`, `103`, `104`, or `005` reveals duplicate doctrine that belongs in a shared contract, stop parallel fan-out immediately and resume sequentially under Task 6
 - Stop if a proposed edit changes behavior, removes a gate, overlaps another batch's write ownership, or needs a taxonomy change.
 
 # Open Questions
@@ -334,6 +338,11 @@ None. The recommended strategy is explicit: sequential pilot first; parallel onl
 | 2026-06-12 13:50:00 UTC | 103-sf-verify | gpt-5 Codex | Validated pilot role-boundary preservation and required checks (`rg`, metadata lint, budget audit, sync checks) | verified | /104-sf-end shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md |
 | 2026-06-12 13:52:17 UTC | 104-sf-end | gpt-5 Codex | Closed pilot-first lifecycle run and recorded sequential continuation mode + pending task scope | closed | /005-sf-ship shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md |
 | 2026-06-12 15:06:05 UTC | 005-sf-ship | GPT-5 Codex | Quick-shipped semantic compaction pilot changes after local validation | shipped | none |
+| 2026-06-12 16:03:00 UTC | 100-sf-spec | GPT-5 Codex | Reopened the chantier contract for Batch A lifecycle-gate compaction and set the next ready gate | ready | /101-sf-ready shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md |
+| 2026-06-12 17:16:36 UTC | 102-sf-start | GPT-5 Codex | Executed Batch A semantic compaction across lifecycle gate skills with skill-local edits only and preserved lifecycle role boundaries | implemented | /103-sf-verify shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md |
+| 2026-06-12 17:47:00 UTC | 103-sf-verify | GPT-5 Codex | Verified Batch A role-boundary preservation, scenario-first proof, and lifecycle/reporting coherence after local integration review | verified | /104-sf-end shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md |
+| 2026-06-12 17:48:01 UTC | 104-sf-end | GPT-5 Codex | Closed the Batch A semantic compaction run after tracker/changelog bookkeeping and confirmed ship as the remaining lifecycle step | closed | /005-sf-ship shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md |
+| 2026-06-12 17:48:48 UTC | 005-sf-ship | GPT-5 Codex | Shipped the Batch A lifecycle-gate semantic compaction with bounded staging scope after final local checks | shipped | none |
 
 # Current Chantier Flow
 

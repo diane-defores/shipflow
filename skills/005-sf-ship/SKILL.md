@@ -4,9 +4,15 @@ description: "Ship with checks, commits, pushes, and closure when needed."
 argument-hint: [optional: commit message | "end la tache" for full close | skip-check | all-dirty]
 ---
 
+Primary artifact type: `specialist-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+
+## Instruction Layering
+
+This `SKILL.md` is the activation contract. Keep shipping-mode semantics, bug-risk rules, and report framing here; do not let quick-ship convenience absorb lifecycle proof or closure doctrine owned elsewhere.
 
 ## Chantier Tracking
 
@@ -20,6 +26,10 @@ Before shipping a spec-first chantier, load `$SHIPFLOW_ROOT/skills/references/ch
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
 
 Default to `report=user`: concise, outcome-first, and using the compact chantier block. Use `report=agent`, `handoff`, `verbose`, or `full-report` only when explicitly requested or when another agent needs detailed ship evidence.
+
+## Mission
+
+`005-sf-ship` owns git shipping: checks, staging, commit, push, and the post-push route when applicable. It is not the owner of implementation completeness (`102-sf-start`), proof completeness (`103-sf-verify`), or closure bookkeeping (`104-sf-end`) unless full-close mode is explicitly requested.
 
 ## Context
 

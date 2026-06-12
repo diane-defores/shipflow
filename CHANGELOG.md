@@ -26,6 +26,11 @@ next_step: "/300-sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
 
+## [2026-06-12]
+
+### Changed
+- Clarified the core lifecycle gate skills so `100-sf-spec`, `101-sf-ready`, `103-sf-verify`, `104-sf-end`, and `005-sf-ship` state tighter artifact roles, owner boundaries, and lifecycle semantics without changing their delegated workflow behavior.
+
 ## [2026-06-11]
 
 ### Added

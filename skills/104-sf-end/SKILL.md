@@ -4,9 +4,15 @@ description: "Close tasks with summaries, trackers, and changelog prep."
 argument-hint: [optional summary or notes]
 ---
 
+Primary artifact type: `specialist-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
+
+## Instruction Layering
+
+This `SKILL.md` is the activation contract. Keep closure semantics here; task-row mechanics and changelog detail should stay as concise as possible.
 
 ## Chantier Tracking
 
@@ -20,6 +26,10 @@ Before closing a spec-first chantier, load `$SHIPFLOW_ROOT/skills/references/cha
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
 
 Default to `report=user`: concise, outcome-first, and using the compact chantier block. The detailed report template below is for `report=agent`, blocked runs, or explicit handoff.
+
+## Mission
+
+`104-sf-end` closes the current work session: summary, tracker updates, changelog prep, and explicit next work. It owns closure bookkeeping, not implementation proof or git shipping.
 
 ## Context
 
@@ -38,7 +48,7 @@ Default to `report=user`: concise, outcome-first, and using the compact chantier
 ## Your task
 
 Wrap up the current task. Summarize, update tracking files, but do NOT commit or push.
-This skill closes a work session, not product truth. TASKS and CHANGELOG updates are bookkeeping, not proof that the outcome is fully correct, complete, or secure.
+This skill closes a work session, not product truth. `TASKS.md` and `CHANGELOG.md` are bookkeeping, not proof that the outcome is fully correct, complete, secure, or shipped.
 
 ### Step 1 — Summarize what was done (internal)
 

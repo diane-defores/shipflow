@@ -4,6 +4,8 @@ description: "Write specs with user stories, contracts, risks, and plans."
 argument-hint: [optional: description de ce qu'on veut construire]
 ---
 
+Primary artifact type: `master-workflow`.
+
 ## Canonical Paths
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow tools, shared references, skill-local `references/*`, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`, not from the project repo where the skill is running. Project artifacts and source files still resolve from the current project root unless explicitly stated otherwise.
@@ -26,6 +28,10 @@ If the user input or a source skill provides a `Chantier potentiel` block, treat
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
 
 Default to `report=user`: concise, spec-path first, next-step oriented, and using the compact chantier block. Use `report=agent`, blocked, handoff, verbose, or full report only when detailed evidence is needed.
+
+## Mission
+
+`100-sf-spec` is the lifecycle skill that creates or repairs the durable implementation contract. It owns spec quality and chantier initialization; it does not implement, verify, close, or ship.
 
 ## Required References
 
@@ -50,6 +56,7 @@ Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe pa
 - A ready spec must be autonomous enough for a fresh agent: user story, minimal behavior contract, success/error behavior, scope, tasks, acceptance criteria, risks, linked systems, documentation impact, and run history.
 - Specs are written for implementation, not brainstorming; avoid placeholders, vague tasks, and undocumented assumptions.
 - Specs must preserve the decision-quality and excellence bar: correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality before speed or convenience.
+- Keep `100-sf-spec` role-pure: produce or repair the durable spec contract, then route ownership forward; do not collapse readiness, implementation, verification, closure, or shipping into this skill.
 - Specs must improve the current operating structure, not merely document motion: when a direct owner route is already clear and durable, avoid creating a spec that adds ceremony without reducing friction, delay, or maintenance cost.
 - Runtime specs must include Sentry, safe diagnostics/log-copy, and commit/build + Paris/UTC build-time header expectations from `$SHIPFLOW_ROOT/skills/references/sentry-observability.md`, or document why the static-site exception applies.
 - UI/design specs must identify the project design-system authority before implementation: brand contract, canonical token source, technology carrier, component bridge, layout/motion authority, forbidden bypasses, and validation command. If this authority is missing, the spec must route to `300-sf-docs`, `006-sf-design`, or `500-sf-design-from-scratch` before any visual implementation task.
