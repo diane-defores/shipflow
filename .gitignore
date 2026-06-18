@@ -21,3 +21,4 @@ ShipFlow/
 __pycache__/
 *.pyc
 tmp_shipflow*.sh
+site/.playwright-mcp/
