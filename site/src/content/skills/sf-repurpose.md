@@ -9,12 +9,13 @@ audience:
   - "Builders who collect good ideas and need a disciplined way to turn them into publishable angles"
 problem: "Good product and content ideas often disappear inside chat history, implementation notes, or saved excerpts before they become docs, copy, or distribution assets."
 outcome: "You get an action-first repurposing pack with article ideas, conversation-specific titles, existing-content opportunities, owner-skill handoffs, and a compact evidence ledger."
-founder_angle: "This skill matters because the best marketing and documentation often come from the moment the product is being built, not from reconstructing the story weeks later."
+founder_angle: "This skill matters because the best marketing and documentation often come from the moment the product is being built, not from reconstructing the story weeks later. When product governance, declared surfaces, or claim evidence need to stay visible in the content layer, this skill keeps those details explicit."
 when_to_use:
   - "When a feature, fix, or build conversation should become docs, release notes, or content angles"
   - "When a conversation reveals something useful that should improve existing internal docs or public pages"
   - "When you paste a paragraph, article excerpt, or short idea and want to find useful content directions"
   - "When you need to decide whether an idea belongs in blog, docs, landing pages, FAQ, newsletter, or a semantic cluster"
+  - "When the source should be repurposed in a way that preserves product inventory, public routes, and proof-backed claims"
 what_you_give:
   - "The current build conversation, or a pasted paragraph, excerpt, article note, or short idea"
   - "An optional target such as doc, marketing, release notes, FAQ, newsletter, landing, or article"
@@ -28,6 +29,7 @@ what_you_get:
   - "A source analysis or build summary when it helps justify the recommendations"
   - "Documentation notes and marketing-safe claims kept separate"
   - "Content angles routed through the project's content map when available, with missing blog surfaces called out instead of guessed"
+  - "Product-governance mentions kept explicit when the source is about declared products or sales surfaces"
   - "An optional project-aware quality score for final repurposed outputs"
   - "An evidence ledger that marks what is confirmed, inferred, or not safe to publish"
 example_prompts:

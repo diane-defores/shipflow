@@ -9,10 +9,11 @@ audience:
   - "Operators who need to turn reading into action"
 problem: "Useful external information often gets consumed passively instead of being sorted into ignore, backlog, content, or deeper investigation."
 outcome: "You get a more intentional triage layer between incoming information, project-local governance context, and actual product or content decisions."
-founder_angle: "This skill matters when your research intake is bigger than your working memory. It converts reading into a clearer action surface."
+founder_angle: "This skill matters when your research intake is bigger than your working memory. It converts reading into a clearer action surface. It also helps spot when product claims, declared products, or public routes need governance before anything is repurposed."
 when_to_use:
   - "When you have links or pasted content to review"
   - "When market or product signals need structured triage"
+  - "When a source may affect the product inventory, public claims, or sales surfaces"
   - "When you want to turn reading into backlog or research actions"
 what_you_give:
   - "One or more URLs or pasted source material"
@@ -22,6 +23,7 @@ what_you_get:
   - "Suggested next actions for each source"
   - "Project-local governance context checks before scoring"
   - "sf-content / sf-repurpose handoffs or surface-missing findings for public-content ideas"
+  - "Explicit callouts when a source touches declared products or proof-backed claims"
   - "Less information sprawl in your workflow"
 example_prompts:
   - "/sf-veille https://example.com/article"

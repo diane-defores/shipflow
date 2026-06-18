@@ -70,7 +70,6 @@ shipflow.sh
   -> select menu frontend
   -> main()
   -> check_prerequisites()
-  -> cleanup_orphan_projects()
   -> run_menu()
   -> action_* handlers
   -> env_start / env_stop / env_restart / env_remove / publish / dashboard

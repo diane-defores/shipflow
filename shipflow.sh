@@ -46,8 +46,6 @@ main() {
         fi
     fi
 
-    cleanup_orphan_projects
-
     if [ "$#" -gt 0 ]; then
         local shortcut_status=0
         run_menu_shortcut "$@" || shortcut_status=$?

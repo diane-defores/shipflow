@@ -67,14 +67,16 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
 ## Entrypoints
 
 - `shipflow` / `sf`: installed wrappers that call `shipflow.sh`.
-- `shipflow.sh::main`: checks prerequisites, cleans orphan state, then starts
-  the menu or runs a one-shot visible root menu key.
+- `shipflow.sh::main`: checks prerequisites, then starts the menu or runs a
+  one-shot visible menu-key path.
 - `sf codex` / `sf co`: early Codex launcher shortcut that bypasses
   environment cleanup, asks for a workspace/MCP preset when needed, then
   replaces the ShipFlow process with `codex`.
 - `lib.sh::run_menu`: dispatches interactive menu choices to `action_*` handlers.
 - `lib.sh::run_menu_shortcut`: dispatches a single CLI menu-key argument such
-  as `sf t` to the matching visible root action in `MAIN_MENU_ITEMS`.
+  as `sf t` or a nested key path such as `sf m n` to the matching visible menu
+  action. Path resolution starts in `MAIN_MENU_ITEMS`, then continues through
+  grouped submenu item arrays when the selected action opens a nested menu.
 - `menu_gum.sh` / `menu_bash.sh`: render the root menu from `MAIN_MENU_ITEMS`
   and grouped submenus from `ENVIRONMENT_MENU_ITEMS`, `TOOLS_WEB_MENU_ITEMS`,
   `SYSTEM_MENU_ITEMS`, and `AGENTS_CI_MENU_ITEMS`. Startup rendering should
@@ -151,7 +153,9 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
 - Command submenus that can start, stop, restart, launch, or clean up runtime
   state should use explicit one-key choices or confirmations; `ui_filter_choose`
   is reserved for longer data-selection lists and flushes pending input before
-  opening the filter.
+  opening the filter. The shared input flush now waits for a short quiet window
+  on `/dev/tty` instead of a single immediate drain so fast `key + Enter`
+  sequences from one-key menus do not leak into the next searchable selector.
 - `lib.sh::refresh_user_caddy_from_pm2` and
   `sync_caddy_after_pm2_change`: user-mode Caddy lifecycle helpers. They write
   runtime config under the operator's `~/.shipflow/runtime/caddy`, refresh
@@ -165,7 +169,6 @@ shipflow.sh
   -> source config/menu/runtime
   -> main
   -> check_prerequisites
-  -> cleanup_orphan_projects
   -> run_menu OR run_menu_shortcut
   -> action_* handler
   -> PM2 / Flox / user Caddy / optional DuckDNS side effect
@@ -229,6 +232,8 @@ Flutter Web has two runtime paths:
 
 - Missing prerequisites should produce an actionable error before secondary failures.
 - Unknown shortcut arguments should fail visibly with the available visible root menu keys.
+- Invalid shortcut paths should fail visibly with the offending argument
+  position instead of silently falling through to the interactive menu.
 - Back actions should redraw the parent menu directly instead of requiring an
   extra pause keypress.
 - Back/cancel state can be lost when a selector runs inside Bash command

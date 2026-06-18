@@ -77,6 +77,8 @@ Parse `$ARGUMENTS` as the operator instruction.
 
 Choose exactly one route unless the user explicitly asks for a dashboard or comparison.
 
+For requests involving declared products, sales surfaces, or public claims, prefer owner skills that preserve product governance and proof coherence instead of treating the request as generic copy or generic docs work.
+
 | Intent | Route |
 | --- | --- |
 | Pure question, explanation, or advice with no file work | Answer directly |

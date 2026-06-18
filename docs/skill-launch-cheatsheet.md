@@ -109,6 +109,8 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 | Product entitlements and access gates | `601-sf-product-entitlements <project or feature>` | Entitlement ownership, provider events, activation codes, product-local mirrors, backend authorization gates, support flows, and sync handoffs. |
 | Skill creation or maintenance | `009-sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `700-sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
 
+If the request concerns declared products, sales surfaces, or evidence-backed claims, start by checking `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, and `shipflow_data/editorial/README.md` before launching a content or docs skill.
+
 Content scoring examples:
 
 ```text

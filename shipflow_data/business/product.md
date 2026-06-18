@@ -92,6 +92,7 @@ next_step: "/sf-docs audit shipflow_data/business/product.md"
 - Workflow-critical changes are less likely to ship with silent success, silent failure, or stale docs.
 - A founder can move from repo state to executable change with less manual framing overhead.
 - Content and documentation updates are routed through a known content map instead of being rediscovered in each conversation.
+- Declared products are kept coherent through a governed product inventory, public-surface mapping, and evidence-backed claim handling instead of scattered ad hoc notes.
 
 ## Risks
 

@@ -73,6 +73,8 @@ It has three layers:
 
 It is built for solo founders and autonomous technical builders who want to launch, publish, and maintain software simply without losing context in agent handoffs.
 
+ShipFlow also carries product and claim governance for declared products. The framework does not only route code and docs work; it keeps product inventories, public surfaces, and evidence-backed claims coherent across the package.
+
 ## What ShipFlow Does
 
 ShipFlow is designed to solve one problem first: lost context and weak handoffs in AI-assisted product work.
@@ -98,6 +100,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - professional bug management with compact `TEST_LOG.md`, one durable Markdown bug file per bug under `bugs/`, optional/generated `BUGS.md` triage views, and redacted `test-evidence/BUG-ID/` evidence
 - audits across code, design, copy, SEO, GTM, deps, perf, and translation
 - documentation and research workflows
+- product registry and claim-coherence checks for declared products, sales surfaces, and proof-backed public copy
 
 ## Core Docs
 

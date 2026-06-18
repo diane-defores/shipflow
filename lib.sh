@@ -169,10 +169,26 @@ ui_should_skip_next_pause() {
     return 1
 }
 
-ui_flush_pending_input() {
-    if [ -r /dev/tty ] && { : < /dev/tty; } 2>/dev/null; then
-        while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
+_ui_drain_tty_until_quiet() {
+    local quiet_reads="${1:-3}"
+    local timeout="${2:-0.04}"
+    local quiet_count=0
+
+    if ! { [ -r /dev/tty ] && : < /dev/tty; } 2>/dev/null; then
+        return 0
     fi
+
+    while [ "$quiet_count" -lt "$quiet_reads" ]; do
+        if read -rsn1 -t "$timeout" _ < /dev/tty 2>/dev/null; then
+            quiet_count=0
+        else
+            quiet_count=$((quiet_count + 1))
+        fi
+    done
+}
+
+ui_flush_pending_input() {
+    _ui_drain_tty_until_quiet 3 0.04
 }
 
 ui_is_back_choice() {
@@ -209,7 +225,7 @@ ui_read_key() {
 
     if [ -r /dev/tty ] && { : < /dev/tty; } 2>/dev/null; then
         read -rsn1 __value < /dev/tty
-        while read -rsn1 -t 0.05 _ < /dev/tty 2>/dev/null; do :; done
+        _ui_drain_tty_until_quiet 3 0.04
         printf '\r\n' >&2
     else
         read -r __value
@@ -4058,24 +4074,6 @@ list_all_environment_identifiers() {
             dirname "$flox_dir"
         done | sort -u
     fi
-}
-
-
-# Cleanup orphan projects
-cleanup_orphan_projects() {
-    echo -e "${YELLOW}🔍 Recherche de projets orphelins...${NC}"
-    
-    if [ -d "$PROJECTS_DIR" ]; then
-        find "$PROJECTS_DIR" -maxdepth 1 -type d ! -path "$PROJECTS_DIR" | while read -r dir; do
-            if [ ! -d "$dir/.flox" ]; then
-                project_name=$(basename "$dir")
-                echo -e "${YELLOW}🗑️  Projet sans Flox détecté: $project_name${NC}"
-                echo -e "${YELLOW}   (pas d'environnement Flox)${NC}"
-            fi
-        done
-    fi
-    
-    echo -e "${GREEN}✅ Nettoyage terminé${NC}"
 }
 
 # ============================================================================
@@ -8011,13 +8009,13 @@ action_navigate() {
     ui_screen_header "Navigate Projects"
     local HOME_DIR
     HOME_DIR=$(eval echo "~")
-    local FOLDERS
-    FOLDERS=$(find "$HOME_DIR" -maxdepth 1 -type d ! -name ".*" ! -path "$HOME_DIR" 2>/dev/null | sort)
-    if [ -z "$FOLDERS" ]; then
+    local folders=()
+    mapfile -t folders < <(find "$HOME_DIR" -maxdepth 1 -type d ! -name ".*" ! -path "$HOME_DIR" 2>/dev/null | sort)
+    if [ ${#folders[@]} -eq 0 ]; then
         echo -e "${RED}❌ No folders found in $HOME_DIR${NC}"
     else
         local SELECTED
-        SELECTED=$(echo "$FOLDERS" | ui_choose "Select folder to open:")
+        SELECTED=$(ui_choose "Select folder to open:" "${folders[@]}")
         if [ -n "$SELECTED" ]; then
             echo -e "${GREEN}📁 Opening: $SELECTED${NC}"
             cd "$SELECTED" && exec $SHELL
@@ -8029,13 +8027,13 @@ action_open_code() {
     ui_screen_header "Open Code Directory"
     local HOME_DIR
     HOME_DIR=$(eval echo "~")
-    local FOLDERS
-    FOLDERS=$(find "$HOME_DIR" -maxdepth 1 -type d ! -name ".*" ! -path "$HOME_DIR" 2>/dev/null | sort)
-    if [ -z "$FOLDERS" ]; then
+    local folders=()
+    mapfile -t folders < <(find "$HOME_DIR" -maxdepth 1 -type d ! -name ".*" ! -path "$HOME_DIR" 2>/dev/null | sort)
+    if [ ${#folders[@]} -eq 0 ]; then
         echo -e "${RED}❌ No folders found in $HOME_DIR${NC}"
     else
         local SELECTED
-        SELECTED=$(echo "$FOLDERS" | ui_choose "Select folder to open:")
+        SELECTED=$(ui_choose "Select folder to open:" "${folders[@]}")
         if [ -n "$SELECTED" ]; then
             echo -e "${GREEN}📂 Opening: $SELECTED${NC}"
             cd "$SELECTED" && exec $SHELL
@@ -9150,8 +9148,8 @@ ADVANCED_MENU_ITEMS=(
 )
 
 print_menu_shortcut_usage() {
-    echo -e "${BLUE}Usage:${NC} sf [menu shortcut]" >&2
-    echo -e "${BLUE}Example:${NC} sf t" >&2
+    echo -e "${BLUE}Usage:${NC} sf [menu shortcut ...]" >&2
+    echo -e "${BLUE}Examples:${NC} sf t    |    sf m n    |    sf a q" >&2
     echo -e "${BLUE}Codex launcher:${NC} sf codex [mcp ...]" >&2
     echo "" >&2
     echo -e "${BLUE}Available menu keys:${NC}" >&2
@@ -9165,15 +9163,33 @@ print_menu_shortcut_usage() {
     done
 }
 
+menu_items_for_action() {
+    case "${1:-}" in
+        action_environments_menu) printf '%s\n' "${ENVIRONMENT_MENU_ITEMS[@]}" ;;
+        action_tools_web_menu) printf '%s\n' "${TOOLS_WEB_MENU_ITEMS[@]}" ;;
+        action_system_menu) printf '%s\n' "${SYSTEM_MENU_ITEMS[@]}" ;;
+        action_agents_ci_menu) printf '%s\n' "${AGENTS_CI_MENU_ITEMS[@]}" ;;
+        action_advanced) printf '%s\n' "${ADVANCED_MENU_ITEMS[@]}" ;;
+        *) return 1 ;;
+    esac
+}
+
 resolve_menu_shortcut_action() {
     local raw_choice="${1:-}"
+    shift || true
+    local items=("$@")
+
+    if [ ${#items[@]} -eq 0 ]; then
+        items=("${MAIN_MENU_ITEMS[@]}")
+    fi
+
     local choice
     choice=$(_ui_normalize_choice "$raw_choice")
 
     [ -n "$choice" ] || return 1
 
     local item key label action label_choice
-    for item in "${MAIN_MENU_ITEMS[@]}"; do
+    for item in "${items[@]}"; do
         IFS='|' read -r key label action <<< "$item"
         [ "$key" = "---" ] && continue
         [ -z "$action" ] && continue
@@ -9200,20 +9216,35 @@ run_menu_shortcut() {
         return $?
     fi
 
-    if [ "$#" -ne 1 ]; then
-        error "Expected exactly one menu shortcut argument."
+    if [ "$#" -lt 1 ]; then
+        error "Expected at least one menu shortcut argument."
         print_menu_shortcut_usage
         return 2
     fi
 
-    local action
-    if ! action=$(resolve_menu_shortcut_action "$1"); then
-        error "Unknown ShipFlow menu shortcut: $1"
-        print_menu_shortcut_usage
-        return 2
-    fi
+    local current_items=("${MAIN_MENU_ITEMS[@]}")
+    local action=""
+    local token menu_items index=0
 
-    log INFO "Menu shortcut: $1 -> $action"
+    for token in "$@"; do
+        if ! action=$(resolve_menu_shortcut_action "$token" "${current_items[@]}"); then
+            error "Unknown ShipFlow menu shortcut at position $((index + 1)): $token"
+            print_menu_shortcut_usage
+            return 2
+        fi
+
+        if menu_items=$(menu_items_for_action "$action"); then
+            mapfile -t current_items <<< "$menu_items"
+        elif [ $index -lt $(($# - 1)) ]; then
+            error "Menu shortcut path is too deep after: $token"
+            print_menu_shortcut_usage
+            return 2
+        fi
+
+        index=$((index + 1))
+    done
+
+    log INFO "Menu shortcut path: $* -> $action"
     "$action"
 }
 

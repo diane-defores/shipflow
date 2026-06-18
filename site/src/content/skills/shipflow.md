@@ -10,11 +10,12 @@ audience:
   - "Teams that want routing decisions kept visible in the main thread"
 problem: "A user can lose momentum before work starts by having to choose between build, bug, maintenance, content, design, deploy, skill, and audit workflows."
 outcome: "You get one first command that either answers directly, routes the current thread to the right ShipFlow skill, or asks one numbered clarification question when no context-safe route exists."
-founder_angle: "The router keeps the first move simple. You describe the business or product need, and ShipFlow chooses whether the work is conversation, build, maintenance, bug, release, content, design, skill maintenance, or audit."
+founder_angle: "The router keeps the first move simple. You describe the business or product need, and ShipFlow chooses whether the work is conversation, build, maintenance, bug, release, content, design, skill maintenance, or audit. The router also steers requests into product-aware content and docs paths when declared products or public claims are part of the work."
 when_to_use:
   - "When you want the recommended first command and do not know which skill to launch"
   - "When the request might be a feature, bug, maintenance run, content task, design task, deploy proof, skill change, audit, or simple question"
   - "When you want the selected master skill to own its normal lifecycle after routing"
+  - "When you want the first answer to preserve product coherence instead of treating claims or surfaces as incidental"
 what_you_give:
   - "A plain-language instruction"
   - "Any known target file, feature, bug symptom, deployment, content surface, or audit concern"
@@ -23,6 +24,7 @@ what_you_get:
   - "A direct main-thread handoff to the selected skill for real work"
   - "One numbered question when the route is ambiguous"
   - "No hidden master-skill-in-subagent nesting"
+  - "A route that keeps product governance, claims, and surface coherence visible when the task touches shipped or market-facing material"
 example_prompts:
   - "shipflow explain which docs govern skill runtime"
   - "shipflow fix the checkout bug"

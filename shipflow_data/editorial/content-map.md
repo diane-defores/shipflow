@@ -165,3 +165,5 @@ For public-content governance details, use `shipflow_data/editorial/` after this
 
 - [ ] No dedicated blog directory is declared yet.
 - [ ] No newsletter or social publishing repository surface is declared yet.
+- [ ] Every project with products should maintain a governed product inventory, and every product with marketing or conversion intent should additionally declare canonical sales/product/demo/checkout surfaces inside its own corpus.
+- [ ] Product claims should be validated against source truth, live surfaces, and proof assets before being marked complete.

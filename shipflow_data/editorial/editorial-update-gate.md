@@ -58,6 +58,8 @@ Run the gate when a workstream changes or verifies any of these:
 - Astro runtime content under `site/src/content/**`
 - blog, article, newsletter, or future content output
 - workflow or spec requirement for project-aware content quality scoring or an editorial score gate
+- introduction, removal, or renaming of a sellable product surface, including sales page, product page, demo, screenshots, video, checkout, or delivery path
+- introduction, removal, or renaming of a declared product in the governed product inventory
 
 ## Editorial Update Plan
 
@@ -108,8 +110,12 @@ When an editorial score gate is declared, use `skills/references/content-quality
 - A chantier is not cleanly closed if known public content still describes old behavior.
 - `pending final copy` is acceptable only with owner, reason, and a block-before-ship condition.
 - If a public surface is missing, update the shared map first or route to a separate spec.
+- If a declared product exists but its canonical inventory entry is missing, the gate must not close cleanly; mark the surface `surface missing` until declared.
+- If a product has public marketing or conversion intent but its canonical sales/product/delivery URLs are missing, the gate must not close cleanly; mark the surface `surface missing` or `pending final copy` until declared.
+- If a public claim cannot be tied to source truth, a live surface, or proof assets, the gate must not close cleanly; mark it `needs proof`, `pending final copy`, or remove the claim.
 - If a claim is unsupported, downgrade, remove, or block it before publication.
 - If Astro runtime content schema would reject the update, stop and preserve the schema.
+- For page-level claim placement, use `page-intent-map.md`; for validation state and claim review, use this gate; for sensitive public claims, use `claim-register.md`.
 
 ## Maintenance Rule
 

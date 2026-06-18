@@ -46,6 +46,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve positioning, offer clarity, funnel coherence, analytics, pricing/trust, and launch-readiness criteria.
+- When declared products are part of the offer story, keep product inventory, sales surfaces, and proof-backed claims coherent in the GTM review.
 - Evaluate `Chantier potentiel` when GTM findings require product, pricing, funnel, analytics, or trust decisions.
 - Do not invent market evidence, revenue claims, conversion data, or customer proof.
 

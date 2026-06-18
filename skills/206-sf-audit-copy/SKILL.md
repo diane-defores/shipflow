@@ -47,6 +47,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve claim evidence, business/brand fit, trust, clarity, friction, conversion, and documentation corpus gates.
+- When the surface mentions declared products, add product-inventory and proof-backed-claim coherence to the copy review instead of treating it as decorative wording.
 - For rubric-driven audits, use `content-quality-rubric.md` as the only scoring contract and return structured feedback with explicit `needs revision` or `blocked` when applicable.
 - Evaluate `Chantier potentiel` for multi-page conversion, legal, trust, or positioning work.
 - Do not invent proof, guarantees, pricing, testimonials, customer facts, or legal claims.

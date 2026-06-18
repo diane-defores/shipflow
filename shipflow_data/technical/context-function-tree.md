@@ -35,7 +35,6 @@ shipflow.sh
   -> main()
      -> run_menu_shortcut() for early codex/co launch
      -> check_prerequisites()
-     -> cleanup_orphan_projects()
      -> run_menu() OR run_menu_shortcut()
 
 run_menu()
@@ -48,7 +47,9 @@ run_menu()
 run_menu_shortcut()
   -> action_codex_launcher() for codex/co
   -> resolve_menu_shortcut_action()
+  -> menu_items_for_action()
   -> MAIN_MENU_ITEMS visible root actions
+  -> grouped submenu item arrays when a shortcut path continues
   -> action_* handler
 ```
 
@@ -68,7 +69,6 @@ run_menu_shortcut()
 ```text
 main
   -> check_prerequisites
-  -> cleanup_orphan_projects
   -> run_menu OR run_menu_shortcut
 ```
 
@@ -336,7 +336,6 @@ environment discovery
   -> resolve_project_path
   -> list_all_environments
   -> list_all_environment_identifiers
-  -> cleanup_orphan_projects
   -> select_environment
   -> select_stop_target
 

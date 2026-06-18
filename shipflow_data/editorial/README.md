@@ -91,6 +91,10 @@ Allowed final statuses are `ready`, `needs revision`, `blocked`, and `publishabl
 - Astro runtime content keeps the schema declared in `site/src/content.config.ts`.
 - ShipFlow artifact metadata belongs in governance docs and reports, not in runtime content unless that runtime schema explicitly accepts it.
 - A missing blog surface is reported as `surface missing: blog`; agents do not invent a blog route or collection.
+- Any declared product must appear in a governed product inventory, and any product with public marketing or conversion intent must also declare its sales/product/delivery surfaces somewhere in the governed corpus; if required URLs or proof surfaces are absent, report `surface missing` or `pending final copy` instead of guessing.
+- Any public product claim must be traceable to a governing source, a real surface, or explicit proof. If a claim cannot be verified, downgrade it to `pending final copy`, `surface missing`, or remove it.
+- Product claims must be checked against the product registry, delivery path, public route, screenshot, video, or observed behavior before they are treated as validated.
+- When in doubt, prefer a reference to `editorial-update-gate.md` for claim handling and to `page-intent-map.md` for page-level public surfaces.
 
 ## Editorial Reader Output
 

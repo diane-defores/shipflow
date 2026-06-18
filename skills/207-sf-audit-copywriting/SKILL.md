@@ -47,6 +47,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve claim-evidence, compliance, trust, persona, offer, and conversion checks.
+- When the offer references declared products, require product-governance coherence and proof-backed claims in the persuasion review.
 - For rubric-scored outputs, use `content-quality-rubric.md` for statuses and blocked codes; do not override rubric outcomes with local score shortcuts.
 - Evaluate `Chantier potentiel` when findings require multi-page, positioning, legal, trust, or funnel decisions.
 - Do not invent business claims, testimonials, proof, pricing, or guarantees.

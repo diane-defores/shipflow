@@ -10,10 +10,11 @@ audience:
   - "Teams that need public claims, surfaces, and validation kept in sync"
 problem: "Content work can start from many places: a source note, a build conversation, an article idea, a stale page, an SEO issue, or a public claim. Without one lifecycle entrypoint, agents can pick the wrong owner skill or bypass the content governance layer."
 outcome: "You get a routed content workflow that checks the content map, editorial governance, claims, target surfaces, specialist skills, validation, and ship scope before treating content as done."
-founder_angle: "Content is not just writing. For ShipFlow, it is a product surface that must stay aligned with the real workflow, public promises, support answers, and shipped behavior."
+founder_angle: "Content is not just writing. For ShipFlow, it is a product surface that must stay aligned with the real workflow, public promises, support answers, and shipped behavior. ShipFlow also treats declared products as governed surfaces: product inventory, public routes, and proof-backed claims stay aligned before copy is considered done."
 when_to_use:
   - "When you want to manage content work but do not know whether to start with repurposing, drafting, enrichment, docs, copy audit, SEO, or research"
   - "When a content update touches public pages, README, FAQ, public docs, public skill pages, pricing, support copy, or claims"
+  - "When product governance needs to stay visible in the content layer for declared products and sales surfaces"
   - "When a source idea should become content only after surface, evidence, and claim checks"
 what_you_give:
   - "A content goal, source, URL, file path, target surface, or mode keyword"
@@ -22,6 +23,7 @@ what_you_give:
 what_you_get:
   - "A mode decision and routed owner-skill sequence"
   - "Content map and editorial governance checks before public output"
+  - "Product-registry and claim-coherence checks when the content references declared products or sales surfaces"
   - "Specialist handoff to repurposing, drafting, enrichment, audits, docs, research, or ship gates"
   - "Optional project-aware quality scoring with global score, criterion scores, status, evidence, recommendations, and confidence"
   - "Validation and a concise content lifecycle report"

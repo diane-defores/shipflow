@@ -9,11 +9,12 @@ audience:
   - "Teams improving stale blog or docs content"
 problem: "Existing content often underperforms because it is outdated, thin, poorly structured, or not useful enough for modern search and answer engines."
 outcome: "You get a stronger content asset with sharper structure, better sourcing, and higher practical value."
-founder_angle: "This skill matters when the page already exists but is not doing enough work. It helps you improve leverage before creating more content."
+founder_angle: "This skill matters when the page already exists but is not doing enough work. It helps you improve leverage before creating more content. It is also the right lane when the page must stay coherent with governed products, proof-backed claims, and public routes."
 when_to_use:
   - "When an article or landing page needs a substantive refresh"
   - "When content is underperforming in search or user usefulness"
   - "When you want to add fresher data and stronger answer structure"
+  - "When the updated page should reflect product governance without sounding mechanical"
 what_you_give:
   - "An existing article, page, or content folder"
   - "The current topic and public context"
@@ -23,6 +24,7 @@ what_you_get:
   - "A clearer path toward better SEO and answer quality"
   - "An optional project-aware quality score when the enriched version needs a final gate"
   - "Governance notes for public claims, content surfaces, and documentation impact when relevant"
+  - "A signal for whether product-coherence wording should be added, reduced, or kept internal"
 example_prompts:
   - "/sf-enrich pricing guide"
   - "/sf-enrich blog/how-to-ship-with-agents.md"

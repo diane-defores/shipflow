@@ -9,11 +9,12 @@ audience:
   - "Teams checking whether the current funnel story is coherent"
 problem: "A product can be technically good and still struggle because the offer, audience framing, or funnel logic is unclear."
 outcome: "You get a review of whether the public promise and buyer path are persuasive enough to support growth."
-founder_angle: "This skill helps when the issue sits between product and market communication. It makes the GTM story easier to inspect as a system."
+founder_angle: "This skill helps when the issue sits between product and market communication. It makes the GTM story easier to inspect as a system. It also helps keep declared products, public claims, and proof surfaces coherent instead of turning the offer into improvised marketing copy."
 when_to_use:
   - "When a launch or relaunch needs a positioning review"
   - "When funnel steps feel disconnected or weak"
   - "When the offer exists but the public story does not land"
+  - "When the GTM story should visibly respect product governance and evidence"
 what_you_give:
   - "A site, page set, or funnel surface"
   - "The current offer and audience framing"
@@ -21,6 +22,7 @@ what_you_get:
   - "A GTM-oriented audit"
   - "Findings around message clarity, proof, and buyer-path friction"
   - "A better basis for public-facing changes"
+  - "A note on whether the surface should mention product-governance concepts explicitly"
 example_prompts:
   - "/sf-audit-gtm"
   - "/sf-audit-gtm site/src/pages/index.astro"

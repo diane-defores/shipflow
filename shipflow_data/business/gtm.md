@@ -71,6 +71,7 @@ next_step: "/sf-docs audit shipflow_data/business/gtm.md"
 - Interest through the concrete mechanics: `AGENT.md`, `shipflow_data/technical/context.md`, `shipflow_data/workflow/specs/`, verification, lintable metadata.
 - Conversion through confidence that the framework improves reliability of real work, not toy demos.
 - The buying motion should stay simple and compatible with a solo-founder audience.
+- The public story should make clear that declared products, sales surfaces, and public claims are governed with explicit proof rather than improvised copy.
 
 ## Proof Points
 
@@ -81,6 +82,7 @@ next_step: "/sf-docs audit shipflow_data/business/gtm.md"
 - Metadata-linted documentation contracts.
 - Audit and verification skills built into the same framework.
 - Real server operations tooling in the same operating model.
+- Product governance for declared products: inventory, sales surfaces, delivery paths, and claim coherence.
 
 ## Objections
 
