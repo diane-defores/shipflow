@@ -10,6 +10,7 @@ const items = [
   ["ShipFlow est-il un outil serveur ou un framework de workflow IA ?", "Les deux. Il gère du vrai travail de livraison serveur tout en donnant aux agents un cadre d’exécution plus solide par le contexte, les contrats et la vérification."],
   ["Tous les skills fonctionnent-ils comme des prompts libres ?", "Non. Certains skills traitent l’argument comme un texte de tâche, mais d’autres l’utilisent comme un commutateur de mode ou une entrée structurée. C’est pour cela que le contrat du skill compte."],
   ["Les skills ShipFlow fonctionnent-ils avec Codex et Claude Code ?", "Oui. ShipFlow maintient les métadonnées de skills pour les deux modèles de découverte. Les descriptions restent compactes, front-loadées et auditées pour rester lisibles par les deux environnements."],
+  ["Comment installer ShipFlow dans Codex ?", "Ajoutez la source marketplace ShipFlow avec `codex plugin marketplace add dianedef/ShipFlow --ref main --sparse .agents/plugins --sparse plugins/shipflow`, redémarrez Codex, ouvrez le répertoire des plugins, installez `shipflow` depuis la marketplace ShipFlow, puis commencez avec `$shipflow help me choose the right workflow`."],
   ["Qu’est-ce qu’un mode de skill ?", "Un mode de skill est un workflow spécialisé déclenché par un motif d’argument ou un mot-clé précis. Par exemple, un skill de docs peut entrer en mode migration de métadonnées au lieu d’écrire de la documentation classique."],
   ["Pourquoi ne pas simplement mieux prompter les agents ?", "Parce qu’un prompt plus fort ne supprime pas les passages de relais faibles, les docs périmées, le cadrage ambigu ou la dérive entre intention produit et implémentation."],
   ["ShipFlow choisit-il le chemin le plus rapide par défaut ?", "Non. ShipFlow choisit le plus petit chemin professionnel, pas le chemin fragile le plus court. Vitesse, coût et commodité ne départagent que des options déjà équivalentes en correction, sécurité, maintenabilité, performance pertinente et preuve."],
@@ -62,6 +63,15 @@ const items = [
             les arguments, commencez par l’aide au lancement.
           </p>
           <a class="doc-action" href={pathFor("/skill-modes", locale)}>Lire l’aide au lancement</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Vous voulez le chemin d’installation ?</h3>
+          <p>
+            Si la vraie question est comment ajouter ShipFlow à Codex, la page
+            d’installation donne la commande marketplace et le premier parcours.
+          </p>
+          <a class="doc-action" href={pathFor("/install", locale)}>Voir l’installation</a>
         </article>
 
         <article class="doc-card">

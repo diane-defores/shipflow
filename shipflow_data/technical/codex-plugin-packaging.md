@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-06-11"
-updated: "2026-06-12"
+updated: "2026-06-19"
 status: active
 source_skill: 300-sf-docs
 scope: codex-plugin-packaging
@@ -14,6 +14,8 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
+  - /home/claude/shipflow/.agents/plugins/marketplace.json
+  - /home/claude/shipflow/plugins/shipflow/
   - /home/claude/plugins/shipflow/
   - /home/claude/plugins/shipflow/scripts/bootstrap_shipflow_repo.sh
   - /home/claude/plugins/shipflow/skills/shipflow/SKILL.md
@@ -42,6 +44,8 @@ next_step: "/300-sf-docs technical audit codex-plugin-packaging"
 
 `/home/claude/plugins/shipflow/` is the lightweight Codex plugin distribution nucleus for ShipFlow. It gives users one primary plugin entrypoint while keeping the complete ShipFlow skill and reference corpus in the GitHub repository instead of packaging the whole repository into the plugin.
 
+The public repository now also exposes a repo-backed marketplace source at `/home/claude/shipflow/.agents/plugins/marketplace.json` with a publishable plugin source mirrored under `/home/claude/shipflow/plugins/shipflow/`. External users should install from the repository marketplace path; `/home/claude/plugins/shipflow/` remains the local packaging workspace.
+
 The plugin must stay useful without a huge bundle. When a workflow needs the full local ShipFlow corpus, the plugin exposes an explicit sparse checkout route into `${SHIPFLOW_ROOT:-$HOME/.shipflow/source}`.
 
 Current product posture: ShipFlow is single-plugin-first. The public experience should stay `Install ShipFlow` then `$shipflow <instruction>`. Pack generation remains available as internal packaging infrastructure for staging, validation, and future optional distribution only. It is not a commitment to ship many public plugins now.
@@ -50,6 +54,8 @@ Current product posture: ShipFlow is single-plugin-first. The public experience 
 
 ## Owned Files
 
+- `/home/claude/shipflow/.agents/plugins/marketplace.json` is the repo-backed marketplace source for external Codex installs.
+- `/home/claude/shipflow/plugins/shipflow/` is the publishable plugin source mirrored into the repository.
 - `/home/claude/plugins/shipflow/.codex-plugin/plugin.json` declares the plugin identity, public homepage, repository, and version.
 - `/home/claude/plugins/shipflow/skills/shipflow/SKILL.md` routes public plugin workflows, optional packs, docs links, and bootstrap guidance.
 - `/home/claude/plugins/shipflow/skills/shipflow/references/pack-catalog.md` describes planned packs and their current readiness.
@@ -64,6 +70,7 @@ Current product posture: ShipFlow is single-plugin-first. The public experience 
 
 ## Entrypoints
 
+- External users add the ShipFlow repository as a marketplace source, then install `shipflow` from that marketplace.
 - Codex loads the plugin through `shipflow@personal` or a future public plugin install.
 - Users invoke the plugin through the contributed `shipflow` skill.
 - The optional full-corpus path is `/home/claude/plugins/shipflow/scripts/bootstrap_shipflow_repo.sh`.
@@ -96,6 +103,7 @@ Current decision:
 
 - one public plugin: `shipflow`
 - one public entrypoint: `$shipflow`
+- one repo-backed marketplace source in the ShipFlow repository
 - maximize useful bundled capability inside that plugin first
 - use the complete-corpus route when the plugin is not enough
 - keep pack generation as internal infrastructure for validation and future optional distribution

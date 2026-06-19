@@ -6,7 +6,7 @@ project: "shipflow"
 created: "2026-06-11"
 created_at: "2026-06-11 00:00:00 UTC"
 updated: "2026-06-12"
-updated_at: "2026-06-12 08:18:00 UTC"
+updated_at: "2026-06-19 01:05:00 UTC"
 status: ready
 source_skill: plugin-creator
 source_model: "GPT-5 Codex"
@@ -53,7 +53,10 @@ evidence:
   - "2026-06-12 009-sf-skill-build added `scripts/stage_shipflow_pack.py`, staged `shipflow-main` into `/tmp/shipflow-pack-stage-20260612-shipflow-main/shipflow-main`, validated the generated plugin candidate, and refreshed `shipflow@personal` to 0.1.0+codex.20260612035839."
   - "2026-06-12 009-sf-skill-build added `scripts/refresh_shipflow_pack.py` and `references/pack-maintenance-playbook.md`, refreshed `shipflow-main` into `/home/claude/.shipflow/staged-packs/shipflow-main`, validated the generated plugin candidate, and refreshed `shipflow@personal` to 0.1.0+codex.20260612043936."
   - "2026-06-12 operator decision recorded in technical docs: keep one public `shipflow` plugin filled as much as possible; treat pack generation as internal infrastructure and not a near-term multi-pack product commitment."
-next_step: "Test sparse bootstrap from a clean path, then continue enriching the single public `shipflow` plugin before revisiting public pack distribution."
+  - "2026-06-19 ShipFlow repository now exposes a repo-backed Codex marketplace source at `.agents/plugins/marketplace.json` and a publishable plugin source mirror at `plugins/shipflow`."
+  - "2026-06-19 public install content was added across README, technical packaging docs, the public skill page, FAQ/docs cross-links, and dedicated `/install` and `/fr/install` site routes."
+  - "2026-06-19 marketplace install proof passed locally with `codex plugin marketplace add /home/claude/shipflow` followed by `codex plugin add shipflow@shipflow --json`."
+next_step: "none"
 ---
 
 # Spec: ShipFlow Main Plugin and Pack Portability
@@ -159,11 +162,14 @@ Product rule: do not expose a multi-pack public product by default. The near-ter
 - [ ] Test sparse bootstrap from a machine/path without an existing ShipFlow checkout.
 - [x] Continue porting `shipflow-main` candidates with the `302-sf-help` plugin-local pattern.
 - [x] Runtime-test public partial-mode `shipflow-main` intents in a fresh Codex thread.
-- [ ] Replace placeholder docs base URL with the real public ShipFlow docs domain when available.
+- [x] Replace placeholder docs base URL with the real public ShipFlow docs domain when available.
 - [ ] Publish optional hosted docs for public explanations after the local pack works offline.
 - [x] Validate generated plugin candidate after staging `shipflow-main`.
 - [x] Open a new Codex thread and test `$shipflow help`, `$shipflow packs`, and `$shipflow shipflow-main`.
 - [x] Decide current product posture: single public `shipflow` plugin first; packs remain internal packaging infrastructure unless later constraints justify public distribution splits.
+- [x] Add a repo-backed marketplace source so external users can install `shipflow` from Git instead of Diane's local filesystem.
+- [x] Mirror the public `shipflow` plugin into the repository under a publishable marketplace path and keep validation green.
+- [x] Publish clear user-facing install instructions on the ShipFlow site and align plugin docs links with those public pages.
 
 ## Acceptance Criteria
 
@@ -182,6 +188,8 @@ Product rule: do not expose a multi-pack public product by default. The near-ter
 - [x] `shipflow-main` public partial-mode intents route correctly in a new Codex thread.
 - [x] A catalog pack can be staged as a structurally valid local plugin candidate with an explicit audit report.
 - [x] Public user journey remains one primary install and one plugin skill entrypoint.
+- [x] A fresh external user can follow one public install path from repo marketplace source to installed `shipflow` plugin without relying on Diane's local machine paths.
+- [x] The public site explains the install flow clearly enough that a new user can add the marketplace source, install the plugin, and start with `$shipflow`.
 
 ## Validation Commands
 
@@ -193,6 +201,11 @@ python3 /home/claude/plugins/shipflow/scripts/audit_shipflow_packaging.py --pack
 python3 /home/claude/plugins/shipflow/scripts/refresh_shipflow_pack.py shipflow-main
 python3 /home/claude/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py /home/claude/.shipflow/staged-packs/shipflow-main
 codex plugin list
+python3 /home/claude/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/shipflow
+bash -n plugins/shipflow/scripts/bootstrap_shipflow_repo.sh
+npm --prefix site run build
+codex plugin marketplace add /home/claude/shipflow
+codex plugin add shipflow@shipflow --json
 ```
 
 ## Skill Run History
@@ -209,7 +222,9 @@ codex plugin list
 | 2026-06-12 03:59:00 UTC | 009-sf-skill-build | GPT-5 Codex | Added `stage_shipflow_pack.py`, staged `shipflow-main`, validated the generated plugin candidate, and refreshed the installed `shipflow` plugin cache. | implemented | Test sparse bootstrap from a clean path. |
 | 2026-06-12 04:39:00 UTC | 009-sf-skill-build | GPT-5 Codex | Added one-command pack refresh helper and durable maintenance playbook; refreshed and validated `shipflow-main` from source skills into `/home/claude/.shipflow/staged-packs/shipflow-main`. | implemented | Test sparse bootstrap from a clean path. |
 | 2026-06-12 08:18:00 UTC | 300-sf-docs | GPT-5 Codex | Recorded the single-plugin-first product decision in technical packaging docs and aligned the active portability spec with that posture. | implemented | Test sparse bootstrap from a clean path, then continue enriching the single public plugin. |
+| 2026-06-19 00:25:00 UTC | 001-sf-build | GPT-5 Codex | Reopened the active portability chantier for the next bounded batch: repo-backed marketplace publication path, pack refresh in a public source tree, and public install-content updates. | implemented | Update the spec scope, then run implementation and verification on the repo-backed install path. |
+| 2026-06-19 01:05:00 UTC | 103-sf-verify | GPT-5 Codex | Verified the repo-backed plugin mirror, public install pages, plugin docs-link alignment, site build, plugin validation, and actual `codex plugin marketplace add` plus `codex plugin add shipflow@shipflow` install flow. | verified | Close the chantier and ship the repo-backed marketplace/install path. |
 
 ## Current Chantier Flow
 
-100-sf-spec ✅ -> 101-sf-ready ✅ -> 300-sf-docs ✅ -> 009-sf-skill-build ✅ -> 706-continue ✅ -> 103-sf-verify ✅
+100-sf-spec ✅ -> 101-sf-ready ✅ -> 300-sf-docs ✅ -> 009-sf-skill-build ✅ -> 706-continue ✅ -> 103-sf-verify ✅ -> 104-sf-end ✅ -> 005-sf-ship ✅

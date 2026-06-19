@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "packs": [
+    {
+      "id": "shipflow-main",
+      "status": "partial",
+      "portability": "partially-bundled",
+      "portabilityMatrix": "skills/shipflow/references/shipflow-main-portability-matrix.md",
+      "intentContracts": "skills/shipflow/references/shipflow-main-intents.md",
+      "bundledSkills": [
+        "shipflow"
+      ],
+      "bundledIntents": [
+        "spec",
+        "ready",
+        "start",
+        "verify",
+        "check",
+        "fix"
+      ],
+      "blocker": "remaining execution candidate skills still assume a local ShipFlow source tree through source-root dependencies",
+      "skills": [
+        "000-shipflow",
+        "302-sf-help",
+        "100-sf-spec",
+        "101-sf-ready",
+        "102-sf-start",
+        "103-sf-verify",
+        "105-sf-check",
+        "106-sf-fix"
+      ]
+    },
+    {
+      "id": "shipflow-build",
+      "status": "planned",
+      "skills": [
+        "001-sf-build",
+        "002-sf-maintain",
+        "003-sf-bug",
+        "005-sf-ship",
+        "104-sf-end",
+        "309-sf-tasks",
+        "304-sf-changelog"
+      ]
+    },
+    {
+      "id": "shipflow-proof",
+      "status": "planned",
+      "skills": [
+        "004-sf-deploy",
+        "107-sf-test",
+        "108-sf-browser",
+        "109-sf-auth-debug",
+        "405-sf-prod"
+      ]
+    },
+    {
+      "id": "shipflow-content",
+      "status": "planned",
+      "skills": [
+        "007-sf-content",
+        "200-sf-redact",
+        "201-sf-enrich",
+        "202-sf-repurpose",
+        "203-sf-research",
+        "204-sf-market-study",
+        "205-sf-veille",
+        "206-sf-audit-copy",
+        "207-sf-audit-copywriting",
+        "406-sf-audit-seo",
+        "408-sf-audit-gtm"
+      ]
+    },
+    {
+      "id": "shipflow-design",
+      "status": "planned",
+      "skills": [
+        "006-sf-design",
+        "409-sf-audit-a11y",
+        "500-sf-design-from-scratch",
+        "501-sf-design-playground",
+        "502-sf-audit-design",
+        "503-sf-audit-design-tokens",
+        "504-sf-audit-components"
+      ]
+    },
+    {
+      "id": "shipflow-quality",
+      "status": "planned",
+      "skills": [
+        "400-sf-audit",
+        "401-sf-audit-code",
+        "402-sf-deps",
+        "403-sf-perf",
+        "404-sf-migrate",
+        "407-sf-audit-translate"
+      ]
+    },
+    {
+      "id": "shipflow-governance",
+      "status": "internal-first",
+      "skills": [
+        "009-sf-skill-build",
+        "300-sf-docs",
+        "301-sf-context",
+        "303-sf-resume",
+        "305-sf-init",
+        "306-sf-scaffold",
+        "307-sf-skills-refresh",
+        "308-sf-status",
+        "704-sf-model",
+        "705-sf-conversation-audit",
+        "706-continue",
+        "707-name",
+        "800-tmux-capture-conversation",
+        "801-clean-conversation-transcript"
+      ]
+    },
+    {
+      "id": "shipflow-product",
+      "status": "planned",
+      "skills": [
+        "008-sf-onboarding",
+        "600-sf-local-cloud-sync",
+        "601-sf-product-entitlements",
+        "602-sf-platform-parity",
+        "700-sf-explore",
+        "701-sf-backlog",
+        "702-sf-priorities",
+        "703-sf-review"
+      ]
+    }
+  ]
+}

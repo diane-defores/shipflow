@@ -21,6 +21,10 @@ const items = [
     ]
   },
   {
+    q: "How do I install ShipFlow in Codex?",
+    a: "Add the ShipFlow marketplace source with `codex plugin marketplace add dianedef/ShipFlow --ref main --sparse .agents/plugins --sparse plugins/shipflow`, restart Codex, open the plugin directory, install `shipflow` from the ShipFlow marketplace, then start with `$shipflow help me choose the right workflow`."
+  },
+  {
     q: "What is a skill mode?",
     a: "A skill mode is a specialized workflow triggered by a specific argument pattern or keyword. For example, a docs skill may switch into metadata migration mode instead of normal documentation-writing mode."
   },
@@ -123,6 +127,15 @@ const items = [
             skills, and mode detection.
           </p>
           <a class="doc-action" href="/skill-modes">Read the launch cheatsheet</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Want the install path?</h3>
+          <p>
+            If the question is really how to add ShipFlow to Codex, the install
+            page gives the marketplace command and the first-run path.
+          </p>
+          <a class="doc-action" href="/install">Open install instructions</a>
         </article>
 
         <article class="doc-card">

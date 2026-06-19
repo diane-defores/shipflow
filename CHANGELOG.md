@@ -26,6 +26,14 @@ next_step: "/300-sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
 
+## [2026-06-19]
+
+### Added
+- Added a repo-backed Codex marketplace source at `.agents/plugins/marketplace.json`, a publishable plugin mirror under `plugins/shipflow`, and dedicated public install pages at `/install` and `/fr/install`.
+
+### Changed
+- Updated the ShipFlow plugin README, technical packaging docs, docs-links catalog, skill help surfaces, FAQ/docs cross-links, and public `shipflow` skill page so users can install `shipflow` from the repository marketplace path and start with `$shipflow`.
+
 ## [2026-06-12]
 
 ### Changed

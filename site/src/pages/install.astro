@@ -1,0 +1,108 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import NavBar from "../components/NavBar.astro";
+
+const installCommand =
+  "codex plugin marketplace add dianedef/ShipFlow --ref main --sparse .agents/plugins --sparse plugins/shipflow";
+---
+
+<BaseLayout
+  title="Install ShipFlow for Codex"
+  description="How to add the ShipFlow marketplace source, install the shipflow plugin, and start using ShipFlow in Codex."
+>
+  <main class="page-shell">
+    <NavBar />
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Install ShipFlow</p>
+        <h1 class="page-title">One marketplace source, one plugin, one first command.</h1>
+        <p>
+          ShipFlow is distributed as one Codex plugin named <code>shipflow</code>.
+          You add the marketplace source once, install the plugin from the Codex
+          plugin directory, and start with one plain instruction.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>1. Add the marketplace source</h3>
+          <p>
+            This tells Codex where the ShipFlow plugin marketplace lives in the
+            public repository.
+          </p>
+          <pre><code>{installCommand}</code></pre>
+        </article>
+
+        <article class="doc-card">
+          <h3>2. Restart Codex</h3>
+          <p>
+            Restart Codex so the new marketplace source is loaded into the
+            plugin directory.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>3. Install the plugin</h3>
+          <p>
+            Open the plugin directory, choose the <code>ShipFlow</code>
+            marketplace, then install the <code>shipflow</code> plugin.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>4. Start with one plain instruction</h3>
+          <p>
+            The first useful command is:
+          </p>
+          <pre><code>$shipflow help me choose the right workflow</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="cta-panel">
+        <p class="eyebrow">What you get now</p>
+        <h2>The public plugin is intentionally lightweight.</h2>
+        <p>
+          Today the plugin gives you the ShipFlow entrypoint, the pack catalog,
+          packaging/install guidance, and bundled public intent routing for the
+          first `shipflow-main` capability set. When a workflow needs the full
+          internal corpus, ShipFlow can point you to the optional complete-corpus
+          bootstrap path instead of pretending the plugin already contains every
+          private reference.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="/skills/shipflow">Open the shipflow skill page</a>
+          <a class="button button-secondary" href="/skill-modes">Read the workflow cheatsheet</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>If you need the full corpus</h3>
+          <p>
+            Some workflows still need the optional complete ShipFlow source tree.
+            The plugin can route you there explicitly when that happens.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>If you want the pack roadmap</h3>
+          <p>
+            ShipFlow keeps one public plugin first. Internal packs remain
+            packaging infrastructure until they are genuinely portable and ready
+            for public installation.
+          </p>
+          <a class="doc-action" href="/docs">Open the docs overview</a>
+        </article>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

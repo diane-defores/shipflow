@@ -163,7 +163,21 @@ sudo ./install.sh
 
 ShipFlow's Codex plugin path is intentionally lightweight. Users should not need to install many separate ShipFlow plugins to start. The main plugin exposes one `shipflow` entrypoint and can route to bundled or optional packs.
 
-In the current development workspace, the plugin alpha lives at `/home/claude/plugins/shipflow/` and is installed locally as `shipflow@personal`. Its behavior is documented in [`shipflow_data/technical/codex-plugin-packaging.md`](./shipflow_data/technical/codex-plugin-packaging.md).
+The repository now carries a repo-backed marketplace source at [`.agents/plugins/marketplace.json`](./.agents/plugins/marketplace.json) and the public plugin source at [`plugins/shipflow`](./plugins/shipflow). Its behavior is documented in [`shipflow_data/technical/codex-plugin-packaging.md`](./shipflow_data/technical/codex-plugin-packaging.md).
+
+Public install path:
+
+```bash
+codex plugin marketplace add dianedef/ShipFlow --ref main --sparse .agents/plugins --sparse plugins/shipflow
+```
+
+Then restart Codex, open the plugin directory, choose the `ShipFlow` marketplace, install `shipflow`, and start with:
+
+```text
+$shipflow help me choose the right workflow
+```
+
+In the current development workspace, the same plugin is also maintained locally at `/home/claude/plugins/shipflow/` for packaging and validation work.
 
 When the complete local ShipFlow corpus is needed, the plugin uses an explicit sparse Git checkout instead of packaging the whole repository:
 

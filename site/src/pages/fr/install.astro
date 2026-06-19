@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+import NavBar from "../../components/NavBar.astro";
+import { pathFor } from "../../i18n/ui";
+
+const locale = "fr";
+const installCommand =
+  "codex plugin marketplace add dianedef/ShipFlow --ref main --sparse .agents/plugins --sparse plugins/shipflow";
+---
+
+<BaseLayout
+  title="Installer ShipFlow pour Codex"
+  description="Comment ajouter la source marketplace ShipFlow, installer le plugin shipflow et commencer à utiliser ShipFlow dans Codex."
+  locale={locale}
+  canonicalPath="/fr/install"
+  alternatePath="/install"
+>
+  <main class="page-shell">
+    <NavBar locale={locale} currentPath="/install" />
+
+    <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Installer ShipFlow</p>
+        <h1 class="page-title">Une source marketplace, un plugin, une première commande.</h1>
+        <p>
+          ShipFlow est distribué comme un seul plugin Codex nommé
+          <code>shipflow</code>. Vous ajoutez une fois la source marketplace,
+          vous installez le plugin depuis le répertoire des plugins Codex, puis
+          vous commencez avec une instruction simple.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>1. Ajouter la source marketplace</h3>
+          <p>
+            Cette commande indique à Codex où trouver la marketplace ShipFlow
+            dans le dépôt public.
+          </p>
+          <pre><code>{installCommand}</code></pre>
+        </article>
+
+        <article class="doc-card">
+          <h3>2. Redémarrer Codex</h3>
+          <p>
+            Redémarrez Codex pour que la nouvelle source marketplace soit
+            chargée dans le répertoire des plugins.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>3. Installer le plugin</h3>
+          <p>
+            Ouvrez le répertoire des plugins, choisissez la marketplace
+            <code>ShipFlow</code>, puis installez le plugin
+            <code>shipflow</code>.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>4. Commencer avec une instruction simple</h3>
+          <p>La première commande utile est&nbsp;:</p>
+          <pre><code>$shipflow help me choose the right workflow</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="cta-panel">
+        <p class="eyebrow">Ce que vous obtenez maintenant</p>
+        <h2>Le plugin public reste volontairement léger.</h2>
+        <p>
+          Aujourd’hui, le plugin fournit l’entrée ShipFlow, le catalogue des
+          packs, l’aide de packaging/install, et le routage public bundlé pour
+          le premier périmètre `shipflow-main`. Quand un workflow a besoin du
+          corpus complet, ShipFlow le dit explicitement au lieu de prétendre que
+          tout est déjà embarqué.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href={pathFor("/skills/shipflow", locale)}>Voir la fiche shipflow</a>
+          <a class="button button-secondary" href={pathFor("/skill-modes", locale)}>Lire l’aide au lancement</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer locale={locale} />
+</BaseLayout>

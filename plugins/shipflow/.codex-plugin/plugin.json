@@ -1,0 +1,36 @@
+{
+  "name": "shipflow",
+  "version": "0.1.0+codex.20260612043936",
+  "description": "ShipFlow routes project-shipping work in Codex and prepares optional workflow packs.",
+  "author": {
+    "name": "ShipFlow"
+  },
+  "homepage": "https://shipflowzsite.vercel.app/",
+  "repository": "https://github.com/dianedef/ShipFlow",
+  "license": "UNLICENSED",
+  "keywords": [
+    "codex",
+    "shipflow",
+    "workflow",
+    "shipping",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ShipFlow",
+    "shortDescription": "Route and package ShipFlow workflows in Codex.",
+    "longDescription": "ShipFlow is a Codex workflow layer for taking product work from request to verified outcome. This local alpha plugin provides the public entrypoint, pack catalog, and packaging audit needed to grow ShipFlow without asking users to install many separate plugins.",
+    "developerName": "ShipFlow",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "$shipflow help me choose the right workflow",
+      "$shipflow show available ShipFlow packs",
+      "$shipflow audit local ShipFlow packaging"
+    ],
+    "brandColor": "#0F766E"
+  }
+}

@@ -59,6 +59,21 @@ for the first moment of a request, before you know whether the work is a build,
 bug loop, maintenance run, release proof, content task, design task, skill change, audit, or
 just a question.
 
+## Install Path
+
+Install ShipFlow in Codex by adding the repository marketplace source:
+
+```bash
+codex plugin marketplace add dianedef/ShipFlow --ref main --sparse .agents/plugins --sparse plugins/shipflow
+```
+
+Then restart Codex, open the plugin directory, install `shipflow` from the
+`ShipFlow` marketplace, and begin with:
+
+```text
+$shipflow help me choose the right workflow
+```
+
 The router keeps the handoff visible. If it selects a master skill, that skill
 takes over the main thread and owns its own delegated sequential execution.
 If no route is safely implied by the instruction and project context, the router
