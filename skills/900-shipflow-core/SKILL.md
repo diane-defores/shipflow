@@ -27,6 +27,8 @@ Default to `report=user`: concise, outcome-first, and in the operator's active l
 
 `900-shipflow-core` is an internal ShipFlow operator tool. It audits local ShipFlow skills, checks execution-fidelity risks, and helps prepare plugin packaging decisions without acting as a public user-facing plugin.
 
+It also protects cross-skill invariants such as product governance: declared products should not rely on ad hoc URL discovery, improvised delivery framing, or unsupported public claims when the project corpus is supposed to hold that truth.
+
 Use it when Diane or a ShipFlow maintainer wants to:
 
 - audit whether local skills expose mission, scope, stop, validation, reference, and report signals clearly;

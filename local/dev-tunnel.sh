@@ -15,6 +15,7 @@ source "$SCRIPT_DIR/remote-helpers.sh"
 CONFIG_DIR="$HOME/.shipflow"
 CURRENT_CONNECTION_FILE="$CONFIG_DIR/current_connection"
 CURRENT_IDENTITY_FILE="$CONFIG_DIR/current_identity_file"
+CURRENT_AUTH_METHOD_FILE="$CONFIG_DIR/current_auth_method"
 
 # Couleurs
 RED='\033[0;31m'
@@ -124,6 +125,9 @@ fi
 SSH_IDENTITY_FILE=""
 if [ -f "$CURRENT_IDENTITY_FILE" ]; then
     SSH_IDENTITY_FILE=$(cat "$CURRENT_IDENTITY_FILE")
+fi
+if [ -f "$CURRENT_AUTH_METHOD_FILE" ]; then
+    SSH_AUTH_METHOD=$(cat "$CURRENT_AUTH_METHOD_FILE")
 fi
 
 if ! validate_identity_file "$SSH_IDENTITY_FILE"; then

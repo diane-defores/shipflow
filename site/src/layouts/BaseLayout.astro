@@ -38,5 +38,10 @@ const alternateLocale = locale === "fr" ? "en" : "fr";
   </head>
   <body>
     <slot />
+    {
+      import.meta.env.PROD && (
+        <script is:inline async src="https://cdn.onthe.io/io.js/YyAMWtaLLPUi" />
+      )
+    }
   </body>
 </html>

@@ -145,6 +145,7 @@ For public or potentially public content:
 6. Check `shipflow_data/editorial/astro-content-schema-policy.md` (or `docs/editorial/astro-content-schema-policy.md`) before editing runtime content.
 7. Produce an `Editorial Update Plan` from `shipflow_data/editorial/editorial-update-gate.md` (or `docs/editorial/editorial-update-gate.md`) when public content, page intent, README, FAQ, pricing, public docs, public skill pages, or claims are impacted.
 8. Produce a `Claim Impact Plan` when sensitive claims are impacted.
+9. When the surface references declared products, verify that product inventory, canonical sales/product URLs, delivery path, and proof-bearing claims stay coherent with the project's governed product corpus before routing or editing.
 
 If no declared blog/article surface exists, report `surface missing: blog` and stop before path creation.
 
@@ -172,6 +173,7 @@ Route by owner, not convenience:
 When calling or simulating downstream owner skills, pass `report=agent` only when the master flow needs detailed evidence. Preserve concise user reporting by default.
 
 For cross-skill consistency, use `content-quality-rubric.md` as the only source for rubric statuses, blocked codes, and structured feedback schema.
+For product-facing work, keep one rule across owner skills: declared products are governed assets, so copy, docs, and GTM routes must preserve inventory truth, public-surface mapping, delivery clarity, and evidence-backed claims.
 
 ## Validation
 

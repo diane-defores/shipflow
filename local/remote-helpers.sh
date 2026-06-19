@@ -178,6 +178,29 @@ validate_identity_file() {
     resolve_identity_path "$identity_file" >/dev/null
 }
 
+ssh_auth_mode() {
+    local mode="${SSH_AUTH_METHOD:-key}"
+    case "$mode" in
+        password|key)
+            printf '%s\n' "$mode"
+            ;;
+        *)
+            printf '%s\n' "key"
+            ;;
+    esac
+}
+
+ssh_auth_args() {
+    case "$(ssh_auth_mode)" in
+        password)
+            printf '%s\n' "-o" "BatchMode=no" "-o" "PreferredAuthentications=password,keyboard-interactive" "-o" "PubkeyAuthentication=no" "-o" "KbdInteractiveAuthentication=yes" "-o" "NumberOfPasswordPrompts=1"
+            ;;
+        *)
+            printf '%s\n' "-o" "BatchMode=yes"
+            ;;
+    esac
+}
+
 validate_tcp_port() {
     local port="$1"
     [[ "$port" =~ ^[0-9]+$ ]] || return 1
@@ -185,9 +208,15 @@ validate_tcp_port() {
 }
 
 ssh_args() {
-    printf '%s\n' "-o" "ConnectTimeout=7" "-o" "BatchMode=yes" "-o" "StrictHostKeyChecking=accept-new"
+    printf '%s\n' "-o" "ConnectTimeout=7" "-o" "StrictHostKeyChecking=accept-new"
+    while IFS= read -r arg; do
+        [ -n "$arg" ] || continue
+        printf '%s\n' "$arg"
+    done < <(ssh_auth_args)
     if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
-        printf '%s\n' "-i" "$(resolve_identity_path "$SSH_IDENTITY_FILE" || normalize_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes"
+        if [ "$(ssh_auth_mode)" != "password" ]; then
+            printf '%s\n' "-i" "$(resolve_identity_path "$SSH_IDENTITY_FILE" || normalize_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes"
+        fi
     fi
 }
 

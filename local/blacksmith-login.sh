@@ -19,6 +19,7 @@ NC='\033[0m'
 CONFIG_DIR="$HOME/.shipflow"
 CURRENT_CONNECTION_FILE="$CONFIG_DIR/current_connection"
 CURRENT_IDENTITY_FILE="$CONFIG_DIR/current_identity_file"
+CURRENT_AUTH_METHOD_FILE="$CONFIG_DIR/current_auth_method"
 LOGIN_TIMEOUT_SECONDS="${SHIPFLOW_BLACKSMITH_LOGIN_TIMEOUT_SECONDS:-600}"
 
 REMOTE_HOST=""
@@ -75,9 +76,12 @@ load_remote_host() {
         exit 1
     fi
 
-    if [ -f "$CURRENT_IDENTITY_FILE" ]; then
-        SSH_IDENTITY_FILE="$(cat "$CURRENT_IDENTITY_FILE")"
-    fi
+if [ -f "$CURRENT_IDENTITY_FILE" ]; then
+    SSH_IDENTITY_FILE="$(cat "$CURRENT_IDENTITY_FILE")"
+fi
+if [ -f "$CURRENT_AUTH_METHOD_FILE" ]; then
+    SSH_AUTH_METHOD="$(cat "$CURRENT_AUTH_METHOD_FILE")"
+fi
 
     if ! validate_identity_file "$SSH_IDENTITY_FILE"; then
         echo -e "${RED}✗ Clé SSH configurée invalide ou introuvable: $SSH_IDENTITY_FILE${NC}"
@@ -214,7 +218,7 @@ run_blacksmith_login() {
     local oauth_url=""
     local callback_port=""
 
-    local test_args=("-o" "BatchMode=yes")
+    local test_args=()
     while IFS= read -r arg; do
         test_args+=("$arg")
     done < <(ssh_args)

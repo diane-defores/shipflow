@@ -43,6 +43,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve source, claim, editorial surface, AI visibility, conversion, and quality gates.
+- When enriching product-facing content, keep declared-product governance intact: inventory naming, canonical surface mapping, delivery explanation, and evidence-backed claims must remain aligned.
 - When enrichment ends with a quality gate, score with `content-quality-rubric.md`; keep `needs revision` or `blocked` when required evidence or criteria fail.
 - Do not originate a chantier unless the user explicitly asks to formalize follow-up work.
 - Do not invent facts, metrics, public claims, comparisons, or external recommendations.

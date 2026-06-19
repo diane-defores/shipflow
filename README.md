@@ -292,11 +292,12 @@ SSH `-L` tunnel for the fresh callback port so the local browser can reach the
 remote login process. This applies to hosted MCP provider logins, Clerk CLI
 auth, and Blacksmith CLI auth.
 
-The local menu stores the remote host, SSH user, and optional SSH key path used
-by `urls`, `tunnel`, `shipflow-mcp-login`, `shipflow-clerk-login`, and
-`shipflow-blacksmith-login`. Leaving the key path blank means ShipFlow uses the
-normal SSH config or agent. ShipFlow does not store OAuth tokens; Codex, Clerk,
-Blacksmith, and the provider own the token exchange. See
+The local menu stores the remote host, SSH user, and SSH auth mode used by
+`urls`, `tunnel`, `shipflow-mcp-login`, `shipflow-clerk-login`, and
+`shipflow-blacksmith-login`. You can leave the key path blank to use the normal
+SSH config or agent, or switch to password mode for servers that do not use a
+key. ShipFlow does not store OAuth tokens; Codex, Clerk, Blacksmith, and the
+provider own the token exchange. See
 [local/README.md](./local/README.md) for the guided setup and troubleshooting
 flow.
 

@@ -23,6 +23,7 @@ CONFIG_DIR="$HOME/.shipflow"
 CONNECTIONS_FILE="$CONFIG_DIR/connections.conf"
 CURRENT_CONNECTION_FILE="$CONFIG_DIR/current_connection"
 CURRENT_IDENTITY_FILE="$CONFIG_DIR/current_identity_file"
+CURRENT_AUTH_METHOD_FILE="$CONFIG_DIR/current_auth_method"
 
 # Initialize config directory
 mkdir -p "$CONFIG_DIR" 2>/dev/null
@@ -44,6 +45,12 @@ load_current_connection() {
     else
         SSH_IDENTITY_FILE=""
     fi
+
+    if [ -f "$CURRENT_AUTH_METHOD_FILE" ]; then
+        SSH_AUTH_METHOD=$(cat "$CURRENT_AUTH_METHOD_FILE")
+    else
+        SSH_AUTH_METHOD="key"
+    fi
 }
 
 # Save current connection
@@ -61,15 +68,42 @@ save_identity_file() {
     fi
 }
 
+save_auth_method() {
+    local auth_method="$1"
+    if [ -n "$auth_method" ]; then
+        echo "$auth_method" > "$CURRENT_AUTH_METHOD_FILE"
+        chmod 600 "$CURRENT_AUTH_METHOD_FILE" 2>/dev/null || true
+    else
+        rm -f "$CURRENT_AUTH_METHOD_FILE"
+    fi
+}
+
 # Add connection to saved list
 add_saved_connection() {
     local connection="$1"
+    local auth_method="${2:-key}"
+    local identity_file="${3:-}"
+
     # Create file if not exists
     touch "$CONNECTIONS_FILE"
-    # Add if not already present
-    if ! grep -q "^${connection}$" "$CONNECTIONS_FILE" 2>/dev/null; then
-        echo "$connection" >> "$CONNECTIONS_FILE"
+
+    auth_method="$(normalize_menu_choice "$auth_method")"
+    case "$auth_method" in
+        password|key) ;;
+        *)
+            auth_method="key"
+            ;;
+    esac
+
+    if [ "$auth_method" = "password" ]; then
+        identity_file=""
     fi
+
+    local record="${connection}|${auth_method}|${identity_file}"
+
+    awk -F'|' -v target="$connection" 'BEGIN { OFS="|" } $1 != target { print $0 }' "$CONNECTIONS_FILE" > "$CONNECTIONS_FILE.tmp" 2>/dev/null || true
+    mv "$CONNECTIONS_FILE.tmp" "$CONNECTIONS_FILE" 2>/dev/null || true
+    echo "$record" >> "$CONNECTIONS_FILE"
 }
 
 # Get saved connections
@@ -236,6 +270,7 @@ read_menu_choice() {
 save_and_activate_connection() {
     local target="$1"
     local identity_file="${2-}"
+    local auth_method="${3:-key}"
 
     if ! validate_connection_target "$target"; then
         echo -e "${RED}✗ Cible invalide: $target${NC}"
@@ -243,36 +278,55 @@ save_and_activate_connection() {
         return 1
     fi
 
-    if ! validate_identity_file "$identity_file"; then
+    auth_method="$(normalize_menu_choice "$auth_method")"
+    case "$auth_method" in
+        password|key) ;;
+        *)
+            auth_method="key"
+            ;;
+    esac
+
+    if [ "$auth_method" != "password" ] && ! validate_identity_file "$identity_file"; then
         echo -e "${RED}✗ Clé SSH invalide ou introuvable: $identity_file${NC}"
         echo -e "${YELLOW}  Si tu entres seulement un nom de fichier, ShipFlow cherche dans le dossier courant, ~/.ssh/ puis ton dossier home.${NC}"
         echo -e "${YELLOW}  Laisse vide pour utiliser la configuration SSH normale.${NC}"
         return 1
     fi
-    if [ -n "$identity_file" ]; then
+
+    if [ "$auth_method" = "password" ]; then
+        identity_file=""
+    elif [ -n "$identity_file" ]; then
         identity_file=$(resolve_identity_path "$identity_file")
         chmod 600 "$identity_file" 2>/dev/null || true
     fi
 
     echo ""
     echo -e "${BLUE}Test SSH vers $target...${NC}"
-    local ssh_args=("-o" "ConnectTimeout=7" "-o" "BatchMode=yes" "-o" "StrictHostKeyChecking=accept-new")
-    if [ -n "$identity_file" ]; then
-        ssh_args+=("-i" "$identity_file" "-o" "IdentitiesOnly=yes")
-    fi
+    SSH_AUTH_METHOD="$auth_method"
+    SSH_IDENTITY_FILE="$identity_file"
+    local ssh_test_args=()
+    while IFS= read -r arg; do
+        ssh_test_args+=("$arg")
+    done < <(ssh_args)
 
     local ssh_output=""
-    if ssh_output=$(ssh "${ssh_args[@]}" "$target" "echo ok" 2>&1); then
+    if ssh_output=$(ssh "${ssh_test_args[@]}" "$target" "echo ok" 2>&1); then
         echo -e "${GREEN}✓ Connexion réussie${NC}"
         REMOTE_HOST="$target"
         SSH_IDENTITY_FILE="$identity_file"
+        SSH_AUTH_METHOD="$auth_method"
         save_current_connection
         save_identity_file "$identity_file"
+        save_auth_method "$auth_method"
         chmod 600 "$CURRENT_CONNECTION_FILE" 2>/dev/null || true
-        add_saved_connection "$target"
+        add_saved_connection "$target" "$auth_method" "$identity_file"
         CACHED_SESSION_INFO=""
         CACHED_SESSION_TIME=0
-        echo -e "${GREEN}✓ Serveur actif enregistré pour urls, tunnel, shipflow-mcp-login, Clerk et Blacksmith${NC}"
+        if [ "$auth_method" = "password" ]; then
+            echo -e "${GREEN}✓ Serveur actif enregistré pour urls, tunnel, shipflow-mcp-login, Clerk et Blacksmith (mot de passe)${NC}"
+        else
+            echo -e "${GREEN}✓ Serveur actif enregistré pour urls, tunnel, shipflow-mcp-login, Clerk et Blacksmith${NC}"
+        fi
         return 0
     fi
 
@@ -280,8 +334,40 @@ save_and_activate_connection() {
     if [ -n "$ssh_output" ]; then
         echo -e "${YELLOW}  Détail SSH: ${ssh_output//$'\n'/ }${NC}"
     fi
-    echo -e "${YELLOW}  Vérifiez l'IP, l'utilisateur SSH et la clé autorisée sur le serveur.${NC}"
+    if [ "$auth_method" = "password" ]; then
+        echo -e "${YELLOW}  Vérifiez l'IP, l'utilisateur SSH et le mot de passe autorisé sur le serveur.${NC}"
+    else
+        echo -e "${YELLOW}  Vérifiez l'IP, l'utilisateur SSH et la clé autorisée sur le serveur.${NC}"
+    fi
     return 1
+}
+
+prompt_auth_method() {
+    local auth_method=""
+
+    echo ""
+    echo -e "${BLUE}Choisis la méthode d'authentification SSH.${NC}"
+    echo -e "${YELLOW}La clé SSH/agent reste le mode par défaut. Le mot de passe ouvre une invite SSH interactive et ne stocke aucun secret.${NC}"
+    local_menu_line "k" "🔑 Clé SSH / agent"
+    local_menu_line "p" "🔓 Mot de passe SSH"
+    echo ""
+    prompt_inline "${YELLOW}Méthode d'authentification ?${NC} "
+    read_menu_choice auth_choice true
+
+    case "$auth_choice" in
+        p|password)
+            auth_method="password"
+            ;;
+        k|""|key)
+            auth_method="key"
+            ;;
+        *)
+            echo -e "${YELLOW}Choix non reconnu; clé SSH/agent par défaut.${NC}"
+            auth_method="key"
+            ;;
+    esac
+
+    printf '%s' "$auth_method"
 }
 
 configure_new_server() {
@@ -333,20 +419,34 @@ configure_new_server() {
         target="${server_user}@${server_host}"
     fi
 
-    echo ""
-    echo -e "${BLUE}La clé SSH est le fichier privé utilisé si ta connexion demande une clé spéciale.${NC}"
-    echo -e "${BLUE}Exemple: ~/.ssh/id_ed25519${NC}"
-    echo -e "${YELLOW}Laisse vide pour utiliser la valeur par défaut : connexion SSH normale.${NC}"
-    prompt_inline "${YELLOW}Chemin de la clé SSH si tu l'as enregistrée dans un dossier particulier ou avec un nom spécifique:${NC} "
-    read -r identity_file
-    identity_file="$(normalize_identity_input "$identity_file")"
-    if [ -n "$identity_file" ]; then
-        echo -e "${BLUE}Clé SSH utilisée:${NC} ${GREEN}$identity_file${NC}"
+    local auth_method
+    auth_method="$(prompt_auth_method)"
+
+    local identity_file=""
+    if [ "$auth_method" != "password" ]; then
+        echo ""
+        echo -e "${BLUE}La clé SSH est le fichier privé utilisé si ta connexion demande une clé spéciale.${NC}"
+        echo -e "${BLUE}Exemple: ~/.ssh/id_ed25519${NC}"
+        echo -e "${YELLOW}Laisse vide pour utiliser la valeur par défaut : connexion SSH normale.${NC}"
+        prompt_inline "${YELLOW}Chemin de la clé SSH si tu l'as enregistrée dans un dossier particulier ou avec un nom spécifique:${NC} "
+        read -r identity_file
+        identity_file="$(normalize_identity_input "$identity_file")"
+        if [ -n "$identity_file" ]; then
+            echo -e "${BLUE}Clé SSH utilisée:${NC} ${GREEN}$identity_file${NC}"
+        fi
+    else
+        echo ""
+        echo -e "${BLUE}Le mode mot de passe gardera la connexion sans clé SSH enregistrée.${NC}"
     fi
 
     echo ""
     echo -e "${BLUE}Connexion qui va être testée:${NC} ${GREEN}$target${NC}"
-    save_and_activate_connection "$target" "$identity_file"
+    if [ "$auth_method" = "password" ]; then
+        echo -e "${BLUE}Méthode: ${GREEN}mot de passe SSH${NC}"
+    else
+        echo -e "${BLUE}Méthode: ${GREEN}clé SSH / agent${NC}"
+    fi
+    save_and_activate_connection "$target" "$identity_file" "$auth_method"
 }
 
 # Menu to select/add connection
@@ -366,14 +466,25 @@ select_connection() {
 
     if [ -n "$saved" ]; then
         while IFS= read -r conn; do
+            [ -n "$conn" ] || continue
+            local conn_target="$conn"
+            local conn_auth_method="key"
+            local conn_identity_file=""
+            if [[ "$conn" == *"|"* ]]; then
+                IFS='|' read -r conn_target conn_auth_method conn_identity_file <<< "$conn"
+            fi
             local key
             key=$(menu_letter_key $((i - 1)))
-            if [ "$conn" = "$REMOTE_HOST" ]; then
-                echo -e "  ${CYAN}$key)${NC} ${LIGHT_BLUE}$conn${NC} ${GREEN}(actuel)${NC}"
-            else
-                echo -e "  ${CYAN}$key)${NC} ${LIGHT_BLUE}$conn${NC}"
+            local auth_label="clé SSH/agent"
+            if [ "$conn_auth_method" = "password" ]; then
+                auth_label="mot de passe"
             fi
-            options+=("$conn")
+            if [ "$conn_target" = "$REMOTE_HOST" ]; then
+                echo -e "  ${CYAN}$key)${NC} ${LIGHT_BLUE}$conn_target${NC} ${YELLOW}[${auth_label}]${NC} ${GREEN}(actuel)${NC}"
+            else
+                echo -e "  ${CYAN}$key)${NC} ${LIGHT_BLUE}$conn_target${NC} ${YELLOW}[${auth_label}]${NC}"
+            fi
+            options+=("${conn_target}|${conn_auth_method}|${conn_identity_file}")
             keys+=("$key")
             ((i++))
         done <<< "$saved"
@@ -393,17 +504,7 @@ select_connection() {
             return 0
             ;;
         n)
-            echo ""
-            echo -e "${BLUE}Format: IP, domaine, alias SSH déjà défini, ou user@host${NC}"
-            echo -e "${YELLOW}Exemple: ubuntu@203.0.113.10, root@192.168.1.10, mon-serveur.com, hetzner${NC}"
-            echo ""
-            prompt_inline "${YELLOW}Nouvelle connexion:${NC} "
-            read -r new_conn
-            new_conn="$(trim_input "$new_conn")"
-
-            if [ -n "$new_conn" ]; then
-                save_and_activate_connection "$new_conn" || pause
-            fi
+            configure_new_server
             ;;
         *)
             local idx=-1
@@ -415,8 +516,12 @@ select_connection() {
             done
 
             if [ "$idx" -ge 0 ]; then
-                local selected="${options[$idx]}"
-                save_and_activate_connection "$selected" || pause
+                local selected_record="${options[$idx]}"
+                local selected_target=""
+                local selected_auth_method="key"
+                local selected_identity_file=""
+                IFS='|' read -r selected_target selected_auth_method selected_identity_file <<< "$selected_record"
+                save_and_activate_connection "$selected_target" "$selected_identity_file" "$selected_auth_method" || pause
             else
                 echo -e "${RED}❌ Choix invalide${NC}"
                 pause
@@ -1104,9 +1209,9 @@ start_tunnels() {
             -o "ExitOnForwardFailure=yes"
             -L "${port}:localhost:${port}"
         )
-        if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
-            autossh_args+=("-i" "$(normalize_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes")
-        fi
+        while IFS= read -r arg; do
+            autossh_args+=("$arg")
+        done < <(ssh_args)
         autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null
     done <<< "$PORTS"
     

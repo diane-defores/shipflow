@@ -119,6 +119,7 @@ Score chaque projet 0-10. Être honnête — un 2/10 c'est bien. Ne pas gonfler 
 **Détection de concurrents** : vérifier systématiquement si le lien est un concurrent direct ou indirect d'un de nos projets (même marché, même audience, même problème résolu). Si oui, le signaler clairement dans le résumé avec le tag **⚔️ CONCURRENT** et le projet concerné.
 
 **Détection contenu public** : si le lien suggère un article, blog post, newsletter, social post, public docs, public skill page, FAQ, claim ou page marketing, charger `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md`, puis vérifier le `shipflow_data/editorial/content-map.md` du projet cible. Ne jamais inventer un blog, une newsletter ou une surface sociale absente. Pour un blog/article absent, signaler `surface missing: blog` et proposer un handoff `007-sf-content` (qui peut router vers `202-sf-repurpose`) ou `300-sf-docs editorial`.
+**Détection produit** : si le lien concerne un produit déclaré, une page de vente, une page produit, une offre, un plan tarifaire, une livraison, ou un claim commercial, vérifier aussi que l'action recommandée respecte la gouvernance produit du projet cible : inventaire produit, URLs canoniques, mode de livraison, et claims prouvables.
 
 ### Step 4: Triage interactif — lien par lien
 

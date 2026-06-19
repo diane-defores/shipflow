@@ -70,6 +70,7 @@ Load on demand:
 - Preserve redaction/security rules: never expose secrets, cookies, tokens, private keys, or private logs.
 - Preserve documentation-update gates: changed behavior must have docs alignment proof or explicit `not impacted because ...`.
 - Preserve canonical ShipFlow paths and metadata schema rules.
+- When a project declares products, preserve the product-governance contract in docs: product inventory, canonical product/sales surfaces, delivery-path documentation, and claim-evidence references must remain explicit enough for other skills to reuse without discovery drift.
 - `TEST_LOG.md`, `BUGS.md`, `PROJECTS.md`, and canonical workflow trackers are operational trackers, not frontmatter-required decision artifacts.
 - When scope touches `skills/`, skill README files, `site/src/content/skills/*.md`, or skill discovery metadata, verify skill contract coherence, public skill-page coherence, and runtime skill visibility together. Route non-trivial skill-contract changes through `009-sf-skill-build`.
 - Do not add ShipFlow governance frontmatter to app-rendered runtime content such as `site/src/content/skills/*.md`.

@@ -43,6 +43,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve brand voice, source evidence, public-claim, editorial surface, copyright, disclosure, and quality gates.
+- When drafting content about declared products, preserve product-governance coherence: inventory truth, canonical page targets, delivery model, and proof-backed claims must stay explicit or intentionally omitted.
 - When requested to score a near-final draft, use `content-quality-rubric.md` for rubric status and structured feedback; do not claim `ready` if blocked criteria remain.
 - Do not originate a chantier unless the user explicitly asks to formalize follow-up work.
 - Do not invent facts, quotes, legal claims, performance claims, pricing, or customer proof.

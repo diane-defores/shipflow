@@ -101,6 +101,8 @@ else
     echo -e "${YELLOW}   Après installation, lancez 'urls' puis choisissez c) Configurer nouveau serveur.${NC}"
 fi
 
+CURRENT_AUTH_METHOD_FILE="$HOME/.shipflow/current_auth_method"
+
 # 3. Ajouter les alias
 echo ""
 echo -e "${BLUE}3. Ajout des alias shell...${NC}"
@@ -174,18 +176,23 @@ echo ""
 echo -e "${BLUE}🚀 Test de connexion SSH:${NC}"
 TEST_REMOTE=""
 TEST_IDENTITY_FILE=""
+TEST_AUTH_METHOD="key"
 if [ -f "$HOME/.shipflow/current_connection" ]; then
     TEST_REMOTE="$(cat "$HOME/.shipflow/current_connection")"
 fi
 if [ -f "$HOME/.shipflow/current_identity_file" ]; then
     TEST_IDENTITY_FILE="$(cat "$HOME/.shipflow/current_identity_file")"
 fi
-
-SSH_TEST_ARGS=(-o ConnectTimeout=5 -o BatchMode=yes)
-if [ -n "$TEST_IDENTITY_FILE" ]; then
-    TEST_IDENTITY_FILE="$(normalize_identity_path "$TEST_IDENTITY_FILE")"
-    SSH_TEST_ARGS+=(-i "$TEST_IDENTITY_FILE" -o IdentitiesOnly=yes)
+if [ -f "$CURRENT_AUTH_METHOD_FILE" ]; then
+    TEST_AUTH_METHOD="$(cat "$CURRENT_AUTH_METHOD_FILE")"
 fi
+
+SSH_AUTH_METHOD="$TEST_AUTH_METHOD"
+SSH_IDENTITY_FILE="$TEST_IDENTITY_FILE"
+SSH_TEST_ARGS=()
+while IFS= read -r arg; do
+    SSH_TEST_ARGS+=("$arg")
+done < <(ssh_args)
 
 if [ -n "$TEST_REMOTE" ] && ssh "${SSH_TEST_ARGS[@]}" "$TEST_REMOTE" "echo OK" &>/dev/null; then
     echo -e "${GREEN}   ✓ Connexion SSH au serveur OK${NC}"
