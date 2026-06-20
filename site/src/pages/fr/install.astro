@@ -11,7 +11,7 @@ const installCommand =
 
 <BaseLayout
   title="Installer ShipFlow pour Codex"
-  description="Comment ajouter la source marketplace ShipFlow, installer le plugin shipflow et commencer à utiliser ShipFlow dans Codex."
+  description="Ajoutez ShipFlow à Codex en quelques minutes : commande marketplace, installation du plugin et première commande vraiment utile."
   locale={locale}
   canonicalPath="/fr/install"
   alternatePath="/install"
@@ -22,17 +22,52 @@ const installCommand =
     <section class="section">
       <div class="section-heading">
         <p class="eyebrow">Installer ShipFlow</p>
-        <h1 class="page-title">Une source marketplace, un plugin, une première commande.</h1>
+        <h1 class="page-title">Installez ShipFlow une fois. Arrêtez de perdre du temps sur le premier mouvement.</h1>
         <p>
-          ShipFlow est distribué comme un seul plugin Codex nommé
-          <code>shipflow</code>. Vous ajoutez une fois la source marketplace,
-          vous installez le plugin depuis le répertoire des plugins Codex, puis
-          vous commencez avec une instruction simple.
+          ShipFlow est le chemin sérieux le plus court entre « j’ai un sujet »
+          et « le bon workflow tourne vraiment ». Vous installez un seul plugin
+          Codex nommé <code>shipflow</code>, vous ajoutez la source marketplace
+          une fois, puis vous commencez avec une instruction simple au lieu de
+          mémoriser un catalogue de commandes.
         </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#install-steps">Installer ShipFlow</a>
+          <a class="button button-secondary" href={pathFor("/skills/shipflow", locale)}>Voir ce que fait le routeur</a>
+        </div>
       </div>
     </section>
 
     <section class="section">
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>Pour qui</h3>
+          <p>
+            Fondateurs, opérateurs et builders qui veulent que Codex route un
+            vrai travail plus proprement sans repartir de zéro à chaque thread.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Ce qui change après l’installation</h3>
+          <p>
+            Vous obtenez une entrée publique unique capable de répondre
+            directement, de choisir le bon workflow ShipFlow, ou de poser une
+            seule clarification bornée si la route reste vraiment ambiguë.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Ce que ce n’est pas</h3>
+          <p>
+            Ni une pile de prompts déconnectés, ni une promesse que le plugin
+            embarque déjà toutes les références privées. C’est la couche
+            publique de départ, proprement packagée.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="install-steps">
       <div class="doc-grid">
         <article class="doc-card">
           <h3>1. Ajouter la source marketplace</h3>
@@ -62,7 +97,7 @@ const installCommand =
 
         <article class="doc-card">
           <h3>4. Commencer avec une instruction simple</h3>
-          <p>La première commande utile est&nbsp;:</p>
+          <p>La commande la plus rapide vers un premier résultat utile est&nbsp;:</p>
           <pre><code>$shipflow help me choose the right workflow</code></pre>
         </article>
       </div>
@@ -70,19 +105,63 @@ const installCommand =
 
     <section class="section">
       <div class="cta-panel">
-        <p class="eyebrow">Ce que vous obtenez maintenant</p>
-        <h2>Le plugin public reste volontairement léger.</h2>
+        <p class="eyebrow">Résultat du premier lancement</p>
+        <h2>Vous n’avez pas besoin de choisir d’abord entre build, bug, deploy, contenu ou docs.</h2>
         <p>
-          Aujourd’hui, le plugin fournit l’entrée ShipFlow, le catalogue des
-          packs, l’aide de packaging/install, et le routage public bundlé pour
-          le premier périmètre `shipflow-main`. Quand un workflow a besoin du
-          corpus complet, ShipFlow le dit explicitement au lieu de prétendre que
-          tout est déjà embarqué.
+          Le plugin public reste volontairement léger, mais il fournit déjà la
+          partie la plus utile au début : une couche de routage visible.
+          ShipFlow peut répondre à une question simple, choisir le bon workflow
+          et garder le handoff visible dans le thread principal. Quand un flux a
+          besoin du corpus complet, ShipFlow le dit explicitement au lieu de
+          prétendre être plus complet qu’il ne l’est.
         </p>
         <div class="hero-actions">
           <a class="button button-primary" href={pathFor("/skills/shipflow", locale)}>Voir la fiche shipflow</a>
           <a class="button button-secondary" href={pathFor("/skill-modes", locale)}>Lire l’aide au lancement</a>
         </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>Ce qui se passe dans les cinq premières minutes</h3>
+          <p>
+            Vous installez le plugin, vous lancez une requête simple, puis
+            ShipFlow décide si la suite relève d’un build, d’une boucle bug,
+            d’une maintenance, d’un chemin release, d’un workflow contenu,
+            d’une route design, ou d’une réponse directe.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Si vous avez besoin du corpus complet</h3>
+          <p>
+            Certains workflows demandent encore l’arbre source complet de
+            ShipFlow. Le plugin sait vous y router explicitement quand c’est
+            nécessaire.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Si vous voulez la roadmap packs</h3>
+          <p>
+            ShipFlow garde un seul plugin public en premier. Les packs internes
+            restent une infrastructure de packaging tant qu’ils ne sont pas
+            vraiment portables et prêts pour une installation publique.
+          </p>
+          <a class="doc-action" href={pathFor("/docs", locale)}>Ouvrir la vue docs</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Si vous êtes encore en évaluation</h3>
+          <p>
+            Commencez par la fiche publique du skill. Elle explique ce que
+            l’entrée `shipflow` fait réellement avant d’entrer plus loin dans
+            le framework.
+          </p>
+          <a class="doc-action" href={pathFor("/skills/shipflow", locale)}>Ouvrir la fiche shipflow</a>
+        </article>
       </div>
     </section>
   </main>
