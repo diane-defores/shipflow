@@ -1316,43 +1316,52 @@ stop_tunnels() {
 # Fonction pour afficher le statut
 show_status() {
     local_screen_header "Statut des tunnels"
-    
-    # Chercher les processus autossh OU ssh avec le remote host
-    PROCESSES=$(get_tunnel_processes)
-    
-    if [ -z "$PROCESSES" ]; then
-        echo -e "${YELLOW}⚠ Aucun tunnel actif${NC}"
-        echo ""
-        echo -e "${BLUE}💡 Vérification des ports en écoute:${NC}"
-        if command -v lsof &> /dev/null; then
-            lsof -iTCP -sTCP:LISTEN | grep "^ssh" | head -5 || echo "  Aucun port SSH trouvé"
-        elif command -v netstat &> /dev/null; then
-            netstat -an | grep LISTEN | grep "127.0.0.1:" | head -5 || echo "  Aucun port localhost trouvé"
-        fi
-    else
+
+    local processes=""
+    processes=$(get_tunnel_processes)
+    local ports=""
+    ports=$(get_active_ports || true)
+    local active_count=0
+    local inactive_count=0
+
+    if [ -n "$processes" ]; then
+        local count=""
+        count=$(echo "$processes" | wc -l | tr -d ' ')
         echo -e "${GREEN}✓ Processus de tunnels actifs :${NC}"
+        echo -e "  ${GREEN}•${NC} $count processus SSH/autossh vers $REMOTE_HOST"
         echo ""
-        
-        # Compter les processus
-        COUNT=$(echo "$PROCESSES" | wc -l | tr -d ' ')
-        echo -e "  ${GREEN}•${NC} $COUNT processus SSH/autossh vers $REMOTE_HOST"
+    else
+        echo -e "${YELLOW}⚠ Aucun processus de tunnel détecté pour $REMOTE_HOST${NC}"
         echo ""
-        
-        # Essayer d'extraire les ports
-        echo -e "${BLUE}💡 Ports locaux en écoute (tunnels):${NC}"
-        if command -v lsof &> /dev/null; then
-            lsof -iTCP -sTCP:LISTEN -P | grep "^ssh" | awk '{print $9}' | grep -o "localhost:[0-9]*" | sort -u | while read -r addr; do
-                port=$(echo "$addr" | cut -d: -f2)
-                echo -e "  ${GREEN}•${NC} http://localhost:${port}"
-            done
+    fi
+
+    if [ -z "$ports" ]; then
+        echo -e "${YELLOW}⚠ Aucun port actif remonté par le serveur distant.${NC}"
+        echo -e "${YELLOW}  Vérifiez que PM2 tourne ou qu'une session Flutter Web tmux est active.${NC}"
+        return 0
+    fi
+
+    echo -e "${BLUE}💡 Synchronisation attendue serveur -> local:${NC}"
+    while IFS= read -r line; do
+        [ -n "$line" ] || continue
+        local port name
+        port=$(echo "$line" | cut -d':' -f1)
+        name=$(echo "$line" | cut -d':' -f2)
+
+        if is_local_tunnel_ready "$port"; then
+            echo -e "  ${GREEN}✓${NC} http://localhost:${port} ${YELLOW}(${name})${NC} ${GREEN}[actif]${NC}"
+            active_count=$((active_count + 1))
         else
-            echo "$PROCESSES" | while read -r line; do
-                port=$(echo "$line" | grep -oP '(?<=-L )\d+(?=:localhost)' | head -1)
-                if [ -n "$port" ]; then
-                    echo -e "  ${GREEN}•${NC} http://localhost:${port}"
-                fi
-            done
+            echo -e "  ${RED}✗${NC} http://localhost:${port} ${YELLOW}(${name})${NC} ${RED}[manquant côté local]${NC}"
+            inactive_count=$((inactive_count + 1))
         fi
+    done <<< "$ports"
+
+    echo ""
+    if [ "$inactive_count" -eq 0 ]; then
+        echo -e "${GREEN}✓ Synchronisation OK: ${active_count} tunnel(s) attendu(s), ${active_count} actif(s) en local.${NC}"
+    else
+        echo -e "${YELLOW}⚠ Synchronisation partielle: ${active_count} actif(s), ${inactive_count} manquant(s) côté local.${NC}"
     fi
 }
 

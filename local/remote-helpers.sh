@@ -201,6 +201,28 @@ ssh_auth_args() {
     esac
 }
 
+ssh_control_path() {
+    local control_dir="${HOME:-.}/.shipflow/ssh-control"
+    mkdir -p "$control_dir" 2>/dev/null || true
+    chmod 700 "$control_dir" 2>/dev/null || true
+    printf '%s\n' "$control_dir/%C"
+}
+
+ssh_connection_reuse_args() {
+    case "$(ssh_auth_mode)" in
+        password)
+            printf '%s\n' \
+                "-o" "ControlMaster=auto" \
+                "-o" "ControlPersist=8h" \
+                "-o" "ControlPath=$(ssh_control_path)"
+            ;;
+    esac
+}
+
+ssh_base_args() {
+    printf '%s\n' "-o" "ConnectTimeout=7" "-o" "StrictHostKeyChecking=accept-new"
+}
+
 validate_tcp_port() {
     local port="$1"
     [[ "$port" =~ ^[0-9]+$ ]] || return 1
@@ -208,7 +230,30 @@ validate_tcp_port() {
 }
 
 ssh_args() {
-    printf '%s\n' "-o" "ConnectTimeout=7" "-o" "StrictHostKeyChecking=accept-new"
+    while IFS= read -r arg; do
+        [ -n "$arg" ] || continue
+        printf '%s\n' "$arg"
+    done < <(ssh_base_args)
+    while IFS= read -r arg; do
+        [ -n "$arg" ] || continue
+        printf '%s\n' "$arg"
+    done < <(ssh_auth_args)
+    if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+        if [ "$(ssh_auth_mode)" != "password" ]; then
+            printf '%s\n' "-i" "$(resolve_identity_path "$SSH_IDENTITY_FILE" || normalize_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes"
+        fi
+    fi
+}
+
+ssh_command_args() {
+    while IFS= read -r arg; do
+        [ -n "$arg" ] || continue
+        printf '%s\n' "$arg"
+    done < <(ssh_base_args)
+    while IFS= read -r arg; do
+        [ -n "$arg" ] || continue
+        printf '%s\n' "$arg"
+    done < <(ssh_connection_reuse_args)
     while IFS= read -r arg; do
         [ -n "$arg" ] || continue
         printf '%s\n' "$arg"
@@ -224,7 +269,7 @@ run_remote_ssh() {
     local args=()
     while IFS= read -r arg; do
         args+=("$arg")
-    done < <(ssh_args)
+    done < <(ssh_command_args)
     ssh "${args[@]}" "$REMOTE_HOST" "$@"
 }
 
