@@ -55,6 +55,8 @@ cd $env:USERPROFILE\shipflow\local
 . $PROFILE
 ```
 
+Le script Windows vous demandera aussi de choisir entre **clé SSH / agent** et **mot de passe SSH** pour la cible `hetzner`.
+
 Le script installe automatiquement :
 - ✅ Connexion distante ShipFlow si `SHIPFLOW_SSH_REMOTE_HOST` est fourni
 - ✅ Alias shell : `urls`, `tunnel`

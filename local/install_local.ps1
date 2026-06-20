@@ -49,13 +49,38 @@ if (-not (Test-Path $sshDir)) {
     New-Item -ItemType Directory -Path $sshDir | Out-Null
 }
 
-# Vérifier si la config existe déjà
-if ((Test-Path $SSH_CONFIG) -and (Select-String -Path $SSH_CONFIG -Pattern "Host hetzner" -Quiet)) {
-    Write-Host "${YELLOW}   ⚠ Configuration 'hetzner' existe déjà dans $SSH_CONFIG${NC}"
-    Write-Host "${YELLOW}   Vérifiez manuellement si l'IP est correcte (5.75.134.202)${NC}"
+# Choisir le mode d'authentification SSH
+Write-Host ""
+Write-Host "${BLUE}   Choix de l'authentification SSH...${NC}"
+Write-Host "${YELLOW}   a) Clé SSH / agent${NC}"
+Write-Host "${YELLOW}   b) Mot de passe SSH${NC}"
+$authChoice = (Read-Host "   Choix [a/b]").Trim().ToLower()
+if ($authChoice -eq "b" -or $authChoice -eq "password" -or $authChoice -eq "mot de passe") {
+    $authMethod = "password"
 } else {
-    # Ajouter la configuration SSH
-    $sshConfigContent = @"
+    $authMethod = "key"
+}
+Write-Host "${GREEN}   ✓ Mode choisi: $authMethod${NC}"
+
+# Préparer le bloc de configuration SSH
+if ($authMethod -eq "password") {
+    $sshAuthBlock = @"
+
+# ShipFlow - Serveur Hetzner
+Host hetzner
+    HostName 5.75.134.202
+    User root
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    TCPKeepAlive yes
+    Compression yes
+    PreferredAuthentications password,keyboard-interactive
+    PubkeyAuthentication no
+    KbdInteractiveAuthentication yes
+    NumberOfPasswordPrompts 1
+"@
+} else {
+    $sshAuthBlock = @"
 
 # ShipFlow - Serveur Hetzner
 Host hetzner
@@ -67,8 +92,21 @@ Host hetzner
     TCPKeepAlive yes
     Compression yes
 "@
+}
 
-    Add-Content -Path $SSH_CONFIG -Value $sshConfigContent
+# Ajouter ou remplacer la configuration SSH
+$sshConfigContent = ""
+if (Test-Path $SSH_CONFIG) {
+    $sshConfigContent = Get-Content -Raw -Path $SSH_CONFIG
+}
+
+$sshHostPattern = '(?ms)^\s*Host\s+hetzner\b.*?(?=^\s*Host\s+\S|\z)'
+if ($sshConfigContent -match $sshHostPattern) {
+    $updatedConfig = [regex]::Replace($sshConfigContent, $sshHostPattern, $sshAuthBlock.TrimStart())
+    Set-Content -Path $SSH_CONFIG -Value $updatedConfig
+    Write-Host "${GREEN}   ✓ Configuration SSH mise à jour${NC}"
+} else {
+    Add-Content -Path $SSH_CONFIG -Value $sshAuthBlock
     Write-Host "${GREEN}   ✓ Configuration SSH ajoutée${NC}"
 }
 
@@ -146,7 +184,20 @@ Write-Host ""
 # 6. Test de connexion SSH
 Write-Host "${BLUE}🚀 Test de connexion SSH:${NC}"
 try {
-    $sshTest = ssh -o ConnectTimeout=5 -o BatchMode=yes hetzner "echo OK" 2>$null
+    $sshTestArgs = @("-o", "ConnectTimeout=5")
+    if ($authMethod -eq "password") {
+        $sshTestArgs += @(
+            "-o", "BatchMode=no",
+            "-o", "PreferredAuthentications=password,keyboard-interactive",
+            "-o", "PubkeyAuthentication=no",
+            "-o", "KbdInteractiveAuthentication=yes",
+            "-o", "NumberOfPasswordPrompts=1"
+        )
+    } else {
+        $sshTestArgs += @("-o", "BatchMode=yes")
+    }
+
+    $sshTest = & ssh @sshTestArgs hetzner "echo OK" 2>$null
     if ($LASTEXITCODE -eq 0) {
         Write-Host "${GREEN}   ✓ Connexion SSH au serveur OK${NC}"
         Write-Host ""
@@ -156,18 +207,22 @@ try {
     }
 } catch {
     Write-Host "${YELLOW}   ⚠ Impossible de se connecter au serveur${NC}"
-    Write-Host "${YELLOW}   Vérifiez que votre clé SSH est configurée:${NC}"
-    Write-Host ""
-    Write-Host "   ${BLUE}1. Générer une clé SSH (si pas déjà fait):${NC}"
-    Write-Host "      ${GREEN}ssh-keygen -t ed25519 -C 'your_email@example.com'${NC}"
-    Write-Host ""
-    Write-Host "   ${BLUE}2. Copier la clé publique:${NC}"
-    Write-Host "      ${GREEN}Get-Content `$env:USERPROFILE\.ssh\id_ed25519.pub | clip${NC}"
-    Write-Host "      ${YELLOW}(La clé est maintenant dans le presse-papiers)${NC}"
-    Write-Host ""
-    Write-Host "   ${BLUE}3. Ajouter la clé sur le serveur:${NC}"
-    Write-Host "      ${GREEN}ssh root@5.75.134.202${NC}"
-    Write-Host "      ${YELLOW}Collez votre clé publique dans ~/.ssh/authorized_keys${NC}"
+    if ($authMethod -eq "password") {
+        Write-Host "${YELLOW}   Vérifiez que le mot de passe SSH est autorisé sur le serveur et que le compte root peut se connecter.${NC}"
+    } else {
+        Write-Host "${YELLOW}   Vérifiez que votre clé SSH est configurée:${NC}"
+        Write-Host ""
+        Write-Host "   ${BLUE}1. Générer une clé SSH (si pas déjà fait):${NC}"
+        Write-Host "      ${GREEN}ssh-keygen -t ed25519 -C 'your_email@example.com'${NC}"
+        Write-Host ""
+        Write-Host "   ${BLUE}2. Copier la clé publique:${NC}"
+        Write-Host "      ${GREEN}Get-Content `$env:USERPROFILE\.ssh\id_ed25519.pub | clip${NC}"
+        Write-Host "      ${YELLOW}(La clé est maintenant dans le presse-papiers)${NC}"
+        Write-Host ""
+        Write-Host "   ${BLUE}3. Ajouter la clé sur le serveur:${NC}"
+        Write-Host "      ${GREEN}ssh root@5.75.134.202${NC}"
+        Write-Host "      ${YELLOW}Collez votre clé publique dans ~/.ssh/authorized_keys${NC}"
+    }
 }
 
 Write-Host ""

@@ -345,13 +345,13 @@ save_and_activate_connection() {
 prompt_auth_method() {
     local auth_method=""
 
-    echo ""
-    echo -e "${BLUE}Choisis la méthode d'authentification SSH.${NC}"
-    echo -e "${YELLOW}La clé SSH/agent reste le mode par défaut. Le mot de passe ouvre une invite SSH interactive et ne stocke aucun secret.${NC}"
-    local_menu_line "k" "🔑 Clé SSH / agent"
-    local_menu_line "p" "🔓 Mot de passe SSH"
-    echo ""
-    prompt_inline "${YELLOW}Méthode d'authentification ?${NC} "
+    echo "" >&2
+    echo -e "${BLUE}Choisis la méthode d'authentification SSH.${NC}" >&2
+    echo -e "${YELLOW}La clé SSH/agent reste le mode par défaut. Le mot de passe ouvre une invite SSH interactive et ne stocke aucun secret.${NC}" >&2
+    local_menu_line "k" "🔑 Clé SSH / agent" >&2
+    local_menu_line "p" "🔓 Mot de passe SSH" >&2
+    echo "" >&2
+    prompt_inline "${YELLOW}Méthode d'authentification ?${NC} " >&2
     read_menu_choice auth_choice true
 
     case "$auth_choice" in
@@ -362,7 +362,7 @@ prompt_auth_method() {
             auth_method="key"
             ;;
         *)
-            echo -e "${YELLOW}Choix non reconnu; clé SSH/agent par défaut.${NC}"
+            echo -e "${YELLOW}Choix non reconnu; clé SSH/agent par défaut.${NC}" >&2
             auth_method="key"
             ;;
     esac

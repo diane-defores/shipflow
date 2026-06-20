@@ -70,6 +70,10 @@ Windows offre **3 options** pour utiliser ShipFlow localement:
    .\install_local.ps1
    ```
 
+   Le script vous demande aussi de choisir le mode SSH:
+   - **Clé SSH / agent** si vous utilisez `authorized_keys`
+   - **Mot de passe SSH** si le serveur autorise encore l'authentification par mot de passe
+
 3. **Créer des tunnels SSH:**
 
    **Méthode simple:**
@@ -196,6 +200,7 @@ Start-Job -ScriptBlock { ssh -N -L 3001:localhost:3001 hetzner }
 ### "Permission denied (publickey)"
 
 **Solution:** Votre clé SSH n'est pas configurée sur le serveur.
+Si vous avez choisi le mode mot de passe dans `install_local.ps1`, ce message indique plutôt que le serveur n'autorise pas le mot de passe ou que le compte SSH n'est pas correct.
 
 1. Vérifiez que vous avez une clé SSH:
    ```powershell
