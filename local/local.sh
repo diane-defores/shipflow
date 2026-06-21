@@ -304,13 +304,10 @@ save_and_activate_connection() {
     echo -e "${BLUE}Test SSH vers $target...${NC}"
     SSH_AUTH_METHOD="$auth_method"
     SSH_IDENTITY_FILE="$identity_file"
-    local ssh_test_args=()
-    while IFS= read -r arg; do
-        ssh_test_args+=("$arg")
-    done < <(ssh_args)
-
+    local previous_remote_host="$REMOTE_HOST"
+    REMOTE_HOST="$target"
     local ssh_output=""
-    if ssh_output=$(ssh "${ssh_test_args[@]}" "$target" "echo ok" 2>&1); then
+    if ssh_output=$(run_remote_ssh "echo ok" 2>&1); then
         echo -e "${GREEN}✓ Connexion réussie${NC}"
         REMOTE_HOST="$target"
         SSH_IDENTITY_FILE="$identity_file"
@@ -330,6 +327,7 @@ save_and_activate_connection() {
         return 0
     fi
 
+    REMOTE_HOST="$previous_remote_host"
     echo -e "${RED}✗ Connexion impossible vers $target${NC}"
     if [ -n "$ssh_output" ]; then
         echo -e "${YELLOW}  Détail SSH: ${ssh_output//$'\n'/ }${NC}"
@@ -556,7 +554,7 @@ fetch_server_session_info() {
         done
 
         echo SESSION_NOT_FOUND
-    '" 2>/dev/null
+    '" 2>&1
 }
 
 should_show_session_scan_loader() {
@@ -763,6 +761,9 @@ display_server_session_banner() {
         echo -e "${YELLOW}⚠ Connexion distante non configurée${NC}"
     elif [ -z "$session_info" ]; then
         echo -e "${YELLOW}⚠ Could not connect to server${NC}"
+    else
+        echo -e "${YELLOW}⚠ Could not connect to server${NC}"
+        echo -e "${YELLOW}  Détail SSH: ${session_info//$'\n'/ }${NC}"
     fi
 }
 
@@ -1081,7 +1082,7 @@ run_auth_menu() {
 
 # Fonction pour obtenir les ports actifs
 get_active_ports() {
-    run_remote_ssh "$(shipflow_remote_pm2_ports_command lines)" 2>/dev/null
+    run_remote_ssh "$(shipflow_remote_pm2_ports_command lines)"
 }
 
 # Fonction pour récupérer uniquement les vrais processus de tunnel
@@ -1184,7 +1185,11 @@ start_tunnels() {
     
     # Récupérer les ports
     echo -e "${BLUE}📡 Récupération des ports actifs depuis ShipFlow...${NC}"
-    PORTS=$(get_active_ports)
+    if ! PORTS=$(get_active_ports); then
+        echo -e "${RED}✗ Impossible de récupérer les ports du serveur distant${NC}"
+        echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
+        return 1
+    fi
     
     if [ -z "$PORTS" ]; then
         echo -e "${RED}✗ Aucun port trouvé sur le serveur distant${NC}"
@@ -1218,7 +1223,12 @@ start_tunnels() {
         while IFS= read -r arg; do
             autossh_args+=("$arg")
         done < <(ssh_tunnel_args)
-        autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null
+        local autossh_output=""
+        if ! autossh_output=$(autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>&1); then
+            echo -e "${RED}  ✗ Impossible de créer le tunnel localhost:${port} (${name})${NC}"
+            [ -n "$autossh_output" ] && echo -e "${YELLOW}    Détail SSH: ${autossh_output//$'\n'/ }${NC}"
+            return 1
+        fi
     done <<< "$PORTS"
     
     echo ""

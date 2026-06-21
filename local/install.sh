@@ -189,12 +189,9 @@ fi
 
 SSH_AUTH_METHOD="$TEST_AUTH_METHOD"
 SSH_IDENTITY_FILE="$TEST_IDENTITY_FILE"
-SSH_TEST_ARGS=()
-while IFS= read -r arg; do
-    SSH_TEST_ARGS+=("$arg")
-done < <(ssh_args)
+REMOTE_HOST="$TEST_REMOTE"
 
-if [ -n "$TEST_REMOTE" ] && ssh "${SSH_TEST_ARGS[@]}" "$TEST_REMOTE" "echo OK" &>/dev/null; then
+if [ -n "$TEST_REMOTE" ] && run_remote_ssh "echo OK" >/dev/null; then
     echo -e "${GREEN}   ✓ Connexion SSH au serveur OK${NC}"
     echo ""
     echo -e "${GREEN}   Vous pouvez maintenant lancer: ${BLUE}urls${NC}"

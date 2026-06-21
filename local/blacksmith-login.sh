@@ -218,13 +218,9 @@ run_blacksmith_login() {
     local oauth_url=""
     local callback_port=""
 
-    local test_args=()
-    while IFS= read -r arg; do
-        test_args+=("$arg")
-    done < <(ssh_args)
-    if ! ssh "${test_args[@]}" "$REMOTE_HOST" "echo ok" >/dev/null 2>&1; then
+    if ! run_remote_ssh "echo ok" >/dev/null; then
         echo -e "${RED}✗ SSH inaccessible vers '$REMOTE_HOST'.${NC}"
-        echo -e "${YELLOW}  Ouvre le menu local 'urls', choisis c) Configurer nouveau serveur, puis vérifie l'IP, l'utilisateur et la clé.${NC}"
+        echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
         return 1
     fi
 
@@ -274,7 +270,7 @@ run_blacksmith_login() {
     local tunnel_args=("-N" "-L" "${callback_port}:127.0.0.1:${callback_port}")
     while IFS= read -r arg; do
         tunnel_args+=("$arg")
-    done < <(ssh_args)
+    done < <(ssh_tunnel_args)
     ssh "${tunnel_args[@]}" "$REMOTE_HOST" >"$TUNNEL_LOG_FILE" 2>&1 &
     TUNNEL_PID="$!"
     sleep 1

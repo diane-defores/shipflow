@@ -159,14 +159,9 @@ run_remote_bash() {
 }
 
 check_remote_ssh() {
-    local test_args=()
-    while IFS= read -r arg; do
-        test_args+=("$arg")
-    done < <(ssh_args)
-
-    if ! ssh "${test_args[@]}" "$REMOTE_HOST" "echo ok" >/dev/null 2>&1; then
+    if ! run_remote_ssh "echo ok" >/dev/null; then
         echo -e "${RED}✗ SSH inaccessible vers '$REMOTE_HOST'.${NC}"
-        echo -e "${YELLOW}  Vérifie l'IP, l'utilisateur et la clé dans le menu local 'urls'.${NC}"
+        echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
         exit 1
     fi
 }
@@ -185,7 +180,7 @@ copy_turso_config() {
 
     while IFS= read -r arg; do
         scp_args+=("$arg")
-    done < <(ssh_args)
+    done < <(ssh_command_args)
 
     echo -e "${BLUE}🔐 Copie de la session Turso vers ${GREEN}$REMOTE_HOST${BLUE}...${NC}"
     scp -r "${scp_args[@]}" "$LOCAL_TURSO_CONFIG_DIR/." "$REMOTE_HOST:~/.config/turso/" >/dev/null

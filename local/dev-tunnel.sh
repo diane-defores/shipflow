@@ -241,7 +241,11 @@ echo ""
 # Récupérer les ports actifs depuis ShipFlow sur le serveur distant
 echo -e "${BLUE}📡 Récupération des ports actifs depuis ShipFlow...${NC}"
 
-PORTS=$(run_remote_ssh "$(shipflow_remote_pm2_ports_command comma)" 2>/dev/null || true)
+if ! PORTS=$(run_remote_ssh "$(shipflow_remote_pm2_ports_command comma)"); then
+    echo -e "${RED}✗ Impossible de récupérer les ports du serveur distant${NC}"
+    echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
+    exit 1
+fi
 
 if [ -z "$PORTS" ]; then
     echo -e "${RED}✗ Aucun port trouvé sur le serveur distant${NC}"
@@ -312,8 +316,10 @@ for port_info in "${PORT_ARRAY[@]}"; do
     while IFS= read -r arg; do
         autossh_args+=("$arg")
     done < <(ssh_tunnel_args)
-    if ! autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null; then
+    autossh_output=""
+    if ! autossh_output=$(autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>&1); then
         echo -e "${RED}  ✗ Impossible de créer le tunnel localhost:${port} (${name})${NC}"
+        [ -n "$autossh_output" ] && echo -e "${YELLOW}    Détail SSH: ${autossh_output//$'\n'/ }${NC}"
         FAILED_TUNNELS+=("${port}:${name}")
     fi
 done

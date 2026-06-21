@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.9"
+artifact_version: "1.0.10"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-22"
+updated: "2026-06-21"
 status: reviewed
 source_skill: sf-start
 scope: local-tunnels-and-mcp-login
@@ -156,7 +156,10 @@ shipflow-turso-ssh
   Blacksmith feature that relies on the triggering user's GitHub SSH keys and a
   per-job SSH command from the `Setup runner` step.
 - Saved connection state is shared by app tunnels, MCP login, and Blacksmith login.
-- Remote SSH helper calls run in batch mode so menu scans fail visibly instead of blocking on hidden SSH prompts.
+- Key/agent SSH calls run in batch mode so menu scans fail visibly instead of
+  blocking on hidden prompts. Password SSH opens a local OpenSSH master session
+  first, then all commands and background tunnels reuse it through a protected
+  control socket for eight hours; the password is never saved by ShipFlow.
 - The startup session scan is operator feedback only; set `SHIPFLOW_NO_ANIMATION=1` to disable the animated TTY loader.
 - Local menu screens should use the shared local header treatment:
   `ShipFlow DevServer` in yellow, padded boxed header, then the screen title.
@@ -175,6 +178,9 @@ shipflow-turso-ssh
   model; use headless as the default remote flow and keep callback tunneling as
   an explicit advanced option.
 - Reusing an old OAuth URL can fail because provider URLs and callback ports are per attempt.
+- Password-mode tunnel creation fails when the local OpenSSH master session
+  cannot be opened; display the SSH detail (timeout, refused connection, bad
+  credentials, or host-key error) rather than treating it as an empty PM2 list.
 - A malformed SSH identity path or target can become an SSH option if validation regresses.
 - Duplicate local ports should block before creating partial tunnels.
 - A stale Flutter Web registry entry should be ignored by local tunnel tools

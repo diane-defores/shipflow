@@ -225,6 +225,8 @@ urls
 
 Choisissez `c) Configurer nouveau serveur`, entrez une IP valide, un domaine avec un point, un alias SSH déjà défini dans `~/.ssh/config`, ou directement `user@host`, puis l'utilisateur SSH si nécessaire. Le menu propose ensuite deux modes: clé SSH/agent ou mot de passe SSH. Si vous restez en mode clé et que votre clé a un nom spécial, entrez aussi son chemin (`~/.ssh/ma-cle`, par exemple) ou un nom simple comme `oracle.key`. Laissez le champ vide pour utiliser la configuration SSH normale. Le menu teste la connexion et enregistre la cible pour `urls`, `tunnel` et `shipflow-mcp-login`.
 
+En mode mot de passe, ShipFlow demande le mot de passe à l'ouverture de la première connexion, puis conserve une session SSH locale réutilisable pendant huit heures. Les tunnels et les logins OAuth s'y attachent sans redemander le mot de passe. Le mot de passe n'est jamais enregistré dans `~/.shipflow`.
+
 Si vous êtes connecté au serveur distant et ne connaissez plus l'IP publique à utiliser, ouvrez le menu ShipFlow distant et choisissez `c) Local Setup`.
 
 La clé SSH n'a pas besoin d'avoir un nom standard si le menu connaît son chemin ou si `~/.ssh/config` sait déjà quelle clé utiliser. Pour un nom simple sans `/`, ShipFlow cherche dans le dossier courant, dans `~/.ssh/`, puis dans votre dossier home, et sauvegarde ensuite le chemin absolu trouvé. Si vous changez de serveur ou de méthode d'authentification, repassez par `c) Configurer nouveau serveur` plutôt que de modifier les fichiers à la main: le même enregistrement est utilisé par les tunnels d'applications et par le login OAuth MCP.

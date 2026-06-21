@@ -296,19 +296,36 @@ ensure_reusable_ssh_session() {
     [ -n "${REMOTE_HOST:-}" ] || return 1
 
     local args=()
+    local check_output=""
+    local open_output=""
     while IFS= read -r arg; do
         args+=("$arg")
     done < <(ssh_command_args)
 
-    if ssh "${args[@]}" -O check "$REMOTE_HOST" >/dev/null 2>&1; then
+    if check_output=$(ssh "${args[@]}" -O check "$REMOTE_HOST" 2>&1); then
         return 0
     fi
 
     echo -e "${BLUE}🔐 Ouverture de la session SSH réutilisable...${NC}" >&2
-    ssh "${args[@]}" -f -N "$REMOTE_HOST"
+    if open_output=$(ssh "${args[@]}" -f -N "$REMOTE_HOST" 2>&1); then
+        return 0
+    fi
+
+    if [ -n "$open_output" ]; then
+        echo -e "${YELLOW}  Détail SSH: ${open_output//$'\n'/ }${NC}" >&2
+    elif [ -n "$check_output" ]; then
+        echo -e "${YELLOW}  Détail SSH: ${check_output//$'\n'/ }${NC}" >&2
+    fi
+    return 1
 }
 
 run_remote_ssh() {
+    # Password-authenticated commands need a foreground master session first.
+    # Background tunnels then attach to that session without handling a password.
+    if ! ensure_reusable_ssh_session; then
+        return 1
+    fi
+
     local args=()
     while IFS= read -r arg; do
         args+=("$arg")

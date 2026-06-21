@@ -294,13 +294,9 @@ run_one_provider() {
         return 1
     fi
 
-    local test_args=()
-    while IFS= read -r arg; do
-        test_args+=("$arg")
-    done < <(ssh_args)
-    if ! ssh "${test_args[@]}" "$REMOTE_HOST" "echo ok" >/dev/null 2>&1; then
+    if ! run_remote_ssh "echo ok" >/dev/null; then
         echo -e "${RED}✗ SSH inaccessible vers '$REMOTE_HOST'.${NC}"
-        echo -e "${YELLOW}  Ouvrez le menu local 'urls', choisissez c) Configurer nouveau serveur, puis entrez la nouvelle IP.${NC}"
+        echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
         return 1
     fi
 
@@ -345,7 +341,7 @@ run_one_provider() {
     local tunnel_args=("-N" "-L" "${callback_port}:127.0.0.1:${callback_port}")
     while IFS= read -r arg; do
         tunnel_args+=("$arg")
-    done < <(ssh_args)
+    done < <(ssh_tunnel_args)
     ssh "${tunnel_args[@]}" "$REMOTE_HOST" >"$TUNNEL_LOG_FILE" 2>&1 &
     TUNNEL_PID="$!"
     sleep 1
