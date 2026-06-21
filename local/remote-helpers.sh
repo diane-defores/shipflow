@@ -202,7 +202,9 @@ ssh_auth_args() {
 }
 
 ssh_control_path() {
-    local control_dir="${HOME:-.}/.shipflow/ssh-control"
+    # OpenSSH appends a temporary suffix while creating the socket. Keep this
+    # deliberately short for Termux and other systems with a 108-byte limit.
+    local control_dir="${HOME:-.}/.s"
     mkdir -p "$control_dir" 2>/dev/null || true
     chmod 700 "$control_dir" 2>/dev/null || true
     printf '%s\n' "$control_dir/%C"
