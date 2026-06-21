@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.15"
+artifact_version: "1.0.16"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-06-12"
+updated: "2026-06-21"
 status: reviewed
 source_skill: sf-start
 scope: runtime-cli
@@ -206,6 +206,9 @@ Flutter Web has two runtime paths:
   longer resolvable from disk, then persist the stopped state with PM2.
 - Generated PM2 ecosystem configs for dev servers must bound automatic restart
   loops so broken commands cannot fill logs indefinitely.
+- `env_restart` must confirm that PM2 remains `online` during its stability
+  window before reporting success or advertising the application's localhost
+  URL.
 - Project paths must be validated and absolute before runtime use.
 - Port allocation must avoid active socket collisions and PM2 hidden collisions.
 - User-visible success and failure should be observable.
@@ -243,6 +246,9 @@ Flutter Web has two runtime paths:
   union project-discovered environments with PM2 app names.
 - Unbounded PM2 autorestart can turn a missing directory, missing dependency, or
   failing dev command into a restart storm and log growth incident.
+- A successful `pm2 restart` command alone is not runtime proof: a process can
+  enter `waiting restart` immediately afterwards, so the menu must report the
+  failed stabilization and point to its PM2 logs.
 - User-mode Caddy startup failures must not block PM2 app startup, but they must
   be visible with the runtime log path.
 - Caddy/DuckDNS publishing failures must not be reported as successful public exposure.

@@ -7121,6 +7121,25 @@ env_restart() {
         pm2 save >/dev/null 2>&1
         invalidate_pm2_cache
 
+        # pm2 restart only confirms that the process was submitted. Wait long
+        # enough to catch a crash loop before advertising a localhost URL.
+        local verify_seconds="${SHIPFLOW_RESTART_VERIFY_SECS:-12}"
+        if ! [[ "$verify_seconds" =~ ^[0-9]+$ ]] || [ "$verify_seconds" -lt 1 ]; then
+            verify_seconds=12
+        fi
+        echo -e "${BLUE}⏳ Vérification du démarrage PM2 (${verify_seconds}s)...${NC}"
+        sleep "$verify_seconds"
+        invalidate_pm2_cache
+
+        local restarted_status
+        restarted_status=$(get_pm2_status "$env_name")
+        if [ "$restarted_status" != "online" ]; then
+            error "Environment $env_name did not stabilize after restart (PM2: ${restarted_status:-unknown})"
+            echo -e "${YELLOW}  Consultez les logs: pm2 logs $env_name --lines 50${NC}"
+            log ERROR "Restart did not stabilize: $env_name (status: ${restarted_status:-unknown})"
+            return 1
+        fi
+
         local port=$(get_port_from_pm2 "$env_name")
         success "Environment $env_name restarted successfully"
 
