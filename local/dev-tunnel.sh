@@ -282,6 +282,12 @@ sleep 1
 echo -e "${GREEN}✓ Création des tunnels SSH${NC}"
 echo ""
 
+if ! ensure_reusable_ssh_session; then
+    echo -e "${RED}✗ Impossible d'ouvrir la session SSH partagée pour les tunnels.${NC}"
+    echo -e "${YELLOW}  Vérifiez l'accès SSH puis relancez.${NC}"
+    exit 1
+fi
+
 IFS=',' read -ra PORT_ARRAY <<< "$PORTS"
 FAILED_TUNNELS=()
 for port_info in "${PORT_ARRAY[@]}"; do
@@ -303,9 +309,9 @@ for port_info in "${PORT_ARRAY[@]}"; do
         -o "ExitOnForwardFailure=yes"
         -L "${port}:localhost:${port}"
     )
-    if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
-        autossh_args+=("-i" "$(normalize_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes")
-    fi
+    while IFS= read -r arg; do
+        autossh_args+=("$arg")
+    done < <(ssh_tunnel_args)
     if ! autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null; then
         echo -e "${RED}  ✗ Impossible de créer le tunnel localhost:${port} (${name})${NC}"
         FAILED_TUNNELS+=("${port}:${name}")

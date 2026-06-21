@@ -265,6 +265,49 @@ ssh_command_args() {
     fi
 }
 
+ssh_tunnel_args() {
+    while IFS= read -r arg; do
+        [ -n "$arg" ] || continue
+        printf '%s\n' "$arg"
+    done < <(ssh_base_args)
+
+    case "$(ssh_auth_mode)" in
+        password)
+            while IFS= read -r arg; do
+                [ -n "$arg" ] || continue
+                printf '%s\n' "$arg"
+            done < <(ssh_connection_reuse_args)
+            printf '%s\n' "-o" "BatchMode=yes"
+            ;;
+        *)
+            while IFS= read -r arg; do
+                [ -n "$arg" ] || continue
+                printf '%s\n' "$arg"
+            done < <(ssh_auth_args)
+            if [ -n "${SSH_IDENTITY_FILE:-}" ]; then
+                printf '%s\n' "-i" "$(resolve_identity_path "$SSH_IDENTITY_FILE" || normalize_identity_path "$SSH_IDENTITY_FILE")" "-o" "IdentitiesOnly=yes"
+            fi
+            ;;
+    esac
+}
+
+ensure_reusable_ssh_session() {
+    [ "$(ssh_auth_mode)" = "password" ] || return 0
+    [ -n "${REMOTE_HOST:-}" ] || return 1
+
+    local args=()
+    while IFS= read -r arg; do
+        args+=("$arg")
+    done < <(ssh_command_args)
+
+    if ssh "${args[@]}" -O check "$REMOTE_HOST" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    echo -e "${BLUE}🔐 Ouverture de la session SSH réutilisable...${NC}" >&2
+    ssh "${args[@]}" -f -N "$REMOTE_HOST"
+}
+
 run_remote_ssh() {
     local args=()
     while IFS= read -r arg; do

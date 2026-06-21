@@ -1194,6 +1194,12 @@ start_tunnels() {
     
     echo -e "${GREEN}✓ Création des tunnels SSH${NC}"
     echo ""
+
+    if ! ensure_reusable_ssh_session; then
+        echo -e "${RED}✗ Impossible d'ouvrir la session SSH partagée pour les tunnels.${NC}"
+        echo -e "${YELLOW}  Vérifiez l'accès SSH puis relancez.${NC}"
+        return 1
+    fi
     
     # Créer les tunnels
     while IFS= read -r line; do
@@ -1211,7 +1217,7 @@ start_tunnels() {
         )
         while IFS= read -r arg; do
             autossh_args+=("$arg")
-        done < <(ssh_args)
+        done < <(ssh_tunnel_args)
         autossh "${autossh_args[@]}" "$REMOTE_HOST" 2>/dev/null
     done <<< "$PORTS"
     
