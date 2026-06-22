@@ -65,6 +65,7 @@ next_step: "/300-sf-docs audit README.md"
 # ShipFlow
 
 ShipFlow is a unified framework for server delivery and AI-assisted execution discipline.
+It also includes OpenCode-compatible skill shims under `.opencode/skills/shipflow/` and `.agents/skills/shipflow/` so the same top-level workflow entrypoint can be discovered outside Codex.
 
 It has three layers:
 - a CLI for managing project environments on a server
@@ -114,6 +115,8 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [shipflow_data/technical/README.md](./shipflow_data/technical/README.md) — internal technical documentation layer for code-proximate subsystem docs
 - [shipflow_data/technical/code-docs-map.md](./shipflow_data/technical/code-docs-map.md) — map from code paths to primary docs, validations, and documentation update triggers
 - [shipflow_data/technical/codex-plugin-packaging.md](./shipflow_data/technical/codex-plugin-packaging.md) — internal contract for the lightweight Codex plugin, sparse bootstrap, marketplace entry, and docs links
+- [.opencode/skills/shipflow/SKILL.md](./.opencode/skills/shipflow/SKILL.md) — OpenCode-compatible repository skill shim
+- [.agents/skills/shipflow/SKILL.md](./.agents/skills/shipflow/SKILL.md) — fallback OpenCode-compatible skill shim
 - [shipflow_data/technical/public-site-and-content-runtime.md](./shipflow_data/technical/public-site-and-content-runtime.md) — internal contract for the Astro public site and public/private documentation boundary
 - [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
 - [skills/references/decision-quality-contract.md](./skills/references/decision-quality-contract.md) — shared doctrine for high-quality decisions, code, model routing, and fallback choices

@@ -95,6 +95,7 @@
 ## Backlog
 
 🟢 [ShipFlow] task: Conserver les fiches skills en anglais et l’expliquer sur le site français | status: done | area: site-i18n
+🟡 [ShipFlow] task: Documenter une page OpenCode et une page KiloCode pour expliquer comment les skills ShipFlow sont découverts, invoqués et configurés selon chaque runtime, en précisant que dans OpenCode l'utilisateur écrit simplement "utilise le skill shipflow" et que `skill({ name: "shipflow" })` est un appel interne du runtime, pas une commande manuelle | status: todo | area: skills-discovery | next: /300-sf-docs shipflow skills runtime docs
 
 | Pri | Task | Status |
 |-----|------|--------|
