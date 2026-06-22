@@ -1,5 +1,7 @@
 ---
 import { roleMapCopy, type Locale } from "../i18n/ui";
+import SectionHeading from "./SectionHeading.astro";
+import RoleList from "./RoleList.astro";
 
 interface Props {
   locale?: Locale;
@@ -10,20 +12,6 @@ const copy = roleMapCopy[locale];
 ---
 
 <section class="section">
-  <div class="section-heading">
-    <p class="eyebrow">{copy.eyebrow}</p>
-    <h2>{copy.title}</h2>
-    <p>{copy.body}</p>
-  </div>
-
-  <div class="role-list">
-    {
-      copy.docs.map(([name, role]) => (
-        <div class="role-row">
-          <code>{name}</code>
-          <span>{role}</span>
-        </div>
-      ))
-    }
-  </div>
+  <SectionHeading eyebrow={copy.eyebrow} title={copy.title} body={copy.body} />
+  <RoleList items={copy.docs} />
 </section>

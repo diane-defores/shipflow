@@ -1,5 +1,7 @@
 ---
 import { sharedHomeSections, type Locale } from "../i18n/ui";
+import SectionHeading from "./SectionHeading.astro";
+import ItemCard from "./ItemCard.astro";
 
 interface Props {
   locale?: Locale;
@@ -10,20 +12,14 @@ const copy = sharedHomeSections[locale].product;
 ---
 
 <section class="section" id="how-it-works">
-  <div class="section-heading">
-    <p class="eyebrow">{copy.eyebrow}</p>
-    <h2>{copy.title}</h2>
-    <p>{copy.body}</p>
-  </div>
-
+  <SectionHeading eyebrow={copy.eyebrow} title={copy.title} body={copy.body} />
   <div class="split-grid">
     {copy.panels.map(([title, items]) => (
-      <article class="panel">
-        <h3>{title}</h3>
+      <ItemCard {title}>
         <ul class="check-list">
           {items.map((item) => <li>{item}</li>)}
         </ul>
-      </article>
+      </ItemCard>
     ))}
   </div>
 </section>

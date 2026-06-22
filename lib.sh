@@ -100,7 +100,7 @@ fi
 # Returns:
 #   1 if cancelled or no selection
 # -----------------------------------------------------------------------------
-_ui_letter_key() {
+ui_letter_key() {
     local index="$1"
     local alphabet="abcdefghijklmnopqrstuvwyz"
     local base=${#alphabet}
@@ -115,6 +115,30 @@ _ui_letter_key() {
     done
 
     printf '%s' "$key"
+}
+
+ui_letter_list() {
+    local count="${1:-0}"
+    local i=0
+    while [ "$i" -lt "$count" ]; do
+        ui_letter_key "$i"
+        i=$((i + 1))
+    done
+}
+
+ui_back_label() {
+    local item
+    for item in "$@"; do
+        if [ -n "$item" ] && ui_is_back_selection "$item"; then
+            printf '%s' "$item"
+            return 0
+        fi
+    done
+    printf 'Cancel'
+}
+
+_ui_letter_key() {
+    ui_letter_key "$@"
 }
 
 _ui_normalize_choice() {
@@ -2881,11 +2905,19 @@ select_environment() {
         return 1
     fi
 
-    # Build options with status icons
+    # Fetch PM2 data once and build a lookup to avoid repeated pm2 jlist calls.
+    local pm2_data
+    pm2_data=$(get_pm2_data_cached) || pm2_data=""
+
     local options=()
     while IFS= read -r env; do
-        local status=$(get_pm2_status "$env")
-        local icon=$(get_status_icon "$status")
+        local status="not_found"
+        if [ -n "$pm2_data" ]; then
+            status=$(printf '%s\n' "$pm2_data" | awk -F'|' -v n="$env" '$1 == n {print $2; exit}')
+            [ -z "$status" ] && status="not_found"
+        fi
+        local icon
+        icon=$(get_status_icon "$status")
         options+=("${icon} ${env}")
     done <<< "$all_envs"
 
@@ -2908,10 +2940,18 @@ select_stop_target() {
         return 1
     fi
 
+    local pm2_data
+    pm2_data=$(get_pm2_data_cached) || pm2_data=""
+
     local options=()
     while IFS= read -r env; do
-        local status=$(get_pm2_status_by_name "$env")
-        local icon=$(get_status_icon "$status")
+        local status="not_found"
+        if [ -n "$pm2_data" ]; then
+            status=$(printf '%s\n' "$pm2_data" | awk -F'|' -v n="$env" '$1 == n {print $2; exit}')
+            [ -z "$status" ] && status="not_found"
+        fi
+        local icon
+        icon=$(get_status_icon "$status")
         options+=("${icon} ${env}")
     done <<< "$all_envs"
 
@@ -3670,6 +3710,27 @@ invalidate_pm2_cache() {
     PM2_DATA_CACHE_TIME=0
 }
 
+ENV_LIST_CACHE=""
+ENV_LIST_CACHE_TIME=0
+: "${SHIPFLOW_LIST_CACHE_TTL:=5}"
+
+HOME_FOLDERS_CACHE=""
+HOME_FOLDERS_CACHE_DIR=""
+HOME_FOLDERS_CACHE_TIME=0
+: "${SHIPFLOW_LIST_CACHE_TTL:=5}"
+
+invalidate_env_list_cache() {
+    log DEBUG "Invalidating env list cache"
+    ENV_LIST_CACHE=""
+    ENV_LIST_CACHE_TIME=0
+}
+
+invalidate_home_folders_cache() {
+    log DEBUG "Invalidating home folders cache"
+    HOME_FOLDERS_CACHE=""
+    HOME_FOLDERS_CACHE_TIME=0
+}
+
 # -----------------------------------------------------------------------------
 # get_pm2_app_data - Extract specific PM2 app data from cache
 #
@@ -4052,15 +4113,28 @@ resolve_project_path() {
 
 # List all environments (projects with Flox env)
 list_all_environments() {
+    local current_time
+    current_time=$(date +%s)
+    if [ "${SHIPFLOW_ENV_LIST_CACHE_ENABLED:-true}" = "true" ] && [ $((current_time - ENV_LIST_CACHE_TIME)) -lt "${SHIPFLOW_LIST_CACHE_TTL:-5}" ] && [ -n "$ENV_LIST_CACHE" ]; then
+        log DEBUG "Using cached env list (age: $((current_time - ENV_LIST_CACHE_TIME))s)"
+        printf '%s\n' "$ENV_LIST_CACHE"
+        return 0
+    fi
+
     if [ -d "$PROJECTS_DIR" ]; then
-        find "$PROJECTS_DIR" -maxdepth 4 \
+        ENV_LIST_CACHE=$(find "$PROJECTS_DIR" -maxdepth 4 \
             \( -name "node_modules" -o -name ".git" -o -name "venv" -o -name ".venv" \
                -o -name "__pycache__" -o -name "target" -o -name ".next" -o -name ".nuxt" \
                -o -name "dist" -o -name ".cache" -o -name ".pnpm" -o -name ".yarn" \) -prune \
             -o -type d -name ".flox" -print 2>/dev/null | while read -r flox_dir; do
             # Extract the project name from the path, e.g., /root/my-robots/chatbot/.flox -> chatbot
             echo "$(basename "$(dirname "$flox_dir")")"
-        done | grep -v "^\.$" | sort
+        done | grep -v "^\.$" | sort)
+        ENV_LIST_CACHE_TIME=$current_time
+    fi
+
+    if [ -n "$ENV_LIST_CACHE" ]; then
+        printf '%s\n' "$ENV_LIST_CACHE"
     fi
 }
 
@@ -4073,6 +4147,26 @@ list_all_environment_identifiers() {
         find "$PROJECTS_DIR" -maxdepth 3 -type d -name ".flox" -print 2>/dev/null | while read -r flox_dir; do
             dirname "$flox_dir"
         done | sort -u
+    fi
+}
+
+list_home_folders() {
+    local home_dir="${1:-$HOME}"
+    local current_time
+    current_time=$(date +%s)
+
+    if [ "${SHIPFLOW_ENV_LIST_CACHE_ENABLED:-true}" = "true" ] && [ $((current_time - HOME_FOLDERS_CACHE_TIME)) -lt "${SHIPFLOW_LIST_CACHE_TTL:-5}" ] && [ -n "$HOME_FOLDERS_CACHE" ] && [ "${HOME_FOLDERS_CACHE_DIR:-}" = "$home_dir" ]; then
+        log DEBUG "Using cached home folders (age: $((current_time - HOME_FOLDERS_CACHE_TIME))s)"
+        printf '%s\n' "$HOME_FOLDERS_CACHE"
+        return 0
+    fi
+
+    HOME_FOLDERS_CACHE=$(find "$home_dir" -maxdepth 1 -mindepth 1 -type d ! -name ".*" ! -path "$home_dir" 2>/dev/null | sort)
+    HOME_FOLDERS_CACHE_DIR="$home_dir"
+    HOME_FOLDERS_CACHE_TIME=$current_time
+
+    if [ -n "$HOME_FOLDERS_CACHE" ]; then
+        printf '%s\n' "$HOME_FOLDERS_CACHE"
     fi
 }
 
@@ -5824,6 +5918,8 @@ EOF
 
     # Invalidate cache after PM2 state change
     invalidate_pm2_cache
+    invalidate_env_list_cache
+    invalidate_home_folders_cache
 
     local started_status
     started_status=$(get_pm2_status "$env_name")
@@ -6223,6 +6319,9 @@ env_remove() {
         warning "Répertoire $project_dir introuvable (peut-être déjà supprimé ou chemin incorrect)"
     fi
 
+    invalidate_env_list_cache
+    invalidate_home_folders_cache
+
     return 0
 }
 
@@ -6323,6 +6422,8 @@ env_rename() {
     # 6. Save PM2 state (old process removed from dump)
     pm2 save >/dev/null 2>&1
     invalidate_pm2_cache
+    invalidate_env_list_cache
+    invalidate_home_folders_cache
 
     success "Projet renommé: $old_name → $new_name"
     info "Lance 'env_start \"$new_name\"' pour démarrer avec le nouveau nom"
@@ -8029,7 +8130,7 @@ action_navigate() {
     local HOME_DIR
     HOME_DIR=$(eval echo "~")
     local folders=()
-    mapfile -t folders < <(find "$HOME_DIR" -maxdepth 1 -type d ! -name ".*" ! -path "$HOME_DIR" 2>/dev/null | sort)
+    mapfile -t folders < <(list_home_folders "$HOME_DIR")
     if [ ${#folders[@]} -eq 0 ]; then
         echo -e "${RED}❌ No folders found in $HOME_DIR${NC}"
     else
@@ -8047,7 +8148,7 @@ action_open_code() {
     local HOME_DIR
     HOME_DIR=$(eval echo "~")
     local folders=()
-    mapfile -t folders < <(find "$HOME_DIR" -maxdepth 1 -type d ! -name ".*" ! -path "$HOME_DIR" 2>/dev/null | sort)
+    mapfile -t folders < <(list_home_folders "$HOME_DIR")
     if [ ${#folders[@]} -eq 0 ]; then
         echo -e "${RED}❌ No folders found in $HOME_DIR${NC}"
     else

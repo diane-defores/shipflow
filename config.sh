@@ -89,6 +89,12 @@ export SHIPFLOW_PM2_CACHE_TTL="${SHIPFLOW_PM2_CACHE_TTL:-5}"
 # Prefer jq over python for JSON parsing (faster)
 export SHIPFLOW_PREFER_JQ="${SHIPFLOW_PREFER_JQ:-true}"
 
+# Enable environment list caching (reduces filesystem scans)
+export SHIPFLOW_ENV_LIST_CACHE_ENABLED="${SHIPFLOW_ENV_LIST_CACHE_ENABLED:-true}"
+
+# Cache TTL in seconds
+export SHIPFLOW_LIST_CACHE_TTL="${SHIPFLOW_LIST_CACHE_TTL:-5}"
+
 # ============================================================================
 # HEALTH MONITORING CONFIGURATION
 # ============================================================================

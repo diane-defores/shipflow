@@ -1,5 +1,7 @@
 ---
 import { homeCopy, type Locale } from "../i18n/ui";
+import SectionHeading from "./SectionHeading.astro";
+import ItemCard from "./ItemCard.astro";
 
 interface Props {
   locale?: Locale;
@@ -10,20 +12,10 @@ const copy = homeCopy[locale].features;
 ---
 
 <section class="section">
-  <div class="section-heading">
-    <p class="eyebrow">{copy.eyebrow}</p>
-    <h2>{copy.title}</h2>
-    <p>{copy.body}</p>
-  </div>
-
+  <SectionHeading eyebrow={copy.eyebrow} title={copy.title} body={copy.body} />
   <div class="card-grid">
-    {
-      copy.items.map(([title, body]) => (
-        <article class="card">
-          <h3>{title}</h3>
-          <p>{body}</p>
-        </article>
-      ))
-    }
+    {copy.items.map(([title, body]) => (
+      <ItemCard {title} {body} />
+    ))}
   </div>
 </section>
