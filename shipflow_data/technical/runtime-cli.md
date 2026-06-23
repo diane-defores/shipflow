@@ -16,8 +16,8 @@ docs_impact: yes
 linked_systems:
   - shipflow.sh
   - lib.sh
-  - menu_gum.sh
-  - menu_bash.sh
+  - shipflow_devserver_gum.sh
+  - shipflow_devserver_bash.sh
   - config.sh
   - CONTEXT-FUNCTION-TREE.md
 depends_on:
@@ -60,7 +60,7 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
 | --- | --- | --- |
 | `shipflow.sh` | Thin CLI entrypoint that sources runtime and menu files, then calls `main` | Keep thin; do not move business logic here |
 | `lib.sh` | Main orchestration library for UI, validation, PM2/Flox/Caddy operations, health, deploy, publish, and actions | High blast radius; prefer focused changes and syntax checks |
-| `menu_gum.sh`, `menu_bash.sh` | Menu frontends that render the root menu and grouped submenus | Keep frontend behavior equivalent; update both variants together |
+| `shipflow_devserver_gum.sh`, `shipflow_devserver_bash.sh` | Menu frontends that render the root menu and grouped submenus | Keep frontend behavior equivalent; update both variants together |
 | `config.sh` | Central configuration defaults and validation | Keep defaults explicit and validation actionable |
 | `CONTEXT-FUNCTION-TREE.md` | Navigation aid for large shell files | Update when major functions or flows move |
 
@@ -77,7 +77,7 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   as `sf t` or a nested key path such as `sf m n` to the matching visible menu
   action. Path resolution starts in `MAIN_MENU_ITEMS`, then continues through
   grouped submenu item arrays when the selected action opens a nested menu.
-- `menu_gum.sh` / `menu_bash.sh`: render the root menu from `MAIN_MENU_ITEMS`
+- `shipflow_devserver_gum.sh` / `shipflow_devserver_bash.sh`: render the root menu from `MAIN_MENU_ITEMS`
   and grouped submenus from `ENVIRONMENT_MENU_ITEMS`, `TOOLS_WEB_MENU_ITEMS`,
   `SYSTEM_MENU_ITEMS`, and `AGENTS_CI_MENU_ITEMS`. Startup rendering should
   avoid per-item subprocesses; the Gum frontend should batch styling through
@@ -85,7 +85,7 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   a two-column layout on wide terminals and falls back to one column on narrow
   terminals. ShipFlow's own tracker overview is exposed as a dedicated root
   action instead of being nested under agents.
-- `menu_bash.sh` / `menu_gum.sh`: render menus and use shared key input helpers
+- `shipflow_devserver_bash.sh` / `shipflow_devserver_gum.sh`: render menus and use shared key input helpers
   so `x`, `Esc`, and `Backspace` act consistently for Back.
 - Nested menus render their screen title through `lib.sh::ui_screen_header` and
   dispatch actions in `screen` mode so child commands do not stack under the

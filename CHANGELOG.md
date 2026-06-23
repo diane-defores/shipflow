@@ -451,8 +451,8 @@ next_step: "/300-sf-docs audit CHANGELOG.md"
 - System Monitor merged into Health Check (`h`): RAM overview, visual bar, top processes, long-running detection (24h+)
 - Dashboard shows per-app uptime with idle detection and inline stop prompt
 - Config: `SHIPFLOW_MEM_WARN_GB`, `SHIPFLOW_PROCESS_LONG_RUNNING_HOURS`, `SHIPFLOW_MONITOR_TOP_N`
-- `menu_gum.sh` — pure gum-styled menus with instant single-keypress shortcuts
-- `menu_bash.sh` — pure bash fallback menus
+- `shipflow_devserver_gum.sh` — pure gum-styled menus with instant single-keypress shortcuts
+- `shipflow_devserver_bash.sh` — pure bash fallback menus
 - `ui_pause()` replacing all scattered pause points
 - `ui_choose` auto-selects `gum choose` (≤5 items) or `gum filter` (>5 items)
 

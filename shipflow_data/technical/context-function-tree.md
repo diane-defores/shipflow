@@ -13,7 +13,7 @@ confidence: "medium"
 risk_level: "low"
 security_impact: "none"
 docs_impact: "yes"
-linked_systems: ["shipflow.sh", "lib.sh", "menu_gum.sh", "menu_bash.sh", "config.sh", "install.sh", "local/local.sh", "local/dev-tunnel.sh"]
+linked_systems: ["shipflow.sh", "lib.sh", "shipflow_devserver_gum.sh", "shipflow_devserver_bash.sh", "config.sh", "install.sh", "local/local.sh", "local/dev-tunnel.sh"]
 depends_on: []
 supersedes: []
 evidence: ["Function extraction from shipflow.sh, lib.sh, config.sh, install.sh, local/local.sh, local/dev-tunnel.sh", "Blacksmith setup menu helpers added to lib.sh", "Blacksmith OAuth callback tunnel added to local tooling", "Blacksmith SSH Access guide added to the setup menu", "Codex MCP on-demand launcher added to lib.sh", "Grouped root menu and submenu wrappers added to menu frontends", "Root menu shortcuts aligned with visible menu labels", "Disk overview helpers added to the Health Check monitor", "Agent history and cache cleanup helpers added to disk cleanup", "PM2 log cleanup/rotation and disk usage detail helpers added", "Turso setup menu helpers added to lib.sh", "Clerk CLI OAuth callback tunnel added to local tooling", "Local tunnel auth flows grouped under one authentication submenu"]
@@ -31,7 +31,7 @@ Ce document sert de point d'entree rapide pour comprendre la structure fonctionn
 ```text
 shipflow.sh
   -> source lib.sh
-  -> source menu_gum.sh or menu_bash.sh
+  -> source shipflow_devserver_gum.sh or shipflow_devserver_bash.sh
   -> main()
      -> run_menu_shortcut() for early codex/co launch
      -> check_prerequisites()
@@ -189,10 +189,10 @@ visible menu keys
   -> run_menu_shortcut
 
 menu frontends
-  -> menu_gum.sh::_gum_run_menu
-  -> menu_gum.sh::_gum_run_nested_menu
-  -> menu_bash.sh::_bash_run_menu
-  -> menu_bash.sh::_bash_run_nested_menu
+  -> shipflow_devserver_gum.sh::_gum_run_menu
+  -> shipflow_devserver_gum.sh::_gum_run_nested_menu
+  -> shipflow_devserver_bash.sh::_bash_run_menu
+  -> shipflow_devserver_bash.sh::_bash_run_nested_menu
   -> action_environments_menu
   -> action_tools_web_menu
   -> action_system_menu
@@ -454,7 +454,7 @@ Si tu dois modifier le comportement principal du CLI :
 1. `shipflow.sh`
 2. `lib.sh`
 3. `config.sh`
-4. `menu_gum.sh` or `menu_bash.sh`
+4. `shipflow_devserver_gum.sh` or `shipflow_devserver_bash.sh`
 
 Si tu dois modifier le workflow local SSH :
 
@@ -538,4 +538,4 @@ Si tu dois modifier la TUI :
 
 - `lib.sh` combine logique metier, UI, operations systeme et menu wrappers. C'est pratique, mais c'est aussi le principal point de complexite du repo.
 - Les invalidations PM2 (`invalidate_pm2_cache`) sont critiques apres start/stop/delete.
-- Le frontend de menu est delegue a `menu_gum.sh` ou `menu_bash.sh`, non detailles ici.
+- Le frontend de menu est delegue a `shipflow_devserver_gum.sh` ou `shipflow_devserver_bash.sh`, non detailles ici.

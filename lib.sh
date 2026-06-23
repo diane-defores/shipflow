@@ -9366,7 +9366,7 @@ run_menu_shortcut() {
 }
 
 # action_advanced needs to be defined after ADVANCED_MENU_ITEMS
-# Each menu file (menu_gum.sh / menu_bash.sh) provides its own implementation
+# Each menu file (shipflow_devserver_gum.sh / shipflow_devserver_bash.sh) provides its own implementation
 show_shipflow_menu() {
     local CHANGELOG_FILE="$(dirname "${BASH_SOURCE[0]}")/CHANGELOG.md"
 

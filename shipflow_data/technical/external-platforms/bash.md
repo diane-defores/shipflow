@@ -18,7 +18,7 @@ linked_systems:
   - lib.sh
   - install.sh
   - local/
-  - menu_gum.sh
+  - shipflow_devserver_gum.sh
   - skills/references/documentation-freshness-gate.md
 depends_on:
   - artifact: "shipflow_data/technical/external-platforms/README.md"

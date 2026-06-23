@@ -5,17 +5,17 @@
 #
 # Architecture:
 #   lib.sh       — shared library (actions, utilities, ui_* wrappers)
-#   menu_gum.sh  — pure gum menus (when gum is installed)
-#   menu_bash.sh — pure bash menus (fallback)
+#   shipflow_devserver_gum.sh  — pure gum menus (when gum is installed)
+#   shipflow_devserver_bash.sh — pure bash menus (fallback)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib.sh"
 
 # Load the right menu frontend
 if [ "$HAS_GUM" = true ]; then
-    source "$SCRIPT_DIR/menu_gum.sh"
+    source "$SCRIPT_DIR/shipflow_devserver_gum.sh"
 else
-    source "$SCRIPT_DIR/menu_bash.sh"
+    source "$SCRIPT_DIR/shipflow_devserver_bash.sh"
 fi
 
 # Main entry point

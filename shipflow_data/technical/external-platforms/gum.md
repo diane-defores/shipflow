@@ -14,7 +14,7 @@ risk_level: medium
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - menu_gum.sh
+  - shipflow_devserver_gum.sh
   - shipflow_data/technical/terminal-tui.md
   - skills/references/documentation-freshness-gate.md
 depends_on:
@@ -37,7 +37,7 @@ next_step: "/sf-docs technical audit"
 
 This note is the global ShipFlow/Chiclou cheat sheet for Gum-related freshness checks. Use it before relying on assumptions about Gum menu behavior, command output, exit codes, styling, spinners, tables, prompts, install methods, or Bash TUI scripts.
 
-It does not replace Gum documentation. It records the source map and ShipFlow rules agents should use before changing `menu_gum.sh`, installer Gum setup, or project-local Gum usage docs.
+It does not replace Gum documentation. It records the source map and ShipFlow rules agents should use before changing `shipflow_devserver_gum.sh`, installer Gum setup, or project-local Gum usage docs.
 
 ## Source Map
 
@@ -111,12 +111,12 @@ rg -n "Freshness Gate|Source Map|ShipFlow Decision Rules|Maintenance Rule" shipf
 For menu changes:
 
 ```bash
-bash -n menu_gum.sh
+bash -n shipflow_devserver_gum.sh
 ```
 
 ## Reader Checklist
 
-- `gum`, `menu_gum.sh`, `gum choose`, `gum confirm`, `gum spin`, `gum table`, or installer Gum setup changed -> check Gum note.
+- `gum`, `shipflow_devserver_gum.sh`, `gum choose`, `gum confirm`, `gum spin`, `gum table`, or installer Gum setup changed -> check Gum note.
 - Prompt/cancel behavior changed -> test cancellation and empty selection.
 - Spinner wraps a command -> ensure failure output remains diagnosable.
 - Gum missing in environment -> verify fallback or blocked report.
