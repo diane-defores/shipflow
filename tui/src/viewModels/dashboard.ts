@@ -8,6 +8,7 @@ import type {
   SpecItem,
   TextSummary
 } from "../types/models.ts";
+import { trafficFromSpecStatus, trafficFromAudit, trafficPriority } from "../statusMaps.ts";
 
 export const DEFAULT_DASHBOARD_VIEW_STATE: DashboardViewState = {
   activePanel: "projects",
@@ -193,20 +194,6 @@ function listSpecLines(specs: SpecItem[], selectedIndex: number): string[] {
   }));
 }
 
-function trafficFromSpecStatus(status: string): string {
-  const normalized = status.toLowerCase();
-  if (normalized.includes("blocked") || normalized.includes("failed") || normalized.includes("error")) {
-    return "🔴";
-  }
-  if (normalized.includes("draft") || normalized.includes("partial") || normalized.includes("needs")) {
-    return "🟠";
-  }
-  if (normalized.includes("ready") || normalized.includes("active") || normalized.includes("verified") || normalized.includes("reviewed") || normalized.includes("done")) {
-    return "🟢";
-  }
-  return "🟡";
-}
-
 function buildDetailLines(selectedProject: ProjectItem | undefined, selectedSpec: SpecItem | undefined): string[] {
   const lines: string[] = [];
 
@@ -258,16 +245,44 @@ export function buildDashboardViewModel(
   const state = normalizeState(data, inputState);
   const projects = filteredProjects(data, state.projectFilter);
   const selectedProject = projects[state.selectedProjectIndex];
-  const specs = filteredSpecs(data, state.specFilter, selectedProject, state.projectFilter);
+  const specs = filteredSpecs(data, state.specFilter, selectedProject, state.projectFilter).sort((left, right) => {
+    const leftPriority = trafficPriority(trafficFromSpecStatus(left.status));
+    const rightPriority = trafficPriority(trafficFromSpecStatus(right.status));
+    if (leftPriority !== rightPriority) {
+      return leftPriority - rightPriority;
+    }
+    return left.title.localeCompare(right.title);
+  });
   const selectedSpec = specs[state.selectedSpecIndex];
 
+  const rawTaskLines = filteredSummaryLines(data.tasks, state.projectFilter, selectedProject);
+  const sortedTaskLines = rawTaskLines.slice().sort((left, right) => {
+    const leftTraffic = (left.match(/^(🔴|🟠|🟡|🟢)/u)?.[1] ?? "🟡");
+    const rightTraffic = (right.match(/^(🔴|🟠|🟡|🟢)/u)?.[1] ?? "🟡");
+    const diff = trafficPriority(leftTraffic) - trafficPriority(rightTraffic);
+    if (diff !== 0) {
+      return diff;
+    }
+    return left.localeCompare(right);
+  });
   const activityLines = selectableSectionLines(
-    { ...data.tasks, lines: filteredSummaryLines(data.tasks, state.projectFilter, selectedProject) },
+    { ...data.tasks, lines: sortedTaskLines },
     state.selectedTaskIndex,
     TASK_VISIBLE_COUNT
   );
+
+  const rawAuditLines = filteredSummaryLines(data.audits, state.projectFilter, selectedProject);
+  const sortedAuditLines = rawAuditLines.slice().sort((left, right) => {
+    const leftTraffic = (left.match(/^(🔴|🟠|🟡|🟢)/u)?.[1] ?? "🟡");
+    const rightTraffic = (right.match(/^(🔴|🟠|🟡|🟢)/u)?.[1] ?? "🟡");
+    const diff = trafficPriority(leftTraffic) - trafficPriority(rightTraffic);
+    if (diff !== 0) {
+      return diff;
+    }
+    return left.localeCompare(right);
+  });
   const auditsLines = selectableSectionLines(
-    { ...data.audits, lines: filteredSummaryLines(data.audits, state.projectFilter, selectedProject) },
+    { ...data.audits, lines: sortedAuditLines },
     state.selectedAuditIndex,
     AUDIT_VISIBLE_COUNT
   );

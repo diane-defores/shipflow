@@ -102,7 +102,7 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   session identity block inside the same top frame.
 - `lib.sh::ui_screen_header`: prints consistent subcommand screen headers from
   one title plus an optional variant such as `danger` or `success`.
-- `lib.sh::ui_box_header`: prints fixed-width boxed CLI headers so left and
+- `lib.sh::ui_box_header` (deprecated: use `ui_screen_header` or `ui_text_center`): prints fixed-width boxed CLI headers so left and
   right borders stay aligned across dashboard, logs, health, and success blocks.
 - `lib.sh::env_start`, `env_stop`, `env_restart`, `env_remove`: core environment lifecycle.
 - `lib.sh::list_pm2_app_names`, `list_all_stop_targets`, and

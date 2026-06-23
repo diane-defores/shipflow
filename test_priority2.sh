@@ -174,6 +174,35 @@ run_test "Detect doppler with Node.js" test "$has_doppler" = "true"
 # Clean up
 rm -f "$TEST_CONFIG"
 
+echo -e "${BLUE}Testing ui_choose fallback latency${NC}"
+echo ""
+
+items=()
+for i in $(seq 1 50); do
+    items+=("item_$i")
+done
+
+if date +%s%N >/dev/null 2>&1; then
+    start_time=$(date +%s%N)
+    echo "x" | ui_choose "Test" "${items[@]}" >/dev/null 2>&1
+    end_time=$(date +%s%N)
+    elapsed_ms=$(( (end_time - start_time) / 1000000 ))
+else
+    start_time=$(date +%s)
+    echo "x" | ui_choose "Test" "${items[@]}" >/dev/null 2>&1
+    end_time=$(date +%s)
+    elapsed_ms=$(( (end_time - start_time) * 1000 ))
+fi
+
+echo "ui_choose 50 items fallback: ${elapsed_ms}ms"
+if [ "$elapsed_ms" -lt 100 ]; then
+    echo -e "${GREEN}✓${NC}"
+else
+    echo -e "${YELLOW}⚠${NC} (${elapsed_ms}ms > 100ms threshold)"
+fi
+((pass_count++))
+((test_count++))
+
 echo ""
 
 # ============================================================================

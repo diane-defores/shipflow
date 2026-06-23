@@ -137,8 +137,41 @@ ui_back_label() {
     printf 'Cancel'
 }
 
-_ui_letter_key() {
-    ui_letter_key "$@"
+ui_text_center() {
+    local text="$1"
+    local width="${2:-50}"
+    local text_len=${#text}
+
+    if [ "$text_len" -ge "$width" ]; then
+        printf "%s" "${text:0:$width}"
+        return
+    fi
+
+    local left_pad=$(( (width - text_len) / 2 ))
+    local right_pad=$(( width - text_len - left_pad ))
+    printf "%*s%s%*s" "$left_pad" "" "$text" "$right_pad" ""
+}
+
+ui_list_filter() {
+    local query="${1:-}"
+    shift
+    local item
+    for item in "$@"; do
+        if [ -z "$query" ] || [[ "${item,,}" == *"${query,,}"* ]]; then
+            printf '%s\n' "$item"
+        fi
+    done
+}
+
+ui_traffic_color() {
+    local status="${1:-}"
+    case "$status" in
+        online)        printf '🟢';;
+        launching)     printf '🟠';;
+        error|errored) printf '🔴';;
+        stopped)       printf '🟡';;
+        *)             printf '⚪';;
+    esac
 }
 
 _ui_normalize_choice() {
@@ -232,7 +265,7 @@ ui_is_back_selection() {
     esac
 }
 
-_ui_back_label_from_options() {
+ui_back_label() {
     local item
     for item in "$@"; do
         if [ -n "$item" ] && ui_is_back_selection "$item"; then
@@ -259,6 +292,8 @@ ui_read_key() {
 }
 
 ui_box_header() {
+    # Deprecated: use ui_screen_header or ui_text_center instead.
+    # Kept for backward compatibility with external scripts.
     local title="$1"
     local border_color="${2:-$CYAN}"
     local title_color="${3:-$YELLOW}"
@@ -282,18 +317,7 @@ ui_box_header() {
 }
 
 center_fixed_width() {
-    local text="$1"
-    local width="${2:-46}"
-    local text_len=${#text}
-
-    if [ "$text_len" -ge "$width" ]; then
-        printf "%s" "${text:0:$width}"
-        return
-    fi
-
-    local left_pad=$(( (width - text_len) / 2 ))
-    local right_pad=$(( width - text_len - left_pad ))
-    printf "%*s%s%*s" "$left_pad" "" "$text" "$right_pad" ""
+    ui_text_center "$1" "${2:-46}"
 }
 
 ui_screen_header() {
@@ -362,6 +386,7 @@ ui_screen_header() {
 }
 
 ui_action_header() {
+    # Deprecated: alias kept for backward compatibility.
     ui_screen_header "$@"
 }
 
@@ -468,11 +493,9 @@ ui_filter_choose() {
 
         matches=()
         local item
-        for item in "${items[@]}"; do
-            if [ -z "$query" ] || printf '%s\n' "$item" | grep -qiF -- "$query"; then
-                matches+=("$item")
-            fi
-        done
+        while IFS= read -r item; do
+            [ -n "$item" ] && matches+=("$item")
+        done < <(ui_list_filter "$query" "${items[@]}")
 
         if [ ${#matches[@]} -eq 0 ]; then
             echo -e "${RED}No match${NC}" >&2
@@ -493,7 +516,7 @@ ui_filter_choose() {
         local i=0
         for item in "${matches[@]}"; do
             local key
-            key=$(_ui_letter_key "$i")
+            key=$(ui_letter_key "$i")
             keys+=("$key")
             echo -e "  ${CYAN}$key)${NC} $item" >&2
             ((i++))
@@ -518,6 +541,62 @@ ui_filter_choose() {
     done
 }
 
+_ui_choose_short_list() {
+    local prompt="$1"
+    local back_label="$2"
+    shift 2
+    local items=("$@")
+
+    if [ ${#items[@]} -eq 0 ]; then
+        return 1
+    fi
+
+    echo -e "${YELLOW}$prompt${NC}" >&2
+    echo "" >&2
+    local keys=()
+    local i=0
+    for item in "${items[@]}"; do
+        keys+=("$(ui_letter_key "$i")")
+        echo -e "  ${CYAN}${keys[$i]})${NC} $item" >&2
+        ((i++))
+    done
+    echo "" >&2
+    echo -e "  ${CYAN}x)${NC} $back_label" >&2
+    echo "" >&2
+    echo -e "${YELLOW}Choose:${NC} \c" >&2
+
+    local choice
+    ui_read_choice choice
+
+    if ui_is_back_choice "$choice" || [ -z "$choice" ]; then
+        ui_skip_next_pause
+        if [ "$back_label" != "Cancel" ]; then
+            echo "$back_label"
+            return 0
+        fi
+        return 1
+    fi
+
+    for ((i=0; i<${#keys[@]}; i++)); do
+        if [ "$choice" = "${keys[$i]}" ]; then
+            echo "${items[$i]}"
+            return 0
+        fi
+    done
+
+    for ((i=0; i<${#items[@]}; i++)); do
+        local match_candidate=${items[$i]}
+        match_candidate=$(printf '%s' "$match_candidate" | sed 's/^[^ ]* //')
+        if [ "${match_candidate,,}" = "${choice}" ]; then
+            echo "${items[$i]}"
+            return 0
+        fi
+    done
+
+    echo -e "${RED}Invalid choice${NC}" >&2
+    return 1
+}
+
 ui_choose() {
     local prompt="$1"
     shift
@@ -537,7 +616,7 @@ ui_choose() {
             local filtered_items=()
             local has_back_item=false
             local back_label
-            back_label=$(_ui_back_label_from_options "${items[@]}")
+            back_label=$(ui_back_label "${items[@]}")
             local item
             for item in "${items[@]}"; do
                 if [ -n "$item" ] && ui_is_back_selection "$item"; then
@@ -553,7 +632,7 @@ ui_choose() {
             local i=0
             for item in "${filtered_items[@]}"; do
                 local key
-                key=$(_ui_letter_key "$i")
+                key=$(ui_letter_key "$i")
                 keys+=("$key")
                 printf '  %s %s\n' "$(gum style --foreground 212 "${key})")" "$item" >&2
                 ((i++))
@@ -627,68 +706,7 @@ ui_choose() {
             return 0
         fi
 
-        local filtered_options=()
-        local has_back_option=false
-        local back_label
-        back_label=$(_ui_back_label_from_options "${options[@]}")
-        local opt
-        for opt in "${options[@]}"; do
-            if [ -n "$opt" ] && ui_is_back_selection "$opt"; then
-                has_back_option=true
-                continue
-            fi
-            filtered_options+=("$opt")
-        done
-        options=("${filtered_options[@]}")
-
-        if [ ${#options[@]} -eq 0 ]; then
-            return 1
-        fi
-
-        echo -e "${YELLOW}$prompt${NC}" >&2
-        echo "" >&2
-        local keys=()
-        local i=0
-        for opt in "${options[@]}"; do
-            local key
-            key=$(_ui_letter_key "$i")
-            keys+=("$key")
-            echo -e "  ${CYAN}$key)${NC} $opt" >&2
-            ((i++))
-        done
-        echo "" >&2
-        echo -e "  ${CYAN}x)${NC} $back_label" >&2
-        echo "" >&2
-        echo -e "${YELLOW}Choose:${NC} \c" >&2
-        ui_read_choice choice
-
-        if ui_is_back_choice "$choice" || [ -z "$choice" ]; then
-            ui_skip_next_pause
-            if [ "$has_back_option" = true ]; then
-                echo "$back_label"
-                return 0
-            fi
-            return 1
-        fi
-
-        for ((i=0; i<${#keys[@]}; i++)); do
-            if [ "$choice" = "${keys[$i]}" ]; then
-                echo "${options[$i]}"
-                return 0
-            fi
-        done
-
-        for ((i=0; i<${#options[@]}; i++)); do
-            local match_candidate=${options[$i]}
-            match_candidate=$(printf '%s' "$match_candidate" | sed 's/^[^ ]* //')
-            if [ "${match_candidate,,}" = "${choice}" ]; then
-                echo "${options[$i]}"
-                return 0
-            fi
-        done
-
-        echo -e "${RED}Invalid choice${NC}" >&2
-        return 1
+        _ui_choose_short_list "$prompt" "$(ui_back_label "${options[@]}")" "${options[@]}"
     fi
 }
 
@@ -791,17 +809,6 @@ ui_header() {
         fi
     fi
 
-    center_line() {
-        local text="$1"
-        local text_len=${#text}
-        if [ $text_len -ge $content_width ]; then
-            echo "${text:0:$content_width}"
-            return
-        fi
-        local pad=$(( (content_width - text_len) / 2 ))
-        printf "%*s%s" "$pad" "" "$text"
-    }
-
     if [ "$HAS_GUM" = true ]; then
         local header_lines=()
         local title_line
@@ -809,11 +816,11 @@ ui_header() {
         if [ -n "$status_line" ]; then
             header_lines+=("$status_line" "")
         fi
-        title_line=$(center_line "$title")
+        title_line=$(ui_text_center "$title" "$content_width")
         printf -v colored_title_line "%b%s%b" "$YELLOW" "$title_line" "$NC"
         header_lines+=("$colored_title_line")
         if [ -n "$subtitle" ]; then
-            header_lines+=("$(center_line "$subtitle")")
+            header_lines+=("$(ui_text_center "$subtitle" "$content_width")")
         fi
         if [ -n "$extra_block" ]; then
             while IFS= read -r extra_line; do
@@ -831,9 +838,9 @@ ui_header() {
             echo -e " ${GREEN}${status_line}${NC}"
             echo -e "${CYAN}--------------------------------------------------${NC}"
         fi
-        printf " %b%s%b\n" "$YELLOW" "$(center_line "$title")" "$NC"
+        printf " %b%s%b\n" "$YELLOW" "$(ui_text_center "$title" "$content_width")" "$NC"
         if [ -n "$subtitle" ]; then
-            printf " %b%s%b\n" "$BLUE" "$(center_line "$subtitle")" "$NC"
+            printf " %b%s%b\n" "$BLUE" "$(ui_text_center "$subtitle" "$content_width")" "$NC"
         fi
         if [ -n "$extra_block" ]; then
             while IFS= read -r extra_line; do
@@ -4393,17 +4400,7 @@ get_session_code() {
 }
 
 center_session_banner_text() {
-    local text="$1"
-    local width="${2:-50}"
-    local text_len=${#text}
-
-    if [ "$text_len" -ge "$width" ]; then
-        printf "%s" "$text"
-        return
-    fi
-
-    local pad=$(( (width - text_len) / 2 ))
-    printf "%*s%s" "$pad" "" "$text"
+    ui_text_center "$1" "${2:-50}"
 }
 
 # -----------------------------------------------------------------------------
@@ -8429,7 +8426,7 @@ codex_select_custom_mcps() {
         for definition in "${CODEX_MCP_DEFINITIONS[@]}"; do
             name="${definition%%|*}"
             label="${definition#*|}"
-            key=$(_ui_letter_key "$i")
+            key=$(ui_letter_key "$i")
             keys+=("$key|$name")
             if codex_mcp_contains "$name" "${selected[@]}"; then
                 mark="[x]"

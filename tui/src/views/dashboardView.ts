@@ -5,6 +5,7 @@ import {
   DEFAULT_DASHBOARD_VIEW_STATE,
   reduceDashboardViewState
 } from "../viewModels/dashboard.ts";
+import { statusColor } from "../statusMaps.ts";
 
 function activeMarker(vm: DashboardViewModel, panel: DashboardViewModel["activePanel"]): string {
   return vm.activePanel === panel ? "*" : " ";
@@ -146,15 +147,10 @@ function plain(text: string): TextChunk {
 }
 
 function lineColor(line: string, theme: ThemeKit): StyleFn {
-  const lower = line.toLowerCase();
-  if (lower.includes("blocked") || lower.includes("not verified") || lower.includes("[error]")) {
-    return theme.brightRed;
-  }
-  if (lower.includes("pending") || lower.includes("partial") || lower.includes("draft") || lower.includes("[warning]")) {
-    return theme.brightYellow;
-  }
-  if (lower.includes("ready") || lower.includes("verified") || lower.includes("done") || lower.includes("[ready]")) {
-    return theme.brightGreen;
+  switch (statusColor(line)) {
+    case "red": return theme.brightRed;
+    case "yellow": return theme.brightYellow;
+    case "green": return theme.brightGreen;
   }
   if (line.startsWith(">")) {
     return theme.brightGreen;

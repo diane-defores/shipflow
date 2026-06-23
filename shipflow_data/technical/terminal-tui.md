@@ -76,9 +76,12 @@ All file reads must use `tui/src/sources/sourcePolicy.ts`:
 
 ## Data flow
 
-- `sources/readers.ts`: file reads + parsing/summaries.
+- `sources/readers.ts`: orchestration publique `readDashboardData`, discovery de projets, parsing specs, lecture TASKS/AUDIT.
+- `sources/canonicalRecords.ts`: parsing des enregistrements canoniques `🔴/🟠/🟡/🟢` et dédup.
+- `sources/summarizers.ts`: résumés tasks/audits, helpers de lignes et tri.
 - `viewModels/dashboard.ts`: maps parsed data and ephemeral navigation state to render-safe lines.
 - `views/dashboardView.ts`: text layout, keyboard navigation, filtering, OpenTUI mount/quit lifecycle.
+- `statusMaps.ts`: mappings de statut/couleur partagés (shell/TUI).
 - `main.ts`: Bun runtime guard + reader/view wiring.
 
 ## Interaction model

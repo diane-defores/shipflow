@@ -159,12 +159,22 @@ bootstrap / safety
 
 UI helpers
   -> ui_choose
+  -> ui_filter_choose
+  -> ui_letter_key
+  -> ui_letter_list
+  -> ui_back_label
+  -> ui_text_center
+  -> ui_list_filter
+  -> ui_traffic_color
+  -> _ui_choose_short_list
   -> ui_read_choice
   -> ui_run_menu_action
   -> ui_input
   -> ui_confirm
-  -> ui_box_header
+  -> ui_box_header (deprecated: use ui_screen_header or ui_text_center)
   -> ui_header
+  -> ui_screen_header
+  -> ui_action_header (deprecated: alias for ui_screen_header)
   -> ui_spinner
   -> ui_pause
   -> ui_skip_next_pause
@@ -465,6 +475,64 @@ Si tu dois modifier l'installation :
 - `deploy_github_project`: flux de deploy distant depuis GitHub.
 - `action_publish`: publication Caddy + DuckDNS.
 - `local/local.sh main`: UX locale de tunnels SSH.
+
+### `tui/` (Terminal UI)
+
+```text
+main.ts
+  -> createCliRenderer
+  -> readDashboardData (sources/readers.ts)
+  -> buildDashboardViewModel (viewModels/dashboard.ts)
+  -> mountOpenTuiDashboard (views/dashboardView.ts)
+
+sources/readers.ts
+  -> readDashboardData
+  -> discoverLocalProjects
+  -> parseSpecs
+  -> summarizeTasks (sources/summarizers.ts)
+  -> summarizeAudits (sources/summarizers.ts)
+
+sources/canonicalRecords.ts
+  -> parseCanonicalRecords
+  -> splitCanonicalCells
+  -> unescapeCanonicalField
+  -> taskDedupeKey / auditDedupeKey / specDedupeKey
+  -> registerDedupe
+
+sources/summarizers.ts
+  -> summarizeTasks
+  -> summarizeAudits
+  -> listProjectLines / listSpecLines
+  -> buildDetailLines
+  -> filteredSummaryLines
+
+viewModels/dashboard.ts
+  -> buildDashboardViewModel
+  -> reduceDashboardViewState
+  -> filteredProjects / filteredSpecs / filteredSummaryLines
+  -> trafficFromSpecStatus (imported from statusMaps.ts)
+
+views/dashboardView.ts
+  -> renderDashboardStyledText
+  -> pushSection / pushLine
+  -> lineColor (imported from statusMaps.ts)
+  -> statusColor (imported from statusMaps.ts)
+
+statusMaps.ts (shared)
+  -> trafficFromSpecStatus / trafficFromAudit / trafficFromStatus
+  -> trafficPriority
+  -> statusColor
+  -> parseMarkdownTableRows / cellFor / cleanInlineMarkdown
+```
+
+Si tu dois modifier la TUI :
+
+1. `tui/src/sources/sourcePolicy.ts` pour les règles de lecture
+2. `tui/src/sources/canonicalRecords.ts` pour le parsing canonical
+3. `tui/src/sources/summarizers.ts` pour les résumés tasks/audits
+4. `tui/src/viewModels/dashboard.ts` pour le filtrage/tri/navigation
+5. `tui/src/views/dashboardView.ts` pour le rendu et les entrées clavier
+6. `tui/src/statusMaps.ts` pour les mappings de statut/couleur partagés
 
 ## Notes
 

@@ -181,6 +181,8 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - Changer le workflow d'agent : `skills/` + `shipflow-spec-driven-workflow.md`.
 - Changer les regles metadata : `skills/300-sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`, `shipflow-metadata-migration-guide.md`, `templates/artifacts/`.
 - Changer la documentation technique proche du code : `shipflow_data/technical/code-docs-map.md` puis le doc primaire dans `shipflow_data/technical/`.
+- Changer l'UI shell (sélecteurs, menus, headers) : `lib.sh` autour des primitives `ui_choose`, `ui_filter_choose`, `ui_text_center`, `ui_list_filter`, `ui_traffic_color`.
+- Changer la TUI (dashboard, filtres, tri, statuts) : `tui/src/statusMaps.ts` (mappings partagés), `tui/src/sources/` (lecture/parsing), `tui/src/viewModels/dashboard.ts` (logique de vue), `tui/src/views/dashboardView.ts` (rendu).
 - Changer la cartographie editoriale, les destinations de contenu ou les cocons semantiques : `shipflow_data/editorial/content-map.md`, puis `site/src/pages/docs.astro` ou les surfaces concernees.
 - Changer le positionnement, l'audience ou le scope produit : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/branding.md`.
 - Changer les concurrents, alternatives, inspirations marche, anti-patterns ou notes de differenciation par projet : `shipflow_data/business/project-competitors-and-inspirations.md`.

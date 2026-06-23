@@ -64,13 +64,17 @@ describe("buildDashboardViewModel", () => {
     expect(vm.projectLines[0]).not.toContain("Astro");
     expect(vm.detailLines).not.toContain("Path: /tmp/alpha");
     expect(vm.detailLines).not.toContain("Stack: Astro");
-    expect(vm.specLines[0]).toContain("Spec X");
-    expect(vm.specLines[0]?.startsWith("🟢")).toBe(true);
+    expect(vm.specLines[0]).toContain("Filtered Spec");
+    expect(vm.specLines[0]?.startsWith("🟠")).toBe(true);
+    expect(vm.specLines[2]).toContain("Spec X");
+    expect(vm.specLines[2]?.startsWith("🟢")).toBe(true);
     expect(vm.activityLines.join("\n")).toContain("Tasks:");
     expect(vm.activityLines.join("\n")).not.toContain("Audits:");
     expect(vm.auditsLines.join("\n")).toContain("Audits:");
     expect(vm.detailLines).toContain("Run history:");
-    expect(vm.detailLines).toContain("  sf-ready: ready");
+    expect(vm.detailLines).toContain("  none");
+    expect(vm.detailLines).toContain("Current chantier flow:");
+    expect(vm.detailLines).toContain("  none");
     expect(vm.diagnosticsLines[0]).toContain("No diagnostics");
   });
 
