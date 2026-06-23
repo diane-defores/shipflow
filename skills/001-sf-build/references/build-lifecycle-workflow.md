@@ -1,10 +1,10 @@
 ---
 artifact: skill_reference
 metadata_schema_version: "1.0"
-artifact_version: "1.0.1"
+artifact_version: "1.1.0"
 project: "shipflow"
 created: "2026-06-10"
-updated: "2026-06-10"
+updated: "2026-06-23"
 status: active
 source_skill: 001-sf-build
 scope: "build-lifecycle-workflow"
@@ -17,6 +17,7 @@ linked_systems:
   - "skills/001-sf-build/SKILL.md"
   - "skills/references/master-workflow-lifecycle.md"
   - "skills/references/master-delegation-semantics.md"
+  - "skills/references/app-blueprints.md"
 depends_on:
   - artifact: "skills/references/skill-instruction-layering.md"
     artifact_version: "1.0.0"
@@ -68,15 +69,39 @@ When a material question is needed, frame it for a business decision maker:
 
 If the best-practice answer is clear, low-risk, reversible, inside contract, compatible with context, and verifiable in the current run, choose it and continue.
 
+## Blueprint Gate Detail
+
+After work item resolution, before spec creation:
+
+1. Load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` for the full contract.
+2. Extract keywords from the user request: normalize to lowercase, remove stopwords, keep nouns.
+3. Scan `$SHIPFLOW_ROOT/skills/app-blueprints/*/blueprint.md` frontmatter.
+4. Score each blueprint by keyword overlap against `match_keywords`, `name`, and `description`.
+5. Pick the best match (score > 0). If tie, ask the user.
+6. If a match is found:
+   - Read the full blueprint file.
+   - Keep the blueprint path in context for downstream skills.
+   - When routing to `100-sf-spec`, include a handoff note: `blueprint: [id]`.
+   - When routing to `306-sf-scaffold`, include the blueprint path.
+7. If no match, proceed without blueprint. This is normal for novel app types.
+
+The blueprint pre-fills architecture decisions but does not replace spec writing. Every project still needs a spec; the blueprint just gives it a head start.
+
+Add to the final report:
+```text
+Blueprint: [id] (v[version]) — matched on keywords [word1, word2]
+```
+
 ## Spec And Readiness Loop Detail
 
 For non-trivial work:
 
-1. Run or route to `100-sf-spec`.
-2. Run `101-sf-ready`.
-3. If not ready, apply one correction pass and rerun readiness.
-4. Stop after a bounded loop, default max 3 readiness iterations, with `blocked` or a user decision.
-5. Do not run `102-sf-start` until the spec is ready.
+1. If a blueprint is active, pre-fill the spec's Architecture, Stack, Models, and Routes sections from it.
+2. Run or route to `100-sf-spec`.
+3. Run `101-sf-ready`.
+4. If not ready, apply one correction pass and rerun readiness.
+5. Stop after a bounded loop, default max 3 readiness iterations, with `blocked` or a user decision.
+6. Do not run `102-sf-start` until the spec is ready.
 
 For trivial local work, a direct mini-contract may replace a full spec only when decision quality is satisfied.
 

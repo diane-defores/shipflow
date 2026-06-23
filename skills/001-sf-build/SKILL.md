@@ -41,6 +41,8 @@ Before choosing a route, model, topology, mini-contract, or implementation path,
 
 Load `$SHIPFLOW_ROOT/skills/001-sf-build/references/build-lifecycle-workflow.md` for the detailed execution-mode playbook, question framing, governance/documentation gates, browser evidence routing, onboarding gate, and final report templates.
 
+Before the Blueprint Gate, load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`.
+
 Before asking a user-facing question, load `$SHIPFLOW_ROOT/skills/references/question-contract.md`.
 
 Before `102-sf-start`, load `$SHIPFLOW_ROOT/skills/704-sf-model/references/model-routing.md` and choose model profile based on complexity, ambiguity, failure cost, expected duration, and topology.
@@ -51,7 +53,7 @@ Before UI, mobile, component, layout, typography, spacing, color, shadow/elevati
 
 `001-sf-build` is the user-facing lifecycle orchestrator (`master-workflow`) and keeps user interaction high level while executing:
 
-`intake -> existing chantier check -> spec/readiness loop -> governance corpus gate -> model routing gate -> start -> verify -> end -> ship`
+`intake -> existing chantier check -> blueprint gate -> spec/readiness loop -> governance corpus gate -> model routing gate -> start -> verify -> end -> ship`
 
 The objective is an excellent professional lifecycle that removes manual detours while preserving quality, security, performance, durability, and proof.
 
@@ -75,6 +77,20 @@ Before creating any spec:
 4. Create a new spec only when promise or outcome is genuinely new.
 5. If multiple specs are plausible, ask a user decision instead of guessing.
 
+## Blueprint Gate
+
+After work item resolution, before spec creation:
+
+1. Load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`.
+2. Scan `$SHIPFLOW_ROOT/skills/app-blueprints/*/blueprint.md` for a match against the user request.
+3. If matched, load the blueprint into the active context and pass it to downstream skills.
+4. If no match, proceed without a blueprint.
+5. If multiple blueprints match, ask the user to choose.
+
+The blueprint pre-fills architecture, stack, models, routes, and conventions for `100-sf-spec` and `306-sf-scaffold`. It is not a substitute for a spec — it is a starting skeleton.
+
+In the final report, add `Blueprint: [id] (version)` when used.
+
 ## Spec And Readiness Loop
 
 For non-trivial work, run or route through `100-sf-spec`, then `101-sf-ready`, and do not run `102-sf-start` until the spec is `ready`. If readiness fails, apply one correction pass and rerun readiness; stop after the bounded loop with `blocked` or a user decision.
@@ -97,6 +113,7 @@ In `vercel-preview-push` or preview-required `hybrid` mode, ship first, then rou
 Stop and ask or reroute when:
 
 - spec ownership is ambiguous
+- a matched blueprint contradicts the user's explicit requirement (ask before overriding)
 - readiness does not pass
 - requested parallelism has no safe `Execution Batches`
 - file ownership overlaps in a parallel plan

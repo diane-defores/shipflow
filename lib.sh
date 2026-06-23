@@ -5742,6 +5742,34 @@ env_start() {
         init_flox_env "$project_dir" "$env_name" || return 1
     fi
 
+    # Auto-install node_modules if missing (prevents "binary not found" restarts)
+    if [ "$project_lang" = "nodejs" ] && [ -f "$project_dir/package.json" ]; then
+        if [ ! -d "$project_dir/node_modules" ] || [ -z "$(ls -A "$project_dir/node_modules" 2>/dev/null)" ]; then
+            echo -e "${YELLOW}⚠️  node_modules manquant, installation des dépendances...${NC}"
+            local pm_file=""
+            if [ -f "$project_dir/pnpm-lock.yaml" ]; then
+                pm_file="pnpm"
+            elif [ -f "$project_dir/yarn.lock" ]; then
+                pm_file="yarn"
+            fi
+            case "$pm_file" in
+                pnpm) flox activate --dir "$project_dir" -- pnpm install 2>&1 | grep -v "Progress:" || true ;;
+                yarn) flox activate --dir "$project_dir" -- yarn install 2>&1 | grep -v "Progress:" || true ;;
+                *)
+                    local npm_output
+                    npm_output=$(flox activate --dir "$project_dir" -- npm install 2>&1)
+                    if echo "$npm_output" | grep -q "ERESOLVE"; then
+                        echo -e "${YELLOW}⚠️  Conflit de peer deps, retry avec --legacy-peer-deps...${NC}"
+                        flox activate --dir "$project_dir" -- npm install --legacy-peer-deps 2>&1 | grep -v "npm WARN" || true
+                    else
+                        echo "$npm_output" | grep -v "npm WARN" || true
+                    fi
+                    ;;
+            esac
+            echo -e "${GREEN}✅ Dépendances installées${NC}"
+        fi
+    fi
+
     # Detect dev command
     local dev_cmd=$(detect_dev_command "$project_dir")
 

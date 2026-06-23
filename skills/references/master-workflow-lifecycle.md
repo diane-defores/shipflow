@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.4.1"
+artifact_version: "1.5.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-06-10"
+updated: "2026-06-23"
 status: active
 source_skill: 009-sf-skill-build
 scope: master-workflow-lifecycle
@@ -27,6 +27,7 @@ linked_systems:
   - skills/references/decision-quality-contract.md
   - skills/references/question-contract.md
   - skills/references/chantier-tracking.md
+  - skills/references/app-blueprints.md
   - docs/technical/skill-runtime-and-lifecycle.md
   - shipflow-spec-driven-workflow.md
   - README.md
@@ -54,6 +55,8 @@ evidence:
   - "User decision 2026-06-10: favor subagents broadly to keep the main conversation clean; sequential is the normal default, while parallel remains read-only or spec/batch-gated."
   - "User decision 2026-06-10: master-skill invocation is consent for bounded sequential subagents; `spark`, `codex`, `sous-agent`/`subagent`, and `mini` arguments request model-specific subagent delegation."
   - "Spec auto-follow-through-for-local-only-102-sf-start-verification.md defines bounded local auto-verify for 102-sf-start without changing full 001-sf-build lifecycle ownership."
+  - "User decision 2026-06-23: blueprints act as global spec skeletons for app archetypes, consumed by the Blueprint Gate in 001-sf-build."
+  - "User decision 2026-06-23: Blueprint Gate fires after work item resolution and before the readiness gate for app creation work items."
 next_review: "2026-06-04"
 next_step: "/103-sf-verify master workflow lifecycle reference"
 ---
@@ -106,6 +109,7 @@ Master skills adapt this skeleton to their local owner routes:
 ```text
 intake
   -> work item resolution
+  -> blueprint gate (app creation only)
   -> readiness gate
   -> model/topology routing
   -> delegated or owner-skill execution
@@ -134,7 +138,20 @@ Before creating a new durable artifact, search for an existing matching work ite
 
 If exactly one work item owns the request, continue it. If several match, ask the user to choose. If none exists and the work is non-trivial, create or route to the correct durable artifact owner.
 
-### 3. Readiness Gate
+### 3. Blueprint Gate (App Creation Only)
+
+Before the readiness gate, when the work item targets a new application or major new module:
+
+1. Load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`.
+2. Scan available blueprints for a match against the request archetype.
+3. If a match is found, load the blueprint into the active context.
+4. Pass the blueprint to downstream skills (`100-sf-spec`, `306-sf-scaffold`) via handoff.
+
+The blueprint is a global spec skeleton — it pre-fills architecture, stack, models, and conventions. It does not replace spec writing. If no blueprint matches, proceed normally.
+
+This step is optional for master skills that do not create new applications.
+
+### 4. Readiness Gate
 
 Use a full spec when the work is non-trivial, cross-file, cross-surface, risky, public-claim-sensitive, security/data-impacting, deployment-impacting, or needs staged validation.
 
