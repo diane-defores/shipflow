@@ -7153,7 +7153,7 @@ show_dashboard() {
 
         if [ -n "$port" ]; then
             printf "${BLUE}Port: %-6s${NC}" ":$port"
-            printf "${CYAN}http://localhost:$port${NC}"
+            printf "${CYAN}localhost${NC}"
         else
             printf "${YELLOW}No port${NC}"
         fi
