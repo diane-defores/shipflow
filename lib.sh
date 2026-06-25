@@ -9885,3 +9885,29 @@ show_mobile_guide() {
     echo ""
     ui_pause "Appuie sur une touche pour revenir au menu..."
 }
+
+# ============================================================================
+# STARTUP — PM2 health check (reads dump.pm2, no subprocess)
+# ============================================================================
+# Runs once per shell when lib.sh is sourced. Lightweight (~1ms file read).
+if [ -z "${SHIPFLOW_PM2_CHECKED:-}" ] && [ -f "${PM2_HOME:-$HOME/.pm2}/dump.pm2" ]; then
+    SHIPFLOW_PM2_CHECKED=1
+    python3 -c "
+import json, sys, os
+pm2_home = os.environ.get('PM2_HOME', os.path.expanduser('~/.pm2'))
+try:
+    with open(os.path.join(pm2_home, 'dump.pm2')) as f:
+        data = json.load(f)
+    procs = data if isinstance(data, list) else data.get('processes', [])
+    issues = [(p.get('name', '?'), p.get('pm2_env', {}).get('restart_time', 0))
+              for p in procs if p.get('pm2_env', {}).get('restart_time', 0) > 10
+              and p.get('pm2_env', {}).get('status', '') != 'stopped']
+    if issues:
+        for name, restarts in issues:
+            print(f'{name}|{restarts}')
+except:
+    pass
+" 2>/dev/null | while IFS='|' read -r name restarts; do
+    echo -e "${RED}⚠️  PM2 — $name a redémarré ${restarts} fois. Logs: pm2 logs $name${NC}"
+done
+fi
