@@ -5968,6 +5968,23 @@ EOF
 
     echo -e "${GREEN}✅ Fichier ecosystem.config.cjs créé/mis à jour${NC}"
 
+    # Check existing process for excessive restarts before deleting it
+    local old_name="$env_name"
+    local old_restarts
+    old_restarts=$(pm2 jlist 2>/dev/null | python3 -c "
+import json, sys
+try:
+    apps = json.load(sys.stdin)
+except:
+    sys.exit(0)
+for app in apps:
+    if app.get('name') == '$old_name':
+        print(app.get('pm2_env', {}).get('restart_time', 0))
+" 2>/dev/null)
+    if [ -n "$old_restarts" ] && [ "$old_restarts" -gt 10 ]; then
+        echo -e "${RED}⚠️  ATTENTION: $env_name avait déjà $old_restarts redémarrages avant ton action. Consulte les logs: pm2 logs $env_name${NC}"
+    fi
+
     # Atomic cleanup of existing process (Priority 3 #11: Fix race condition)
     # Use pm2 delete with idempotent operation (no check-then-act)
     pm2 delete "$env_name" 2>/dev/null || true
@@ -5996,6 +6013,22 @@ EOF
     if [ "$started_status" != "online" ] && [ "$started_status" != "launching" ]; then
         error "PM2 n'a pas démarré $env_name correctement (statut: ${started_status:-unknown})"
         return 1
+    fi
+
+    # Quick post-start check: verify process didn't crash immediately
+    local new_restarts
+    new_restarts=$(pm2 jlist 2>/dev/null | python3 -c "
+import json, sys
+try:
+    apps = json.load(sys.stdin)
+except:
+    sys.exit(0)
+for app in apps:
+    if app.get('name') == '$env_name':
+        print(app.get('pm2_env', {}).get('restart_time', 0))
+" 2>/dev/null)
+    if [ -n "$new_restarts" ] && [ "$new_restarts" -gt 0 ]; then
+        echo -e "${RED}⚠️  $env_name a déjà redémarré $new_restarts fois après démarrage. Consulte: pm2 logs $env_name${NC}"
     fi
 
     if [ "$is_expo" = "true" ]; then
