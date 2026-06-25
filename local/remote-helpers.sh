@@ -225,6 +225,21 @@ ssh_base_args() {
     printf '%s\n' "-o" "ConnectTimeout=7" "-o" "StrictHostKeyChecking=accept-new"
 }
 
+# -----------------------------------------------------------------------------
+# check_local_port_free — Check if a TCP port is free locally
+# Uses lsof, falls back to ss, returns 0 if free
+# -----------------------------------------------------------------------------
+check_local_port_free() {
+    local port="$1"
+    if command -v lsof >/dev/null 2>&1 && lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
+        return 1
+    fi
+    if command -v ss >/dev/null 2>&1 && ss -ltn "( sport = :$port )" 2>/dev/null | grep -q ":$port"; then
+        return 1
+    fi
+    return 0
+}
+
 validate_tcp_port() {
     local port="$1"
     [[ "$port" =~ ^[0-9]+$ ]] || return 1
@@ -335,6 +350,72 @@ run_remote_ssh() {
     ssh "${args[@]}" "$REMOTE_HOST" "$@"
 }
 
+# -----------------------------------------------------------------------------
+# open_browser_or_print — Open URL in local browser or print it
+#
+# Arguments:
+#   $1 — OAuth URL to open
+#   $2 — Label for display (e.g. "Blacksmith OAuth", "Clerk OAuth")
+# -----------------------------------------------------------------------------
+open_browser_or_print() {
+    local oauth_url="$1"
+    local label="${2:-OAuth}"
+    echo -e "${BLUE}🌐 URL ${label}:${NC}"
+    echo "$oauth_url"
+    echo ""
+
+    if command -v open >/dev/null 2>&1; then
+        open "$oauth_url" >/dev/null 2>&1 || true
+        echo -e "${GREEN}✓ Navigateur ouvert via open${NC}"
+    elif command -v xdg-open >/dev/null 2>&1; then
+        xdg-open "$oauth_url" >/dev/null 2>&1 || true
+        echo -e "${GREEN}✓ Navigateur ouvert via xdg-open${NC}"
+    elif command -v wslview >/dev/null 2>&1; then
+        wslview "$oauth_url" >/dev/null 2>&1 || true
+        echo -e "${GREEN}✓ Navigateur ouvert via wslview${NC}"
+    elif command -v cmd.exe >/dev/null 2>&1; then
+        cmd.exe /c start "" "$oauth_url" >/dev/null 2>&1 || true
+        echo -e "${GREEN}✓ Navigateur ouvert via cmd.exe${NC}"
+    else
+        echo -e "${YELLOW}⚠ Aucun opener auto détecté.${NC}"
+        echo -e "${YELLOW}  Ouvre l'URL ci-dessus manuellement dans ton navigateur local.${NC}"
+    fi
+}
+
+# -----------------------------------------------------------------------------
+# load_remote_host — Load SSH connection config from saved files or fallbacks
+#
+# Sets: REMOTE_HOST, SSH_IDENTITY_FILE, SSH_AUTH_METHOD
+# Returns: 0 on success, 1 if no host could be resolved
+# -----------------------------------------------------------------------------
+_load_remote_host_core() {
+    REMOTE_HOST=""
+    SSH_IDENTITY_FILE=""
+    SSH_AUTH_METHOD="key"
+
+    if [ -f "$CURRENT_CONNECTION_FILE" ]; then
+        REMOTE_HOST=$(cat "$CURRENT_CONNECTION_FILE")
+    else
+        REMOTE_HOST="${REMOTE_HOST:-${SHIPFLOW_SSH_REMOTE_HOST:-}}"
+        if [ -z "$REMOTE_HOST" ] && grep -qE '^[[:space:]]*Host[[:space:]]+hetzner([[:space:]]|$)' "$HOME/.ssh/config" 2>/dev/null; then
+            REMOTE_HOST="hetzner"
+        fi
+    fi
+
+    [ -n "$REMOTE_HOST" ] || return 1
+    validate_connection_target "$REMOTE_HOST" || return 1
+
+    if [ -f "$CURRENT_IDENTITY_FILE" ]; then
+        SSH_IDENTITY_FILE=$(cat "$CURRENT_IDENTITY_FILE")
+    fi
+    if [ -f "$CURRENT_AUTH_METHOD_FILE" ]; then
+        SSH_AUTH_METHOD=$(cat "$CURRENT_AUTH_METHOD_FILE")
+    fi
+
+    validate_identity_file "$SSH_IDENTITY_FILE" || return 1
+    return 0
+}
+
 shipflow_remote_pm2_ports_command() {
     local format="${1:-lines}"
     local formatter="cat"
@@ -344,28 +425,24 @@ shipflow_remote_pm2_ports_command() {
 
     cat <<EOF
 {
-pm2 jlist 2>/dev/null | node -e '
-const fs = require("fs");
-try {
-  const apps = JSON.parse(fs.readFileSync(0, "utf8"));
-  const ports = [];
-  for (const app of apps) {
-    const pm2Env = app.pm2_env || {};
-    if (pm2Env.status !== "online") continue;
-    const env = pm2Env.env || {};
-    const portValue = String(env.PORT || env.port || "");
-    if (!/^[0-9]+$/.test(portValue)) continue;
-    const port = Number(portValue);
-    if (port < 1 || port > 65535) continue;
-    const name = String(app.name || "unknown").replace(/[,:\\n\\r]/g, " ").trim() || "unknown";
-    ports.push(String(port) + ":" + name);
-  }
-  if (ports.length) process.stdout.write(ports.join("\\n") + "\\n");
-} catch {}
-'
+# Fast path: ShipFlow env registry (~1ms file read, no subprocess)
+reg="\$HOME/.shipflow/envs.reg"
+if [ -f "\$reg" ]; then
+  while IFS='|' read -r name status port path; do
+    [ -n "\$name" ] || continue
+    [ "\$status" = "online" ] || continue
+    case "\$port" in ''|*[!0-9]*) continue ;; esac
+    [ "\$port" -ge 1 ] && [ "\$port" -le 65535 ] || continue
+    safe_name=\$(printf '%s' "\$name" | sed 's/[,:]/ /g')
+    [ -n "\$safe_name" ] || safe_name="unknown"
+    printf '%s:%s\n' "\$port" "\$safe_name"
+  done < "\$reg"
+fi
+
+# Also check Flutter Web sessions
 if command -v tmux >/dev/null 2>&1; then
-  registry="\${SHIPFLOW_FLUTTER_WEB_SESSIONS_FILE:-\$HOME/.shipflow/flutter-web-sessions.tsv}"
-  if [ -f "\$registry" ]; then
+  freg="\${SHIPFLOW_FLUTTER_WEB_SESSIONS_FILE:-\$HOME/.shipflow/flutter-web-sessions.tsv}"
+  if [ -f "\$freg" ]; then
     while IFS='|' read -r name port project_dir session_name; do
       [ -n "\$name" ] || continue
       case "\$port" in ''|*[!0-9]*) continue ;; esac
@@ -376,7 +453,7 @@ if command -v tmux >/dev/null 2>&1; then
         [ -n "\$safe_name" ] || safe_name="flutter-web"
         printf '%s:%s\n' "\$port" "\$safe_name"
       fi
-    done < "\$registry"
+    done < "\$freg"
   fi
 fi
 } | awk -F: '!seen[\$1]++' | $formatter

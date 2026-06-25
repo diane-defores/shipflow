@@ -82,6 +82,14 @@ Avant de créer ou modifier une ligne opérationnelle `spec:`, charger `$SHIPFLO
 
 ### Step 1 — Comprendre le besoin
 
+**Si un contexte `blueprint: [id]` est fourni** (handoff de `001-sf-build`) :
+1. Charger `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` pour le contrat du système.
+2. Lire `$SHIPFLOW_ROOT/skills/app-blueprints/[id]/blueprint.md`.
+3. Extraire du blueprint : stack, architecture, modèles, routes, conventions.
+4. Utiliser ces informations pour pré-remplir le contexte technique (section Stack, Modèles, Routes).
+5. Les questions déjà couvertes par le blueprint (stack, framework, routing) sont considérées comme résolues — ne pas les reposer.
+6. Continuer la spec normalement pour les décisions projet-spécifiques (user story, fonctionnalités exactes, données métier, UI/UX).
+
 **Si `$ARGUMENTS` est fourni**, l'utiliser comme point de départ.
 **Sinon**, demander : "Qu'est-ce qu'on construit ?"
 
@@ -162,9 +170,10 @@ Si Supabase est impliqué, préciser explicitement dans le contexte technique:
 - quel couplage existe entre Auth, Storage et DB
 
 **Si aucun code existant** (clean slate) :
-- Identifier le dossier cible
-- Scanner les dossiers parents pour le contexte architectural
-- Documenter "Clean Slate confirmé" — pas de contraintes legacy
+- Identifier le dossier cible.
+- Scanner les dossiers parents pour le contexte architectural.
+- Si un blueprint est actif, utiliser son stack, ses modèles et ses conventions comme base technique au lieu de découvrir depuis zéro. Documenter `Blueprint: [id] (v[version]) — used as clean-slate foundation`.
+- Documenter "Clean Slate confirmé" — pas de contraintes legacy.
 
 Résumer les trouvailles à l'utilisateur avant de continuer.
 
@@ -173,6 +182,13 @@ Résumer les trouvailles à l'utilisateur avant de continuer.
 ### Step 3 — Générer la spec
 
 Produire la spécification complète.
+
+**Si un blueprint est actif** :
+- Pré-remplir la section `Architecture` depuis `blueprint.stack.architecture`.
+- Pré-remplir la section `Stack` depuis `blueprint.stack` (framework, routing, state management, HTTP, auth, storage).
+- Pré-remplir la section modèles depuis `blueprint.models` — chaque entité blueprint devient un point de départ pour les modèles de la spec.
+- Pré-remplir la section `Routes` depuis `blueprint.router`.
+- Les décisions blueprint peuvent être affinées par la spec, mais ne doivent pas être contredites sans justification explicite.
 
 Adapter la profondeur au mode choisi:
 - **light**: moins de tâches, focus sur le chemin critique + cas limites principaux
@@ -399,6 +415,7 @@ Sauvegarder la spec dans le projet :
 **Rapport final :**
 ```
 Spec enregistrée : specs/[slug].md
+Blueprint: [id] (v[version]) — utilisé comme squelette d'architecture
 
 Prochaine étape :
 - Lancer /102-sf-start [titre] pour commencer l'implémentation

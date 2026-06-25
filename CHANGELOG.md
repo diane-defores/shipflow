@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.3.17"
+artifact_version: "0.4.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-06-10"
+updated: "2026-06-25"
 status: draft
 source_skill: 300-sf-docs
 scope: documentation
@@ -25,6 +25,36 @@ evidence: []
 next_step: "/300-sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
+
+## [2026-06-25]
+
+### Added
+- Added env registry `~/.shipflow/envs.reg` — built once on lib.sh load (`registry_sync`), updated by `env_start`/`env_stop`, read by dashboard via `cat` (0 subprocesses during render)
+- Added auto-install guards in `env_start()` — checks for missing/empty `node_modules` (runs pnpm/npm install), missing Python venv (creates + pip install), unreachable Doppler (disables if offline)
+- Added `pm2_health_scan()` — reads `~/.pm2/dump.pm2` (~1ms file read, no subprocess) at lib.sh load and after `env_start` to warn of >10 restart processes
+- Added PM2 health to async status cache (`refresh_menu_status_cache_sync`, 120s interval) — displayed in `print_header()` with no menu latency
+- Added stdin buffer drain after action bar (`read -t 0.01 -n 10000`) to prevent key leakage to main menu
+
+### Changed
+- Migrated all npm projects to pnpm (`dianedefores`, `beatflowz`/`vocal-tract-viewer`, `contentglowz_site`, `contentglowz_remotion_worker`)
+- Fixed `detect_dev_command` — removed `--` separator for pnpm (v11 doesn't pass flags through `--`)
+- Fixed `ERR_PNPM_IGNORED_BUILDS` (esbuild, sharp) via `allowBuilds` in `pnpm-workspace.yaml`
+- Redesigned dashboard: numbered `[ 1]...[14]` layout, legend `🟢 online 🟡 stopped 🔴 error ⚪ unknown`, `📊 N Environments :` (count in header), `⚙️ Actions :` split on 2 lines with `[n] [s] [e] [o] [k] [x]` — single-keypress immediate (no Enter for s/k/digits)
+- Bulk stop operations now silent (output to `>/dev/null 2>&1`)
+- Memoized `resolve_project_path()` — single `find` cached 5s instead of per-call `find` (28→1)
+- Simplified port display: `localhost:PORT` (no protocol prefix), fixed double-colon `Port: :3004` → `Port: 3004`
+- Added pause between environment list and idle-app picker in dashboard
+
+### Renamed
+- PM2/directory/flox env: `app` → `shipflow_app`, `site` → `shipflow-site`, flox env `contentflowz-app` → `shipflow-app`
+- Created `/home/claude/shipflow_app/shipflow_app/` directory for renamed shipflow_app project
+
+### Removed
+- Deleted `contentglowz_app` from PM2 (Flutter build — CI only)
+- Filtered `pm2-logrotate` out of env registry (no `.flox` dir)
+
+### Fixed
+- Fixed `contentglowz_lab` 2355 restarts — created missing Python venv + installed deps, removed broken `doppler run` wrapper from ecosystem config
 
 ## [2026-06-19]
 

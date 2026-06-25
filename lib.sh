@@ -894,27 +894,75 @@ ui_pause() {
     ui_read_key pause_key
 }
 
+# DISK — DF CACHE
+# ============================================================================
+# Single df call cached 2s to eliminate redundant subprocesses (3-4 per menu render).
+
+__DF_CACHE_TS=0
+__DF_CACHE_TTL=2
+__DF_SOURCE=
+__DF_AVAIL_BYTES=
+__DF_TOTAL_BYTES=
+__DF_USED_BYTES=
+__DF_USED_PCT=
+
+_df_refresh_cache() {
+    local now
+    now=$(date +%s)
+    if [ $((now - __DF_CACHE_TS)) -lt "$__DF_CACHE_TTL" ] && [ -n "$__DF_AVAIL_BYTES" ]; then
+        return 0
+    fi
+    local line
+    line=$(df -B1 --output=source,avail,size,used,pcent / 2>/dev/null | tail -n 1)
+    read -r __DF_SOURCE __DF_AVAIL_BYTES __DF_TOTAL_BYTES __DF_USED_BYTES __DF_USED_PCT <<< "$line"
+    __DF_USED_PCT=${__DF_USED_PCT%\%}
+    __DF_CACHE_TS=$now
+}
+
+_bytes_to_human() {
+    local bytes="$1"
+    if [ "$bytes" -ge 1073741824 ]; then
+        echo "$((bytes / 1073741824))G"
+    elif [ "$bytes" -ge 1048576 ]; then
+        echo "$((bytes / 1048576))M"
+    elif [ "$bytes" -ge 1024 ]; then
+        echo "$((bytes / 1024))K"
+    else
+        echo "${bytes}B"
+    fi
+}
+
 # DISK CLEANUP UTILITIES
 # ============================================================================
 
 disk_free_bytes() {
-    df -B1 --output=avail / 2>/dev/null | tail -n 1 | tr -d ' '
+    _df_refresh_cache
+    echo "$__DF_AVAIL_BYTES"
 }
 
 disk_free_human() {
-    df -h --output=avail / 2>/dev/null | tail -n 1 | tr -d ' '
+    _df_refresh_cache
+    _bytes_to_human "$__DF_AVAIL_BYTES"
 }
 
 disk_total_human() {
-    df -h --output=size / 2>/dev/null | tail -n 1 | tr -d ' '
+    _df_refresh_cache
+    _bytes_to_human "$__DF_TOTAL_BYTES"
 }
 
 disk_used_human() {
-    df -h --output=used / 2>/dev/null | tail -n 1 | tr -d ' '
+    _df_refresh_cache
+    _bytes_to_human "$__DF_USED_BYTES"
+}
+
+disk_used_pct() {
+    _df_refresh_cache
+    echo "$__DF_USED_PCT"
 }
 
 disk_filesystem() {
-    df -P / 2>/dev/null | awk 'NR == 2 {print $1}'
+    _df_refresh_cache
+    echo "$__DF_SOURCE"
 }
 
 header_storage_human() {
@@ -926,10 +974,6 @@ header_storage_human() {
         *[0-9]T) printf '%sTB' "${value%T}" ;;
         *) printf '%s' "$value" ;;
     esac
-}
-
-disk_used_pct() {
-    df -P / 2>/dev/null | awk 'NR == 2 { gsub("%", "", $5); print $5 }'
 }
 
 disk_warn_threshold_bytes() {
@@ -2712,6 +2756,7 @@ read_menu_status_cache() {
     MENU_STATUS_MEM_TOTAL_HUMAN=""
     MENU_STATUS_LOW_MEM=0
     MENU_STATUS_PM2_UNHEALTHY=""
+    MENU_STATUS_LONG_COUNT=""
 
     [ -f "$MENU_STATUS_CACHE_FILE" ] || return 1
 
@@ -2725,6 +2770,7 @@ read_menu_status_cache() {
             mem_total_human) MENU_STATUS_MEM_TOTAL_HUMAN="$value" ;;
             low_mem) MENU_STATUS_LOW_MEM="$value" ;;
             pm2_unhealthy) MENU_STATUS_PM2_UNHEALTHY="$value" ;;
+            long_count) MENU_STATUS_LONG_COUNT="$value" ;;
         esac
     done < "$MENU_STATUS_CACHE_FILE"
 
@@ -3623,12 +3669,111 @@ warning() {
 }
 
 # ============================================================================
+# ENV REGISTRY — single source of truth for env status
+# Updated by env_start/env_stop, read by show_dashboard (no subprocesses)
+# ============================================================================
+
+SHIPFLOW_REGISTRY="${SHIPFLOW_REGISTRY:-$HOME/.shipflow/envs.reg}"
+SHIPFLOW_REGISTRY_SYNCED=false
+
+ensure_registry() {
+    mkdir -p "$(dirname "$SHIPFLOW_REGISTRY")"
+    if [ ! -f "$SHIPFLOW_REGISTRY" ]; then
+        registry_sync
+    fi
+}
+
+registry_sync() {
+    mkdir -p "$(dirname "$SHIPFLOW_REGISTRY")"
+    # One pm2 jlist call + one find
+    local pm2_data
+    if command -v pm2 >/dev/null 2>&1; then
+        if command -v jq >/dev/null 2>&1; then
+            pm2_data=$(pm2 jlist 2>/dev/null | jq -r '.[] | "\(.name)|\(.pm2_env.status // "stopped")|\(.pm2_env.env.PORT // "")|\(.pm2_env.pm_cwd // "")"' 2>/dev/null)
+        else
+            pm2_data=$(pm2 jlist 2>/dev/null | python3 -c "
+import sys, json
+try:
+    apps = json.load(sys.stdin)
+    for app in apps:
+        n = app.get('name', '')
+        s = app.get('pm2_env', {}).get('status', 'stopped')
+        p = app.get('pm2_env', {}).get('env', {}).get('PORT', '')
+        c = app.get('pm2_env', {}).get('pm_cwd', '')
+        print(f'{n}|{s}|{p}|{c}')
+except: pass
+" 2>/dev/null)
+        fi
+    fi
+
+    # Build map: name -> path from .flox dirs
+    local path_map=""
+    local flox_dirs
+    flox_dirs=$(find "$PROJECTS_DIR" -maxdepth 4 \
+        \( -name "node_modules" -o -name ".git" -o -name "venv" -o -name ".venv" \
+           -o -name "__pycache__" -o -name "target" -o -name ".next" -o -name ".nuxt" \
+           -o -name "dist" -o -name ".cache" -o -name ".pnpm" -o -name ".yarn" \) -prune \
+        -o -type d -name ".flox" -print 2>/dev/null)
+    while IFS= read -r flox_dir; do
+        [ -z "$flox_dir" ] && continue
+        local dname
+        dname=$(basename "$(dirname "$flox_dir")")
+        path_map="$path_map${dname}|$(dirname "$flox_dir")"$'\n'
+    done <<< "$flox_dirs"
+
+    > "$SHIPFLOW_REGISTRY"
+    # Write entries from pm2 data first
+    if [ -n "$pm2_data" ]; then
+        while IFS='|' read -r name status port cwd; do
+            [ -z "$name" ] && continue
+            local path="$cwd"
+            if [ -z "$path" ] || [ ! -d "$path" ]; then
+                path=$(echo "$path_map" | while IFS='|' read -r pn pp; do
+                    [ "$pn" = "$name" ] && echo "$pp" && exit 0
+                done)
+            fi
+            # Skip entries without a .flox project directory (PM2 modules, orphans)
+            if [ -z "$path" ] || [ ! -d "$path/.flox" ]; then
+                continue
+            fi
+            echo "$name|$status|$port|$path" >> "$SHIPFLOW_REGISTRY"
+        done <<< "$pm2_data"
+    fi
+    # Add any envs from .flox not in pm2
+    while IFS='|' read -r pn pp; do
+        [ -z "$pn" ] && continue
+        if ! grep -q "^${pn}|" "$SHIPFLOW_REGISTRY" 2>/dev/null; then
+            echo "$pn|stopped||$pp" >> "$SHIPFLOW_REGISTRY"
+        fi
+    done <<< "$path_map"
+
+    SHIPFLOW_REGISTRY_SYNCED=true
+}
+
+registry_update() {
+    local name=$1 status=$2 port=$3
+    mkdir -p "$(dirname "$SHIPFLOW_REGISTRY")"
+    local path=""
+    if grep -q "^${name}|" "$SHIPFLOW_REGISTRY" 2>/dev/null; then
+        path=$(grep "^${name}|" "$SHIPFLOW_REGISTRY" | head -1 | cut -d'|' -f4)
+        grep -v "^${name}|" "$SHIPFLOW_REGISTRY" > "${SHIPFLOW_REGISTRY}.tmp"
+        echo "$name|$status|$port|$path" >> "${SHIPFLOW_REGISTRY}.tmp"
+        mv "${SHIPFLOW_REGISTRY}.tmp" "$SHIPFLOW_REGISTRY"
+    else
+        echo "$name|$status|$port|" >> "$SHIPFLOW_REGISTRY"
+    fi
+}
+
+# ============================================================================
 # PM2 DATA CACHING (Performance Optimization)
 # ============================================================================
 
 # Global cache variables
 PM2_DATA_CACHE=""
 PM2_DATA_CACHE_TIME=0
+
+# Sync registry on lib.sh load (one pm2 jlist + one find per session)
+registry_sync 2>/dev/null || true
 
 # -----------------------------------------------------------------------------
 # get_pm2_data_cached - Fetch and cache all PM2 application data
@@ -3770,13 +3915,13 @@ get_pm2_app_data() {
     local app_name=$1
     local field=$2  # status, port, or cwd
 
-    local data=$(get_pm2_data_cached)
+    local data
+    data=$(get_pm2_data_cached) || return 1
     if [ -z "$data" ]; then
         return 1
     fi
 
-    # Parse cached data
-    echo "$data" | while IFS='|' read -r name status port cwd; do
+    while IFS='|' read -r name status port cwd; do
         if [ "$name" = "$app_name" ]; then
             case "$field" in
                 status) echo "$status" ;;
@@ -3786,30 +3931,12 @@ get_pm2_app_data() {
             esac
             return 0
         fi
-    done
+    done <<< "$data"
+    return 1
 }
 
 list_pm2_app_names() {
-    if ! command -v pm2 >/dev/null 2>&1; then
-        return 1
-    fi
-
-    if command -v jq >/dev/null 2>&1; then
-        pm2 jlist 2>/dev/null | jq -r '.[].name // empty' 2>/dev/null
-    else
-        pm2 jlist 2>/dev/null | python3 -c "
-import json
-import sys
-try:
-    apps = json.load(sys.stdin)
-except Exception:
-    sys.exit(0)
-for app in apps:
-    name = app.get('name')
-    if name:
-        print(name)
-" 2>/dev/null
-    fi
+    get_pm2_data_cached 2>/dev/null | awk -F'|' '{print $1}'
 }
 
 pm2_app_exists_by_name() {
@@ -3939,9 +4066,24 @@ pm2_stop_app_by_name() {
 #       echo "Port 3000 is busy"
 #   fi
 # -----------------------------------------------------------------------------
+__SS_CACHE_DATA=""
+__SS_CACHE_TS=0
+__SS_CACHE_TTL=2
+
+_ss_refresh_cache() {
+    local now
+    now=$(date +%s)
+    if [ $((now - __SS_CACHE_TS)) -lt "$__SS_CACHE_TTL" ] && [ -n "$__SS_CACHE_DATA" ]; then
+        return 0
+    fi
+    __SS_CACHE_DATA=$(ss -ltn 2>/dev/null)
+    __SS_CACHE_TS=$now
+}
+
 is_port_in_use() {
     local port=$1
-    ss -ltn 2>/dev/null | awk '{print $4}' | grep -E "[:.]${port}$" >/dev/null 2>&1
+    _ss_refresh_cache
+    echo "$__SS_CACHE_DATA" | awk '{print $4}' | grep -E "[:.]${port}$" >/dev/null 2>&1
 }
 
 # Get all ports used by PM2 apps (even stopped ones) - OPTIMIZED
@@ -4095,25 +4237,43 @@ get_port_from_pm2() {
 #   path=$(resolve_project_path "myapp")
 #   path=$(resolve_project_path "/root/myapp")
 # -----------------------------------------------------------------------------
+RESOLVE_PATH_CACHE=""
+RESOLVE_PATH_CACHE_TIME=0
+: "${RESOLVE_PATH_CACHE_TTL:=5}"
+
+invalidate_path_cache() {
+    RESOLVE_PATH_CACHE=""
+    RESOLVE_PATH_CACHE_TIME=0
+}
+
 resolve_project_path() {
     local identifier=$1
 
     # Case 1: Identifier is already an absolute path
-    # Accept paths with OR without .flox — env_start handles Flox initialization
     if [[ "$identifier" == /* && -d "$identifier" ]]; then
         echo "$identifier"
         return 0
     fi
 
-    # Case 2: Identifier is an environment name, search within PROJECTS_DIR
+    # Build cache from a single find if stale
+    local now
+    now=$(date +%s)
+    if [ -z "$RESOLVE_PATH_CACHE" ] || [ $((now - RESOLVE_PATH_CACHE_TIME)) -ge "$RESOLVE_PATH_CACHE_TTL" ]; then
+        RESOLVE_PATH_CACHE=$(find "$PROJECTS_DIR" -maxdepth 4 \
+            \( -name "node_modules" -o -name ".git" -o -name "venv" -o -name ".venv" \
+               -o -name "__pycache__" -o -name "target" -o -name ".next" -o -name ".nuxt" \
+               -o -name "dist" -o -name ".cache" -o -name ".pnpm" -o -name ".yarn" \) -prune \
+            -o -type d -name ".flox" -print 2>/dev/null | while read -r flox_dir; do
+            echo "$(basename "$(dirname "$flox_dir")")|$(dirname "$flox_dir")"
+        done)
+        RESOLVE_PATH_CACHE_TIME=$now
+    fi
+
+    # Lookup identifier in cache
     local found_path
-    found_path=$(find "$PROJECTS_DIR" -maxdepth 4 \
-        \( -name "node_modules" -o -name ".git" -o -name "venv" -o -name ".venv" \
-           -o -name "__pycache__" -o -name "target" -o -name ".next" -o -name ".nuxt" \
-           -o -name "dist" -o -name ".cache" -o -name ".pnpm" -o -name ".yarn" \) -prune \
-        -o -type d -name "$identifier" -print 2>/dev/null | while read -r project_dir; do
-        if [ -d "$project_dir/.flox" ]; then
-            echo "$project_dir"
+    found_path=$(echo "$RESOLVE_PATH_CACHE" | while IFS='|' read -r name path; do
+        if [ "$name" = "$identifier" ]; then
+            echo "$path"
             exit 0
         fi
     done)
@@ -4122,8 +4282,8 @@ resolve_project_path() {
         echo "$found_path"
         return 0
     fi
-    
-    return 1 # Project not found
+
+    return 1
 }
 
 # List all environments (projects with Flox env)
@@ -6005,6 +6165,8 @@ for app in apps:
 
     # Invalidate cache after PM2 state change
     invalidate_pm2_cache
+    invalidate_path_cache
+    invalidate_path_cache
     invalidate_env_list_cache
     invalidate_home_folders_cache
 
@@ -6050,6 +6212,7 @@ for app in apps:
                 ;;
         esac
     fi
+    registry_update "$env_name" "online" "$port"
 }
 
 # -----------------------------------------------------------------------------
@@ -6099,6 +6262,7 @@ env_stop() {
     if [ "$stop_rc" -eq 0 ]; then
         sync_caddy_after_pm2_change
     fi
+    registry_update "$pm2_app_name" "stopped" ""
     return "$stop_rc"
 }
 
@@ -6422,6 +6586,7 @@ env_remove() {
         warning "Répertoire $project_dir introuvable (peut-être déjà supprimé ou chemin incorrect)"
     fi
 
+    invalidate_path_cache
     invalidate_env_list_cache
     invalidate_home_folders_cache
 
@@ -6525,6 +6690,7 @@ env_rename() {
     # 6. Save PM2 state (old process removed from dump)
     pm2 save >/dev/null 2>&1
     invalidate_pm2_cache
+    invalidate_path_cache
     invalidate_env_list_cache
     invalidate_home_folders_cache
 
@@ -6580,6 +6746,32 @@ get_pm2_health_data() {
         return 1
     fi
 
+    # Fast path: read dump.pm2 (~1ms file read, no subprocess).
+    # Falls back to pm2 jlist if dump is missing or corrupt.
+    local pm2_home="${PM2_HOME:-$HOME/.pm2}"
+    local dump_file="$pm2_home/dump.pm2"
+    if [ -f "$dump_file" ] && command -v python3 >/dev/null 2>&1; then
+        python3 -c "
+import json, sys, os
+pm2_home = os.environ.get('PM2_HOME', os.path.expanduser('~/.pm2'))
+try:
+    with open(os.path.join(pm2_home, 'dump.pm2')) as f:
+        data = json.load(f)
+    procs = data if isinstance(data, list) else data.get('processes', [])
+    for p in procs:
+        env = p.get('pm2_env', {})
+        name = p.get('name', env.get('name', ''))
+        status = env.get('status', 'unknown')
+        restarts = env.get('restart_time', 0)
+        uptime = env.get('pm_uptime', 0)
+        err_log = env.get('pm_err_log_path', '')
+        print(f'{name}|{status}|{restarts}|{uptime}|{err_log}')
+except:
+    pass
+" 2>/dev/null && return 0
+    fi
+
+    # Fallback: pm2 jlist subprocess
     if [ "$SHIPFLOW_PREFER_JQ" = "true" ] && command -v jq >/dev/null 2>&1; then
         pm2 jlist 2>/dev/null | jq -r '.[] | "\(.name)|\(.pm2_env.status // "unknown")|\(.pm2_env.restart_time // 0)|\(.pm2_env.pm_uptime // 0)|\(.pm2_env.pm_err_log_path // "")"' 2>/dev/null
     elif command -v python3 >/dev/null 2>&1; then
@@ -7061,34 +7253,49 @@ batch_restart_all() {
 show_dashboard() {
     ui_screen_header "Environment Dashboard"
 
-    # Get all environments
-    local all_envs=$(list_all_environments)
+    # Read registry (file read, no subprocesses)
+    local reg_data
+    reg_data=$(cat "$SHIPFLOW_REGISTRY" 2>/dev/null)
+    if [ -z "$reg_data" ]; then
+        registry_sync
+        reg_data=$(cat "$SHIPFLOW_REGISTRY" 2>/dev/null)
+    fi
 
-    if [ -z "$all_envs" ]; then
+    if [ -z "$reg_data" ]; then
         echo -e "${YELLOW}⚠️  No environments found${NC}"
         echo ""
         echo -e "${BLUE}💡 Tip: Use 'Start/Deploy' to create a new environment${NC}"
         return 1
     fi
 
-    # Pre-fetch health data for restart counts (one PM2 call)
+    # Pre-fetch health data from dump file (1ms file read)
     local health_data=""
     if [ "${SHIPFLOW_HEALTH_CHECK_ENABLED:-true}" = "true" ]; then
         health_data=$(get_pm2_health_data 2>/dev/null)
     fi
 
     # Display environments with status
-    echo -e "${GREEN}📊 Active Environments:${NC}"
+    echo -e "  🟢 online  🟡 stopped  🔴 error  ⚪ unknown"
+    echo ""
+
+    local total_envs=$(echo "$reg_data" | grep -c .)
+    echo -e "  ${GREEN}📊 $total_envs Environments :${NC}"
     echo ""
 
     local count=0
+    local env_num=0
+    local num_width=${#total_envs}
+    local env_names=()
     local unhealthy_names=""
     local idle_names=""
-    while IFS= read -r name; do
+    local online_names=()
+    while IFS='|' read -r name status port path; do
+        [ -z "$name" ] && continue
         ((count++))
-        local status=$(get_pm2_status "$name")
-        local port=$(get_port_from_pm2 "$name")
-        local project_dir=$(resolve_project_path "$name")
+        env_names+=("$name")
+        if [ "$status" = "online" ] || [ "$status" = "waiting" ]; then
+            online_names+=("$name")
+        fi
 
         # Status indicator
         local status_icon=$(get_status_icon "$status")
@@ -7148,14 +7355,17 @@ show_dashboard() {
             fi
         fi
 
+        ((env_num++))
         # Display environment info
-        printf "  %s %-20s" "$status_icon" "$name"
+        local pad=$((num_width - ${#env_num}))
+        local bracket="[${env_num}]$(printf "%${pad}s" "")"
+        printf "  ${CYAN}${bracket}${NC} %s %-19s" "$status_icon" "$name"
 
         if [ -n "$port" ]; then
-            printf "${BLUE}Port: %-6s${NC}" ":$port"
-            printf "${CYAN}localhost${NC}"
+            printf " ${BLUE}Port: %-6s${NC}" "$port"
+            printf " ${CYAN}localhost${NC}"
         else
-            printf "${YELLOW}No port${NC}"
+            printf " ${YELLOW}No port${NC}"
         fi
 
         # Append uptime
@@ -7177,65 +7387,96 @@ show_dashboard() {
         if [ "$idle_flag" = true ]; then
             idle_names+="$name "
         fi
-    done <<< "$all_envs"
+    done <<< "$reg_data"
 
+
+    # Action bar — single input parse
     echo ""
-    echo -e "${BLUE}Total: $count environment(s)${NC}"
+    echo -e "  ${GREEN}⚙️ Actions :${NC}"
+    echo ""
+    echo -e "  [${YELLOW}n${NC}] stop env ${YELLOW}#n${NC}  |  [${YELLOW}s${NC}]top all  |  stop all [${CYAN}e${NC}]xcept ${YELLOW}#n${NC}"
+    echo -e "  stop [${CYAN}o${NC}]nly ${YELLOW}#n${NC}  |  s[${YELLOW}k${NC}]ip  |  [${YELLOW}x${NC}] back${NC}"
 
-    # Idle apps — show info line, then ask
-    if [ -n "${idle_names:-}" ]; then
-        echo ""
-        echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-        echo -e "${YELLOW}💤 Long-running apps (${SHIPFLOW_PROCESS_LONG_RUNNING_HOURS:-24}h+):${NC} ${idle_names}"
-        echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-        echo ""
+    local action
+    read -n1 action
+    echo ""
 
-        echo -e "${BLUE}💡 Tu peux libérer de la RAM en arrêtant une app.${NC}"
-        echo ""
-        ui_pause "Appuie sur une touche pour choisir ou Skip..."
-        echo ""
-
-        local idle_arr=()
-        for n in $idle_names; do
-            idle_arr+=("$n")
-        done
-
-        local stop_options=""
-        for n in "${idle_arr[@]}"; do
-            stop_options+="${n}"$'\n'
-        done
-        if [ "${#idle_arr[@]}" -gt 1 ]; then
-            stop_options+="Stop all idle"$'\n'
-        fi
-        stop_options+="Skip"
-
-        local stop_choice
-        stop_choice=$(echo "$stop_options" | ui_choose "Stop an idle app to free RAM:")
-
-        if [ -n "$stop_choice" ] && [ "$stop_choice" != "Skip" ]; then
-            if [ "$stop_choice" = "Stop all idle" ]; then
-                if ui_confirm "Stop all idle apps now?"; then
-                    for n in "${idle_arr[@]}"; do
-                        echo -e "${YELLOW}🛑 Stopping $n...${NC}"
-                        env_stop "$n"
-                        echo -e "${GREEN}✅ $n stopped${NC}"
-                    done
-                    log INFO "Dashboard: stopped all idle apps: ${idle_names}"
-                else
-                    echo -e "${BLUE}Skipped idle app stop.${NC}"
+    case "$action" in
+        [1-9])
+            local idx=$((action - 1))
+            if [ "$idx" -ge 0 ] && [ "$idx" -lt "${#env_names[@]}" ]; then
+                local target="${env_names[$idx]}"
+                if ui_confirm "Stop $target?"; then
+                    echo -e "${YELLOW}🛑 Stopping $target...${NC}"
+                    env_stop "$target"
+                    echo -e "${GREEN}✅ $target stopped${NC}"
+                    log INFO "Dashboard: stopped $target"
                 fi
             else
-                if ui_confirm "Stop idle app '$stop_choice' now?"; then
-                    echo -e "${YELLOW}🛑 Stopping $stop_choice...${NC}"
-                    env_stop "$stop_choice"
-                    echo -e "${GREEN}✅ $stop_choice stopped${NC}"
-                    log INFO "Dashboard: stopped idle app $stop_choice"
+                echo -e "${YELLOW}No env #$action${NC}"
+            fi
+            ;;
+        s|S)
+            if [ "${#online_names[@]}" -eq 0 ]; then
+                echo -e "${YELLOW}Nothing running to stop${NC}"
+            elif ui_confirm "Stop all running apps?"; then
+                for n in "${online_names[@]}"; do
+                    echo -ne "  ${YELLOW}🛑 Stopping $n...${NC}\r"
+                    env_stop "$n" >/dev/null 2>&1
+                done
+                echo ""
+                echo -e "${GREEN}✅ All running apps stopped${NC}"
+                log INFO "Dashboard: stopped all running apps"
+            fi
+            ;;
+        e|E|o|O)
+            echo -n "  ${YELLOW}#? ${NC}"
+            local num
+            read num
+            if [ -z "$num" ]; then
+                echo -e "${YELLOW}Cancelled${NC}"
+            else
+                local idx=$((num - 1))
+                if [ "$idx" -ge 0 ] && [ "$idx" -lt "${#env_names[@]}" ]; then
+                    local target="${env_names[$idx]}"
+                    if [ "$action" = "e" ] || [ "$action" = "E" ]; then
+                        if ui_confirm "Stop all EXCEPT $target?"; then
+                            for n in "${online_names[@]}"; do
+                                if [ "$n" != "$target" ]; then
+                                    echo -ne "  ${YELLOW}🛑 Stopping $n...${NC}\r"
+                                    env_stop "$n" >/dev/null 2>&1
+                                fi
+                            done
+                            echo ""
+                            echo -e "${GREEN}✅ Stopped all except $target${NC}"
+                            log INFO "Dashboard: stopped all except $target"
+                        fi
+                    else
+                        if ui_confirm "Stop $target?"; then
+                            echo -e "${YELLOW}🛑 Stopping $target...${NC}"
+                            env_stop "$target"
+                            echo -e "${GREEN}✅ $target stopped${NC}"
+                            log INFO "Dashboard: stopped $target"
+                        fi
+                    fi
                 else
-                    echo -e "${BLUE}Skipped idle app stop.${NC}"
+                    echo -e "${YELLOW}No env #$num${NC}"
                 fi
             fi
-        fi
-    fi
+            ;;
+        k|K)
+            echo -e "${BLUE}Skipped${NC}"
+            ;;
+        x|X)
+            echo -e "${BLUE}Back${NC}"
+            ;;
+        *)
+            echo -e "${YELLOW}Invalid choice${NC}"
+            ;;
+    esac
+
+    # Drain any leftover input to prevent main menu key conflicts
+    read -t 0.01 -n 10000 2>/dev/null || true
 
     # Health alert banner
     if [ -n "$unhealthy_names" ]; then
@@ -7825,19 +8066,7 @@ deploy_github_project() {
 # Returns lines: "name|restarts" for apps where restarts > threshold (default 10)
 pm2_health_scan() {
     local threshold="${1:-10}"
-    pm2 jlist 2>/dev/null | python3 -c "
-import json, sys
-try:
-    apps = json.load(sys.stdin)
-except:
-    sys.exit(0)
-for app in apps:
-    r = app.get('pm2_env', {}).get('restart_time', 0)
-    name = app.get('name', '?')
-    status = app.get('pm2_env', {}).get('status', '')
-    if r > $threshold and status != 'stopped':
-        print(f'{name}|{r}')
-" 2>/dev/null
+    get_pm2_health_data 2>/dev/null | awk -F'|' -v t="$threshold" '$3 ~ /^[0-9]+$/ && $3 > t && $2 != "stopped" {print $1 "|" $3}'
 }
 
 # ------------------------------------------------------------------------------
@@ -9891,27 +10120,11 @@ show_mobile_guide() {
 }
 
 # ============================================================================
-# STARTUP — PM2 health check (reads dump.pm2, no subprocess)
+# STARTUP — PM2 health check (uses get_pm2_health_data, reads dump.pm2 ~1ms)
 # ============================================================================
-# Runs once per shell when lib.sh is sourced. Lightweight (~1ms file read).
-if [ -z "${SHIPFLOW_PM2_CHECKED:-}" ] && [ -f "${PM2_HOME:-$HOME/.pm2}/dump.pm2" ]; then
+if [ -z "${SHIPFLOW_PM2_CHECKED:-}" ]; then
     SHIPFLOW_PM2_CHECKED=1
-    python3 -c "
-import json, sys, os
-pm2_home = os.environ.get('PM2_HOME', os.path.expanduser('~/.pm2'))
-try:
-    with open(os.path.join(pm2_home, 'dump.pm2')) as f:
-        data = json.load(f)
-    procs = data if isinstance(data, list) else data.get('processes', [])
-    issues = [(p.get('name', '?'), p.get('pm2_env', {}).get('restart_time', 0))
-              for p in procs if p.get('pm2_env', {}).get('restart_time', 0) > 10
-              and p.get('pm2_env', {}).get('status', '') != 'stopped']
-    if issues:
-        for name, restarts in issues:
-            print(f'{name}|{restarts}')
-except:
-    pass
-" 2>/dev/null | while IFS='|' read -r name restarts; do
-    echo -e "${RED}⚠️  PM2 — $name a redémarré ${restarts} fois. Logs: pm2 logs $name${NC}"
-done
+    pm2_health_scan 10 2>/dev/null | while IFS='|' read -r name restarts; do
+        echo -e "${RED}⚠️  PM2 — $name a redémarré ${restarts} fois. Logs: pm2 logs $name${NC}"
+    done
 fi

@@ -84,6 +84,7 @@ For requests involving declared products, sales surfaces, or public claims, pref
 | Pure question, explanation, or advice with no file work | Answer directly |
 | Build or change a user-facing feature and also think about onboarding, activation, beginner adoption, or first-success guidance | `001-sf-build <instruction>` first; `001-sf-build` evaluates the post-implementation `008-sf-onboarding` gate |
 | Non-trivial feature, code, site, docs, product, or workflow work | `001-sf-build <instruction>` |
+| Create a new app from scratch (carnet, gestion, CRUD, etc.) | `001-sf-build <instruction>` — le Blueprint Gate cherchera un blueprint correspondant dans `skills/app-blueprints/` pour guider la creation |
 | Recurring maintenance, security upkeep, dependencies, docs drift, checks, audit freshness, migrations, or project hygiene | `002-sf-maintain <mode or instruction>` |
 | Bug report, `BUG-ID`, retest, closure, fix state, or bug ship-risk question | `003-sf-bug <instruction>` |
 | Release confidence, preview/prod deploy, deployed truth, runtime logs, production health, post-deploy proof | `004-sf-deploy <instruction>` |
@@ -93,6 +94,7 @@ For requests involving declared products, sales surfaces, or public claims, pref
 | Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `600-sf-local-cloud-sync <instruction>` |
 | Product access, paid plans, premium gates, entitlement ledgers, provider events, activation codes, refunds/revokes, support access flows, or backend access gates | `601-sf-product-entitlements <instruction>` |
 | Create, modify, rename, document, refresh, or validate ShipFlow skills | `009-sf-skill-build <instruction>` |
+| Extract a blueprint from an existing app, create a new blueprint | `009-sf-skill-build <instruction>` — route à `009-sf-skill-build` (ShipFlow interne), pas à `001-sf-build` (end-user) |
 | ShipFlow Core, internal skill execution-fidelity audit, or public-plugin packaging readiness for ShipFlow itself | `900-shipflow-core <instruction>` |
 | One obvious audit domain only | relevant `400-sf-audit-* <instruction>` or `400-sf-audit <instruction>` |
 | One obvious owner lane only, such as checks, docs, browser proof, auth diagnosis, manual QA, dependency posture, migration, or final ship | focused owner skill |

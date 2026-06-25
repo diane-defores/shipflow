@@ -67,9 +67,10 @@ The goal is not writing a skill body fast or choosing the shortest text change. 
 
 ## Scope Gate
 
-This skill is for ShipFlow skill maintenance only.
+This skill is for ShipFlow internal artifact maintenance: skills and app blueprints.
 
-- Accepted scope: `skills/*/SKILL.md`, related docs/help/public skill content, and validation/reporting for that same chantier.
+- Accepted scope: `skills/*/SKILL.md`, `skills/app-blueprints/*/blueprint.md`, `skills/references/app-blueprints.md`, `skills/app-blueprints/README.md`, related docs/help/public skill content, and validation/reporting for that same chantier.
+- Blueprint extraction mode: when the target is a source app to extract a new blueprint from, skip the spec/readiness loop and route directly to the Blueprint Extraction Workflow in `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`. The output is a blueprint, not a spec — no readiness gate needed.
 - Rejected scope: generic third-party skill generation, unscoped global refactors, or unrelated repo maintenance.
 
 If the target overlaps existing skill responsibilities, stop and ask for explicit user confirmation before creating a duplicate behavior surface.

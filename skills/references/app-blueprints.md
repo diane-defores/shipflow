@@ -1,12 +1,12 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-06-23"
 updated: "2026-06-23"
 status: draft
-source_skill: 001-sf-build
+source_skill: 009-sf-skill-build
 scope: app-blueprints
 owner: Diane
 confidence: high
@@ -16,6 +16,7 @@ docs_impact: yes
 linked_systems:
   - skills/001-sf-build/SKILL.md
   - skills/001-sf-build/references/build-lifecycle-workflow.md
+  - skills/009-sf-skill-build/SKILL.md
   - skills/100-sf-spec/SKILL.md
   - skills/306-sf-scaffold/SKILL.md
   - skills/204-sf-market-study/SKILL.md
@@ -25,9 +26,11 @@ depends_on: []
 supersedes: []
 evidence:
   - "User decision 2026-06-23: blueprints serve as global spec skeletons for app archetypes."
-  - "User decision 2026-06-23: the process/contract for blueprint ingestion matters more than the blueprint content itself."
+  - "User decision 2026-06-23: each blueprint lives in its own GitHub repo, ShipFlow holds the registry."
+  - "User decision 2026-06-23: the Blueprint Gate resolves via local cache first, clones from repo if missing."
+  - "User decision 2026-06-25: blueprint extraction is a ShipFlow-internal operation, owned by 009-sf-skill-build."
   - "Extracted from contentglowz_app as first concrete Flutter blueprint."
-next_step: "Add more blueprints as apps are shipped"
+next_step: "Create GitHub repos for each blueprint, update registry URLs"
 ---
 
 # App Blueprints
@@ -42,64 +45,54 @@ A blueprint is not a full spec — it is an **app anatomy reference** that:
 - Guides `306-sf-scaffold` with folder structure, naming conventions, and file patterns
 - Gives `204-sf-market-study` a target archetype for research scoping
 
-## Location
+## Distribution Model
 
-Blueprints live in `$SHIPFLOW_ROOT/skills/app-blueprints/` (ShipFlow root, shared across projects).
+Each blueprint lives in its own GitHub repository so it survives independently of ShipFlow.
 
-Each blueprint is a directory with a `blueprint.md` file and optional supplementary files:
+`$SHIPFLOW_ROOT/skills/app-blueprints/` holds:
+- `README.md` — the **registry**: maps blueprint IDs to their GitHub repo URLs and keywords
+- `<blueprint-id>/blueprint.md` — optional local cache of a cloned blueprint (for offline or ShipFlow-cloned setups)
+- `<blueprint-id>/references/` — optional supplementary files
 
-```
-$SHIPFLOW_ROOT/skills/app-blueprints/
-  README.md                           # Index of available blueprints
-  flutter-crud-content/
-    blueprint.md                      # The blueprint (primary file)
-    references/                       # Optional: patterns, examples, templates
-```
+When ShipFlow is installed via the Codex plugin without a full clone, only the registry (`README.md`) ships with the plugin. The Blueprint Gate clones blueprints on demand from their GitHub repos.
 
-## Format
+## Resolution Order
 
-Every blueprint MUST have YAML frontmatter for machine parsing plus a Markdown body for human reading.
+The Blueprint Gate resolves a blueprint in this order:
 
-### Frontmatter
+1. **Local cache**: `$SHIPFLOW_ROOT/skills/app-blueprints/<id>/blueprint.md` exists → use it
+2. **External repo**: registry lists `source.repo` → `git clone --depth 1 <repo> <cache-dir>/<id>/` → use it
+3. **No match**: proceed without blueprint (normal for novel app types)
+
+The cache directory defaults to `$SHIPFLOW_ROOT/skills/app-blueprints/`. If ShipFlow is not cloned (`$SHIPFLOW_ROOT` unavailable), use `$HOME/.shipflow/blueprints/` as fallback cache.
+
+## Registry Format
+
+`$SHIPFLOW_ROOT/skills/app-blueprints/README.md` is the canonical registry. It uses YAML frontmatter:
 
 ```yaml
----
-id: flutter-crud-content
-name: Flutter CRUD Content App
-version: 1.0.0
-app_type: flutter-mobile-web
-
-# Keywords for fuzzy matching against user requests
-match_keywords:
-  - content
-  - crud
-  - carnet
-  - health
-  - gestion
-  - flutter
-
-# Stack decisions
-stack:
-  framework: flutter
-  sdk: ">=3.11.0"
-  state_management: riverpod
-  routing: go_router
-  http: dio
-  auth: clerk
-  storage: shared_preferences
-  architecture: layer-first
-  codegen: false
-
-# Source projects that were used to validate this blueprint
-sources:
-  - contentglowz_app
----
+available_blueprints:
+  flutter-crud-content:
+    name: Flutter CRUD Content App
+    description: For apps with auth, entity list/detail/edit, offline queue
+    match_keywords: [content, crud, carnet, gestion, flutter, mobile]
+    source:
+      repo: https://github.com/dianedefores/shipflow-blueprint-flutter-crud-content
+      local: flutter-crud-content  # subdirectory name, if ShipFlow is cloned
 ```
 
-### Body sections
+Fields:
+- `name`: human-readable display name
+- `description`: one-line summary
+- `match_keywords`: list of keywords for fuzzy matching against user requests
+- `source.repo`: GitHub repo URL (the durable home of this blueprint)
+- `source.local`: subdirectory name under `$SHIPFLOW_ROOT/skills/app-blueprints/` when locally cached
 
-The body is structured Markdown. Every blueprint MUST include these sections:
+## Blueprint Format
 
+Every blueprint MUST have YAML frontmatter for machine parsing plus a Markdown body for human reading. The frontmatter includes the same `id`, `name`, `version`, `match_keywords`, `stack`, and `sources` fields.
+
+Body sections:
 1. **App Anatomy** — what this archetype does, who it serves, typical screens
 2. **Stack** — framework, state, routing, HTTP, auth, storage, architecture style
 3. **Models** — domain entities with fields, types, required/optional
@@ -113,12 +106,34 @@ The body is structured Markdown. Every blueprint MUST include these sections:
 When `001-sf-build` receives a request like "crée une app de carnet de santé pour voiture":
 
 1. Normalize the request to keywords: `[carnet, santé, voiture, health, log, vehicle]`
-2. Scan `$SHIPFLOW_ROOT/skills/app-blueprints/*/blueprint.md`
-3. Match against `match_keywords`, `name`, and `description` (fuzzy, case-insensitive)
-4. Return the best match or a shortlist; if no match, proceed without blueprint
-5. If multiple blueprints could match, ask the user to choose
+2. Scan the registry (`$SHIPFLOW_ROOT/skills/app-blueprints/README.md`) for matching blueprints — match against `match_keywords`, `name`, and `description` (fuzzy, case-insensitive)
+3. For each match found in the registry, resolve it (local cache → clone from repo)
+4. If no match in registry, scan local `$SHIPFLOW_ROOT/skills/app-blueprints/*/blueprint.md` as fallback
+5. Return the best match or a shortlist; if no match, proceed without blueprint
+6. If multiple blueprints could match, ask the user to choose
 
-The matching logic is a simple keyword overlap score — not AI-dependent, reproducible from shell tools if needed.
+## Blueprint Repo Structure
+
+Each GitHub repo for a blueprint follows this layout:
+
+```
+shipflow-blueprint-<id>/
+  README.md                 # Blueprint overview + link to source app
+  blueprint.md              # The blueprint (primary file, follows format above)
+  references/               # Optional: patterns, examples, templates
+  source/                   # Optional: link to the source app that validated this
+```
+
+The repo's `README.md` serves as the public face. ShipFlow reads only `blueprint.md`.
+
+## Creating a New Blueprint
+
+1. Ship an app of the new archetype.
+2. Extract its repeatable patterns into a `blueprint.md`.
+3. Create a GitHub repo: `shipflow-blueprint-<id>`.
+4. Push `blueprint.md` + optional `references/` to the repo.
+5. Add the entry to `$SHIPFLOW_ROOT/skills/app-blueprints/README.md` registry.
+6. Optionally clone it locally for offline use.
 
 ## How Skills Consume Blueprints
 
@@ -131,10 +146,11 @@ intake -> chantier check -> BLUEPRINT GATE -> spec/readiness -> governance -> mo
 ```
 
 At the Blueprint Gate:
-1. Try to match the intake against available blueprints.
-2. If matched, load the blueprint into the active context.
-3. Add a `Blueprint` line to the final report when used.
-4. Pass the blueprint path to downstream skills via handoff context.
+1. Match keywords against the registry.
+2. Resolve each candidate (local → clone from repo).
+3. Load the best-matching blueprint into the active context.
+4. Add `Blueprint: [id] (v[version])` to the final report.
+5. Pass `BLUEPRINT_PATH` to downstream skills via handoff context.
 
 ### 100-sf-spec
 
@@ -159,27 +175,31 @@ When a blueprint is loaded:
 - Use `stack` to identify ecosystem competitors.
 - Use the blueprint description as the "product category" for demand/keyword research.
 
-## When to Create a Blueprint
+## Blueprint Extraction Workflow
 
-Create a new blueprint when:
-- We have shipped at least one app of a given archetype successfully.
-- The archetype is reusable (not one-off).
-- The patterns are stable enough to codify.
+Use this workflow when the request is to create a new blueprint from an existing app (e.g. "extract a blueprint from ContentGlowz", "create a blueprint from ce projet").
 
-Update a blueprint when:
-- A new shipped app reveals patterns the blueprint missed.
-- A framework or dependency version changes meaningfully.
-- The architectural conventions in ShipFlow evolve.
+### Trigger
 
-## Directory Index
+`009-sf-skill-build` (ShipFlow skill-build / internal artifact maintenance) owns this workflow. Route here from `000-shipflow` when the intake contains keywords like `extract`, `blueprint from`, `create blueprint`, `nouveau blueprint`, or equivalent. This is **not** an end-user flow — it maintains ShipFlow's own blueprint registry.
 
-To discover available blueprints without scanning every file, `$SHIPFLOW_ROOT/skills/app-blueprints/README.md` contains:
+### Steps
 
-```yaml
-available_blueprints:
-  flutter-crud-content:
-    name: Flutter CRUD Content App
-    description: For apps with auth, entity list/detail/edit, offline queue
-    source: contentglowz_app
-    keywords: [content, crud, flutter, mobile]
+1. **Identify source** — determine the app path or GitHub repo that validates the blueprint. This must be a shipped, working app.
+2. **Explore app anatomy** — read the project structure, main entry points, router, state management, models, services, theme, and conventions. Use `306-sf-scaffold` exploration patterns.
+3. **Extract stack** — document framework, SDK version, state management, routing, HTTP, auth, storage, architecture style, codegen status.
+4. **Extract conventions** — document folder structure, naming, file patterns, model pattern, screen pattern, provider organization, theme system, responsive breakpoints.
+5. **Write `blueprint.md`** — follow the Format section above (frontmatter + body sections). Include `source_repo` pointing to the app's repo.
+6. **Register** — add the new blueprint to `$SHIPFLOW_ROOT/skills/app-blueprints/README.md` registry with `source.repo` URL.
+7. **Create GitHub repo** — recommend creating `shipflow-blueprint-<id>` repo and pushing the blueprint there. Point `source.repo` to it.
+8. **Validate** — the blueprint must be self-consistent: every convention documented must match the source app. If in doubt, re-read the source.
+
+### Output
+
+```
+Blueprint extracted: <id> (v<version>)
+Source: <app path or repo>
+Repo: <source.repo URL>
+Registry: $SHIPFLOW_ROOT/skills/app-blueprints/README.md
+Next: push to GitHub repo, or use locally.
 ```

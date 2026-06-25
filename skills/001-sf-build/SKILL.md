@@ -82,14 +82,15 @@ Before creating any spec:
 After work item resolution, before spec creation:
 
 1. Load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`.
-2. Scan `$SHIPFLOW_ROOT/skills/app-blueprints/*/blueprint.md` for a match against the user request.
-3. If matched, load the blueprint into the active context and pass it to downstream skills.
-4. If no match, proceed without a blueprint.
-5. If multiple blueprints match, ask the user to choose.
+2. Read the registry at `$SHIPFLOW_ROOT/skills/app-blueprints/README.md` for candidate matches.
+3. For each candidate, resolve the blueprint: check local cache first, then clone from `source.repo` if set.
+4. If matched, load the blueprint into the active context and pass it to downstream skills.
+5. If no match, proceed without a blueprint.
+6. If multiple blueprints match, ask the user to choose.
 
 The blueprint pre-fills architecture, stack, models, routes, and conventions for `100-sf-spec` and `306-sf-scaffold`. It is not a substitute for a spec — it is a starting skeleton.
 
-In the final report, add `Blueprint: [id] (version)` when used.
+In the final report, add `Blueprint: [id] (version) — resolved from [local | cloned from <url>]` when used.
 
 ## Spec And Readiness Loop
 

@@ -1,7 +1,7 @@
 ---
 artifact: skill_reference
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: "shipflow"
 created: "2026-06-10"
 updated: "2026-06-23"
@@ -75,17 +75,24 @@ After work item resolution, before spec creation:
 
 1. Load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` for the full contract.
 2. Extract keywords from the user request: normalize to lowercase, remove stopwords, keep nouns.
-3. Scan `$SHIPFLOW_ROOT/skills/app-blueprints/*/blueprint.md` frontmatter.
-4. Score each blueprint by keyword overlap against `match_keywords`, `name`, and `description`.
-5. Pick the best match (score > 0). If tie, ask the user.
-6. If a match is found:
+3. **Read the registry** at `$SHIPFLOW_ROOT/skills/app-blueprints/README.md`. Parse `available_blueprints` for match candidates.
+4. Score each candidate by keyword overlap against `match_keywords`, `name`, and `description`.
+5. For matched candidates, **resolve the blueprint file**:
+   a. Check `$SHIPFLOW_ROOT/skills/app-blueprints/<id>/blueprint.md` (local cache).
+   b. If missing but `source.repo` is set in the registry, clone the repo: `git clone --depth 1 <repo> $SHIPFLOW_ROOT/skills/app-blueprints/<id>/`. Use `$HOME/.shipflow/blueprints/<id>/` as fallback if `$SHIPFLOW_ROOT` is unavailable.
+   c. If both fail, exclude this candidate.
+6. If no local match is found in the registry, fall back to scanning `$SHIPFLOW_ROOT/skills/app-blueprints/*/blueprint.md` for orphaned local blueprints not yet in the registry.
+7. Pick the best match (score > 0). If tie, ask the user.
+8. If a match is found:
    - Read the full blueprint file.
    - Keep the blueprint path in context for downstream skills.
    - When routing to `100-sf-spec`, include a handoff note: `blueprint: [id]`.
-   - When routing to `306-sf-scaffold`, include the blueprint path.
-7. If no match, proceed without blueprint. This is normal for novel app types.
-
-The blueprint pre-fills architecture decisions but does not replace spec writing. Every project still needs a spec; the blueprint just gives it a head start.
+   - When routing to `306-sf-scaffold`, set `BLUEPRINT_PATH=/path/to/blueprint.md` in the handoff context and include `blueprint: [id]` in the handoff note.
+   - Add to the final report:
+     ```text
+     Blueprint: [id] (v[version]) — resolved from [local | cloned from <repo>]
+     ```
+9. If no match, proceed without blueprint. This is normal for novel app types.
 
 Add to the final report:
 ```text

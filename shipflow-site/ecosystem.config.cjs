@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
-    name: "site",
-    cwd: "/home/claude/shipflow/site",
+    name: "shipflow-site",
+    cwd: "/home/claude/shipflow/shipflow-site",
     script: "bash",
     args: ["-lc", "export PORT=3015 && flox activate -- bash -lc 'npm run dev -- --port 3015'"],
     env: {

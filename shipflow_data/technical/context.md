@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.4.0"
+artifact_version: "0.5.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-11"
+updated: "2026-06-23"
 status: draft
 source_skill: manual
 scope: "context"
@@ -13,7 +13,7 @@ confidence: "high"
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
-linked_systems: ["shipflow.sh", "lib.sh", "config.sh", "install.sh", "local/local.sh", "skills/", "shipflow-spec-driven-workflow.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "shipflow_data/technical/", "shipflow_data/business/project-competitors-and-inspirations.md", "shipflow_data/business/affiliate-programs.md"]
+linked_systems: ["shipflow.sh", "lib.sh", "config.sh", "install.sh", "local/local.sh", "skills/", "skills/references/app-blueprints.md", "skills/app-blueprints/", "shipflow-spec-driven-workflow.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "shipflow_data/technical/", "shipflow_data/business/project-competitors-and-inspirations.md", "shipflow_data/business/affiliate-programs.md"]
 depends_on: []
 supersedes: []
 evidence: ["README.md", "CLAUDE.md", "shipflow_data/editorial/content-map.md", function extraction from core shell scripts, "shipflow_data/technical/* as code-proximate subsystem documentation", "Business registries added for project competitors/inspirations and affiliate programs."]
@@ -43,6 +43,8 @@ ShipFlow combine deux couches :
 - `install.sh`: bootstrap serveur et configuration de l'environnement utilisateur.
 - `local/local.sh`: UX locale des tunnels SSH.
 - `skills/`: workflows AI orientes taches.
+- `skills/references/app-blueprints.md`: systeme de blueprints — squelettes de specs globales pour archetypes d'applications recurrentes, utilises par `001-sf-build` (Blueprint Gate), `100-sf-spec` (pre-remplissage de spec), et `306-sf-scaffold` (conventions de structure).
+- `skills/app-blueprints/`: catalogue des blueprints disponibles.
 
 ## Repo Map
 
@@ -113,6 +115,13 @@ lib.sh::action_flutter_web
 
 ### 5. Skill Workflow
 
+```text
+001-sf-build: intake -> chantier check -> BLUEPRINT GATE -> spec/readiness -> governance -> model routing -> start -> verify -> end -> ship
+```
+
+Le Blueprint Gate (dans `001-sf-build`) cherche un blueprint correspondant a la requete utilisateur dans `skills/app-blueprints/`. S'il trouve une correspondance, il pre-remplit l'architecture, le stack, les modeles et les routes pour les skills aval (`100-sf-spec`, `306-sf-scaffold`).
+
+Workflow legacy (sans blueprint) :
 ```text
 sf-explore -> exploration_report -> sf-spec -> sf-ready -> sf-start -> sf-verify -> sf-end
 ```

@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.11.2"
+artifact_version: "0.12.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-06-11"
+updated: "2026-06-23"
 status: draft
 source_skill: 300-sf-docs
 scope: readme
@@ -30,6 +30,7 @@ linked_systems:
   - skills/000-shipflow/SKILL.md
   - skills/references/decision-quality-contract.md
   - skills/references/question-contract.md
+  - skills/references/app-blueprints.md
   - site/src/content/skills/000-shipflow.md
   - shipflow_data/technical
   - shipflow_data/editorial
@@ -59,6 +60,7 @@ evidence:
   - "Added project competitors/inspirations and affiliate program registries to the business documentation frame."
   - "Added Codex plugin packaging and sparse source bootstrap documentation."
   - "Updated README to reflect the live public site and lightweight plugin distribution path."
+  - "Added App Blueprints system: blueprint gate in 001-sf-build, blueprint consumption in 100-sf-spec and 306-sf-scaffold, flutter-crud-content blueprint from ContentGlowz."
 next_step: "/300-sf-docs audit README.md"
 ---
 
@@ -508,6 +510,8 @@ Direct build entrypoint for non-trivial feature/code/docs work:
 ```text
 001-sf-build -> existing chantier check -> 100-sf-spec/101-sf-ready loop -> 102-sf-start -> 103-sf-verify -> 104-sf-end -> 005-sf-ship
 ```
+
+`001-sf-build` has a **Blueprint Gate** between `existing chantier check` and the `spec/readiness loop`: it matches the user request against available app blueprints in `skills/app-blueprints/` to pre-fill architecture, stack, models, and routes before spec writing. Blueprints are global spec skeletons for recurring app archetypes (Flutter CRUD, etc.). When a blueprint is loaded, it flows through `100-sf-spec` (pre-filled sections) and `306-sf-scaffold` (conventions). When no blueprint matches, the normal spec-first workflow runs unchanged.
 
 `001-sf-build` follows the shared master delegation doctrine in `skills/references/master-delegation-semantics.md`: invoking a master skill authorizes bounded delegated sequential execution for the current chantier, and `001-sf-build agents <story>` makes that a strict validation gate for file work, validation, closure preparation, and ship preparation. `spark`, `codex`, `sous-agent`/`subagent`/`agents`, and `mini` request model-specific subagent delegation; they never mean parallel execution. If a strict subagent request is made but no bounded subagent runs, `001-sf-build` must stop or report degraded execution with the reason. Short natural-language confirmations continue the bounded sequential path after diagnosis by intent rather than exact keyword. Parallel agent execution is not an argument mode; it requires ready non-overlapping `Execution Batches` in the spec. `001-sf-build` keeps user interaction focused on decisions and progress; material questions are framed as business decision briefs with the root problem, business stakes, options, and a recommended best-practice answer. It skips the question only when the best default is safe, reversible, compatible with the current project context, aligned with best practices, and verifiable. After user-facing feature work, `001-sf-build` also evaluates whether a `/008-sf-onboarding` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
 

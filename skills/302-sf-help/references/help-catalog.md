@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.4.0"
+artifact_version: "0.5.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-06-11"
+updated: "2026-06-23"
 status: draft
 source_skill: 102-sf-start
 scope: 302-sf-help-help-catalog
@@ -17,6 +17,8 @@ linked_systems:
   - skills/302-sf-help/SKILL.md
   - skills/302-sf-help/references/help-catalog.md
   - skills/900-shipflow-core/SKILL.md
+  - skills/references/app-blueprints.md
+  - skills/app-blueprints/README.md
 depends_on:
   - artifact: "skills/references/skill-instruction-layering.md"
     artifact_version: "0.1.0"
@@ -27,6 +29,7 @@ evidence:
   - "2026-06-11 added internal 900-shipflow-core operator skill discovery."
   - "2026-06-11 added design-system authority discovery for UI/design workflow help."
   - "2026-06-11 added 310-sf-github-hygiene for git/GitHub sync drift, stale branches, and Dependabot hygiene."
+  - "2026-06-23 added App Blueprints help section for blueprint system explanation."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions Phase 2"
 ---
@@ -58,6 +61,17 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 Quick reference for the skill system, modes, and workflows.
 
 ---
+
+## App Blueprints
+
+ShipFlow utilise des **blueprints** — des squelettes de specs globales pour des archetypes d'applications recurrentes (Flutter CRUD, etc.).
+
+Quand tu dis "crée une app X", `001-sf-build` active le **Blueprint Gate** :
+1. Il cherche un blueprint correspondant dans `$SHIPFLOW_ROOT/skills/app-blueprints/`
+2. S'il trouve : blueprint charge → architecture/stack/modeles/routes pre-remplis dans `100-sf-spec` et `306-sf-scaffold`
+3. Sinon : workflow spec-first normal inchangé
+
+Chaque blueprint a son propre depot GitHub. Le registre est dans `$SHIPFLOW_ROOT/skills/app-blueprints/README.md` ; si le blueprint n'est pas en cache local, le Gate le clone depuis son repo. Le contrat du systeme est dans `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`.
 
 ## Skills at a Glance
 

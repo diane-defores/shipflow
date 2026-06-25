@@ -27,6 +27,8 @@ stack:
   architecture: layer-first
   codegen: false
 
+source_repo: https://github.com/dianedefores/shipflow-blueprint-flutter-crud-content
+
 sources:
   - contentglowz_app
   - path: /home/claude/contentglowz/contentglowz_app

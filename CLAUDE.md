@@ -21,10 +21,18 @@ Guidance for Claude Code when working in this repository.
 
 ### Key Patterns
 
-**PM2 Data Caching** — Single `pm2 jlist` call, cached 5 seconds:
+**Env Registry** (`~/.shipflow/envs.reg`) — Zero-subprocess dashboard data:
 ```bash
-get_pm2_data_cached()  # Returns: name|status|port|cwd
-invalidate_pm2_cache() # MUST call after pm2 start/stop/delete
+registry_sync()   # Build registry from pm2 jlist + .flox dirs (called once on lib.sh load)
+registry_update() # Update single env entry (called by env_start/env_stop)
+# Format: name|status|port|path per line
+# Dashboard reads via `cat` — ~1ms, no subprocesses
+```
+
+**PM2 Health Scan** — File-read health check, no subprocess:
+```bash
+pm2_health_scan()  # Reads ~/.pm2/dump.pm2 (~1ms), warns on >10 restarts
+# Runs at lib.sh source time + after env_start + refresh_menu_status_cache_sync (every 120s)
 ```
 
 **Port Allocation** — Anti-collision in 3000-3100 range:
@@ -40,6 +48,22 @@ pm2 delete "app" 2>/dev/null || true  # Safe to retry
 **Input Validation** — `validate_project_path()` blocks `..`, `;`, `&`, `|`, `$`, backticks.
 
 **JSON Parsing** — Prefers jq (2-5x faster), falls back to python3.
+
+**Dashboard** — Numbered `[ 1]...[N]` layout with legend `🟢 online 🟡 stopped 🔴 error ⚪ unknown`:
+```bash
+show_dashboard()  # Reads envs.reg, displays environments + action bar
+# Action bar: [n] [s] [e] [o] [k] [x] — single-keypress (s/k/digits), multi-step (e/o + number)
+# Stdin drain: read -t 0.01 -n 10000 after action bar prevents key leakage to main menu
+```
+
+**Auto-Install Guards** — Fail-safe dependency recovery:
+```bash
+# Node.js: checks node_modules exists + non-empty; runs pnpm/npm install if missing
+# Python: checks venv/bin/python3 exists; creates venv + pip install -r requirements if missing
+# Doppler: tests connectivity; disables if unreachable
+```
+
+**Port Display** — `localhost:PORT` (no protocol prefix), `Port:` without double-colon.
 
 ---
 
@@ -59,11 +83,14 @@ sudo ./install.sh
 
 # Source library functions
 source lib.sh
-env_start "myapp"     # Start environment
-env_stop "myapp"      # Stop (idempotent)
+env_start "myapp"     # Start environment (auto-installs deps, creates venv, validates doppler)
+env_stop "myapp"      # Stop (idempotent, silent)
 env_remove "myapp"    # Remove (destructive)
 get_pm2_status "myapp"
 get_port_from_pm2 "myapp"
+registry_sync         # Force rebuild envs.reg from pm2
+registry_update "name" "status" "port" "path"  # Update single entry
+show_dashboard        # Display dashboard (reads envs.reg, 0 subprocesses)
 ```
 
 ---
@@ -88,6 +115,15 @@ get_port_from_pm2 "myapp"
 | Next.js | package.json | `-p $PORT` (automatic) |
 | Nuxt | package.json | `--port $PORT` |
 | Expo | package.json | Tunnel mode, no fixed port |
+| Python/FastAPI | venv/bin/python3 | Via uvicorn in ecosystem config |
+
+## Renamed Environments
+
+| Original | Renamed | Path | Purpose |
+|----------|---------|------|---------|
+| `app` | `shipflow_app` | `/home/claude/shipflow_app/shipflow_app/` | Flutter dashboard (CI only) |
+| `site` | `shipflow-site` | `/home/claude/shipflow/shipflow-site/` | ShipFlow marketing site (Astro) |
+| `contentflowz-app` (flox) | `shipflow-app` | — | Flox env for shipflow_app |
 
 ---
 

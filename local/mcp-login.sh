@@ -86,37 +86,9 @@ known_provider_add_command() {
 }
 
 load_remote_host() {
-    if [ -f "$CURRENT_CONNECTION_FILE" ]; then
-        REMOTE_HOST="$(cat "$CURRENT_CONNECTION_FILE")"
-    else
-        REMOTE_HOST="${REMOTE_HOST:-$SHIPFLOW_SSH_REMOTE_HOST}"
-        if [ -z "$REMOTE_HOST" ] && grep -qE '^[[:space:]]*Host[[:space:]]+hetzner([[:space:]]|$)' "$HOME/.ssh/config" 2>/dev/null; then
-            REMOTE_HOST="hetzner"
-        fi
-    fi
-
-    if [ -z "$REMOTE_HOST" ]; then
+    if ! _load_remote_host_core; then
         echo -e "${RED}✗ Aucune connexion distante ShipFlow configurée.${NC}"
         echo -e "${YELLOW}  Ouvrez le menu local 'urls', choisissez c) Configurer nouveau serveur, puis entrez l'adresse IP.${NC}"
-        exit 1
-    fi
-
-    if ! validate_connection_target "$REMOTE_HOST"; then
-        echo -e "${RED}✗ Connexion distante invalide: $REMOTE_HOST${NC}"
-        echo -e "${YELLOW}  Corrigez ~/.shipflow/current_connection via le menu local (option connexion).${NC}"
-        exit 1
-    fi
-
-if [ -f "$CURRENT_IDENTITY_FILE" ]; then
-    SSH_IDENTITY_FILE="$(cat "$CURRENT_IDENTITY_FILE")"
-fi
-if [ -f "$CURRENT_AUTH_METHOD_FILE" ]; then
-    SSH_AUTH_METHOD="$(cat "$CURRENT_AUTH_METHOD_FILE")"
-fi
-
-    if ! validate_identity_file "$SSH_IDENTITY_FILE"; then
-        echo -e "${RED}✗ Clé SSH configurée invalide ou introuvable: $SSH_IDENTITY_FILE${NC}"
-        echo -e "${YELLOW}  Ouvrez 'urls', choisissez c) Configurer nouveau serveur, puis renseignez le bon chemin de clé.${NC}"
         exit 1
     fi
 }
@@ -145,17 +117,6 @@ cleanup() {
     fi
 }
 
-check_local_port_free() {
-    local port="$1"
-    if command -v lsof >/dev/null 2>&1 && lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
-        return 1
-    fi
-    if command -v ss >/dev/null 2>&1 && ss -ltn "( sport = :$port )" 2>/dev/null | grep -q ":$port"; then
-        return 1
-    fi
-    return 0
-}
-
 extract_oauth_url() {
     sed -nE 's/.*(https:\/\/[^[:space:]"]+).*/\1/p' "$OAUTH_OUTPUT_FILE" | tail -1
 }
@@ -180,30 +141,6 @@ parse_mcp_oauth_port_from_text() {
     fi
 
     return 1
-}
-
-open_browser_or_print() {
-    local oauth_url="$1"
-    echo -e "${BLUE}🌐 URL OAuth:${NC}"
-    echo "$oauth_url"
-    echo ""
-
-    if command -v open >/dev/null 2>&1; then
-        open "$oauth_url" >/dev/null 2>&1 || true
-        echo -e "${GREEN}✓ Navigateur ouvert via open${NC}"
-    elif command -v xdg-open >/dev/null 2>&1; then
-        xdg-open "$oauth_url" >/dev/null 2>&1 || true
-        echo -e "${GREEN}✓ Navigateur ouvert via xdg-open${NC}"
-    elif command -v wslview >/dev/null 2>&1; then
-        wslview "$oauth_url" >/dev/null 2>&1 || true
-        echo -e "${GREEN}✓ Navigateur ouvert via wslview${NC}"
-    elif command -v cmd.exe >/dev/null 2>&1; then
-        cmd.exe /c start "" "$oauth_url" >/dev/null 2>&1 || true
-        echo -e "${GREEN}✓ Navigateur ouvert via cmd.exe${NC}"
-    else
-        echo -e "${YELLOW}⚠ Aucun opener auto détecté.${NC}"
-        echo -e "${YELLOW}  Ouvrez l'URL ci-dessus manuellement dans votre navigateur local.${NC}"
-    fi
 }
 
 wait_for_output_or_timeout() {
@@ -294,18 +231,29 @@ run_one_provider() {
         return 1
     fi
 
-    if ! run_remote_ssh "echo ok" >/dev/null; then
+    # Batched SSH: connectivity + CLI + provider (1 round-trip vs 3)
+    local _mcp_batch=""
+    if ! _mcp_batch=$(run_remote_ssh "bash -lc 'echo ok && (command -v codex >/dev/null 2>&1 && echo CLI=ok || echo CLI=no) && (codex mcp list 2>/dev/null | grep -Eq \"(^|[[:space:]|])$provider([[:space:]|]|\$)\" && echo PROV=ok || echo PROV=no)'"); then
         echo -e "${RED}✗ SSH inaccessible vers '$REMOTE_HOST'.${NC}"
         echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
         return 1
     fi
 
-    if ! run_remote_ssh "command -v codex >/dev/null 2>&1"; then
+    if ! echo "$_mcp_batch" | grep -q "CLI=ok"; then
         echo -e "${RED}✗ Codex CLI absent sur le serveur distant.${NC}"
         return 1
     fi
 
-    if ! ensure_remote_provider_exists "$provider"; then
+    if ! echo "$_mcp_batch" | grep -q "PROV=ok"; then
+        echo -e "${RED}✗ MCP '$provider' absent de la configuration Codex distante.${NC}"
+        if is_known_provider "$provider"; then
+            local add_cmd
+            add_cmd="$(known_provider_add_command "$provider" || true)"
+            if [ -n "$add_cmd" ]; then
+                echo -e "${YELLOW}  Ajoutez-le d'abord sur le serveur:${NC}"
+                echo "  $add_cmd"
+            fi
+        fi
         return 1
     fi
 
@@ -350,7 +298,7 @@ run_one_provider() {
         return 1
     fi
 
-    open_browser_or_print "$oauth_url"
+    open_browser_or_print "$oauth_url" "MCP Codex OAuth"
     echo -e "${YELLOW}⏳ Finalisez le login dans le navigateur...${NC}"
 
     if ! wait_remote_login_completion "$LOGIN_TIMEOUT_SECONDS"; then

@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.5.0"
+artifact_version: "0.6.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-05-11"
+updated: "2026-06-23"
 status: draft
 source_skill: manual
 scope: "agent-entrypoint"
@@ -13,10 +13,10 @@ confidence: "high"
 risk_level: "low"
 security_impact: "none"
 docs_impact: "yes"
-linked_systems: ["CLAUDE.md", "shipflow_data/technical/context.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "README.md", "shipflow_data/technical/", "shipflow_data/technical/code-docs-map.md", "shipflow_data/technical/blacksmith.md", "skills/references/canonical-paths.md", "shipflow_data/business/project-competitors-and-inspirations.md", "shipflow_data/business/affiliate-programs.md"]
+linked_systems: ["CLAUDE.md", "shipflow_data/technical/context.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "README.md", "shipflow_data/technical/", "shipflow_data/technical/code-docs-map.md", "shipflow_data/technical/blacksmith.md", "skills/references/canonical-paths.md", "shipflow_data/business/project-competitors-and-inspirations.md", "shipflow_data/business/affiliate-programs.md", "skills/references/app-blueprints.md", "skills/app-blueprints/README.md"]
 depends_on: []
 supersedes: []
-evidence: ["Repository structure and active context docs", "shipflow_data/editorial/content-map.md added as the content routing artifact", "Canonical path resolution added for ShipFlow-owned tools and references", "Technical documentation layer added for code-proximate agent routing", "Blacksmith CI/SSH Access routing added for APK build and log debugging.", "Business registries added for project competitors/inspirations and affiliate programs."]
+evidence: ["Repository structure and active context docs", "shipflow_data/editorial/content-map.md added as the content routing artifact", "Canonical path resolution added for ShipFlow-owned tools and references", "Technical documentation layer added for code-proximate agent routing", "Blacksmith CI/SSH Access routing added for APK build and log debugging.", "Business registries added for project competitors/inspirations and affiliate programs.", "App blueprints system added: app-blueprints.md contract, flutter-crud-content blueprint from ContentGlowz, Blueprint Gate in 001-sf-build."]
 next_step: "/sf-docs update AGENT.md"
 ---
 
@@ -38,6 +38,8 @@ Ce fichier est le point d'entree rapide pour un agent qui arrive dans le repo. I
 ## Route By Task
 
 - Pour tout fichier interne ShipFlow, resoudre depuis `${SHIPFLOW_ROOT:-$HOME/shipflow}`. Cela inclut `skills/`, `skills/references/`, `templates/`, `tools/`, `shipflow-spec-driven-workflow.md` et `shipflow-metadata-migration-guide.md`. Le repo courant ne sert de racine que pour les artefacts et le code du projet audite ou modifie.
+- Si la tache touche la creation d'une app ou l'utilisation du Blueprint Gate (consommation), lire `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` puis `$SHIPFLOW_ROOT/skills/app-blueprints/README.md`; le Blueprint Gate appartient à `001-sf-build`.
+- Si la tache touche l'extraction d'un blueprint depuis une app existante (creation/maintenance interne ShipFlow), lire `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` puis `$SHIPFLOW_ROOT/skills/app-blueprints/README.md`; la creation d'un blueprint appartient à `009-sf-skill-build`.
 - Si la tache touche le CLI principal, commencer par `shipflow.sh`, `lib.sh`, puis `shipflow_data/technical/context.md`.
 - Si la tache touche le setup serveur ou Codex, lire `install.sh`, `config.sh`, puis `shipflow_data/technical/context.md`.
 - Si la tache touche les tunnels SSH locaux, lire `local/local.sh`, `local/dev-tunnel.sh`, puis `shipflow_data/technical/context-function-tree.md`.
@@ -70,6 +72,8 @@ Ce fichier est le point d'entree rapide pour un agent qui arrive dans le repo. I
 - `shipflow_data/business/affiliate-programs.md`: registre des programmes d'affiliation, referral, partner et disclosure par projet.
 - `shipflow_data/technical/architecture.md`: contrat de structure technique.
 - `shipflow_data/technical/guidelines.md`: conventions techniques et de contribution.
+- `skills/references/app-blueprints.md`: systeme de blueprints (squelettes de specs globales pour archetypes d'applications). Lire avant `001-sf-build` pour toute creation d'app.
+- `skills/app-blueprints/`: catalogue des blueprints disponibles, indexes dans `README.md`.
 
 ## Rules
 

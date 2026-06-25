@@ -325,31 +325,6 @@ wait_for_url_or_timeout() {
     extract_auth_url >/dev/null 2>&1
 }
 
-check_remote_ssh() {
-    if ! run_remote_ssh "echo ok" >/dev/null; then
-        echo -e "${RED}✗ SSH inaccessible vers '$REMOTE_HOST'.${NC}"
-        echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
-        return 1
-    fi
-}
-
-verify_remote_turso_cli() {
-    local check_command
-
-    if [ -n "$PROJECT_DIR" ]; then
-        check_command="command -v flox >/dev/null 2>&1 && test -d $(remote_quote "$PROJECT_DIR")"
-        if ! run_remote_bash "$check_command"; then
-            echo -e "${RED}✗ Flox absent ou project-dir introuvable sur le serveur: $PROJECT_DIR${NC}"
-            return 1
-        fi
-    elif ! run_remote_bash 'command -v turso >/dev/null 2>&1'; then
-        echo -e "${RED}✗ Turso CLI absent sur le serveur distant.${NC}"
-        echo -e "${YELLOW}  Installe Turso sur le serveur ou utilise --project-dir avec un env Flox qui fournit turso.${NC}"
-        return 1
-    fi
-
-    return 0
-}
 
 verify_remote_auth() {
     local command
@@ -401,15 +376,31 @@ run_turso_login() {
     local callback_port=""
     local headless_token=""
 
-    if ! check_remote_ssh; then
+    # Batched SSH: connectivity + CLI + auth (1 round-trip vs 3)
+    local _ts_ssh_cmd
+    if [ -n "$PROJECT_DIR" ]; then
+        _ts_ssh_cmd="echo ok && (command -v flox >/dev/null 2>&1 && test -d $PROJECT_DIR && echo CLI=ok || echo CLI=no) && (flox activate -d $PROJECT_DIR -- turso auth whoami >/dev/null 2>&1 && echo AUTH=ok || echo AUTH=no)"
+    else
+        _ts_ssh_cmd="echo ok && (command -v turso >/dev/null 2>&1 && echo CLI=ok || echo CLI=no) && (turso auth whoami >/dev/null 2>&1 && echo AUTH=ok || echo AUTH=no)"
+    fi
+    local _ts_batch=""
+    if ! _ts_batch=$(run_remote_ssh "bash -lc '$_ts_ssh_cmd'"); then
+        echo -e "${RED}✗ SSH inaccessible vers '$REMOTE_HOST'.${NC}"
+        echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
         return 1
     fi
 
-    if ! verify_remote_turso_cli; then
+    if ! echo "$_ts_batch" | grep -q "CLI=ok"; then
+        if [ -n "$PROJECT_DIR" ]; then
+            echo -e "${RED}✗ Flox absent ou project-dir introuvable sur le serveur: $PROJECT_DIR${NC}"
+        else
+            echo -e "${RED}✗ Turso CLI absent sur le serveur distant.${NC}"
+            echo -e "${YELLOW}  Installe Turso sur le serveur ou utilise --project-dir avec un env Flox qui fournit turso.${NC}"
+        fi
         return 1
     fi
 
-    if verify_remote_auth >/dev/null 2>&1; then
+    if echo "$_ts_batch" | grep -q "AUTH=ok"; then
         echo -e "${GREEN}✓ Turso est déjà connecté sur le serveur distant.${NC}"
         verify_remote_auth
         return 0
@@ -467,7 +458,7 @@ run_turso_login() {
         echo -e "${YELLOW}  Pas de tunnel nécessaire pour ce mode.${NC}"
     fi
 
-    open_browser_or_print "$auth_url"
+    open_browser_or_print "$auth_url" "Turso"
     echo -e "${YELLOW}⏳ Finalise le login Turso dans le navigateur...${NC}"
 
     if [ "$FORCE_HEADLESS" -eq 1 ]; then

@@ -8,25 +8,34 @@ updated: "2026-06-23"
 status: draft
 source_skill: 001-sf-build
 scope: app-blueprints-index
+linked_systems:
+  - skills/references/app-blueprints.md
+  - skills/app-blueprints/
 ---
 
-# App Blueprints
+# App Blueprints Registry
 
-Blueprints are global spec skeletons for recurring app archetypes. They let ShipFlow skills navigate from "crée une app X" to concrete stack, models, and architecture without starting from zero every time.
+Blueprints are global spec skeletons for recurring app archetypes. Each blueprint lives in its own GitHub repo so it survives independently of ShipFlow.
 
 ## Available Blueprints
 
-| ID | Name | Source | Keywords |
+| ID | Name | Source Repo | Keywords |
 |---|---|---|---|
-| `flutter-crud-content` | Flutter CRUD Content App | contentglowz_app | content, crud, carnet, gestion, flutter |
+| `flutter-crud-content` | Flutter CRUD Content App | https://github.com/dianedefores/shipflow-blueprint-flutter-crud-content | content, crud, carnet, gestion, flutter, mobile |
 
-## How Skills Use Blueprints
+## Résolution
 
-See `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` for the full system contract:
-- Format and matching rules
-- Ingestion by `001-sf-build` (Blueprint Gate)
-- Consumption by `100-sf-spec`, `306-sf-scaffold`, `204-sf-market-study`
+Le Blueprint Gate (dans `001-sf-build`) résout chaque blueprint dans cet ordre :
+1. Cache local : `$SHIPFLOW_ROOT/skills/app-blueprints/<id>/blueprint.md`
+2. Clone depuis `source.repo` si le cache local n'existe pas
+3. Aucun blueprint si les deux échouent
 
-## When to Add
+## Ajouter un Blueprint
 
-See `app-blueprints.md` for creation criteria. In short: ship an app, extract its repeatable patterns, write a blueprint.
+1. Créer un repo GitHub `shipflow-blueprint-<id>`
+2. Y pousser le `blueprint.md` + éventuels `references/`
+3. Ajouter une entrée dans ce registre + créer le dossier local
+
+## Contrat système complet
+
+Voir `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`.

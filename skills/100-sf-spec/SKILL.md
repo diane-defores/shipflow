@@ -41,12 +41,14 @@ Load only the references needed for the active run:
 - `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: required before choosing direct routing, spec scope, recommendations, or implementation-quality language.
 - `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`: required when the spec creates, changes, audits, verifies, or fixes UI, mobile/app design, visual components, layout, styling, design tokens, theming, shadows, typography, spacing, color, motion, or branding implementation.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`: required only when the spec depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
+- `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`: required when a `blueprint:` handoff note or context provides a blueprint path. Loads the blueprint system contract for format and matching.
 - Supabase, Sentry, development-mode, or other shared references only when the workflow reference triggers their gate.
 
 ## Mode Detection
 
 Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe path as defined by `decision-quality-contract`: the smallest complete professional contract, not the fastest/easiest route. Apply the `Structure Replacement Doctrine`: write or expand a spec when it replaces repeated ambiguity, coordination friction, or maintenance burden; do not create process weight that adds no real operator leverage.
 
+- Blueprint intake (handoff includes `blueprint: [id]` or a blueprint path in context): load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`, then load the specified blueprint and pre-fill the spec's Architecture, Stack, Models, and Routes sections before entering the normal workflow. The blueprint is the app skeleton; the spec builds on it with project-specific decisions.
 - New non-trivial work or a `Chantier potentiel` intake: load `references/spec-creation-workflow.md` and create or update a durable spec.
 - Small/local work where a spec would add no useful contract: report `Chantier: non applicable` and route directly to the owner skill.
 - Missing actor, trigger, observable result, scope boundary, or security/data policy that changes behavior: ask a targeted question before writing the spec.
@@ -65,6 +67,7 @@ Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe pa
 - `100-sf-spec` creates or updates the durable chantier spec only; it does not edit `TASKS.md`, `AUDIT_LOG.md`, or legacy `PROJECTS.md`.
 - Before creating or mutating a `spec:` operational summary line, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and keep the durable spec body separate from that one-line traffic-first record.
 - External-doc freshness, security, auth, tenant, data, money, destructive, and public-claim ambiguities must be resolved before the spec is called ready.
+- When a blueprint is active, include `Blueprint: [id] (v[version])` in the final report. Do not override blueprint decisions without explicit user agreement — they represent validated patterns from shipped apps.
 
 ## Stop Conditions
 

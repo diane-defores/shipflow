@@ -37,6 +37,8 @@ The canonical decision-quality doctrine lives in `$SHIPFLOW_ROOT/skills/referenc
 
 The canonical numeric skill-code index lives in `$SHIPFLOW_ROOT/skills/references/skill-code-index.md`; load it when users ask about skill codes, numeric prefixes, shortcuts, faster skill lookup, or exact skill discovery.
 
+When users ask about app creation, blueprints, "crée une app", "quoi de neuf", or how `001-sf-build` handles new app projects, load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` and `$SHIPFLOW_ROOT/skills/app-blueprints/README.md`. Blueprints are global spec skeletons that pre-fill architecture, stack, models, and routes for recurring app archetypes. `001-sf-build` loads them at the Blueprint Gate (after chantier check, before spec). If no blueprint matches, the normal spec-first workflow runs unchanged. Available blueprints are indexed in `$SHIPFLOW_ROOT/skills/app-blueprints/README.md`.
+
 ## Mode Detection
 
 Parse `$ARGUMENTS` and choose the smallest safe mode as defined by `decision-quality-contract`: bounded and professional, never shortcut quality. When the question is about doctrine or tradeoffs, answer through the `Structure Replacement Doctrine` rather than treating novelty, tooling, or extra process as value by default.

@@ -23,10 +23,13 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 - Project CLAUDE.md: !`head -80 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 - Package.json: !`cat package.json 2>/dev/null | head -40 || echo "no package.json"`
 - Project structure: !`find . -maxdepth 3 -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.astro" -o -name "*.vue" -o -name "*.py" -o -name "*.sh" \) 2>/dev/null | grep -v node_modules | grep -v .git | grep -v dist | sort | head -40`
+- Blueprint path: !`echo "${BLUEPRINT_PATH:-}" 2>/dev/null || echo "no blueprint"`
 
 ## Required References
 
 Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before scaffolding any `page`, `component`, or `layout`, or any artifact that introduces UI styling, design tokens, visual states, theming, typography, color, spacing, shadows, motion, or branding implementation.
+
+When `$BLUEPRINT_PATH` is set or a `blueprint:` handoff is present, load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` for the blueprint system contract, then read the blueprint file at the given path. Use its conventions, models, and route structure as scaffolding guidance (see Blueprint-Aware Scaffolding below).
 
 ## Mode detection
 
@@ -49,6 +52,50 @@ Parse `$ARGUMENTS` for type and name:
 | `content` | Content/blog post | `src/content/`, `content/` |
 | `hook` | Custom hook | `src/hooks/`, `hooks/` |
 | `util` | Utility function | `src/utils/`, `src/lib/`, `utils/` |
+
+## Blueprint-Aware Scaffolding
+
+When a blueprint is loaded (via `$BLUEPRINT_PATH` or `blueprint:` handoff), apply these additional rules before and during the normal flow:
+
+### Convention Resolution Order
+
+Blueprint conventions supplement, not replace, project examples. Resolution order:
+1. Project examples (what the project actually does) — highest priority.
+2. Blueprint conventions (what the blueprint recommends) — used when the project has no convention or when scaffolding a new entity not yet present in the project.
+3. LLM inference — lowest priority, used only when neither project nor blueprint provides guidance.
+
+### Folder and Naming
+
+- Use `blueprint.conventions.folder_structure` to decide where to place files when no project examples exist for that entity type.
+- Use `blueprint.conventions.naming` for file/class/provider naming when the project has no established pattern for the scaffolded type.
+- If the project already has a different convention, the project wins.
+
+### Models
+
+- Use `blueprint.models` as a starting point for data class scaffolding.
+- Each blueprint model entry provides field names, types, and patterns (e.g., `copyWith`, `fromJson`/`toJson`, `const` constructors).
+- Adapt to the project's actual style (codegen vs hand-written, equality pattern) — the blueprint is a reference, not a template copy.
+
+### Routes
+
+- Use `blueprint.router` to determine the route pattern when scaffolding a new screen (shell vs standalone, GoRouter vs file-based, guard structure).
+- Use `router.screens` to know which screens exist and scaffold new ones alongside them.
+
+### Report
+
+Add to the scaffold report:
+```
+Blueprint: [id] (v[version]) — conventions used for [folder/naming/models/routes]
+```
+
+### Clean Slate Projects
+
+When no project files exist yet (truly clean slate), the blueprint becomes the primary source of truth:
+- Scaffold the full folder structure from `blueprint.conventions.folder_structure`.
+- Use `blueprint.stack` to guide package/dependency scaffolding.
+- Use `blueprint.models` to scaffold model files.
+- Use `blueprint.router` to scaffold the route file.
+- Use `blueprint.name` as project name hint.
 
 ## Flow
 
@@ -171,6 +218,18 @@ For ambiguous requests, produce a professional safe shell only when it is still 
 
 ### Step 5: Report
 
+When a blueprint was used:
+```
+SCAFFOLDED: [type] — [name]
+─────────────────────────────
+File:     [created file path]
+Based on: [example files used]
+Blueprint: [id] (v[version]) — conventions used for [aspects]
+Patterns: [key patterns matched]
+─────────────────────────────
+```
+
+When no blueprint was used (existing behavior):
 ```
 SCAFFOLDED: [type] — [name]
 ─────────────────────────────
@@ -185,6 +244,7 @@ If scaffolding is blocked, report instead:
 ```text
 NOT SCAFFOLDED: [type] — [name]
 Reason: [behavior/scope/security/product coherence ambiguity]
+Blueprint: [id] if applicable
 Questions:
 - [targeted decision needed]
 - [targeted decision needed]
@@ -212,3 +272,4 @@ Safe path:
 - For requests touching auth, permissions, tenant boundaries, billing, uploads, admin, webhooks, external integrations, or public marketing surfaces, explicitly state the inferred risk level in the report:
   - `Security impact: none, because ...`
   - `Security impact: yes, scaffold limited by ...`
+- When a blueprint is available, prefer its conventions over LLM inference for folder structure, naming, model patterns, and route structure. The blueprint represents patterns validated by shipped apps.
