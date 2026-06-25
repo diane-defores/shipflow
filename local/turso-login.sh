@@ -66,26 +66,6 @@ print_header() {
     echo ""
 }
 
-remote_quote() {
-    printf '%q' "$1"
-}
-
-run_remote_bash() {
-    run_remote_ssh "bash -lc $(remote_quote "$1")"
-}
-
-remote_turso_command() {
-    local subcommand="$1"
-    local quoted_project_dir
-
-    if [ -n "$PROJECT_DIR" ]; then
-        quoted_project_dir="$(remote_quote "$PROJECT_DIR")"
-        printf 'flox activate -d %s -- turso %s' "$quoted_project_dir" "$subcommand"
-    else
-        printf 'turso %s' "$subcommand"
-    fi
-}
-
 load_remote_host() {
     if [ -f "$CURRENT_CONNECTION_FILE" ]; then
         REMOTE_HOST="$(cat "$CURRENT_CONNECTION_FILE")"

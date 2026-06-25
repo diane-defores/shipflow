@@ -60,37 +60,9 @@ print_header() {
 }
 
 load_remote_host() {
-    if [ -f "$CURRENT_CONNECTION_FILE" ]; then
-        REMOTE_HOST="$(cat "$CURRENT_CONNECTION_FILE")"
-    else
-        REMOTE_HOST="${REMOTE_HOST:-$SHIPFLOW_SSH_REMOTE_HOST}"
-        if [ -z "$REMOTE_HOST" ] && grep -qE '^[[:space:]]*Host[[:space:]]+hetzner([[:space:]]|$)' "$HOME/.ssh/config" 2>/dev/null; then
-            REMOTE_HOST="hetzner"
-        fi
-    fi
-
-    if [ -z "$REMOTE_HOST" ]; then
+    if ! _load_remote_host_core; then
         echo -e "${RED}✗ Aucune connexion distante ShipFlow configurée.${NC}"
         echo -e "${YELLOW}  Ouvre le menu local 'urls', choisis c) Configurer nouveau serveur, puis renseigne l'hôte SSH.${NC}"
-        exit 1
-    fi
-
-    if ! validate_connection_target "$REMOTE_HOST"; then
-        echo -e "${RED}✗ Connexion distante invalide: $REMOTE_HOST${NC}"
-        echo -e "${YELLOW}  Corrige ~/.shipflow/current_connection via le menu local.${NC}"
-        exit 1
-    fi
-
-if [ -f "$CURRENT_IDENTITY_FILE" ]; then
-    SSH_IDENTITY_FILE="$(cat "$CURRENT_IDENTITY_FILE")"
-fi
-if [ -f "$CURRENT_AUTH_METHOD_FILE" ]; then
-    SSH_AUTH_METHOD="$(cat "$CURRENT_AUTH_METHOD_FILE")"
-fi
-
-    if ! validate_identity_file "$SSH_IDENTITY_FILE"; then
-        echo -e "${RED}✗ Clé SSH configurée invalide ou introuvable: $SSH_IDENTITY_FILE${NC}"
-        echo -e "${YELLOW}  Ouvre 'urls', choisis c) Configurer nouveau serveur, puis renseigne le bon chemin de clé.${NC}"
         exit 1
     fi
 }
@@ -138,34 +110,6 @@ parse_args() {
     fi
 }
 
-remote_quote() {
-    printf '%q' "$1"
-}
-
-remote_turso_command() {
-    local subcommand="$1"
-    local quoted_project_dir
-
-    if [ -n "$PROJECT_DIR" ]; then
-        quoted_project_dir="$(remote_quote "$PROJECT_DIR")"
-        printf 'flox activate -d %s -- turso %s' "$quoted_project_dir" "$subcommand"
-    else
-        printf 'turso %s' "$subcommand"
-    fi
-}
-
-run_remote_bash() {
-    run_remote_ssh "bash -lc $(remote_quote "$1")"
-}
-
-check_remote_ssh() {
-    if ! run_remote_ssh "echo ok" >/dev/null; then
-        echo -e "${RED}✗ SSH inaccessible vers '$REMOTE_HOST'.${NC}"
-        echo -e "${YELLOW}  Le détail SSH affiché ci-dessus indique la cause.${NC}"
-        exit 1
-    fi
-}
-
 copy_turso_config() {
     local scp_args=()
 
@@ -188,40 +132,37 @@ copy_turso_config() {
     echo -e "${GREEN}✓ Config Turso copiée sans afficher de token.${NC}"
 }
 
-verify_remote_turso_cli() {
-    local check_command
-
+verify_remote_turso_and_auth() {
+    local cli_check
     if [ -n "$PROJECT_DIR" ]; then
-        check_command="command -v flox >/dev/null 2>&1 && test -d $(remote_quote "$PROJECT_DIR")"
-        if ! run_remote_bash "$check_command"; then
+        cli_check="command -v flox >/dev/null 2>&1 && test -d $(remote_quote "$PROJECT_DIR")"
+    else
+        cli_check="command -v turso >/dev/null 2>&1"
+    fi
+    local auth_command
+    auth_command="$(remote_turso_command 'auth whoami 2>&1')"
+    local output
+    output=$(run_remote_bash "$cli_check && echo CLI_OK && $auth_command" 2>&1 || true)
+
+    if ! printf '%s\n' "$output" | grep -q '^CLI_OK$'; then
+        if [ -n "$PROJECT_DIR" ]; then
             echo -e "${RED}✗ Flox absent ou project-dir introuvable sur le serveur: $PROJECT_DIR${NC}"
-            return 1
+        else
+            echo -e "${RED}✗ Turso CLI absent sur le serveur distant.${NC}"
+            echo -e "${YELLOW}  Installe Turso sur le serveur ou utilise --project-dir avec un env Flox qui fournit turso.${NC}"
         fi
-    elif ! run_remote_bash 'command -v turso >/dev/null 2>&1'; then
-        echo -e "${RED}✗ Turso CLI absent sur le serveur distant.${NC}"
-        echo -e "${YELLOW}  Installe Turso sur le serveur ou utilise --project-dir avec un env Flox qui fournit turso.${NC}"
         return 1
     fi
 
-    return 0
-}
-
-verify_remote_auth() {
-    local command
-    local output
-    command="$(remote_turso_command 'auth whoami')"
+    printf '%s\n' "$output" | grep -v '^CLI_OK$' || true
     echo -e "${BLUE}👤 Vérification Turso distante...${NC}"
-    output="$(run_remote_bash "$command" 2>&1 || true)"
-    printf '%s\n' "$output"
-
-    if [ -n "$output" ] && ! printf '%s\n' "$output" | grep -Eqi 'not logged in|please login|not authenticated|unauthenticated'; then
-        echo -e "${GREEN}✓ Auth Turso confirmée sur le serveur.${NC}"
-        return 0
+    if printf '%s\n' "$output" | grep -v '^CLI_OK$' | grep -Eqi 'not logged in|please login|not authenticated|unauthenticated'; then
+        echo -e "${RED}✗ Turso n'est pas authentifié sur le serveur.${NC}"
+        echo -e "${YELLOW}  Relance sans --no-copy après un login local: turso auth login --headless${NC}"
+        return 1
     fi
-
-    echo -e "${RED}✗ Turso n'est pas authentifié sur le serveur.${NC}"
-    echo -e "${YELLOW}  Relance sans --no-copy après un login local: turso auth login --headless${NC}"
-    return 1
+    echo -e "${GREEN}✓ Auth Turso confirmée sur le serveur.${NC}"
+    return 0
 }
 
 run_remote_sql() {
@@ -261,16 +202,13 @@ main() {
     fi
     echo ""
 
-    check_remote_ssh
-
     if [ "$COPY_CONFIG" -eq 1 ]; then
         copy_turso_config
     else
         echo -e "${YELLOW}⚠ Copie ignorée (--no-copy).${NC}"
     fi
 
-    verify_remote_turso_cli
-    verify_remote_auth
+    verify_remote_turso_and_auth
 
     if [ -n "$DB_NAME" ]; then
         run_contentflow_checks "$DB_NAME"

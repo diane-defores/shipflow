@@ -2811,6 +2811,9 @@ refresh_menu_status_cache_sync() {
         pm2_unhealthy=$(pm2_health_scan 10 2>/dev/null | head -5 | tr '\n' ';')
     fi
 
+    local long_count
+    long_count=$(mem_long_running_processes 2>/dev/null | wc -l)
+
     local tmp_file
     tmp_file=$(mktemp "${MENU_STATUS_CACHE_FILE}.tmp.XXXXXX" 2>/dev/null) || return 1
     register_temp_file "$tmp_file"
@@ -2824,6 +2827,7 @@ refresh_menu_status_cache_sync() {
         echo "mem_total_human=$mem_total_human"
         echo "low_mem=$low_mem"
         echo "pm2_unhealthy=$pm2_unhealthy"
+        echo "long_count=$long_count"
     } > "$tmp_file"
 
     mv "$tmp_file" "$MENU_STATUS_CACHE_FILE" 2>/dev/null || return 1
@@ -8140,8 +8144,10 @@ print_header() {
         echo -e "${RED}⚠️  Low memory (RAM). Press h) Health Check.${NC}"
     fi
 
-    local long_count
-    long_count=$(mem_long_running_processes 2>/dev/null | wc -l)
+    local long_count="${MENU_STATUS_LONG_COUNT:-}"
+    if [ -z "$long_count" ]; then
+        long_count=$(mem_long_running_processes 2>/dev/null | wc -l)
+    fi
     if [ "${long_count:-0}" -gt 0 ]; then
         echo -e "${YELLOW}⚠️  ${long_count} process(es) running ${SHIPFLOW_PROCESS_LONG_RUNNING_HOURS:-24}h+ — press s) System, then h) Health Check${NC}"
     fi
