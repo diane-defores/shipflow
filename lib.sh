@@ -7182,6 +7182,13 @@ show_dashboard() {
     echo ""
     echo -e "${BLUE}Total: $count environment(s)${NC}"
 
+    # Let user read before proposing actions
+    if [ -n "${idle_names:-}" ] || [ -n "${unhealthy_names:-}" ]; then
+        echo ""
+        ui_pause "Appuie sur Entrée pour voir les actions disponibles..."
+        echo ""
+    fi
+
     # Idle apps — propose stopping directly
     if [ -n "${idle_names:-}" ]; then
         echo ""
