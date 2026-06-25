@@ -2711,6 +2711,7 @@ read_menu_status_cache() {
     MENU_STATUS_MEM_HUMAN=""
     MENU_STATUS_MEM_TOTAL_HUMAN=""
     MENU_STATUS_LOW_MEM=0
+    MENU_STATUS_PM2_UNHEALTHY=""
 
     [ -f "$MENU_STATUS_CACHE_FILE" ] || return 1
 
@@ -2723,6 +2724,7 @@ read_menu_status_cache() {
             mem_human) MENU_STATUS_MEM_HUMAN="$value" ;;
             mem_total_human) MENU_STATUS_MEM_TOTAL_HUMAN="$value" ;;
             low_mem) MENU_STATUS_LOW_MEM="$value" ;;
+            pm2_unhealthy) MENU_STATUS_PM2_UNHEALTHY="$value" ;;
         esac
     done < "$MENU_STATUS_CACHE_FILE"
 
@@ -2758,6 +2760,11 @@ refresh_menu_status_cache_sync() {
         low_mem=1
     fi
 
+    local pm2_unhealthy=""
+    if command -v pm2 >/dev/null 2>&1; then
+        pm2_unhealthy=$(pm2_health_scan 10 2>/dev/null | head -5 | tr '\n' ';')
+    fi
+
     local tmp_file
     tmp_file=$(mktemp "${MENU_STATUS_CACHE_FILE}.tmp.XXXXXX" 2>/dev/null) || return 1
     register_temp_file "$tmp_file"
@@ -2770,6 +2777,7 @@ refresh_menu_status_cache_sync() {
         echo "mem_human=$mem_human"
         echo "mem_total_human=$mem_total_human"
         echo "low_mem=$low_mem"
+        echo "pm2_unhealthy=$pm2_unhealthy"
     } > "$tmp_file"
 
     mv "$tmp_file" "$MENU_STATUS_CACHE_FILE" 2>/dev/null || return 1
@@ -7847,8 +7855,9 @@ print_header() {
 
     ui_header "Shipflow DevServer" "" "$status_left" "$status_right" "$session_header_block"
 
-    # PM2 health check — warn about excessive restarts
-    print_pm2_health_warning
+    if [ -n "${MENU_STATUS_PM2_UNHEALTHY:-}" ]; then
+        echo -e "${RED}⚠️  PM2 — $(echo "$MENU_STATUS_PM2_UNHEALTHY" | tr ';' '\n' | wc -l) process(es) with excessive restarts. Press s) System, then h) Health Check${NC}"
+    fi
 
     if [ "${MENU_STATUS_LOW_SPACE:-0}" = "1" ]; then
         local header_used_pct
