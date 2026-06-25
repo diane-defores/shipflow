@@ -2692,6 +2692,16 @@ count_npm_updates() {
     echo "$out" | sed '/^$/d' | wc -l
 }
 
+count_pnpm_updates() {
+    if ! command -v pnpm >/dev/null 2>&1; then
+        echo 0
+        return
+    fi
+    local out
+    out=$(run_with_timeout pnpm -g outdated --parseable 2>/dev/null || true)
+    echo "$out" | sed '/^$/d' | wc -l
+}
+
 count_pip_updates() {
     if command -v python3 >/dev/null 2>&1; then
         local out
@@ -2727,10 +2737,11 @@ updates_refresh_cache() {
 
     UPDATE_CACHE_APT=$(count_apt_updates)
     UPDATE_CACHE_NPM=$(count_npm_updates)
+    UPDATE_CACHE_PNPM=$(count_pnpm_updates)
     UPDATE_CACHE_PIP=$(count_pip_updates)
     UPDATE_CACHE_RUSTUP=$(count_rustup_updates)
 
-    UPDATE_CACHE_TOTAL=$((UPDATE_CACHE_APT + UPDATE_CACHE_NPM + UPDATE_CACHE_PIP + UPDATE_CACHE_RUSTUP))
+    UPDATE_CACHE_TOTAL=$((UPDATE_CACHE_APT + UPDATE_CACHE_NPM + UPDATE_CACHE_PNPM + UPDATE_CACHE_PIP + UPDATE_CACHE_RUSTUP))
     UPDATE_CACHE_TIME=$now
 }
 
@@ -2884,6 +2895,7 @@ updates_menu() {
     echo -e "${BLUE}Pending updates:${NC}"
     echo -e "  ${CYAN}•${NC} apt:     ${YELLOW}${UPDATE_CACHE_APT}${NC}"
     echo -e "  ${CYAN}•${NC} npm -g:  ${YELLOW}${UPDATE_CACHE_NPM}${NC}"
+    echo -e "  ${CYAN}•${NC} pnpm:    ${YELLOW}${UPDATE_CACHE_PNPM}${NC}"
     echo -e "  ${CYAN}•${NC} pip:     ${YELLOW}${UPDATE_CACHE_PIP}${NC}"
     echo -e "  ${CYAN}•${NC} rustup:  ${YELLOW}${UPDATE_CACHE_RUSTUP}${NC}"
     echo -e "  ${CYAN}•${NC} Total:   ${GREEN}${UPDATE_CACHE_TOTAL}${NC}"
@@ -2913,6 +2925,11 @@ updates_menu() {
             if command -v npm >/dev/null 2>&1; then
                 echo -e "${GREEN}🔧 Updating npm globals...${NC}"
                 npm -g update
+            fi
+
+            if command -v pnpm >/dev/null 2>&1; then
+                echo -e "${GREEN}🔧 Updating pnpm globals...${NC}"
+                pnpm -g update
             fi
 
             if command -v python3 >/dev/null 2>&1; then
