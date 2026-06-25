@@ -5198,7 +5198,11 @@ detect_dev_command() {
                     echo "npx expo start --dev-client --tunnel"
                     ;;
                 astro)
-                    echo "$pm_cmd dev -- --port \$PORT"
+                    if [ "$pm_cmd" = "npm run" ]; then
+                        echo "$pm_cmd dev -- --port \$PORT"
+                    else
+                        echo "$pm_cmd dev --port \$PORT"
+                    fi
                     ;;
                 next)
                     # Next.js reads PORT env var natively - no -p flag needed
@@ -5206,7 +5210,11 @@ detect_dev_command() {
                     echo "$pm_cmd dev"
                     ;;
                 vite)
-                    echo "$pm_cmd dev -- --port \$PORT --host"
+                    if [ "$pm_cmd" = "npm run" ]; then
+                        echo "$pm_cmd dev -- --port \$PORT --host"
+                    else
+                        echo "$pm_cmd dev --port \$PORT --host"
+                    fi
                     ;;
                 nuxt)
                     echo "$pm_cmd dev --port \$PORT"
