@@ -5778,6 +5778,26 @@ env_start() {
         fi
     fi
 
+    # Auto-create Python venv if missing (prevents "python3 not found" restarts)
+    if [ "$project_lang" = "python" ] && { [ -f "$project_dir/requirements.txt" ] || [ -f "$project_dir/requirements.lock" ]; }; then
+        if [ ! -f "$project_dir/venv/bin/python3" ]; then
+            echo -e "${YELLOW}⚠️  venv Python manquant, création...${NC}"
+            if flox activate --dir "$project_dir" -- python3 -m venv "$project_dir/venv" 2>/dev/null; then
+                local req_file=""
+                [ -f "$project_dir/requirements-dev.lock" ] && req_file="requirements-dev.lock" \
+                || [ -f "$project_dir/requirements.lock" ] && req_file="requirements.lock" \
+                || [ -f "$project_dir/requirements-dev.txt" ] && req_file="requirements-dev.txt" \
+                || [ -f "$project_dir/requirements.txt" ] && req_file="requirements.txt"
+                if [ -n "$req_file" ]; then
+                    flox activate --dir "$project_dir" -- bash -lc "source $project_dir/venv/bin/activate && pip install -r $project_dir/$req_file 2>&1 | tail -3" 2>/dev/null || true
+                fi
+                echo -e "${GREEN}✅ Venv Python créé et dépendances installées${NC}"
+            else
+                echo -e "${RED}❌ Échec création venv Python${NC}"
+            fi
+        fi
+    fi
+
     # Detect dev command
     local dev_cmd=$(detect_dev_command "$project_dir")
 
@@ -5823,6 +5843,15 @@ env_start() {
     if [ "$doppler_enabled" != "true" ] && should_enable_doppler "$project_dir"; then
         doppler_prefix="doppler run -- "
         doppler_enabled=true
+    fi
+
+    # Validate Doppler actually works before keeping it enabled
+    if [ "$doppler_enabled" = "true" ]; then
+        if ! doppler run -- echo "doppler_ok" 2>/dev/null | grep -q "doppler_ok"; then
+            echo -e "${YELLOW}⚠️  Doppler configuré mais injoignable (projet/token manquant) — désactivation${NC}"
+            doppler_prefix=""
+            doppler_enabled=false
+        fi
     fi
 
     # If no persistent port found, find an available one (skip for Expo tunnel projects)
@@ -7745,6 +7774,41 @@ deploy_github_project() {
 # HEADER & STATUS DISPLAY
 # ============================================================================
 
+# ------------------------------------------------------------------------------
+# pm2_health_scan — Check PM2 for excessive restarts
+# ------------------------------------------------------------------------------
+# Returns lines: "name|restarts" for apps where restarts > threshold (default 10)
+pm2_health_scan() {
+    local threshold="${1:-10}"
+    pm2 jlist 2>/dev/null | python3 -c "
+import json, sys
+try:
+    apps = json.load(sys.stdin)
+except:
+    sys.exit(0)
+for app in apps:
+    r = app.get('pm2_env', {}).get('restart_time', 0)
+    name = app.get('name', '?')
+    status = app.get('pm2_env', {}).get('status', '')
+    if r > $threshold and status != 'stopped':
+        print(f'{name}|{r}')
+" 2>/dev/null
+}
+
+# ------------------------------------------------------------------------------
+# print_pm2_health_warning — Show PM2 restart warning banner
+# ------------------------------------------------------------------------------
+print_pm2_health_warning() {
+    local unhealthy
+    unhealthy=$(pm2_health_scan 10 2>/dev/null)
+    if [ -n "$unhealthy" ]; then
+        echo -e "${RED}⚠️  PM2 — $(echo "$unhealthy" | wc -l) process(es) with excessive restarts:${NC}"
+        echo "$unhealthy" | while IFS='|' read -r name restarts; do
+            echo -e "${RED}   • $name: ${restarts} restarts — check with: pm2 logs $name${NC}"
+        done
+    fi
+}
+
 print_header() {
     read_menu_status_cache >/dev/null 2>&1 || true
     refresh_menu_status_cache_async_if_stale
@@ -7782,6 +7846,9 @@ print_header() {
     fi
 
     ui_header "Shipflow DevServer" "" "$status_left" "$status_right" "$session_header_block"
+
+    # PM2 health check — warn about excessive restarts
+    print_pm2_health_warning
 
     if [ "${MENU_STATUS_LOW_SPACE:-0}" = "1" ]; then
         local header_used_pct
