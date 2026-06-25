@@ -7182,14 +7182,7 @@ show_dashboard() {
     echo ""
     echo -e "${BLUE}Total: $count environment(s)${NC}"
 
-    # Let user read before proposing actions
-    if [ -n "${idle_names:-}" ] || [ -n "${unhealthy_names:-}" ]; then
-        echo ""
-        ui_pause "Appuie sur Entrée pour voir les actions disponibles..."
-        echo ""
-    fi
-
-    # Idle apps — propose stopping directly
+    # Idle apps — show info line, then ask
     if [ -n "${idle_names:-}" ]; then
         echo ""
         echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -7197,7 +7190,11 @@ show_dashboard() {
         echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
         echo ""
 
-        # Build list for selection
+        echo -e "${BLUE}💡 Tu peux libérer de la RAM en arrêtant une app.${NC}"
+        echo ""
+        ui_pause "Appuie sur une touche pour choisir ou Skip..."
+        echo ""
+
         local idle_arr=()
         for n in $idle_names; do
             idle_arr+=("$n")
