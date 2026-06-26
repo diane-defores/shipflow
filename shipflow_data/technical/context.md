@@ -13,7 +13,7 @@ confidence: "high"
 risk_level: "medium"
 security_impact: "none"
 docs_impact: "yes"
-linked_systems: ["shipflow.sh", "lib.sh", "config.sh", "install.sh", "local/local.sh", "skills/", "skills/references/app-blueprints.md", "skills/app-blueprints/", "shipflow-spec-driven-workflow.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "shipflow_data/technical/", "shipflow_data/business/project-competitors-and-inspirations.md", "shipflow_data/business/affiliate-programs.md"]
+linked_systems: ["cli/shipflow.sh", "cli/lib.sh", "cli/config.sh", "cli/install.sh", "local/local.sh", "skills/", "skills/references/app-blueprints.md", "skills/app-blueprints/", "shipflow-spec-driven-workflow.md", "shipflow_data/technical/context-function-tree.md", "shipflow_data/editorial/content-map.md", "shipflow_data/technical/", "shipflow_data/business/project-competitors-and-inspirations.md", "shipflow_data/business/affiliate-programs.md"]
 depends_on: []
 supersedes: []
 evidence: ["README.md", "CLAUDE.md", "shipflow_data/editorial/content-map.md", function extraction from core shell scripts, "shipflow_data/technical/* as code-proximate subsystem documentation", "Business registries added for project competitors/inspirations and affiliate programs."]
@@ -35,12 +35,12 @@ ShipFlow combine deux couches :
 
 ## Entry Points
 
-- `shipflow.sh`: point d'entree du CLI.
+- `cli/shipflow.sh`: point d'entree du CLI.
 - `sf codex` / `sf co`: raccourci de lancement Codex qui court-circuite le
   cleanup des environnements et ouvre une session avec MCP choisis pour ce run.
-- `lib.sh`: coeur des actions, validations, integrations systeme et menus.
-- `config.sh`: configuration centralisee et validation.
-- `install.sh`: bootstrap serveur et configuration de l'environnement utilisateur.
+- `cli/lib.sh`: coeur des actions, validations, integrations systeme et menus.
+- `cli/config.sh`: configuration centralisee et validation.
+- `cli/install.sh`: bootstrap serveur et configuration de l'environnement utilisateur.
 - `local/local.sh`: UX locale des tunnels SSH.
 - `skills/`: workflows AI orientes taches.
 - `skills/references/app-blueprints.md`: systeme de blueprints — squelettes de specs globales pour archetypes d'applications recurrentes, utilises par `001-sf-build` (Blueprint Gate), `100-sf-spec` (pre-remplissage de spec), et `306-sf-scaffold` (conventions de structure).
@@ -48,7 +48,7 @@ ShipFlow combine deux couches :
 
 ## Repo Map
 
-- `shipflow.sh`, `lib.sh`, `config.sh`, `install.sh`: couche serveur/CLI.
+- `cli/shipflow.sh`, `cli/lib.sh`, `cli/config.sh`, `cli/install.sh`: couche serveur/CLI.
 - `local/`: outils locaux d'acces a un serveur ShipFlow.
 - `skills/`: skills ShipFlow pour exploration, spec, execution, verif, docs, audits.
 - `templates/artifacts/`: templates d'artefacts versionnes.
@@ -67,7 +67,7 @@ ShipFlow combine deux couches :
 ### 1. Server CLI Flow
 
 ```text
-shipflow.sh
+cli/shipflow.sh
   -> source lib.sh
   -> select menu frontend
   -> main()
@@ -181,16 +181,16 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 
 ## Where To Edit What
 
-- Changer le comportement de lancement d'app : `lib.sh` autour de `env_start`, `detect_project_type`, `detect_dev_command`, `fix_port_config`.
-- Changer le dashboard ou la sante : `lib.sh` autour de `show_dashboard`, `health_check_all`, `diagnose_app_errors`.
-- Changer le launcher Codex ou les presets MCP : `lib.sh` autour de `action_codex_launcher`, puis `install.sh` si les defaults Codex changent.
-- Changer la publication web : `lib.sh` autour de `action_publish`.
+- Changer le comportement de lancement d'app : `cli/lib.sh` autour de `env_start`, `detect_project_type`, `detect_dev_command`, `fix_port_config`.
+- Changer le dashboard ou la sante : `cli/lib.sh` autour de `show_dashboard`, `health_check_all`, `diagnose_app_errors`.
+- Changer le launcher Codex ou les presets MCP : `cli/lib.sh` autour de `action_codex_launcher`, puis `cli/install.sh` si les defaults Codex changent.
+- Changer la publication web : `cli/lib.sh` autour de `action_publish`.
 - Changer les tunnels locaux : `local/local.sh` et `local/dev-tunnel.sh`.
-- Changer le mode Flutter Web interactif : `lib.sh` autour de `action_flutter_web`, puis `local/remote-helpers.sh` si le tunnel doit découvrir de nouveaux ports.
+- Changer le mode Flutter Web interactif : `cli/lib.sh` autour de `action_flutter_web`, puis `local/remote-helpers.sh` si le tunnel doit découvrir de nouveaux ports.
 - Changer le workflow d'agent : `skills/` + `shipflow-spec-driven-workflow.md`.
 - Changer les regles metadata : `skills/300-sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`, `shipflow-metadata-migration-guide.md`, `templates/artifacts/`.
 - Changer la documentation technique proche du code : `shipflow_data/technical/code-docs-map.md` puis le doc primaire dans `shipflow_data/technical/`.
-- Changer l'UI shell (sélecteurs, menus, headers) : `lib.sh` autour des primitives `ui_choose`, `ui_filter_choose`, `ui_text_center`, `ui_list_filter`, `ui_traffic_color`.
+- Changer l'UI shell (sélecteurs, menus, headers) : `cli/lib.sh` autour des primitives `ui_choose`, `ui_filter_choose`, `ui_text_center`, `ui_list_filter`, `ui_traffic_color`.
 - Changer la TUI (dashboard, filtres, tri, statuts) : `tui/src/statusMaps.ts` (mappings partagés), `tui/src/sources/` (lecture/parsing), `tui/src/viewModels/dashboard.ts` (logique de vue), `tui/src/views/dashboardView.ts` (rendu).
 - Changer la cartographie editoriale, les destinations de contenu ou les cocons semantiques : `shipflow_data/editorial/content-map.md`, puis `shipflow-site/src/pages/docs.astro` ou les surfaces concernees.
 - Changer le positionnement, l'audience ou le scope produit : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/branding.md`.
@@ -200,8 +200,8 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 
 ## Read First By Task
 
-- CLI principal : `CLAUDE.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow.sh`, `lib.sh`.
-- Install / bootstrap : `install.sh`, `config.sh`, `README.md`.
+- CLI principal : `CLAUDE.md`, `shipflow_data/technical/context-function-tree.md`, `cli/shipflow.sh`, `cli/lib.sh`.
+- Install / bootstrap : `cli/install.sh`, `cli/config.sh`, `README.md`.
 - Skill / workflow : `README.md`, `shipflow-spec-driven-workflow.md`, puis la skill cible.
 - Metadata docs : `shipflow-metadata-migration-guide.md`, `skills/300-sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`.
 - Docs techniques / code change : `shipflow_data/technical/code-docs-map.md`, puis le doc primaire mappe.

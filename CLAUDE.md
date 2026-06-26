@@ -14,10 +14,10 @@ Guidance for Claude Code when working in this repository.
 
 ### Core Files
 
-- **shipflow.sh** — Main entry point (interactive menu)
-- **lib.sh** — Central library (ports, PM2 cache, Flox, Caddy, validation, logging)
-- **config.sh** — All settings via env vars (ports, SSH, logging, cache TTL)
-- **install.sh** — Server setup (Node.js, PM2, Flox, Caddy, gh, skills symlinks)
+- **cli/shipflow.sh** — Main entry point (interactive menu)
+- **cli/lib.sh** — Central library (ports, PM2 cache, Flox, Caddy, validation, logging)
+- **cli/config.sh** — All settings via env vars (ports, SSH, logging, cache TTL)
+- **cli/install.sh** — Server setup (Node.js, PM2, Flox, Caddy, gh, skills symlinks)
 
 ### Key Patterns
 
@@ -71,7 +71,7 @@ show_dashboard()  # Reads envs.reg, displays environments + action bar
 
 ```bash
 # Launch menu
-sf                    # or: shipflow, or: ./shipflow.sh
+sf                    # or: shipflow, or: ./shipflow.sh (compat wrapper)
 
 # Install dependencies (run as root)
 sudo ./install.sh
@@ -132,10 +132,17 @@ show_dashboard        # Display dashboard (reads envs.reg, 0 subprocesses)
 
 ```
 shipflow/
-├── shipflow.sh                 # Main menu
-├── lib.sh                      # Core library
-├── config.sh                   # Configuration
-├── install.sh                  # Server installation
+├── cli/
+│   ├── shipflow.sh             # Main menu
+│   ├── lib.sh                  # Core library
+│   ├── config.sh               # Configuration
+│   ├── install.sh              # Server installation
+│   ├── shipflow_devserver_bash.sh
+│   └── shipflow_devserver_gum.sh
+├── shipflow.sh                 # Compatibility wrapper
+├── lib.sh                      # Compatibility wrapper
+├── config.sh                   # Compatibility wrapper
+├── install.sh                  # Compatibility wrapper
 ├── skills/                     # ShipFlow skill library
 ├── .claude/statusline-starship.sh  # Status bar
 ├── local/                      # SSH tunnel scripts

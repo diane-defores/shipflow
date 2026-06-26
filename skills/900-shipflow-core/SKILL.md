@@ -33,10 +33,10 @@ Because this skill is itself ShipFlow infrastructure, invoking `900-shipflow-cor
 
 When the operator asks to modify the ShipFlow CLI or TUI from another conversation, treat the default edit targets as:
 
-- `${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow.sh`
-- `${SHIPFLOW_ROOT:-$HOME/shipflow}/lib.sh`
-- `${SHIPFLOW_ROOT:-$HOME/shipflow}/config.sh`
-- `${SHIPFLOW_ROOT:-$HOME/shipflow}/install.sh`
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/cli/shipflow.sh`
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/cli/lib.sh`
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/cli/config.sh`
+- `${SHIPFLOW_ROOT:-$HOME/shipflow}/cli/install.sh`
 - `${SHIPFLOW_ROOT:-$HOME/shipflow}/tui/`
 
 It also protects cross-skill invariants such as product governance: declared products should not rely on ad hoc URL discovery, improvised delivery framing, or unsupported public claims when the project corpus is supposed to hold that truth.

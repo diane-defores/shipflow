@@ -14,10 +14,10 @@ security_impact: unknown
 risk_level: low
 docs_impact: yes
 linked_systems:
-  - shipflow.sh
-  - lib.sh
-  - config.sh
-  - install.sh
+  - cli/shipflow.sh
+  - cli/lib.sh
+  - cli/config.sh
+  - cli/install.sh
   - skills
   - skills/004-sf-deploy/SKILL.md
   - skills/002-sf-maintain/SKILL.md
