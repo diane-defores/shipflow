@@ -12,14 +12,14 @@ This is a multi-project development environment containing 13 independent projec
 | **tubeflow** | TypeScript monorepo (Next.js 16, React Native/Expo, Convex) | yarn |
 | **GoCharbon** | Astro 5 + Vue 3 + UnoCSS (French entrepreneur blog, ~290 posts) | pnpm |
 | **winflowz** | Astro 5 + Starlight (neobrutalist template) | pnpm |
-| **plaisirsurprise** | Astro 5 + React + Convex + Clerk (luxury booking platform, FR/EN) | npm |
-| **NoteFlowz** | Astro 5 SSR + Vue 3 + Convex + Clerk (note app directory) | npm |
+| **plaisirsurprise** | Astro 5 + React + Convex + Clerk (luxury booking platform, FR/EN) | pnpm |
+| **NoteFlowz** | Astro 5 SSR + Vue 3 + Convex + Clerk (note app directory) | pnpm |
 | **claiire** | Astro 5 + Starlight + Vue 3 (French wellness/health docs) | pnpm |
 | **BuildFlowz** | Bash/Shell CLI (Flox, PM2, Caddy) | N/A |
 | **SocialFlowz** | *(empty — planned)* | TBD |
-| **promptflow** | React 18 + Vite + Supabase + shadcn/ui (AI prompt platform) | npm |
-| **tmv-app** | React Native (Expo) + Convex + Clerk + Gemini AI (wellness tracker) | npm |
-| **dianedefores** | Next.js 14 + React 19 + Tailwind 4 + shadcn/ui (portfolio) | npm |
+| **promptflow** | React 18 + Vite + Supabase + shadcn/ui (AI prompt platform) | pnpm |
+| **tmv-app** | React Native (Expo) + Convex + Clerk + Gemini AI (wellness tracker) | pnpm |
+| **dianedefores** | Next.js 14 + React 19 + Tailwind 4 + shadcn/ui (portfolio) | pnpm |
 | **dotfiles** | Bash/Shell + Lua (Neovim) + PowerShell (multi-platform configs) | N/A |
 
 ## shipflow_data role

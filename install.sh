@@ -276,8 +276,10 @@ if command -v pm2 >/dev/null 2>&1; then
     success "PM2 déjà installé: $PM2_VERSION"
 else
     info "Installation de PM2..."
-    npm config set prefix /usr/local
-    npm install -g pm2
+    export PNPM_HOME="/usr/local/share/pnpm"
+    export PATH="$PNPM_HOME:$PATH"
+    corepack prepare pnpm@latest --activate >/dev/null 2>&1
+    pnpm add -g pm2
     hash -r 2>/dev/null
 
     if command -v pm2 >/dev/null 2>&1; then
@@ -291,13 +293,15 @@ fi
 echo ""
 
 # 3. Installer les CLI Node globales utiles
-npm config set prefix /usr/local
+export PNPM_HOME="/usr/local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+corepack prepare pnpm@latest --activate >/dev/null 2>&1
 
 if command -v vercel >/dev/null 2>&1; then
     success "Vercel CLI déjà installé: $(vercel --version 2>/dev/null | head -n1)"
 else
     info "Installation de Vercel CLI..."
-    npm install -g vercel
+    pnpm add -g vercel
     hash -r 2>/dev/null
 
     if command -v vercel >/dev/null 2>&1; then
@@ -314,7 +318,7 @@ if command -v convex >/dev/null 2>&1; then
     success "Convex CLI déjà installé: $(convex --version 2>/dev/null | head -n1)"
 else
     info "Installation de Convex CLI..."
-    npm install -g convex
+    pnpm add -g convex
     hash -r 2>/dev/null
 
     if command -v convex >/dev/null 2>&1; then
@@ -331,7 +335,7 @@ if command -v clerk >/dev/null 2>&1; then
     success "Clerk CLI déjà installé: $(clerk --version 2>/dev/null | head -n1)"
 else
     info "Installation de Clerk CLI..."
-    npm install -g clerk
+    pnpm add -g clerk
     hash -r 2>/dev/null
 
     if command -v clerk >/dev/null 2>&1; then
@@ -1595,18 +1599,18 @@ ensure_user_local_npm_bootstrap() {
     local user_home="$1"
     local username="$2"
     local bashrc="$user_home/.bashrc"
-    local npm_dir="$user_home/.npm-global"
+    local pnpm_home="$user_home/.local/share/pnpm"
     [ -f "$bashrc" ] || touch "$bashrc"
-    mkdir -p "$npm_dir/bin"
-    chown -R "$username:$username" "$npm_dir" 2>/dev/null || true
+    mkdir -p "$pnpm_home"
+    chown -R "$username:$username" "$pnpm_home" 2>/dev/null || true
 
-    sed -i '/^# >>> ShipFlow npm bootstrap >>>$/,/^# <<< ShipFlow npm bootstrap <<<$/{d}' "$bashrc"
+    sed -i '/^# >>> ShipFlow pnpm bootstrap >>>$/,/^# <<< ShipFlow pnpm bootstrap <<<$/{d}' "$bashrc"
     cat >> "$bashrc" << 'BOOTSTRAP'
 
-# >>> ShipFlow npm bootstrap >>>
-export NPM_CONFIG_PREFIX="$HOME/.npm-global"
-export PATH="$HOME/.npm-global/bin:$PATH"
-# <<< ShipFlow npm bootstrap <<<
+# >>> ShipFlow pnpm bootstrap >>>
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+# <<< ShipFlow pnpm bootstrap <<<
 BOOTSTRAP
 }
 
@@ -1617,8 +1621,8 @@ install_ai_agent_clis_for_user() {
         return 0
     fi
     ensure_user_local_npm_bootstrap "$user_home" "$username"
-    sudo -u "$username" -H bash -lc 'export NPM_CONFIG_PREFIX="$HOME/.npm-global"; export PATH="$HOME/.npm-global/bin:$PATH"; command -v claude >/dev/null 2>&1 || npm install -g @anthropic-ai/claude-code' || return 1
-    sudo -u "$username" -H bash -lc 'export NPM_CONFIG_PREFIX="$HOME/.npm-global"; export PATH="$HOME/.npm-global/bin:$PATH"; command -v codex >/dev/null 2>&1 || npm install -g @openai/codex' || return 1
+    sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; corepack prepare pnpm@latest --activate >/dev/null 2>&1; command -v claude >/dev/null 2>&1 || pnpm add -g @anthropic-ai/claude-code' || return 1
+    sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; corepack prepare pnpm@latest --activate >/dev/null 2>&1; command -v codex >/dev/null 2>&1 || pnpm add -g @openai/codex' || return 1
     return 0
 }
 

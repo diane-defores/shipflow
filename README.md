@@ -218,7 +218,7 @@ The recommended server shape is:
 - let ShipFlow manage the local Caddy proxy with the environment lifecycle
   instead of keeping a global root Caddy service running
 
-`dotfiles` may prepare generic user tooling in `~/.local/bin`, `~/.npm-global`, and `~/.config`. ShipFlow owns the AI/code workflow layer: skills, Claude/Codex settings, MCP registrations, ShipFlow aliases, and each project's local `shipflow_data`.
+`dotfiles` may prepare generic user tooling in `~/.local/bin`, `~/.local/share/pnpm`, and `~/.config`. ShipFlow owns the AI/code workflow layer: skills, Claude/Codex settings, MCP registrations, ShipFlow aliases, and each project's local `shipflow_data`. `pnpm` is the default package manager for ShipFlow-managed projects; `npm` remains only a compatibility fallback when a third-party tool still hard-requires it.
 
 Before the first install on a machine, restore project-local tracking data from your
 existing project repositories or workspace artifacts. Legacy `~/shipflow_data`
@@ -350,7 +350,7 @@ ShipFlow also installs the terminal tooling commonly needed to operate those int
 - `vercel`
 - `convex`
 - `clerk`
-- `supabase` via the standalone CLI binary, because Supabase does not support `npm install -g supabase`
+- `supabase` via the standalone CLI binary, because Supabase does not support a supported global package-manager install path
 - `gh` (GitHub CLI)
 - `flox`
 - `caddy`

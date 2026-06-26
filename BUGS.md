@@ -2,7 +2,7 @@
 
 | Bug ID | Status | Severity | Title | Last tested | Next step |
 |--------|--------|----------|-------|-------------|-----------|
-| [BUG-2026-06-26-001](bugs/BUG-2026-06-26-001.md) | fix-attempted | high | ShipFlow installer configures every eligible user by default | 2026-06-26 | /sf-test --retest BUG-2026-06-26-001 |
+| [BUG-2026-06-26-001](bugs/BUG-2026-06-26-001.md) | closed | high | ShipFlow installer configures every eligible user by default | 2026-06-26 | none |
 | [BUG-2026-05-20-001](shipflow_data/workflow/bugs/BUG-2026-05-20-001.md) | fixed-pending-verify | medium | Terminal TUI activity panel shows headings instead of task and audit entries | 2026-05-20 | /sf-test --retest BUG-2026-05-20-001 |
 | [BUG-2026-05-19-001](shipflow_data/workflow/bugs/BUG-2026-05-19-001.md) | fixed-pending-verify | medium | Terminal TUI project filter does not scope specs | 2026-05-19 | /sf-test --retest BUG-2026-05-19-001 |
 | [BUG-2026-05-10-005](bugs/BUG-2026-05-10-005.md) | fix-attempted | medium | Menu navigation ignores typed environment/folder name | 2026-05-10 | /sf-test --retest BUG-2026-05-10-005 |
