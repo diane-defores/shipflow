@@ -2812,8 +2812,8 @@ refresh_menu_status_cache_sync() {
     now=$(date +%s)
     local free_human
     free_human=$(disk_free_human)
-    local updates_total
-    updates_total=$(updates_total_cached)
+    updates_refresh_cache
+    local updates_total=$UPDATE_CACHE_TOTAL
     local low_space=0
     if disk_is_low_space; then
         low_space=1
@@ -2904,31 +2904,75 @@ refresh_menu_status_cache_async_if_stale() {
 updates_menu() {
     ui_screen_header "Updates Summary"
 
-    if [ -z "${MENU_STATUS_UPDATES_TOTAL:-}" ] || [ -z "${MENU_STATUS_UPDATES_APT:-}" ]; then
-        echo -e "${BLUE}Checking package updates...${NC}"
-        updates_refresh_cache
-    else
-        UPDATE_CACHE_APT=$MENU_STATUS_UPDATES_APT
-        UPDATE_CACHE_NPM=$MENU_STATUS_UPDATES_NPM
-        UPDATE_CACHE_PNPM=$MENU_STATUS_UPDATES_PNPM
-        UPDATE_CACHE_PIP=$MENU_STATUS_UPDATES_PIP
-        UPDATE_CACHE_RUSTUP=$MENU_STATUS_UPDATES_RUSTUP
-        UPDATE_CACHE_TOTAL=$MENU_STATUS_UPDATES_TOTAL
-        echo -e "${BLUE}Package updates (cached, last check <120s)${NC}"
+    # Refresh globals from disk cache before display
+    read_menu_status_cache >/dev/null 2>&1 || true
+
+    local apt npm pnpm pip rustup total
+
+    # Prefer header async cache (MENU_STATUS_*), fall back to last sync (UPDATE_CACHE_*)
+    apt=${MENU_STATUS_UPDATES_APT:-${UPDATE_CACHE_APT:-0}}
+    npm=${MENU_STATUS_UPDATES_NPM:-${UPDATE_CACHE_NPM:-0}}
+    pnpm=${MENU_STATUS_UPDATES_PNPM:-${UPDATE_CACHE_PNPM:-0}}
+    pip=${MENU_STATUS_UPDATES_PIP:-${UPDATE_CACHE_PIP:-0}}
+    rustup=${MENU_STATUS_UPDATES_RUSTUP:-${UPDATE_CACHE_RUSTUP:-0}}
+    total=${MENU_STATUS_UPDATES_TOTAL:-${UPDATE_CACHE_TOTAL:-}}
+
+    ( refresh_menu_status_cache_sync >/dev/null 2>&1 & ) 2>/dev/null || true
+
+    if [ -z "$total" ]; then
+        echo -e "${BLUE}⏳ Checking package updates (async)...${NC}"
+        refresh_menu_status_cache_async_if_stale
+        local wait_count=0 max_wait=15 running lock_pid
+        while [ $wait_count -lt $max_wait ]; do
+            sleep 2
+            wait_count=$((wait_count + 1))
+            running=false
+            if [ -f "$MENU_STATUS_LOCK_FILE" ]; then
+                lock_pid=$(cat "$MENU_STATUS_LOCK_FILE" 2>/dev/null || true)
+                if [ -n "$lock_pid" ] && kill -0 "$lock_pid" 2>/dev/null; then
+                    running=true
+                fi
+            fi
+            if ! $running; then
+                read_menu_status_cache >/dev/null 2>&1 || true
+                total=${MENU_STATUS_UPDATES_TOTAL:-}
+                [ -n "$total" ] && break
+                break
+            fi
+            echo -n "."
+        done
+        echo ""
+        if [ -z "$total" ]; then
+            echo -e "${BLUE}⏳ Running update check...${NC}"
+            updates_refresh_cache
+            apt=$UPDATE_CACHE_APT
+            npm=$UPDATE_CACHE_NPM
+            pnpm=$UPDATE_CACHE_PNPM
+            pip=$UPDATE_CACHE_PIP
+            rustup=$UPDATE_CACHE_RUSTUP
+            total=$UPDATE_CACHE_TOTAL
+        else
+            apt=${MENU_STATUS_UPDATES_APT:-${UPDATE_CACHE_APT:-0}}
+            npm=${MENU_STATUS_UPDATES_NPM:-${UPDATE_CACHE_NPM:-0}}
+            pnpm=${MENU_STATUS_UPDATES_PNPM:-${UPDATE_CACHE_PNPM:-0}}
+            pip=${MENU_STATUS_UPDATES_PIP:-${UPDATE_CACHE_PIP:-0}}
+            rustup=${MENU_STATUS_UPDATES_RUSTUP:-${UPDATE_CACHE_RUSTUP:-0}}
+        fi
     fi
     echo ""
 
     echo -e "${BLUE}Pending updates:${NC}"
-    echo -e "  ${CYAN}•${NC} apt:     ${YELLOW}${UPDATE_CACHE_APT}${NC}"
-    echo -e "  ${CYAN}•${NC} npm -g:  ${YELLOW}${UPDATE_CACHE_NPM}${NC}"
-    echo -e "  ${CYAN}•${NC} pnpm:    ${YELLOW}${UPDATE_CACHE_PNPM}${NC}"
-    echo -e "  ${CYAN}•${NC} pip:     ${YELLOW}${UPDATE_CACHE_PIP}${NC}"
-    echo -e "  ${CYAN}•${NC} rustup:  ${YELLOW}${UPDATE_CACHE_RUSTUP}${NC}"
-    echo -e "  ${CYAN}•${NC} Total:   ${GREEN}${UPDATE_CACHE_TOTAL}${NC}"
+    echo -e "  ${CYAN}•${NC} apt:     ${YELLOW}${apt}${NC}"
+    echo -e "  ${CYAN}•${NC} npm -g:  ${YELLOW}${npm}${NC}"
+    echo -e "  ${CYAN}•${NC} pnpm:    ${YELLOW}${pnpm}${NC}"
+    echo -e "  ${CYAN}•${NC} pip:     ${YELLOW}${pip}${NC}"
+    echo -e "  ${CYAN}•${NC} rustup:  ${YELLOW}${rustup}${NC}"
+    echo -e "  ${CYAN}•${NC} Total:   ${GREEN}${total}${NC}"
     echo ""
 
     echo -e "${BLUE}Options:${NC}"
-    echo -e "  ${CYAN}u)${NC} Update All"
+    echo -e "  ${CYAN}a)${NC} apt       ${CYAN}n)${NC} npm -g    ${CYAN}p)${NC} pnpm"
+    echo -e "  ${CYAN}i)${NC} pip       ${CYAN}r)${NC} rustup    ${CYAN}u)${NC} Update All"
     echo ""
     echo -e "  ${CYAN}x)${NC} Back"
     echo ""
@@ -2936,6 +2980,80 @@ updates_menu() {
     ui_read_choice update_choice
 
     case $update_choice in
+        a)
+            if command -v apt >/dev/null 2>&1; then
+                if sudo -n true 2>/dev/null; then
+                    echo -e "${GREEN}🔧 Updating apt...${NC}"
+                    sudo apt update && sudo apt upgrade -y
+                else
+                    echo -e "${YELLOW}⚠ apt needs sudo — skipped${NC}"
+                fi
+            else
+                echo -e "${YELLOW}apt not available${NC}"
+            fi
+            UPDATE_CACHE_TIME=0
+            updates_refresh_cache
+            refresh_menu_status_cache_sync >/dev/null 2>&1 || true
+            updates_menu
+            return 0
+            ;;
+        n)
+            if command -v npm >/dev/null 2>&1; then
+                echo -e "${GREEN}🔧 Updating npm globals...${NC}"
+                npm -g update
+            else
+                echo -e "${YELLOW}npm not available${NC}"
+            fi
+            UPDATE_CACHE_TIME=0
+            updates_refresh_cache
+            refresh_menu_status_cache_sync >/dev/null 2>&1 || true
+            updates_menu
+            return 0
+            ;;
+        p)
+            if command -v pnpm >/dev/null 2>&1; then
+                echo -e "${GREEN}🔧 Updating pnpm globals...${NC}"
+                pnpm -g update
+            else
+                echo -e "${YELLOW}pnpm not available${NC}"
+            fi
+            UPDATE_CACHE_TIME=0
+            updates_refresh_cache
+            refresh_menu_status_cache_sync >/dev/null 2>&1 || true
+            updates_menu
+            return 0
+            ;;
+        i)
+            if command -v python3 >/dev/null 2>&1; then
+                echo -e "${GREEN}🔧 Updating pip packages...${NC}"
+                python3 -m pip list --outdated --format=freeze 2>/dev/null | cut -d= -f1 | \
+                    xargs -n1 python3 -m pip install -U 2>/dev/null || true
+            elif command -v pip >/dev/null 2>&1; then
+                echo -e "${GREEN}🔧 Updating pip packages...${NC}"
+                pip list --outdated --format=freeze 2>/dev/null | cut -d= -f1 | \
+                    xargs -n1 pip install -U 2>/dev/null || true
+            else
+                echo -e "${YELLOW}pip not available${NC}"
+            fi
+            UPDATE_CACHE_TIME=0
+            updates_refresh_cache
+            refresh_menu_status_cache_sync >/dev/null 2>&1 || true
+            updates_menu
+            return 0
+            ;;
+        r)
+            if command -v rustup >/dev/null 2>&1; then
+                echo -e "${GREEN}🔧 Updating rustup toolchains...${NC}"
+                rustup update
+            else
+                echo -e "${YELLOW}rustup not available${NC}"
+            fi
+            UPDATE_CACHE_TIME=0
+            updates_refresh_cache
+            refresh_menu_status_cache_sync >/dev/null 2>&1 || true
+            updates_menu
+            return 0
+            ;;
         u)
             echo -e "${YELLOW}This will run system and global package updates.${NC}"
             if ! ui_confirm "Proceed with Update All?"; then
@@ -2944,8 +3062,12 @@ updates_menu() {
             fi
 
             if command -v apt >/dev/null 2>&1; then
-                echo -e "${GREEN}🔧 Updating apt...${NC}"
-                sudo apt update && sudo apt upgrade -y
+                if sudo -n true 2>/dev/null; then
+                    echo -e "${GREEN}🔧 Updating apt...${NC}"
+                    sudo apt update && sudo apt upgrade -y
+                else
+                    echo -e "${YELLOW}⚠ apt needs sudo — skipped${NC}"
+                fi
             fi
 
             if command -v npm >/dev/null 2>&1; then
@@ -2976,6 +3098,7 @@ updates_menu() {
             echo -e "${GREEN}✅ Updates complete${NC}"
             UPDATE_CACHE_TIME=0
             updates_refresh_cache
+            refresh_menu_status_cache_sync >/dev/null 2>&1 || true
             ;;
         x|q)
             ui_return_back

@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.0.1"
 project: ShipFlow
 created: "2026-06-11"
-updated: "2026-06-11"
+updated: "2026-06-26"
 status: active
 source_skill: 300-sf-docs
 scope: design-system-authority
@@ -114,33 +114,21 @@ Stop or report `partial` when:
 
 Update this artifact whenever the project adds a frontend, changes styling technology, introduces a token pipeline, changes component primitives, changes theme mode behavior, or accepts a documented platform-bound exception.
 
-## WinFlowz Surface Declarations (2026-06-12)
+## ShipFlow Surface Declarations (2026-06-26)
 
-- `shipflow_site`:
+- `shipflow-site`:
   - status: `declared`
   - brand_contract: `shipflow_data/business/branding.md`
-  - canonical_source: `site/src/styles/global.css`
+  - canonical_source: `shipflow-site/src/styles/global.css`
   - technology_carrier: `css-custom-properties`
-  - component_bridge: `site/src/components/NavBar.astro`, `site/src/components/Hero.astro`, and the shared component set under `site/src/components`
-  - layout_authority: `site/src/styles/global.css` plus shared page composition in `site/src/pages/index.astro` and `site/src/pages/fr/index.astro`
-  - motion_authority: `site/src/styles/global.css`
+  - component_bridge: `shipflow-site/src/components/NavBar.astro`, `shipflow-site/src/components/Hero.astro`, and the shared component set under `shipflow-site/src/components`
+  - layout_authority: `shipflow-site/src/styles/global.css` plus shared page composition in `shipflow-site/src/pages/index.astro` and `shipflow-site/src/pages/fr/index.astro`
+  - motion_authority: `shipflow-site/src/styles/global.css`
   - forbidden_bypass:
     - inline visual literals inside Astro components when a shared CSS rule or token can own the decision
     - mobile-nav, hero, spacing, shadow, or elevation values created directly in page/component markup
     - locale-specific visual overrides that diverge from the shared home component system without explicit proof
   - validation:
-    - `python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/design_system_drift_check.py" --root "${SHIPFLOW_ROOT:-$HOME/shipflow}/site" --changed --format markdown`
-    - `npm --prefix "${SHIPFLOW_ROOT:-$HOME/shipflow}/site" run build`
+    - `python3 "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/design_system_drift_check.py" --root "${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow-site" --changed --format markdown`
+    - `npm --prefix "${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow-site" run build`
     - browser/mobile proof on `/` and `/fr/` when home or navigation visuals change
-- `winflowz_app`:
-  - status: `declared`
-  - canonical_source: `winflowz_app/lib/core/theme/winflowz_theme_tokens.dart` + `winflowz_app/lib/core/theme/app_theme.dart`
-  - technology_carrier: `flutter-theme`
-  - component_bridge: `AppColors`, `AppTypography`, `AppSpacing`, `AppInsets`, `AppNavigationMetrics` in `winflowz_app/lib/core/theme/app_theme.dart`
-  - layout_authority: `winflowz_app/lib/presentation/**/*` and `winflowz_app/lib/features/**/*` must consume `App*` helpers before screen-local values.
-- `winflowz_site`:
-  - status: `declared`
-  - canonical_source: `winflowz_site/src/assets/styles/global.css` + `winflowz_site/tailwind.config.mjs`
-  - technology_carrier: `tailwind-theme`
-  - component_bridge: shared component primitives under `winflowz_site/src/components`
-  - layout_authority: `winflowz_site/src/layouts`, `winflowz_site/src/pages`, and component-level theme aliases must avoid arbitrary one-off visual literals.

@@ -464,6 +464,7 @@ None.
 | 2026-04-29 02:00:00 UTC | sf-start | GPT-5 Codex | Implemented ShipFlow ownership changes for user targeting, autonomous Claude/Codex permissions, per-user bootstrap, dotfiles overlap removal, and ownership docs updates | implemented | /sf-verify AI agent install ownership and autonomous permissions |
 | 2026-04-29 02:10:00 UTC | sf-end | GPT-5 Codex | Closed implementation session with bookkeeping updates (TASKS/CHANGELOG/spec trace) while keeping verification pending | deferred | /sf-verify AI agent install ownership and autonomous permissions |
 | 2026-04-29 02:15:00 UTC | sf-ship | GPT-5 Codex | Shipped closure trace commit for the chantier spec while preserving narrow scope (spec-only ship) | shipped | /sf-verify AI agent install ownership and autonomous permissions |
+| 2026-06-26 10:52:37 UTC | 002-sf-maintain | GPT-5 Codex | Added explicit autonomous-mode choice to `install.sh`, made Claude/Codex permission defaults mode-specific, and updated install docs so permissive behavior is no longer silent by default | partial: `bash -n install.sh` passed; interactive smoke not run in this session | /sf-verify AI agent install ownership and autonomous permissions |
 
 ## Current Chantier Flow
 

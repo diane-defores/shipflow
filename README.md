@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.12.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-06-23"
+updated: "2026-06-26"
 status: draft
 source_skill: 300-sf-docs
 scope: readme
@@ -31,11 +31,11 @@ linked_systems:
   - skills/references/decision-quality-contract.md
   - skills/references/question-contract.md
   - skills/references/app-blueprints.md
-  - site/src/content/skills/000-shipflow.md
+  - shipflow-site/src/content/skills/000-shipflow.md
   - shipflow_data/technical
   - shipflow_data/editorial
   - shipflow_data/technical/codex-plugin-packaging.md
-  - site
+  - shipflow-site
   - /home/claude/plugins/shipflow/
 depends_on: []
 supersedes: []
@@ -154,7 +154,7 @@ It is the public explanation, docs, pricing hypothesis, FAQ, and skill-discovery
 
 ```bash
 # Install without manually cloning the repository
-curl -fsSL https://winflowz.com/shipflow-script | sudo sh
+curl -fsSL https://shipflowzsite.vercel.app/shipflow-script | sudo sh
 ```
 
 Manual equivalent:
@@ -207,6 +207,8 @@ ShipFlow's installer is intentionally a root-level installer. It must be run wit
 
 If `./install.sh` is launched without root, it stops before making partial system changes. The log explains that the root-only scope was skipped and tells the operator to rerun with `sudo`.
 
+When the install runs interactively, ShipFlow asks once whether to enable the permissive AI defaults. Non-interactive runs can set `SHIPFLOW_AUTONOMY_MODE=permissive` or `SHIPFLOW_AUTONOMY_MODE=standard`; root permissive mode still requires `SHIPFLOW_AI_ALLOW_ROOT_AUTONOMOUS=1` or an explicit confirmation at the prompt.
+
 The recommended server shape is:
 
 - use `root` or `sudo` for first-time system setup
@@ -240,7 +242,7 @@ for the internal architecture contract.
 
 ## Codex TUI Defaults
 
-`install.sh` configures Codex for selected eligible users (plus root baseline setup) by writing `~/.codex/config.toml` with:
+`install.sh` configures Codex for selected eligible users (plus root baseline setup) by writing `~/.codex/config.toml` with either the permissive or standard mode selected during install:
 
 ```toml
 tui.status_line = ["model-with-reasoning", "current-dir", "context-remaining", "five-hour-limit", "weekly-limit"]
@@ -248,6 +250,8 @@ tui.terminal_title = ["spinner", "thread", "project"]
 ```
 
 It also sets `[beta] rmcp = true` in `~/.codex/config.toml`.
+
+In permissive mode, the installer writes `approval_policy = "never"` and `sandbox_mode = "danger-full-access"`. In standard mode, it writes `approval_policy = "on-request"` and `sandbox_mode = "workspace-write"`.
 
 The install is idempotent, preserves existing user custom settings, and keeps
 ShipFlow-managed config wrapped in its own markers so user edits outside those
@@ -370,7 +374,7 @@ Android/iOS rendering.
 
 Per-user configuration includes:
 - `~/.claude/skills/*` and `~/.codex/skills/*` symlinks for every ShipFlow skill
-- aliases in `~/.bashrc` for `000-shipflow`, `sf`, autonomous `c`/`co`, safe escape hatches `cask`/`coask`, shell reload (`re`/`reload`), and tmux pane cleanup (`ch` = `clear; tmux clear-history`)
+- aliases in `~/.bashrc` for `000-shipflow`, `sf`, mode-selected `c`/`co`, safe escape hatches `cask`/`coask`, shell reload (`re`/`reload`), and tmux pane cleanup (`ch` = `clear; tmux clear-history`)
 - `shipflow_data/workflow/TASKS.md`, `shipflow_data/workflow/AUDIT_LOG.md`
 
 Skill runtime visibility can also be checked or repaired without rerunning the full installer:
@@ -871,7 +875,7 @@ shipflow/
 ├── CHANGELOG.md
 ├── shipflow-spec-driven-workflow.md
 ├── ECOSYSTEM-AND-PORTS.md
-├── site/
+├── shipflow-site/
 ├── docs/
 ├── tui/
 ├── shipflow_data/
@@ -895,7 +899,7 @@ shipflow/
 - `config.sh` — central configuration
 - `install.sh` — installation and machine setup
 - `install-shipflow.sh` — remote/bootstrap install helper
-- `site/` — Astro public website deployed to `https://shipflowzsite.vercel.app`
+- `shipflow-site/` — Astro public website deployed to `https://shipflowzsite.vercel.app`
 - `docs/` — public or semi-public Markdown references such as the skill launch cheatsheet
 - `tui/` — optional read-only terminal dashboard for ShipFlow operators
 - `skills/` — ShipFlow skill library

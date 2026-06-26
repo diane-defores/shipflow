@@ -91,7 +91,7 @@ stash_shipflow_changes() {
 if [ "$(id -u)" -ne 0 ]; then
     log "ShipFlow installe des dépendances système et doit être lancé en root."
     log "Commande recommandée:"
-    log "  curl -fsSL https://winflowz.com/shipflow-script | sudo sh"
+    log "  curl -fsSL https://shipflowzsite.vercel.app/shipflow-script | sudo sh"
     exit 1
 fi
 

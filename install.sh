@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script d'installation ShipFlow — DOIT être lancé en root (sudo ./install.sh)
-# Installe les paquets système puis configure TOUS les utilisateurs
+# Installe les paquets système puis configure le compte lanceur par défaut
 
 # Colors
 RED='\033[0;31m'
@@ -74,6 +74,98 @@ warn_flutter_android_ci_policy() {
     fi
 }
 
+prompt_yes_no() {
+    local prompt="$1"
+    local default="${2:-no}"
+    local reply
+    local suffix
+
+    case "$default" in
+        yes|y|true|1)
+            suffix="[Y/n]"
+            ;;
+        *)
+            suffix="[y/N]"
+            ;;
+    esac
+
+    if [ ! -r /dev/tty ] || [ ! -w /dev/tty ]; then
+        return 1
+    fi
+
+    printf '%s %s ' "$prompt" "$suffix" > /dev/tty
+    if ! IFS= read -r reply < /dev/tty; then
+        reply=""
+    fi
+
+    case "$reply" in
+        y|Y|yes|YES|oui|OUI|true|TRUE|1)
+            return 0
+            ;;
+        n|N|no|NO|non|NON|false|FALSE|0)
+            return 1
+            ;;
+        "")
+            case "$default" in
+                yes|y|true|1)
+                    return 0
+                    ;;
+                *)
+                    return 1
+                    ;;
+            esac
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+resolve_autonomy_mode() {
+    case "${SHIPFLOW_AUTONOMY_MODE:-ask}" in
+        permissive|permissive-mode|danger|dangerous|1|true|yes)
+            SHIPFLOW_AUTONOMY_MODE_RESOLVED="permissive"
+            ;;
+        standard|safe|restricted|0|false|no)
+            SHIPFLOW_AUTONOMY_MODE_RESOLVED="standard"
+            ;;
+        ask|"")
+            if prompt_yes_no "Activer le mode autonome permissif pour Claude/Codex sur les comptes configurés ?" no; then
+                SHIPFLOW_AUTONOMY_MODE_RESOLVED="permissive"
+            else
+                SHIPFLOW_AUTONOMY_MODE_RESOLVED="standard"
+            fi
+            ;;
+        *)
+            warning "Valeur SHIPFLOW_AUTONOMY_MODE inconnue: ${SHIPFLOW_AUTONOMY_MODE}; mode standard utilisé."
+            SHIPFLOW_AUTONOMY_MODE_RESOLVED="standard"
+            ;;
+    esac
+}
+
+resolve_root_autonomy_opt_in() {
+    if [ "${SHIPFLOW_AUTONOMY_MODE_RESOLVED:-standard}" != "permissive" ]; then
+        SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED="0"
+        return 0
+    fi
+
+    if [ "${SHIPFLOW_AI_ALLOW_ROOT_AUTONOMOUS:-}" = "1" ]; then
+        SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED="1"
+        return 0
+    fi
+
+    if [ "${SHIPFLOW_AI_ALLOW_ROOT_AUTONOMOUS:-}" = "0" ]; then
+        SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED="0"
+        return 0
+    fi
+
+    if prompt_yes_no "Autoriser aussi root en mode autonome permissif ?" no; then
+        SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED="1"
+    else
+        SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED="0"
+    fi
+}
+
 SHIPFLOW_PRE_STATUS_DIR_NODE=""
 SHIPFLOW_PRE_STATUS_PM2=""
 SHIPFLOW_PRE_STATUS_VERCEL=""
@@ -123,7 +215,7 @@ shipflow_status() {
 # Root check — système packages need root, no silent elevation
 if [ "$EUID" -ne 0 ]; then
     shipflow_log "ERROR" "ShipFlow install stopped: non-root execution by $(id -un)."
-    shipflow_log "ERROR" "Root-required scope not applied: Node.js system install, global PM2/Vercel/Convex/Clerk npm prefix /usr/local, Supabase /usr/local/bin, Flox .deb, apt packages, GitHub CLI apt/deb, PyYAML system install, Caddy apt repo/install, /etc/dokploy/compose, and all-user ShipFlow configuration."
+    shipflow_log "ERROR" "Root-required scope not applied: Node.js system install, global PM2/Vercel/Convex/Clerk npm prefix /usr/local, Supabase /usr/local/bin, Flox .deb, apt packages, GitHub CLI apt/deb, PyYAML system install, Caddy apt repo/install, /etc/dokploy/compose, and ShipFlow user configuration."
     echo ""
     echo -e "${RED}╔══════════════════════════════════════════════════════════╗${NC}"
     echo -e "${RED}║                                                          ║${NC}"
@@ -143,14 +235,16 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-info "Mode root confirmé : installation système + configuration ShipFlow multi-utilisateur"
+info "Mode root confirmé : installation système + configuration ShipFlow du compte principal"
 echo -e "${BLUE}ℹ️${NC} Scope root appliqué : /usr/local, /etc/dokploy, Caddy, Flox, outils globaux"
 shipflow_log "INFO" "Privilege scope: root run. Applying system/global setup plus ShipFlow user configuration."
 
 shipflow_capture_status
 
-# Remember who invoked sudo so we configure their account too
-INVOKING_USER="${SUDO_USER:-}"
+# Default to the invoking sudo user, or root when launched directly.
+PRIMARY_USER="${SUDO_USER:-root}"
+PRIMARY_USER_HOME="$(getent passwd "$PRIMARY_USER" 2>/dev/null | cut -d: -f6 || true)"
+PRIMARY_USER_HOME="${PRIMARY_USER_HOME:-${HOME:-/root}}"
 
 warn_flutter_android_ci_policy
 
@@ -1356,6 +1450,18 @@ configure_skills() {
 # Configure aliases in bashrc
 configure_aliases() {
     local bashrc="$1/.bashrc"
+    local autonomy_mode="${2:-standard}"
+    local c_alias
+    local coask_alias
+
+    if [ "$autonomy_mode" = "permissive" ]; then
+        c_alias='claude --dangerously-skip-permissions --permission-mode bypassPermissions'
+    else
+        c_alias='claude --permission-mode default'
+    fi
+
+    coask_alias='codex --ask-for-approval on-request --sandbox workspace-write'
+
     [ -f "$bashrc" ] || touch "$bashrc"
     sed -i '/^# >>> ShipFlow AI aliases >>>$/,/^# <<< ShipFlow AI aliases <<<$/{d}' "$bashrc"
     sed -i '/^alias \(shipflow\|sf\|s\|c\|co\|cask\|coask\|ch\|re\|reload\)=/d' "$bashrc"
@@ -1365,10 +1471,10 @@ configure_aliases() {
 alias shipflow='$SHIPFLOW_DIR/shipflow.sh'
 alias sf='$SHIPFLOW_DIR/shipflow.sh'
 alias s='$SHIPFLOW_DIR/shipflow.sh'
-alias c='claude --dangerously-skip-permissions --permission-mode bypassPermissions'
+alias c='$c_alias'
 alias co='codex'
 alias cask='claude --permission-mode default'
-alias coask='codex --ask-for-approval on-request --sandbox danger-full-access'
+alias coask='$coask_alias'
 alias ch='clear; tmux clear-history'
 alias re='source ~/.bashrc && echo "✓ Shell reloaded"'
 alias reload='source ~/.bashrc && echo "✓ Shell reloaded"'
@@ -1518,22 +1624,46 @@ install_ai_agent_clis_for_user() {
 
 configure_claude_autonomous_permissions() {
     local target_home="$1"
+    local mode="${2:-standard}"
     local settings_file="$target_home/.claude/settings.json"
+    local default_mode
+    local skip_prompt
+
+    if [ "$mode" = "permissive" ]; then
+        default_mode="bypassPermissions"
+        skip_prompt="true"
+    else
+        default_mode="default"
+        skip_prompt="false"
+    fi
+
     mkdir -p "$target_home/.claude"
     [ -f "$settings_file" ] || echo '{}' > "$settings_file"
-    jq '
+    jq --arg default_mode "$default_mode" --argjson skip_prompt "$skip_prompt" '
       .permissions = (.permissions // {})
-      | .permissions.defaultMode = "bypassPermissions"
-      | .permissions.skipDangerousModePermissionPrompt = true
+      | .permissions.defaultMode = $default_mode
+      | .permissions.skipDangerousModePermissionPrompt = $skip_prompt
     ' "$settings_file" > "${settings_file}.tmp" && mv "${settings_file}.tmp" "$settings_file"
 }
 
 configure_codex_autonomous_permissions() {
     local target_home="$1"
+    local mode="${2:-standard}"
     local codex_dir="$target_home/.codex"
     local config_file="$codex_dir/config.toml"
     local tmp_file="$config_file.tmp.$$"
     local cleaned_file="$config_file.cleaned-autonomous.$$"
+    local approval_policy
+    local sandbox_mode
+
+    if [ "$mode" = "permissive" ]; then
+        approval_policy="never"
+        sandbox_mode="danger-full-access"
+    else
+        approval_policy="on-request"
+        sandbox_mode="workspace-write"
+    fi
+
     mkdir -p "$codex_dir"
     [ -f "$config_file" ] || touch "$config_file"
     awk '
@@ -1567,8 +1697,8 @@ configure_codex_autonomous_permissions() {
     ' "$config_file" > "$cleaned_file"
     {
       printf '# >>> shipflow codex autonomous >>>\n'
-      printf 'approval_policy = "never"\n'
-      printf 'sandbox_mode = "danger-full-access"\n'
+      printf 'approval_policy = "%s"\n' "$approval_policy"
+      printf 'sandbox_mode = "%s"\n' "$sandbox_mode"
       printf '# <<< shipflow codex autonomous <<<\n'
       printf '\n'
       cat "$cleaned_file"
@@ -1598,7 +1728,6 @@ collect_target_users() {
     local user
     TARGET_USERS=()
     REJECTED_USERS=()
-    mapfile -t ELIGIBLE_USERS < <(getent passwd | awk -F: '$3 >= 1000 {print $1}' | sort -u)
 
     if [ "$mode" = "user-list" ]; then
         for user in $list; do
@@ -1608,21 +1737,41 @@ collect_target_users() {
                 REJECTED_USERS+=("$user")
             fi
         done
-    else
-        for user in "${ELIGIBLE_USERS[@]}"; do
-            if is_user_eligible "$user"; then
-                TARGET_USERS+=("$user")
-            fi
-        done
     fi
+}
+
+target_users_summary() {
+    local summary=""
+    local user
+    local seen=" "
+
+    for user in "$PRIMARY_USER" "${TARGET_USERS[@]}"; do
+        [ -n "$user" ] || continue
+        case "$seen" in
+            *" $user "*) continue ;;
+        esac
+        seen="$seen$user "
+        if [ -n "$summary" ]; then
+            summary="$summary, $user"
+        else
+            summary="$user"
+        fi
+    done
+
+    printf '%s' "$summary"
 }
 
 # Full per-user setup
 setup_user() {
     local user_home="$1"
     local username="$2"
-    local allow_root_autonomous="${SHIPFLOW_AI_ALLOW_ROOT_AUTONOMOUS:-0}"
+    local effective_mode="${SHIPFLOW_AUTONOMY_MODE_RESOLVED:-standard}"
     local setup_failed=0
+
+    if [ "$username" = "root" ] && [ "$effective_mode" = "permissive" ] && [ "${SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED:-0}" != "1" ]; then
+        effective_mode="standard"
+        warning "Root garde un mode standard: l'autonomie permissive n'a pas ete explicitement autorisee."
+    fi
 
     configure_statusline "$user_home"
     configure_context7_mcp "$user_home"
@@ -1643,15 +1792,12 @@ setup_user() {
     configure_codex_playwright_mcp "$user_home"
     if [ "$username" != "root" ]; then
         install_ai_agent_clis_for_user "$user_home" "$username" || setup_failed=1
-        configure_claude_autonomous_permissions "$user_home" || setup_failed=1
-        configure_codex_autonomous_permissions "$user_home" || setup_failed=1
-    elif [ "$allow_root_autonomous" = "1" ]; then
-        configure_claude_autonomous_permissions "$user_home" || setup_failed=1
-        configure_codex_autonomous_permissions "$user_home" || setup_failed=1
     fi
+    configure_claude_autonomous_permissions "$user_home" "$effective_mode" || setup_failed=1
+    configure_codex_autonomous_permissions "$user_home" "$effective_mode" || setup_failed=1
     configure_skills "$user_home" || setup_failed=1
     configure_shipflow_environment "$user_home"
-    configure_aliases "$user_home"
+    configure_aliases "$user_home" "$effective_mode"
     install_shipflow_tui_for_user "$user_home" "$username" || setup_failed=1
 
     # Fix ownership — everything we created must belong to the user
@@ -1672,12 +1818,19 @@ echo -e "${BLUE}👥 Configuration par utilisateur...${NC}"
 configure_command_wrappers
 
 collect_target_users
-setup_user "$HOME" "root"
+resolve_autonomy_mode
+resolve_root_autonomy_opt_in
+info "Mode IA autonome ShipFlow: ${SHIPFLOW_AUTONOMY_MODE_RESOLVED}"
+info "Autonomie root: $([ "${SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED:-0}" = "1" ] && echo autorisee || echo standard)"
+setup_user "$PRIMARY_USER_HOME" "$PRIMARY_USER"
 for username in "${TARGET_USERS[@]}"; do
+    [ "$username" = "$PRIMARY_USER" ] && continue
     user_home="$(getent passwd "$username" | cut -d: -f6)"
     [ -n "$user_home" ] || continue
     setup_user "$user_home" "$username"
 done
+
+TARGET_USERS_SUMMARY="$(target_users_summary)"
 
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════════════╗${NC}"
@@ -1713,6 +1866,8 @@ echo -e "  • PyYAML: $(python3 -c 'import yaml' 2>/dev/null && echo '✅' || e
 echo -e "  • Git: $(command -v git >/dev/null 2>&1 && echo '✅' || echo '❌')"
 echo -e "  • jq: $(command -v jq >/dev/null 2>&1 && echo '✅ (2-5x faster JSON)' || echo '❌')"
 echo -e "  • fuser: $(command -v fuser >/dev/null 2>&1 && echo '✅ (port cleanup)' || echo '❌')"
+echo -e "  • Utilisateurs configurés: ${TARGET_USERS_SUMMARY:-$PRIMARY_USER}"
+echo -e "  • Mode IA autonome: ${SHIPFLOW_AUTONOMY_MODE_RESOLVED:-standard}"
 if [ "$(uname -m 2>/dev/null || echo unknown)" = "aarch64" ] || [ "$(uname -m 2>/dev/null || echo unknown)" = "arm64" ]; then
     echo -e "  • Flutter Android release: ⚠️ CI x64 requise (Blacksmith recommandé)"
 else
@@ -1750,6 +1905,8 @@ generate_install_report() {
 - Utilisateur: $(id -un)
 - Commande: sudo ./install.sh
 - Mode: root (system + user config)
+- Mode IA autonome: ${SHIPFLOW_AUTONOMY_MODE_RESOLVED:-standard}
+- Autonomie root: $(if [ "${SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED:-0}" = "1" ]; then echo "autorisee"; else echo "standard"; fi)
 - Version script: local
 - Machine: $(hostname)
 - Log brut: $SHIPFLOW_LOG_FILE
@@ -1785,9 +1942,9 @@ generate_install_report() {
 
 ## Configuration
 
-- Utilisateurs ciblés: root + ${TARGET_USERS[*]:-none}
-- Cibles de config: root + comptes éligibles sélectionnés
-- Compte d'invocation: ${INVOKING_USER:-root}
+- Utilisateurs ciblés: ${TARGET_USERS_SUMMARY:-$PRIMARY_USER}
+- Cibles de config: le compte lanceur par défaut, ou les comptes explicitement listés via `SHIPFLOW_INSTALL_USERS_MODE=user-list`
+- Compte principal: $PRIMARY_USER
 - Résumé santé/diagnostic:
 - Flutter Android release policy: $(case "$(uname -m 2>/dev/null || echo unknown)" in aarch64|arm64) echo "CI x64 requise; utiliser Blacksmith pour APK/AAB Android";; *) echo "Build local possible si Android SDK/JDK sont configurés";; esac)
 - Actions correctives suggérées:

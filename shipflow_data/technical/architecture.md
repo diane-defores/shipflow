@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.2.0"
 project: "shipflow"
 created: "2026-04-26"
-updated: "2026-06-11"
+updated: "2026-06-26"
 status: reviewed
 source_skill: manual
 scope: architecture
@@ -116,7 +116,7 @@ The repo is not split into small services. It is centered around shell-based orc
   - `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, `shipflow_data/technical/context.md`, `AGENT.md`: global doctrine and topology contracts.
   - `shipflow_data/technical/design-system-authority.md`: project UI authority for canonical token/theme/component/layout/motion sources.
   - `shipflow_data/technical/` and `shipflow_data/workflow/specs/`: subsystem technical contracts and durable workflow contracts.
-  - Editorial/public pages under `shipflow_data/editorial/` and `site/`: public messaging, onboarding surfaces, and operator guides.
+  - Editorial/public pages under `shipflow_data/editorial/` and `shipflow-site/`: public messaging, onboarding surfaces, and operator guides.
 
 - Project root Markdown is intentionally narrow. `README.md`, `AGENT.md`, `AGENTS.md` as a compatibility symlink, optional `CLAUDE.md`, and optional public `CHANGELOG.md` may stay at the root. ShipFlow governance artifacts such as business, product, brand, GTM, content map, context, architecture, guidelines, specs, bugs, research, reviews, audits, and verification reports belong under `shipflow_data/`.
 
