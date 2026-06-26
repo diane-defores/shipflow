@@ -57,6 +57,8 @@ Before UI, mobile, component, layout, typography, spacing, color, shadow/elevati
 
 The objective is an excellent professional lifecycle that removes manual detours while preserving quality, security, performance, durability, and proof.
 
+Generated artifacts used only for local proof are disposable unless the task explicitly requires a durable project artifact. Remove temporary build outputs, caches, and preview leftovers after the proof completes.
+
 `102-sf-start` may continue into local, bounded verification when safe, but that is an implementation-side optimization only. Full lifecycle ownership (`103-sf-verify` routing, `104-sf-end`, and `005-sf-ship`) remains with `001-sf-build`.
 
 ## Execution Modes

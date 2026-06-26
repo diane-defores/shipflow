@@ -29,6 +29,8 @@ When issues are found, `report=user` may keep the output compact, but it must st
 
 `900-shipflow-core` is an internal ShipFlow operator tool. It audits local ShipFlow skills, checks execution-fidelity risks, and helps prepare plugin packaging decisions without acting as a public user-facing plugin.
 
+Because this skill is itself ShipFlow infrastructure, invoking `900-shipflow-core` is an implicit instruction to improve ShipFlow even if the operator does not say "ShipFlow" out loud. The default target is the ShipFlow system under `$SHIPFLOW_ROOT`: shared references, skill contracts, and governance rules. Do not assume the current project repository is the intended edit target unless explicitly named.
+
 It also protects cross-skill invariants such as product governance: declared products should not rely on ad hoc URL discovery, improvised delivery framing, or unsupported public claims when the project corpus is supposed to hold that truth.
 
 When an execution-fidelity issue is confirmed, completion is not just the local observation. The skill must also produce the reusable system-improvement output: `Observed problem`, `System cause`, `Prevention rule`, and the narrowest justified `Contract/tooling improvement proposal`.

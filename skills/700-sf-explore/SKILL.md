@@ -44,9 +44,9 @@ Quand ne pas ecrire:
 - Dans ce cas, signaler clairement qu'aucun rapport durable n'a ete ecrit si utile.
 
 Chemin du rapport:
-- Si `docs/` existe dans le repo courant: `docs/explorations/YYYY-MM-DD-slug.md`
-- Sinon: `explorations/YYYY-MM-DD-slug.md`
-- Pour le repo ShipFlow lui-meme, `research/` reste legacy seulement; preferer `docs/explorations/` pour tout nouveau rapport.
+- Canonique ShipFlow: `shipflow_data/workflow/explorations/YYYY-MM-DD-slug.md`
+- Pour un projet non-ShipFlow, utiliser la convention locale uniquement si elle ne contredit pas la gouvernance du repo.
+- Ne pas écrire de nouveau rapport durable dans `research/`, `dist/`, `tmp/`, ou à la racine du repo.
 
 Structure du rapport:
 - Demarrer du template `$SHIPFLOW_ROOT/templates/artifacts/exploration_report.md` si disponible.
@@ -55,6 +55,10 @@ Structure du rapport:
 
 Visibilite du succes:
 - Apres creation ou mise a jour, annoncer le chemin du rapport dans la reponse finale.
+
+Nettoyage:
+- Tout artefact généré pendant l'exploration mais non promu en rapport durable doit être supprimé avant de terminer.
+- Ne jamais laisser un build, une copie de travail, ou un cache d'exploration comme reste permanent.
 
 Reprise d'un sujet:
 - Si un rapport existant semble correspondre au meme sujet, le reutiliser ou le proposer avant de creer un nouveau fichier.

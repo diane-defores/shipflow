@@ -65,6 +65,8 @@ scope -> 105-sf-check -> 005-sf-ship -> 405-sf-prod -> 108-sf-browser/109-sf-aut
 
 The goal is fewer manual commands, not fewer gates. `004-sf-deploy` must not treat a passing check, pushed commit, deployment status, or `200 OK` as proof that the release works.
 
+Temporary build outputs, caches, and preview leftovers used for local release proof are disposable unless the task explicitly requires a durable project artifact. Delete them after the proof they supported is complete.
+
 Its dominant job is release-confidence orchestration for one bounded release scope. Keep the boundary explicit: `004-sf-deploy` treats checks, ship, and deployment truth as gates toward proof, not as substitutes for post-deploy evidence or final verification.
 
 ## Ownership Boundaries

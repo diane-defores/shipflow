@@ -190,6 +190,15 @@ Weak:
 Make sure everything still looks good.
 ```
 
+## Disposable Artifact Rule
+
+Generated artifacts created for verification, preview, exploration, or scratch work are disposable unless they are explicitly promoted to a durable project artifact.
+
+- Keep generated artifacts out of version control.
+- Delete temporary build outputs, caches, previews, and scratch exports after the proof they supported is complete.
+- Promote only the minimal durable artifact to the canonical project location when the run explicitly needs a persistent record.
+- If a durable artifact is expected, write it in the canonical governance path, not beside source files or in a random root folder.
+
 ## Alias Policy
 
 Do not rewrite existing skills only to normalize headings.

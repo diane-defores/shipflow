@@ -33,6 +33,8 @@ Auto-verify semantics:
 - Do not auto-verify when proof needs preview, production, auth/browser flows, Sentry, device testing, manual QA, secret access, a user decision, commit, push, ship, or any external side effect; report `auto-verify: skipped` with the exact owner route instead.
 - Local auto-verify never means `104-sf-end`, `005-sf-ship`, or full lifecycle orchestration; `001-sf-build` remains the owner of full `103-sf-verify -> 104-sf-end -> 005-sf-ship` continuation.
 
+Any temporary build output, cache, or scratch preview created during implementation or auto-verify is disposable unless the task explicitly requires a durable project artifact. Remove it before ending the run.
+
 ## Report Modes
 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.

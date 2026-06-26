@@ -32,6 +32,8 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 
 Run and interpret technical checks without overstating what they prove. `105-sf-check` is a technical confidence pass, not product proof, not a browser/manual QA substitute, and not a generic bug-fix owner.
 
+If checks generate temporary build outputs, caches, or scratch artifacts, treat them as disposable unless the project contract explicitly requires a durable artifact. Remove them after the check completes.
+
 ## Context
 
 - Current directory: !`pwd`

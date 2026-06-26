@@ -55,6 +55,12 @@ Before choosing a route, answer, or fallback, load `$SHIPFLOW_ROOT/skills/refere
 `000-shipflow` is the primary natural-language entrypoint for non-technical operators.
 Primary artifact type: `entrypoint-router`.
 
+When the instruction is about improving ShipFlow itself, its skills, its routing, or its governance, the default destination is the ShipFlow system under `$SHIPFLOW_ROOT`, not the current project repository, unless the user explicitly names a local project target.
+
+Invoking a ShipFlow skill that exists to maintain ShipFlow itself, including `900-shipflow-core`, is enough to imply ShipFlow as the target unless the operator explicitly names another repo.
+
+The operator does not need to spell out "ShipFlow" in the request; the skill invocation itself is enough to bind the target to ShipFlow when the selected skill exists to maintain ShipFlow.
+
 It answers one question:
 
 ```text

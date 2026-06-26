@@ -66,6 +66,12 @@ It defines only the routing-question rule. Load `skills/references/question-cont
 
 Route to the smallest existing owner that can safely own the outcome.
 
+If the instruction is about modifying, improving, auditing, or hardening ShipFlow behavior, contracts, routing, or skills, treat ShipFlow itself as the target system by default. Do not infer the current project repository as the edit target unless the user explicitly names that project.
+
+An invocation of `900-shipflow-core` or another ShipFlow-maintenance skill is itself sufficient evidence that the intended target is ShipFlow unless the user explicitly names a different repository.
+
+That inference must hold even when the user's message omits the words "ShipFlow" or describes the desired change only by behavior, outcome, or contract language.
+
 If the request needs more than one phase, route to the relevant master skill. If the request clearly names one specialist phase, route to that focused owner skill. If no file work or lifecycle action is needed, answer directly.
 
 Before natural-language routing, resolve three-digit skill-code prefixes through `skills/references/skill-code-index.md`. Accepted forms include `001`, `001-sf-build`, `001sfbuild`, and `001 sf-build`. Codes point to runtime skill names such as `001-sf-build`.
