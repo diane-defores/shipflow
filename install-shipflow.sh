@@ -115,4 +115,4 @@ else
     run_or_explain "téléchargement de ShipFlow" as_install_user git clone --quiet --branch "$BRANCH" "$REPO_URL" "$SHIPFLOW_DIR"
 fi
 
-exec bash "$SHIPFLOW_DIR/install.sh" "$@"
+exec bash "$SHIPFLOW_DIR/cli/install.sh" "$@"

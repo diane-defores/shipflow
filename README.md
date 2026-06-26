@@ -161,7 +161,7 @@ Manual equivalent:
 
 ```bash
 cd ~/shipflow
-sudo ./install.sh
+sudo ./cli/install.sh
 ```
 
 ### Codex plugin alpha
@@ -194,7 +194,7 @@ The bootstrap target defaults to `${SHIPFLOW_ROOT:-$HOME/.shipflow/source}`. It 
 
 ### Install Privilege Model
 
-ShipFlow's installer is intentionally a root-level installer. It must be run with `sudo ./install.sh` because it manages machine-wide dependencies and service configuration:
+ShipFlow's installer is intentionally a root-level installer. It must be run with `sudo ./cli/install.sh` because it manages machine-wide dependencies and service configuration:
 
 - system packages and tools such as Node.js, PM2, Flox, Caddy, GitHub CLI, `jq`, `fuser`, and `ss`
 - global CLI binaries under `/usr/local`
@@ -205,7 +205,7 @@ ShipFlow's installer is intentionally a root-level installer. It must be run wit
 - ShipFlow user configuration for root and detected regular users
 - ShipFlow Terminal TUI dependencies and commands: `tui`, `sftui`, `sf-tui`, and `shipflow-tui`
 
-If `./install.sh` is launched without root, it stops before making partial system changes. The log explains that the root-only scope was skipped and tells the operator to rerun with `sudo`.
+If `./cli/install.sh` is launched without root, it stops before making partial system changes. The log explains that the root-only scope was skipped and tells the operator to rerun with `sudo`.
 
 When the install runs interactively, ShipFlow asks once whether to enable the permissive AI defaults. Non-interactive runs can set `SHIPFLOW_AUTONOMY_MODE=permissive` or `SHIPFLOW_AUTONOMY_MODE=standard`; root permissive mode still requires `SHIPFLOW_AI_ALLOW_ROOT_AUTONOMOUS=1` or an explicit confirmation at the prompt.
 
@@ -242,7 +242,7 @@ for the internal architecture contract.
 
 ## Codex TUI Defaults
 
-`install.sh` configures Codex for selected eligible users (plus root baseline setup) by writing `~/.codex/config.toml` with either the permissive or standard mode selected during install:
+`cli/install.sh` configures Codex for selected eligible users (plus root baseline setup) by writing `~/.codex/config.toml` with either the permissive or standard mode selected during install:
 
 ```toml
 tui.status_line = ["model-with-reasoning", "current-dir", "context-remaining", "five-hour-limit", "weekly-limit"]

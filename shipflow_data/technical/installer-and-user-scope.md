@@ -54,7 +54,7 @@ This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read
 
 ## Entrypoints
 
-- `curl -fsSL https://shipflowzsite.vercel.app/shipflow-script | sudo sh`: short remote bootstrap. It clones or updates `~/shipflow` for the invoking sudo user, stashes local dirty repo changes before updating, then delegates to the root installer.
+- `curl -fsSL https://shipflowzsite.vercel.app/shipflow-script | sudo sh`: short remote bootstrap. It clones or updates `~/shipflow` for the invoking sudo user, stashes local dirty repo changes before updating, then delegates to `~/shipflow/cli/install.sh`.
 - `install-shipflow.sh`: raw bootstrap script used by the short remote endpoint.
 - `sudo ./install.sh`: server installer.
 - `configure_command_wrappers`: installs global `shipflow`, `sf`, and helper command symlinks such as `shipflow-turso-login` and `shipflow-turso-ssh`.
@@ -72,9 +72,9 @@ curl -fsSL https://shipflowzsite.vercel.app/shipflow-script | sudo sh
   -> install git/curl/bash bootstrap dependencies when missing
   -> clone or update ShipFlow under the invoking user's home
   -> stash local dirty repo changes before update
-  -> exec sudo/root install.sh
+  -> exec sudo/root cli/install.sh
 
-sudo ./install.sh
+sudo ./cli/install.sh
   -> verify root scope
   -> install system tools
   -> configure global commands

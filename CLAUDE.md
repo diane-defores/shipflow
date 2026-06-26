@@ -74,7 +74,7 @@ show_dashboard()  # Reads envs.reg, displays environments + action bar
 sf                    # or: shipflow, or: ./shipflow.sh (compat wrapper)
 
 # Install dependencies (run as root)
-sudo ./install.sh
+sudo ./cli/install.sh
 
 # Run tests
 ./test_validation.sh  # Input validation

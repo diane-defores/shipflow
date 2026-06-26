@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script d'installation ShipFlow — DOIT être lancé en root (sudo ./install.sh)
+# Script d'installation ShipFlow — DOIT être lancé en root (sudo ./cli/install.sh)
 # Installe les paquets système puis configure le compte lanceur par défaut
 
 # Colors
@@ -228,7 +228,7 @@ if [ "$EUID" -ne 0 ]; then
     echo -e "${RED}║   Caddy, Flox .deb et config tous users.                 ║${NC}"
     echo -e "${RED}║                                                          ║${NC}"
     echo -e "${RED}║   Relancez avec :                                        ║${NC}"
-    echo -e "${RED}║     ${YELLOW}sudo ./install.sh${RED}                                    ║${NC}"
+    echo -e "${RED}║   ${YELLOW}sudo ./cli/install.sh${RED}                                  ║${NC}"
     echo -e "${RED}║                                                          ║${NC}"
     echo -e "${RED}╚══════════════════════════════════════════════════════════╝${NC}"
     echo ""
@@ -1907,7 +1907,7 @@ generate_install_report() {
 - Date UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)
 - Repo: ShipFlow
 - Utilisateur: $(id -un)
-- Commande: sudo ./install.sh
+- Commande: sudo ./cli/install.sh
 - Mode: root (system + user config)
 - Mode IA autonome: ${SHIPFLOW_AUTONOMY_MODE_RESOLVED:-standard}
 - Autonomie root: $(if [ "${SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED:-0}" = "1" ]; then echo "autorisee"; else echo "standard"; fi)
