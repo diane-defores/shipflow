@@ -82,7 +82,7 @@ sudo ./cli/install.sh
 ./test_priority3.sh   # jq, error handling
 
 # Source library functions
-source lib.sh
+source cli/lib.sh
 env_start "myapp"     # Start environment (auto-installs deps, creates venv, validates doppler)
 env_stop "myapp"      # Stop (idempotent, silent)
 env_remove "myapp"    # Remove (destructive)

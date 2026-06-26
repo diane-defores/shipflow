@@ -40,13 +40,13 @@ next_step: "/sf-docs technical audit installer"
 
 ## Purpose
 
-This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read it before changing system dependencies, global binaries, aliases, skill links, Codex/Claude config, MCP registration, or project-local `shipflow_data` bootstrap behavior.
+This doc covers `cli/install.sh` and the root/user boundary for ShipFlow setup. Read it before changing system dependencies, global binaries, aliases, skill links, Codex/Claude config, MCP registration, or project-local `shipflow_data` bootstrap behavior.
 
 ## Owned Files
 
 | Path | Role | Edit notes |
 | --- | --- | --- |
-| `install.sh` | Root-level server bootstrap and per-user setup | Preserve idempotence and explicit root-only behavior |
+| `cli/install.sh` | Root-level server bootstrap and per-user setup | Preserve idempotence and explicit root-only behavior |
 | `tools/shipflow_sync_skills.sh` | Shared Claude/Codex skill symlink sync helper | Reuse instead of duplicating skill-link repair logic |
 | `README.md` | Operator install contract | Update when commands, privilege, or installed tooling changes |
 | `local/install.sh`, `local/install_local.ps1` | Workstation-side setup | Keep separate from root server install assumptions |
@@ -56,7 +56,7 @@ This doc covers `install.sh` and the root/user boundary for ShipFlow setup. Read
 
 - `curl -fsSL https://shipflowzsite.vercel.app/shipflow-script | sudo sh`: short remote bootstrap. It clones or updates `~/shipflow` for the invoking sudo user, stashes local dirty repo changes before updating, then delegates to `~/shipflow/cli/install.sh`.
 - `install-shipflow.sh`: raw bootstrap script used by the short remote endpoint.
-- `sudo ./install.sh`: server installer.
+- `sudo ./cli/install.sh`: server installer.
 - `configure_command_wrappers`: installs global `shipflow`, `sf`, and helper command symlinks such as `shipflow-turso-login` and `shipflow-turso-ssh`.
 - `setup_user`: per-user configuration for eligible users.
 - `configure_*_mcp`: Claude/Codex MCP provider setup. Codex MCP entries
@@ -87,7 +87,7 @@ sudo ./cli/install.sh
 ## Invariants
 
 - Server install is root-level and should fail clearly without root.
-- The remote bootstrap must preserve the root boundary: it may prepare the repository, but the real system setup still runs through `install.sh` as root.
+- The remote bootstrap must preserve the root boundary: it may prepare the repository, but the real system setup still runs through `cli/install.sh` as root.
 - Daily work should run under an operational user, not by forcing all state into root.
 - The installer installs the PM2 binary but must not configure PM2 boot
   autostart by default; environments should start explicitly under the
@@ -105,7 +105,7 @@ sudo ./cli/install.sh
   temporary `-c mcp_servers.<name>.enabled=true` overrides.
 - Runtime skill link repair blocks on non-symlink targets by default; installer compatibility may pass `--backup-existing` to move collisions aside explicitly.
 - Installer errors should stop before partial or misleading success.
-- `install.sh` provides Flox/system tooling; Flutter/Dart runtimes are provisioned per project Flox environment unless the operator explicitly uses optional global SDK install.
+- `cli/install.sh` provides Flox/system tooling; Flutter/Dart runtimes are provisioned per project Flox environment unless the operator explicitly uses optional global SDK install.
 
 ## Failure Modes
 
@@ -126,18 +126,18 @@ sudo ./cli/install.sh
 ## Validation
 
 ```bash
-bash -n install.sh local/install.sh local/turso-login.sh local/turso-ssh.sh
+bash -n cli/install.sh local/install.sh local/turso-login.sh local/turso-ssh.sh
 bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh
 bash test_skill_runtime_sync.sh
 tools/shipflow_sync_skills.sh --check --all
-rg -n "configure_aliases|configure_skills|configure_data|setup_user|collect_target_users|configure_codex|shipflow-turso-login|shipflow-turso-ssh" install.sh local/
+rg -n "configure_aliases|configure_skills|configure_data|setup_user|collect_target_users|configure_codex|shipflow-turso-login|shipflow-turso-ssh" cli/install.sh local/
 ```
 
 For behavioral changes, prefer a disposable host/container or a narrowly scoped installer dry run before claiming install success.
 
 ## Reader Checklist
 
-- `install.sh` changed -> review this doc and `README.md`.
+- `cli/install.sh` changed -> review this doc and `README.md`.
 - Alias/symlink behavior changed -> check local and server install docs, plus `tools/shipflow_sync_skills.sh --check --all`.
 - MCP config changed -> check provider docs references and remote login docs.
 - Playwright MCP config changed -> confirm Linux ARM64 keeps using the local

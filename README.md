@@ -865,10 +865,10 @@ Promotion rule:
 
 ```text
 shipflow/
-├── shipflow.sh
-├── lib.sh
-├── config.sh
-├── install.sh
+├── shipflow.sh                 # Compatibility wrapper
+├── lib.sh                      # Compatibility wrapper
+├── config.sh                   # Compatibility wrapper
+├── install.sh                  # Compatibility wrapper
 ├── install-shipflow.sh
 ├── README.md
 ├── CLAUDE.md
@@ -894,10 +894,10 @@ shipflow/
 
 ## Main Components
 
-- `shipflow.sh` — interactive CLI entry point
-- `lib.sh` — shared shell library for ports, PM2, Flox, Caddy, validation, and tracking
-- `config.sh` — central configuration
-- `install.sh` — installation and machine setup
+- `cli/shipflow.sh` — interactive CLI entry point
+- `cli/lib.sh` — shared shell library for ports, PM2, Flox, Caddy, validation, and tracking
+- `cli/config.sh` — central configuration
+- `cli/install.sh` — installation and machine setup
 - `install-shipflow.sh` — remote/bootstrap install helper
 - `shipflow-site/` — Astro public website deployed to `https://shipflowzsite.vercel.app`
 - `docs/` — public or semi-public Markdown references such as the skill launch cheatsheet
