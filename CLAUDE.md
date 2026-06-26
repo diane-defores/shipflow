@@ -71,7 +71,7 @@ show_dashboard()  # Reads envs.reg, displays environments + action bar
 
 ```bash
 # Launch menu
-sf                    # or: shipflow, or: ./shipflow.sh (compat wrapper)
+sf                    # or: shipflow, or: ./cli/shipflow.sh (compat wrapper: ./shipflow.sh)
 
 # Install dependencies (run as root)
 sudo ./cli/install.sh

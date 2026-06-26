@@ -14,7 +14,7 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - install.sh
+  - cli/install.sh
   - README.md
   - local/install.sh
 depends_on:
@@ -26,7 +26,7 @@ depends_on:
     required_status: reviewed
 supersedes: []
 evidence:
-  - "README installer section and install.sh function inventory."
+  - "README installer section and cli/install.sh function inventory."
   - "PM2 boot autostart removed from default installer contract."
   - "Turso SSH helper command wrapper added to installer-managed global commands."
   - "Turso remote login helper command wrapper added."

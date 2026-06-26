@@ -14,11 +14,11 @@ risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - shipflow.sh
-  - lib.sh
-  - shipflow_devserver_gum.sh
-  - shipflow_devserver_bash.sh
-  - config.sh
+  - cli/shipflow.sh
+  - cli/lib.sh
+  - cli/shipflow_devserver_gum.sh
+  - cli/shipflow_devserver_bash.sh
+  - cli/config.sh
   - CONTEXT-FUNCTION-TREE.md
 depends_on:
   - artifact: "ARCHITECTURE.md"
@@ -29,7 +29,7 @@ depends_on:
     required_status: reviewed
 supersedes: []
 evidence:
-  - "Function inventory from shipflow.sh, lib.sh, config.sh, and CONTEXT-FUNCTION-TREE.md."
+  - "Function inventory from cli/shipflow.sh, cli/lib.sh, cli/config.sh, and CONTEXT-FUNCTION-TREE.md."
   - "Blacksmith setup menu added for official CLI/Testbox guidance without token handling."
   - "Remote Blacksmith auth now routes to local SSH callback tunnel instead of direct server login."
   - "Blacksmith setup menu now includes SSH Access runner-debug guidance."
@@ -52,32 +52,32 @@ next_step: "/sf-docs technical audit runtime-cli"
 
 ## Purpose
 
-This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `config.sh`. It is the first technical doc to read when changing environment lifecycle, dashboard, publishing, health, PM2, Flox, Caddy, DuckDNS, session identity, or CLI menu behavior.
+This doc covers the server-side CLI runtime: `cli/shipflow.sh`, `cli/lib.sh`, and `cli/config.sh`. It is the first technical doc to read when changing environment lifecycle, dashboard, publishing, health, PM2, Flox, Caddy, DuckDNS, session identity, or CLI menu behavior.
 
 ## Owned Files
 
 | Path | Role | Edit notes |
 | --- | --- | --- |
-| `shipflow.sh` | Thin CLI entrypoint that sources runtime and menu files, then calls `main` | Keep thin; do not move business logic here |
-| `lib.sh` | Main orchestration library for UI, validation, PM2/Flox/Caddy operations, health, deploy, publish, and actions | High blast radius; prefer focused changes and syntax checks |
-| `shipflow_devserver_gum.sh`, `shipflow_devserver_bash.sh` | Menu frontends that render the root menu and grouped submenus | Keep frontend behavior equivalent; update both variants together |
-| `config.sh` | Central configuration defaults and validation | Keep defaults explicit and validation actionable |
+| `cli/shipflow.sh` | Thin CLI entrypoint that sources runtime and menu files, then calls `main` | Keep thin; do not move business logic here |
+| `cli/lib.sh` | Main orchestration library for UI, validation, PM2/Flox/Caddy operations, health, deploy, publish, and actions | High blast radius; prefer focused changes and syntax checks |
+| `cli/shipflow_devserver_gum.sh`, `cli/shipflow_devserver_bash.sh` | Menu frontends that render the root menu and grouped submenus | Keep frontend behavior equivalent; update both variants together |
+| `cli/config.sh` | Central configuration defaults and validation | Keep defaults explicit and validation actionable |
 | `CONTEXT-FUNCTION-TREE.md` | Navigation aid for large shell files | Update when major functions or flows move |
 
 ## Entrypoints
 
-- `shipflow` / `sf`: installed wrappers that call `shipflow.sh`.
-- `shipflow.sh::main`: checks prerequisites, then starts the menu or runs a
+- `shipflow` / `sf`: installed wrappers that call `cli/shipflow.sh`.
+- `cli/shipflow.sh::main`: checks prerequisites, then starts the menu or runs a
   one-shot visible menu-key path.
 - `sf codex` / `sf co`: early Codex launcher shortcut that bypasses
   environment cleanup, asks for a workspace/MCP preset when needed, then
   replaces the ShipFlow process with `codex`.
-- `lib.sh::run_menu`: dispatches interactive menu choices to `action_*` handlers.
-- `lib.sh::run_menu_shortcut`: dispatches a single CLI menu-key argument such
+- `cli/lib.sh::run_menu`: dispatches interactive menu choices to `action_*` handlers.
+- `cli/lib.sh::run_menu_shortcut`: dispatches a single CLI menu-key argument such
   as `sf t` or a nested key path such as `sf m n` to the matching visible menu
   action. Path resolution starts in `MAIN_MENU_ITEMS`, then continues through
   grouped submenu item arrays when the selected action opens a nested menu.
-- `shipflow_devserver_gum.sh` / `shipflow_devserver_bash.sh`: render the root menu from `MAIN_MENU_ITEMS`
+- `cli/shipflow_devserver_gum.sh` / `cli/shipflow_devserver_bash.sh`: render the root menu from `MAIN_MENU_ITEMS`
   and grouped submenus from `ENVIRONMENT_MENU_ITEMS`, `TOOLS_WEB_MENU_ITEMS`,
   `SYSTEM_MENU_ITEMS`, and `AGENTS_CI_MENU_ITEMS`. Startup rendering should
   avoid per-item subprocesses; the Gum frontend should batch styling through
@@ -85,58 +85,58 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   a two-column layout on wide terminals and falls back to one column on narrow
   terminals. ShipFlow's own tracker overview is exposed as a dedicated root
   action instead of being nested under agents.
-- `shipflow_devserver_bash.sh` / `shipflow_devserver_gum.sh`: render menus and use shared key input helpers
+- `cli/shipflow_devserver_bash.sh` / `cli/shipflow_devserver_gum.sh`: render menus and use shared key input helpers
   so `x`, `Esc`, and `Backspace` act consistently for Back.
-- Nested menus render their screen title through `lib.sh::ui_screen_header` and
+- Nested menus render their screen title through `cli/lib.sh::ui_screen_header` and
   dispatch actions in `screen` mode so child commands do not stack under the
   parent menu.
-- `lib.sh` UI helpers: `ui_read_choice`, `ui_run_menu_action`,
+- `cli/lib.sh` UI helpers: `ui_read_choice`, `ui_run_menu_action`,
   `ui_return_back`, and the skip-next-pause signal define the reusable
   Back/cancel contract for nested menus, including selections made through
   `$(ui_choose ...)` command substitutions.
-- `lib.sh::ui_run_menu_action`: centralizes menu action dispatch. Top-level
+- `cli/lib.sh::ui_run_menu_action`: centralizes menu action dispatch. Top-level
   interactive actions run in `screen` mode so command output starts from a
   clean screen instead of below the root menu, while nested menus can keep
   `inline` behavior.
-- `lib.sh::ui_header`: prints the main menu status header and can embed the
+- `cli/lib.sh::ui_header`: prints the main menu status header and can embed the
   session identity block inside the same top frame.
-- `lib.sh::ui_screen_header`: prints consistent subcommand screen headers from
+- `cli/lib.sh::ui_screen_header`: prints consistent subcommand screen headers from
   one title plus an optional variant such as `danger` or `success`.
-- `lib.sh::ui_box_header` (deprecated: use `ui_screen_header` or `ui_text_center`): prints fixed-width boxed CLI headers so left and
+- `cli/lib.sh::ui_box_header` (deprecated: use `ui_screen_header` or `ui_text_center`): prints fixed-width boxed CLI headers so left and
   right borders stay aligned across dashboard, logs, health, and success blocks.
-- `lib.sh::env_start`, `env_stop`, `env_restart`, `env_remove`: core environment lifecycle.
-- `lib.sh::list_pm2_app_names`, `list_all_stop_targets`, and
+- `cli/lib.sh::env_start`, `env_stop`, `env_restart`, `env_remove`: core environment lifecycle.
+- `cli/lib.sh::list_pm2_app_names`, `list_all_stop_targets`, and
   `pm2_stop_app_by_name`: PM2 stop safety helpers used to stop both
   disk-discovered environments and PM2-only orphan entries.
-- `lib.sh::action_flutter_web`: interactive Flutter Web preview through `tmux`
+- `cli/lib.sh::action_flutter_web`: interactive Flutter Web preview through `tmux`
   with hot reload/hot restart control.
-- `lib.sh::action_blacksmith_setup`: guided official-first Blacksmith setup
+- `cli/lib.sh::action_blacksmith_setup`: guided official-first Blacksmith setup
   screen for CLI presence, local auth status, GitHub App guidance, runner tags,
   SSH Access debugging guidance, and Testbox init commands. It prints required
   terminal commands instead of running interactive install/auth/project mutation
   steps automatically, and routes remote Blacksmith auth through the local
   tunnel menu.
-- `lib.sh::action_turso_setup`: guided Turso setup screen under Agents. It
+- `cli/lib.sh::action_turso_setup`: guided Turso setup screen under Agents. It
   reports CLI/auth status through `turso auth whoami`, routes browser login to
   the local `urls` Turso helper, and prints ContentFlow schema-check commands
   without reading or storing Turso tokens.
-- `lib.sh::action_codex_launcher`: interactive Codex launcher for choosing a
+- `cli/lib.sh::action_codex_launcher`: interactive Codex launcher for choosing a
   workspace and enabling selected MCP providers for the new Codex session only.
-- `lib.sh::action_mcp_menu`: grouped MCP/Codex menu that routes to the Codex
+- `cli/lib.sh::action_mcp_menu`: grouped MCP/Codex menu that routes to the Codex
   launcher or the local OAuth tunnel instructions.
-- `lib.sh::action_github_auth`: official GitHub CLI login/status screen for
+- `cli/lib.sh::action_github_auth`: official GitHub CLI login/status screen for
   repository listing and deploy-from-GitHub readiness. It delegates token
   handling to `gh` and must not read or store GitHub tokens.
-- `lib.sh::action_reboot_vm`: explicit confirmed VM reboot action from the
+- `cli/lib.sh::action_reboot_vm`: explicit confirmed VM reboot action from the
   system menu. It supports `SHIPFLOW_REBOOT_DRY_RUN=1` for smoke checks.
-- `lib.sh::mcp_cleanup_menu`: health-menu cleanup for local MCP process
+- `cli/lib.sh::mcp_cleanup_menu`: health-menu cleanup for local MCP process
   groups. It lists provider/RAM/uptime/parent Codex evidence and stops only a
   confirmed process group.
-- `lib.sh::action_health`: renders the system monitor with RAM, disk, swap,
+- `cli/lib.sh::action_health`: renders the system monitor with RAM, disk, swap,
   process, and PM2 health first, then uses explicit one-key actions for cleanup
   commands. It must not route destructive cleanup options through
   searchable/default-select menus.
-- `lib.sh::disk_cleanup_menu`: one-key disk cleanup flow for old Codex/Claude
+- `cli/lib.sh::disk_cleanup_menu`: one-key disk cleanup flow for old Codex/Claude
   history files, agent caches/logs, safe dev caches, and heavier regenerated
   dev state. The light tier targets low-risk package/tool caches; the
   aggressive tier also removes large regenerated state such as Gradle caches,
@@ -144,10 +144,10 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   common workspace artifacts (`node_modules`, `venv`, `.dart_tool`, build
   directories). It shows estimated recoverable space and protects auth,
   config, skills, memories, source trees, and recent agent histories.
-- `lib.sh::disk_usage_details_menu`: read-only disk usage detail view for the
+- `cli/lib.sh::disk_usage_details_menu`: read-only disk usage detail view for the
   largest PM2 log files, `$HOME` entries, project/work directories, and root
   filesystem entries.
-- `lib.sh::cleanup_pm2_logs_with_rotation`: truncates PM2 daemon/app logs and
+- `cli/lib.sh::cleanup_pm2_logs_with_rotation`: truncates PM2 daemon/app logs and
   configures `pm2-logrotate` (`max_size=50M`, `retain=5` by default) so PM2
   logs cannot refill the disk unchecked.
 - Command submenus that can start, stop, restart, launch, or clean up runtime
@@ -156,17 +156,17 @@ This doc covers the server-side CLI runtime: `shipflow.sh`, `lib.sh`, and `confi
   opening the filter. The shared input flush now waits for a short quiet window
   on `/dev/tty` instead of a single immediate drain so fast `key + Enter`
   sequences from one-key menus do not leak into the next searchable selector.
-- `lib.sh::refresh_user_caddy_from_pm2` and
+- `cli/lib.sh::refresh_user_caddy_from_pm2` and
   `sync_caddy_after_pm2_change`: user-mode Caddy lifecycle helpers. They write
   runtime config under the operator's `~/.shipflow/runtime/caddy`, refresh
   routes from online PM2 apps, and stop Caddy when no PM2 app is online.
-- `lib.sh::action_publish`: public exposure through Caddy and DuckDNS.
+- `cli/lib.sh::action_publish`: public exposure through Caddy and DuckDNS.
 
 ## Control Flow
 
 ```text
-shipflow.sh
-  -> source config/menu/runtime
+cli/shipflow.sh
+  -> source cli/lib.sh
   -> main
   -> check_prerequisites
   -> run_menu OR run_menu_shortcut
@@ -296,26 +296,26 @@ Flutter Web has two runtime paths:
 ## Validation
 
 ```bash
-bash -n shipflow.sh lib.sh config.sh
+bash -n cli/shipflow.sh cli/lib.sh cli/config.sh
 test_flox_runtime_provisioning.sh
-rg -n "invalidate_pm2_cache" lib.sh
-printf 'x\n' | env SHIPFLOW_PROJECTS_DIR=/tmp/shipflow-empty ./shipflow.sh u
-SHIPFLOW_CODEX_DRY_RUN=1 ./shipflow.sh codex --dir "$PWD" supabase playwright
-printf 'x' | bash -lc 'source ./lib.sh; action_health'
-printf 'x\n' | bash -lc 'source ./lib.sh; disk_cleanup_menu'
-printf 'x\n' | bash -lc 'source ./lib.sh; action_turso_setup'
-SHIPFLOW_PM2_LOG_CLEANUP_DRY_RUN=1 bash -lc 'source ./lib.sh; cleanup_pm2_logs_with_rotation'
-bash -lc 'source ./lib.sh; disk_usage_details_menu'
-SHIPFLOW_MCP_CLEANUP_DRY_RUN=1 bash -lc 'source ./lib.sh; mcp_cleanup_menu'
-SHIPFLOW_USER_CADDY_DRY_RUN=1 bash -lc 'source ./lib.sh; refresh_user_caddy_from_pm2'
-printf 'o\n' | SHIPFLOW_REBOOT_DRY_RUN=1 bash -lc 'source ./lib.sh; action_reboot_vm'
+rg -n "invalidate_pm2_cache" cli/lib.sh
+printf 'x\n' | env SHIPFLOW_PROJECTS_DIR=/tmp/shipflow-empty ./cli/shipflow.sh u
+SHIPFLOW_CODEX_DRY_RUN=1 ./cli/shipflow.sh codex --dir "$PWD" supabase playwright
+printf 'x' | bash -lc 'source ./cli/lib.sh; action_health'
+printf 'x\n' | bash -lc 'source ./cli/lib.sh; disk_cleanup_menu'
+printf 'x\n' | bash -lc 'source ./cli/lib.sh; action_turso_setup'
+SHIPFLOW_PM2_LOG_CLEANUP_DRY_RUN=1 bash -lc 'source ./cli/lib.sh; cleanup_pm2_logs_with_rotation'
+bash -lc 'source ./cli/lib.sh; disk_usage_details_menu'
+SHIPFLOW_MCP_CLEANUP_DRY_RUN=1 bash -lc 'source ./cli/lib.sh; mcp_cleanup_menu'
+SHIPFLOW_USER_CADDY_DRY_RUN=1 bash -lc 'source ./cli/lib.sh; refresh_user_caddy_from_pm2'
+printf 'o\n' | SHIPFLOW_REBOOT_DRY_RUN=1 bash -lc 'source ./cli/lib.sh; action_reboot_vm'
 ```
 
 Run a focused runtime smoke for the touched behavior when practical, for example dashboard/status for read-only changes or a non-production test project for lifecycle changes.
 
 ## Reader Checklist
 
-- `shipflow.sh`, `lib.sh`, or `config.sh` changed -> review this doc and `code-docs-map.md`.
+- `cli/shipflow.sh`, `cli/lib.sh`, or `cli/config.sh` changed -> review this doc and `code-docs-map.md`.
 - Function structure moved -> update `CONTEXT-FUNCTION-TREE.md`.
 - User-facing CLI behavior changed -> check `README.md` and `CONTEXT.md`.
 - Publish or secret handling changed -> check security notes and public docs.
