@@ -47,6 +47,41 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 - If it is still ambiguous after the second read, stop and ask the user instead of forcing the write.
 - If the file is still missing after that authoritative re-read, create it from the canonical format.
 
+## Codex Session Triage
+
+Use this sub-flow when the user asks to "tri", "rename", "clean up", or "review" Codex conversations for the current repository, or when the task clearly concerns session naming and status cleanup rather than project work itself.
+
+### Goal
+
+- Make sessions discoverable from the Codex session UI.
+- Give unfinished conversations explicit titles that describe the repo-local work.
+- Mark closed conversations with a clear status suffix such as `done` or `ok` only when the work is actually finished.
+- Create or update a matching task entry in `TASKS.md` when the conversation yielded a durable follow-up.
+
+### Source Of Truth
+
+- Codex session metadata lives in `~/.codex/state_5.sqlite`, especially the `threads` table.
+- The session list UI can lag behind `session_index.jsonl`; prefer the SQLite `threads.title` field when the goal is to rename what the user sees in "Resume a previous session".
+- Use the session `cwd` column to filter to the current repository before renaming anything.
+
+### Triage Rules
+
+- Prefer the current project root's sessions over unrelated repositories.
+- Rename the session with a short explicit title derived from the conversation history or the first clear task sentence.
+- Append ` (done)` or ` (ok)` only when the underlying work or conversation is closed enough that the suffix will not mislead the user.
+- Keep the original `id` unchanged; only change the display title and, when needed, the task tracker entry.
+- If the conversation yields a durable follow-up for the repo, add or update the matching tracker item in the local `TASKS.md` using the existing operational record format.
+
+### Suggested Workflow
+
+1. Read the current repository `TASKS.md` and `CLAUDE.md` if needed for context.
+2. Inspect `~/.codex/state_5.sqlite` for `threads` rows with the current repo `cwd`.
+3. Use the conversation `preview` or `first_user_message` to infer a compact explicit title.
+4. Rename the thread in SQLite, not just in `session_index.jsonl`, when the UI list is the target.
+5. If the conversation is closed, add a status suffix like ` (done)` or ` (ok)`.
+6. If the conversation implies a durable repo task, add it to `TASKS.md` with a clear actionable title.
+7. Report the renamed thread ids, the new titles, and any tracker updates.
+
 ## Tracker synchronization rules
 
 - Distinguish clearly between:
