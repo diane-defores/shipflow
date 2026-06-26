@@ -865,10 +865,10 @@ Promotion rule:
 
 ```text
 shipflow/
-├── shipflow.sh                 # Compatibility wrapper
-├── lib.sh                      # Compatibility wrapper
-├── config.sh                   # Compatibility wrapper
-├── install.sh                  # Compatibility wrapper
+├── shipflow.sh                 # Deprecated compat wrapper
+├── lib.sh                      # Deprecated compat wrapper
+├── config.sh                   # Deprecated compat wrapper
+├── install.sh                  # Deprecated compat wrapper
 ├── install-shipflow.sh
 ├── README.md
 ├── CLAUDE.md

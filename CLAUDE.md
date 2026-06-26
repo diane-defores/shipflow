@@ -71,7 +71,7 @@ show_dashboard()  # Reads envs.reg, displays environments + action bar
 
 ```bash
 # Launch menu
-sf                    # or: shipflow, or: ./cli/shipflow.sh (compat wrapper: ./shipflow.sh)
+sf                    # or: shipflow, or: ./cli/shipflow.sh
 
 # Install dependencies (run as root)
 sudo ./cli/install.sh
@@ -139,10 +139,10 @@ shipflow/
 │   ├── install.sh              # Server installation
 │   ├── shipflow_devserver_bash.sh
 │   └── shipflow_devserver_gum.sh
-├── shipflow.sh                 # Compatibility wrapper
-├── lib.sh                      # Compatibility wrapper
-├── config.sh                   # Compatibility wrapper
-├── install.sh                  # Compatibility wrapper
+├── shipflow.sh                 # Deprecated compat wrapper
+├── lib.sh                      # Deprecated compat wrapper
+├── config.sh                   # Deprecated compat wrapper
+├── install.sh                  # Deprecated compat wrapper
 ├── skills/                     # ShipFlow skill library
 ├── .claude/statusline-starship.sh  # Status bar
 ├── local/                      # SSH tunnel scripts
