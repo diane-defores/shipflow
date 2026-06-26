@@ -20,8 +20,8 @@
   22   contrat produit /        workflow / skills”, “architecture code runtime” "cartes de navigation, carte des règles de workflow,  docs détaillées          par module/       fonction.docs de contexte agent et les règles de code.-
   21                                                                                                                                                      20   distinguer   docs produit/marketing et docs vraiment liées au code                                                                                 19
   18                                                                                                                                                      17   │ - ARCHITECTURE.md : structure système, entrypoints, flux, invariants, hotspots.  - CONTEXT.md : carte opérationnelle, “où modifier quoi”, read        order par type de
-  16   │ │ tâche.                                                                         - CONTEXT-FUNCTION-TREE.md : arbre de fonctions pour shipflow.       sh, lib.sh,
-  15   │ │ install.sh, local/*.
+  16   │ │ tâche.                                                                         - CONTEXT-FUNCTION-TREE.md : arbre de fonctions pour shipflow.       cli/shipflow.sh,
+  15   │ │ cli/lib.sh, cli/install.sh, local/*.
   14   │ - CLAUDE.md : règles critiques de code, patterns PM2/cache/ports/validation.
   13   │ - GUIDELINES.md : conventions techniques et anti-patterns.
   12   │ - ECOSYSTEM-AND-PORTS.md : ports + PM2, utile mais ancien/draft.
