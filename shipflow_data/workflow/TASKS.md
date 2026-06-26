@@ -51,6 +51,8 @@
 🟢 [ShipFlow] task: Compacter semantiquement le Batch D1 des master skills maintenance/release (`002`, `003`, `004`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-maintenance-and-release-master-skills.md | next: none
 🟢 [ShipFlow] task: Compacter semantiquement le Batch D2 des master skills design/content/skill-build (`006`, `007`, `009`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md | next: none
 🟢 [ShipFlow] task: Publier un chemin d'installation marketplace repo-backed pour le plugin Codex `shipflow` et documenter l'installation sur le site ShipFlow | status: done | area: plugin-distribution | spec: shipflow_data/workflow/specs/shipflow-main-plugin-and-pack-portability.md | next: none
+🟠 [ShipFlow] task: Créer et tenir un registre de hardening système des skills pour passer les 68 skills au crible sur preflight, chemins canoniques, boucle probleme->cause->prevention->contrat, operator-last-resort et risques de taille | status: todo | area: skills-execution-fidelity | source: decision utilisateur 2026-06-26 | next: shipflow_data/workflow/reviews/skill-system-hardening-register.md
+🟠 [ShipFlow] task: Compacter ou justifier explicitement la taille de `101-sf-ready` pour réduire le risque de discipline d'execution sous pression mis en evidence par l'audit des skills | status: todo | area: skills-execution-fidelity | source: audit_shipflow_skills.py 2026-06-26 | next: shipflow_data/workflow/reviews/skill-system-hardening-register.md
 
 | Pri | Task | Status |
 |-----|------|--------|

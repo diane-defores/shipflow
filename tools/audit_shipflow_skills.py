@@ -53,6 +53,13 @@ REFERENCE_SIGNALS = (
     "$shipflow_root/skills/references",
     "skills/references/",
 )
+PREFLIGHT_SIGNALS = (
+    "resolve `$shipflow_root`",
+    "confirm the owned path",
+    "confirm the target tool",
+)
+CANONICAL_PATHS_LOADER_SIGNAL = "load `$shipflow_root/skills/references/canonical-paths.md`"
+CANONICAL_PATHS_SHARED_PREFLIGHT_SIGNAL = "## shipflow-owned tool preflight"
 
 
 @dataclass
@@ -101,6 +108,19 @@ def has_heading_alias(found_headings: set[str], aliases: tuple[str, ...]) -> boo
     return any(any(alias in heading for alias in aliases) for heading in found_headings)
 
 
+def has_shared_canonical_paths_preflight(path: Path, text: str) -> bool:
+    lowered = text.lower()
+    if CANONICAL_PATHS_LOADER_SIGNAL not in lowered:
+        return False
+
+    canonical_paths = path.parents[1] / "references" / "canonical-paths.md"
+    if not canonical_paths.exists():
+        return False
+
+    canonical_text = canonical_paths.read_text(encoding="utf-8").lower()
+    return CANONICAL_PATHS_SHARED_PREFLIGHT_SIGNAL in canonical_text
+
+
 def audit_skill(path: Path) -> FindingSet:
     text = path.read_text(encoding="utf-8")
     findings = FindingSet()
@@ -132,6 +152,14 @@ def audit_skill(path: Path) -> FindingSet:
 
     if "$SHIPFLOW_ROOT" in text and not has_any(text, REFERENCE_SIGNALS):
         findings.style.append("$SHIPFLOW_ROOT appears but reference-loading intent is not obvious")
+
+    if "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/" in text and not (
+        has_any(text, PREFLIGHT_SIGNALS) or has_shared_canonical_paths_preflight(path, text)
+    ):
+        findings.review.append(
+            "ShipFlow-owned tool invocation lacks visible preflight doctrine: "
+            "local explicit order or shared canonical-paths preflight"
+        )
 
     if "/home/claude/" in text:
         findings.review.append("hard-coded /home/claude path")

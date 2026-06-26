@@ -12,7 +12,7 @@ source_skill: sf-spec
 source_model: "GPT-5 Codex"
 scope: migration
 owner: ShipFlow maintainer
-user_story: "En tant qu'operateur ShipFlow qui code au quotidien depuis un compte non-root, je veux que ShipFlow installe et configure Claude Code et OpenAI Codex en mode autonome pour le bon profil utilisateur, afin d'eviter les prompts inutiles, les doublons avec dotfiles et les configurations IA appliquees au mauvais compte."
+user_story: "En tant qu'operateur ShipFlow qui code au quotidien depuis un compte non-root, je veux que ShipFlow installe et configure Claude Code et OpenAI Codex en mode autonome pour le bon profil utilisateur, en s'appuyant sur pnpm pour les installs utilitaires, afin d'eviter les prompts inutiles, les doublons avec dotfiles et les configurations IA appliquees au mauvais compte."
 confidence: medium
 risk_level: high
 security_impact: yes
@@ -79,14 +79,14 @@ Quand l'installateur ShipFlow est lance pour preparer un environnement de travai
 
 ## Success Behavior
 
-- Preconditions: `sudo ./install.sh` est lance depuis ShipFlow sur une machine avec bash, jq et npm disponibles ou installables; au moins un profil operationnel non-root existe ou l'installateur peut recommander sa creation; dotfiles est present ou absent sans bloquer la phase ShipFlow.
+- Preconditions: `sudo ./install.sh` est lance depuis ShipFlow sur une machine avec bash, jq, Node.js et pnpm disponibles ou installables; au moins un profil operationnel non-root existe ou l'installateur peut recommander sa creation; dotfiles est present ou absent sans bloquer la phase ShipFlow.
 - Trigger: fin de la phase systeme ShipFlow, avant la configuration `setup_user` actuelle.
 - User/operator result: l'operateur voit le scope systeme puis le scope utilisateur, la liste des comptes eligibles, les comptes rejetes avec la raison, les profils selectionnes, la politique IA appliquee, les profils ignores et le statut de Claude/Codex.
 - System effect: pour chaque profil non-root selectionne, `claude` et `codex` sont installes ou verifies dans le PATH utilisateur, `~/.claude/settings.json` contient la politique autonome Claude, `~/.codex/config.toml` contient la politique autonome Codex, les MCP et skills ShipFlow sont configures, et `.bashrc` expose les alias ShipFlow coherents.
 - Autonomous defaults: Codex recoit `approval_policy = "never"` et `sandbox_mode = "danger-full-access"` dans le fichier utilisateur `~/.codex/config.toml`; Claude recoit `permissions.defaultMode = "bypassPermissions"` et `permissions.skipDangerousModePermissionPrompt = true` dans `~/.claude/settings.json`, plus un alias `c` qui lance explicitement `claude --dangerously-skip-permissions --permission-mode bypassPermissions`.
 - Safe escape hatch: les alias documentes doivent permettre de lancer un mode prudent sans modifier la config principale, par exemple `cask='claude --permission-mode default'` et `coask='codex --ask-for-approval on-request --sandbox danger-full-access'`.
-- No-dotfiles fallback: si dotfiles n'a pas prepare `~/.npm-global` et son PATH, ShipFlow doit preparer le strict minimum par utilisateur cible pour installer ou reutiliser `claude` et `codex` sans creer de fichiers root-owned dans un home non-root; si ce minimum ne peut pas etre etabli proprement, ShipFlow doit stopper pour ce compte avant toute mutation IA.
-- Proof of success: `command -v claude`, `command -v codex`, validation JSON/TOML des fichiers generes, inspection des valeurs de permission, verification que `~/.npm-global/bin` ou un chemin equivalent choisi par ShipFlow est resolu pour l'utilisateur cible quand un install user-local est necessaire, rapport d'installation ShipFlow indiquant `claude` et `codex` comme geres par ShipFlow, et absence des blocs MCP/Codex/Claude geres par dotfiles apres reexecution de dotfiles.
+- No-dotfiles fallback: si dotfiles n'a pas prepare `~/.local/share/pnpm` et son PATH, ShipFlow doit preparer le strict minimum par utilisateur cible pour installer ou reutiliser `claude` et `codex` sans creer de fichiers root-owned dans un home non-root; si ce minimum ne peut pas etre etabli proprement, ShipFlow doit stopper pour ce compte avant toute mutation IA.
+- Proof of success: `command -v claude`, `command -v codex`, validation JSON/TOML des fichiers generes, inspection des valeurs de permission, verification que `~/.local/share/pnpm` ou un chemin equivalent choisi par ShipFlow est resolu pour l'utilisateur cible quand un install user-local est necessaire, rapport d'installation ShipFlow indiquant `claude` et `codex` comme geres par ShipFlow, et absence des blocs MCP/Codex/Claude geres par dotfiles apres reexecution de dotfiles.
 
 ## Error Behavior
 
@@ -117,7 +117,7 @@ Make ShipFlow the sole owner of Claude Code, OpenAI Codex, ShipFlow MCP registra
 - ShipFlow `install.sh` updates aliases for `shipflow`, `sf`, `c`, `co`, safe escape hatches, and any ShipFlow-owned MCP helper aliases.
 - ShipFlow `install.sh` report lists Claude/Codex as ShipFlow-managed with per-user status.
 - dotfiles removes Claude/Codex install, Codex config symlink, Claude skills symlink, Claude/Codex MCP mutation, and AI aliases owned by ShipFlow.
-- dotfiles can still prepare generic prerequisites: shell integration, PATH, `~/.npm-global`, `node`, `npm`, editor/file tooling and non-root user bootstrap.
+- dotfiles can still prepare generic prerequisites: shell integration, PATH, `~/.local/share/pnpm`, `node`, `npm`, editor/file tooling and non-root user bootstrap.
 - Documentation updates in both repos explain the ownership split, autonomous mode, root/non-root policy, and migration behavior.
 
 ## Scope Out
@@ -180,7 +180,7 @@ Make ShipFlow the sole owner of Claude Code, OpenAI Codex, ShipFlow MCP registra
   - ShipFlow README and dotfiles README install guidance.
   - Existing install reports and `INSTALL-RUN-TRACE.md` need consistent terminology.
 - Operational consequences:
-  - When dotfiles was never run, ShipFlow may need to create or repair the per-user PATH/bootstrap lines required for `~/.npm-global/bin` in the selected account's `~/.bashrc` before attempting user-local AI installs.
+  - When dotfiles was never run, ShipFlow may need to create or repair the per-user PATH/bootstrap lines required for `~/.local/share/pnpm` in the selected account's `~/.bashrc` before attempting user-local AI installs.
   - Existing users with dotfiles-managed Codex symlinks must be migrated to real user config or have the symlink removed before ShipFlow writes.
   - Existing Claude/Codex sessions may need restart to pick up new config.
   - Users who want cautious sessions must use explicit safe aliases or temporary CLI overrides.

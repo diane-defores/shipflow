@@ -103,6 +103,7 @@ show_dashboard        # Display dashboard (reads envs.reg, 0 subprocesses)
 4. **Don't manually edit ecosystem.config.cjs** — regenerated on each start
 5. **Use idempotent operations** — `pm2 delete || true`, not check-then-act
 6. **Do not run Android release builds on Linux ARM64** — on `aarch64`/`arm64` hosts, do not run `flutter build apk --release`, `flutter build appbundle --release`, `./gradlew assembleRelease`, or `./gradlew bundleRelease`; route APK/AAB release builds to Blacksmith or another Linux x64 CI runner. Local Flutter work is limited to `flutter analyze`, `flutter test`, and `flutter build web --release`.
+7. **Keep reference clones and caches hidden** — use `~/.local/share/.go`, `~/.local/share/.fzf`, and `~/.local/share/.keyboard` instead of visible top-level `~/go`, `~/fzf`, or `~/keyboard` directories.
 
 ---
 

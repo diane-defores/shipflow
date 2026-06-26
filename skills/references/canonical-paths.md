@@ -68,6 +68,17 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
 - Legacy root ShipFlow governance files such as `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `ARCHITECTURE.md`, `CONTENT_MAP.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `GUIDELINES.md`, `TASKS.md`, and `AUDIT_LOG.md` are migration sources only. They are not compliant project artifact locations.
 - If a ShipFlow-owned file is missing from `$SHIPFLOW_ROOT`, report a ShipFlow installation gap. Do not report it missing just because it is absent from the project repository.
 
+## ShipFlow-Owned Tool Preflight
+
+Before running any ShipFlow-owned tool, follow this preflight order exactly:
+
+1. resolve `$SHIPFLOW_ROOT`
+2. confirm the owned path exists under `$SHIPFLOW_ROOT`
+3. confirm the target tool file exists
+4. run the tool
+
+Do not infer ShipFlow-owned tool paths from the current working directory. If this preflight is still agent-runnable, do not ask the operator to run the tool instead.
+
 ## Canonical Project Artifact Map
 
 | Legacy root file | Canonical project path |
