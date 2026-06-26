@@ -2768,6 +2768,11 @@ read_menu_status_cache() {
     MENU_STATUS_LOW_MEM=0
     MENU_STATUS_PM2_UNHEALTHY=""
     MENU_STATUS_LONG_COUNT=""
+    MENU_STATUS_UPDATES_APT=""
+    MENU_STATUS_UPDATES_NPM=""
+    MENU_STATUS_UPDATES_PNPM=""
+    MENU_STATUS_UPDATES_PIP=""
+    MENU_STATUS_UPDATES_RUSTUP=""
 
     [ -f "$MENU_STATUS_CACHE_FILE" ] || return 1
 
@@ -2782,6 +2787,11 @@ read_menu_status_cache() {
             low_mem) MENU_STATUS_LOW_MEM="$value" ;;
             pm2_unhealthy) MENU_STATUS_PM2_UNHEALTHY="$value" ;;
             long_count) MENU_STATUS_LONG_COUNT="$value" ;;
+            updates_apt) MENU_STATUS_UPDATES_APT="$value" ;;
+            updates_npm) MENU_STATUS_UPDATES_NPM="$value" ;;
+            updates_pnpm) MENU_STATUS_UPDATES_PNPM="$value" ;;
+            updates_pip) MENU_STATUS_UPDATES_PIP="$value" ;;
+            updates_rustup) MENU_STATUS_UPDATES_RUSTUP="$value" ;;
         esac
     done < "$MENU_STATUS_CACHE_FILE"
 
@@ -2839,6 +2849,11 @@ refresh_menu_status_cache_sync() {
         echo "low_mem=$low_mem"
         echo "pm2_unhealthy=$pm2_unhealthy"
         echo "long_count=$long_count"
+        echo "updates_apt=$UPDATE_CACHE_APT"
+        echo "updates_npm=$UPDATE_CACHE_NPM"
+        echo "updates_pnpm=$UPDATE_CACHE_PNPM"
+        echo "updates_pip=$UPDATE_CACHE_PIP"
+        echo "updates_rustup=$UPDATE_CACHE_RUSTUP"
     } > "$tmp_file"
 
     mv "$tmp_file" "$MENU_STATUS_CACHE_FILE" 2>/dev/null || return 1
@@ -2888,9 +2903,20 @@ refresh_menu_status_cache_async_if_stale() {
 
 updates_menu() {
     ui_screen_header "Updates Summary"
-    echo -e "${BLUE}Checking package updates...${NC}"
+
+    if [ -z "${MENU_STATUS_UPDATES_TOTAL:-}" ] || [ -z "${MENU_STATUS_UPDATES_APT:-}" ]; then
+        echo -e "${BLUE}Checking package updates...${NC}"
+        updates_refresh_cache
+    else
+        UPDATE_CACHE_APT=$MENU_STATUS_UPDATES_APT
+        UPDATE_CACHE_NPM=$MENU_STATUS_UPDATES_NPM
+        UPDATE_CACHE_PNPM=$MENU_STATUS_UPDATES_PNPM
+        UPDATE_CACHE_PIP=$MENU_STATUS_UPDATES_PIP
+        UPDATE_CACHE_RUSTUP=$MENU_STATUS_UPDATES_RUSTUP
+        UPDATE_CACHE_TOTAL=$MENU_STATUS_UPDATES_TOTAL
+        echo -e "${BLUE}Package updates (cached, last check <120s)${NC}"
+    fi
     echo ""
-    updates_refresh_cache
 
     echo -e "${BLUE}Pending updates:${NC}"
     echo -e "  ${CYAN}•${NC} apt:     ${YELLOW}${UPDATE_CACHE_APT}${NC}"
