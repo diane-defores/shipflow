@@ -30,6 +30,7 @@ Default to `report=user`: concise, outcome-first, and in the user's active langu
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/help-catalog.md`: Skill catalog, workflow cycles, prompts, scoring notes, file references, and quick answers.
+- `skills/references/shipflow-terms.md`: canonical package terminology for `Dev Server`, `TUI`, `local tools`, and skill-scope references.
 
 The canonical `Chantier Registry` doctrine lives in `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md`; this skill only summarizes it for help output.
 

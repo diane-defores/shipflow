@@ -43,6 +43,7 @@ Use a read-only routing scout only when all of these are true:
 ## Shared Routing Reference
 
 Before classifying a non-trivial instruction, load `$SHIPFLOW_ROOT/skills/references/entrypoint-routing.md`.
+Before classifying ShipFlow package-scope terminology, load `$SHIPFLOW_ROOT/skills/references/shipflow-terms.md`.
 
 Use that reference as the canonical routing matrix. Do not duplicate specialist internals here.
 
