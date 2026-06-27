@@ -1,6 +1,6 @@
 ---
 name: 403-sf-perf
-description: "Audit bundles, rendering, Core Web Vitals, data, and databases."
+description: "Audit performance, bundles, rendering, CWV, data, and databases."
 disable-model-invocation: true
 argument-hint: '[file-path | "global"] (omit for full project)'
 ---

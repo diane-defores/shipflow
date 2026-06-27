@@ -1,6 +1,6 @@
 ---
 name: 202-sf-repurpose
-description: "Repurpose sources into docs, marketing, FAQs, or site updates."
+description: "Repurpose sources into docs, marketing, FAQs, and site updates."
 argument-hint: <source file, transcript, notes, URL, or repurposing goal>
 ---
 

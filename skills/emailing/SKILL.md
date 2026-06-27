@@ -1,6 +1,6 @@
 ---
 name: emailing
-description: "Audience email sequences: create, route, and audit campaign flows."
+description: "Plan, draft, route, and audit audience email sequences."
 argument-hint: [sequence brief | audience brief | draft | audit]
 ---
 

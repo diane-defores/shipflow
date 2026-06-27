@@ -1,6 +1,6 @@
 ---
 name: 200-sf-redact
-description: "Draft long-form articles, guides, editorials, and brand voice."
+description: "Draft articles, guides, editorials, and brand-voice content."
 argument-hint: '<nombre> <format> [sujet] (ex: "3 blog", "1 editorial IA en éducation", "2 informational")'
 ---
 

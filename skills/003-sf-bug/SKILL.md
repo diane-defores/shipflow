@@ -1,6 +1,6 @@
 ---
 name: 003-sf-bug
-description: "Bug lifecycle for intake, dossiers, fixes, retests, and ship risk."
+description: "Intake, fix, retest, and ship bugs."
 argument-hint: [optional: BUG-ID | bug summary | --fix BUG-ID | --retest BUG-ID | --verify BUG-ID | --ship BUG-ID]
 ---
 

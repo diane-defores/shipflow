@@ -1,6 +1,6 @@
 ---
 name: 302-sf-help
-description: "Answer ShipFlow skills, workflows, modes, and prompt questions."
+description: "Answer ShipFlow workflow, skill, mode, and prompt questions."
 argument-hint: <help topic or route question>
 ---
 
