@@ -41,9 +41,17 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
+- `401-sf-audit-code` answers one specialist question:
+
+```text
+What correctness, security, architecture, reliability, or test risks exist in this code scope?
+```
+
 - GLOBAL MODE: load `references/audit-workflow.md` and audit the current workspace at project level.
 - FILE MODE: load `references/audit-workflow.md` and audit the named file or diff.
 - PROJECT MODE: load `references/audit-workflow.md` and run the broader product/code/architecture/security scan.
+
+Keep the boundary explicit: stay in `401-sf-audit-code` when code-domain depth is already the obvious need. Route back to `400-sf-audit` only when the operator really needs cross-domain audit planning or consolidation.
 
 ## Core Execution Rules
 

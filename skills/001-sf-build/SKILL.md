@@ -55,11 +55,19 @@ Before UI, mobile, component, layout, typography, spacing, color, shadow/elevati
 
 `intake -> existing chantier check -> blueprint gate -> spec/readiness loop -> governance corpus gate -> model routing gate -> start -> verify -> end -> ship`
 
+It answers one operational question:
+
+```text
+What product change should be built now, and how do we carry that story from scope to verified ship without losing lifecycle discipline?
+```
+
 The objective is an excellent professional lifecycle that removes manual detours while preserving quality, security, performance, durability, and proof.
 
 Generated artifacts used only for local proof are disposable unless the task explicitly requires a durable project artifact. Remove temporary build outputs, caches, and preview leftovers after the proof completes.
 
 `102-sf-start` may continue into local, bounded verification when safe, but that is an implementation-side optimization only. Full lifecycle ownership (`103-sf-verify` routing, `104-sf-end`, and `005-sf-ship`) remains with `001-sf-build`.
+
+Keep the boundary explicit: `001-sf-build` owns feature and product-change lifecycle orchestration, not existing-project upkeep triage, one-bug loop ownership, or deploy-only release proof after implementation is already settled.
 
 ## Execution Modes
 
@@ -112,6 +120,13 @@ Do not treat browser/manual proof as generic:
 - `107-sf-test`: durable manual QA scripts, retests, and structured test logs.
 
 In `vercel-preview-push` or preview-required `hybrid` mode, ship first, then route to `405-sf-prod`, then to the downstream proof owner.
+
+If the dominant job is not product implementation lifecycle, route early instead of staying in `001-sf-build`:
+
+- existing-project upkeep, dependency/docs/security cleanup, or broad maintenance backlog -> `002-sf-maintain`
+- one bug work item with its own evidence/fix/retest loop -> `003-sf-bug`
+- bounded release confidence for already-implemented work -> `004-sf-deploy`
+- direct narrow proof only -> `107-sf-test`, `108-sf-browser`, `109-sf-auth-debug`, or `405-sf-prod`
 
 ## Stop Conditions
 

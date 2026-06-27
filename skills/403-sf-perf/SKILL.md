@@ -34,9 +34,17 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 
 ## Mode detection
 
+- `403-sf-perf` answers one specialist question:
+
+```text
+What performance risks are limiting this scope across bundle, rendering, loading, fetching, caching, or database behavior?
+```
+
 - **`$ARGUMENTS` is "global"** → GLOBAL MODE: performance audit across ALL projects.
 - **`$ARGUMENTS` is a file path** → FILE MODE: deep performance review of that single file.
 - **`$ARGUMENTS` is empty** → PROJECT MODE: full performance audit.
+
+Keep the boundary explicit: stay in `403-sf-perf` when performance is already the dominant audit domain. Route back to `400-sf-audit` only when the operator needs multi-domain audit planning or consolidation beyond performance.
 
 ---
 

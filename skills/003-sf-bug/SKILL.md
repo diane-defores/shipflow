@@ -60,6 +60,12 @@ For `003-sf-bug`, use it when the bug reveals non-trivial future work beyond the
 
 `003-sf-bug` is the professional bug loop lifecycle executor.
 
+It answers one operational question:
+
+```text
+What is the next safe step in this one bug's lifecycle, and how do we carry it from evidence to verified ship without overstating closure?
+```
+
 It orchestrates the lifecycle through owner skills and bounded subagents:
 
 ```text
@@ -71,6 +77,12 @@ The goal is fewer manual decisions and fewer manual commands, not weaker gates. 
 `003-sf-bug` must not treat a bug as closed just because code changed, a retest was requested, a deploy succeeded, or the operator wants to move on.
 
 Its dominant job is bug-work-item state interpretation and continuation. Keep the boundary explicit: `003-sf-bug` owns one bug lifecycle at a time, not generic project maintenance, direct code-fix ownership, or broad release orchestration.
+
+If the dominant job is broader than one bug loop, route instead of staying here:
+
+- project-wide upkeep, dependency posture, docs drift, or audit backlog -> `002-sf-maintain`
+- new feature or product-story implementation -> `001-sf-build`
+- bounded release confidence after implementation is already settled -> `004-sf-deploy`
 
 ## Ownership Boundaries
 

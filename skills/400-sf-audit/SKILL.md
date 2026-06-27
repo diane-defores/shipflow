@@ -40,9 +40,25 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
+- `400-sf-audit` answers one routing question:
+
+```text
+What audit scope is actually needed here, and should we coordinate multiple domains or route directly to one specialist audit owner?
+```
+
 - GLOBAL MODE: load `references/audit-master-workflow.md` to plan and coordinate cross-domain or cross-project audits.
 - PROJECT MODE: load `references/audit-master-workflow.md` before launching domain audits, consolidation, or fix handoffs.
 - Use specialist `400-sf-audit-*` skills directly when one domain is obvious.
+
+Keep the boundary explicit: `400-sf-audit` owns broad audit planning, domain selection, bounded read-only fan-out, and consolidation. It does not need to stay in the loop when one specialist audit already clearly owns the question.
+
+Route directly instead of staying in `400-sf-audit` when the scope is already narrow:
+
+- code correctness, security, architecture, or test posture -> `401-sf-audit-code`
+- dependency risk, licenses, or supply-chain posture -> `402-sf-deps`
+- performance, bundles, rendering, CWV, data, or database efficiency -> `403-sf-perf`
+- migration risk -> `404-sf-migrate`
+- live deployment truth, health, or runtime behavior -> `405-sf-prod`
 
 ## Core Execution Rules
 

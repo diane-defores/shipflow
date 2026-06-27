@@ -57,6 +57,12 @@ Use the shared skeleton for intake, release-scope work item resolution, readines
 
 `004-sf-deploy` is the release confidence orchestrator.
 
+It answers one operational question:
+
+```text
+What bounded release scope should be shipped and proven now, and what proof owners must run before we can trust that release?
+```
+
 It runs the release path:
 
 ```text
@@ -68,6 +74,12 @@ The goal is fewer manual commands, not fewer gates. `004-sf-deploy` must not tre
 Temporary build outputs, caches, and preview leftovers used for local release proof are disposable unless the task explicitly requires a durable project artifact. Delete them after the proof they supported is complete.
 
 Its dominant job is release-confidence orchestration for one bounded release scope. Keep the boundary explicit: `004-sf-deploy` treats checks, ship, and deployment truth as gates toward proof, not as substitutes for post-deploy evidence or final verification.
+
+If implementation scope is still unsettled, route back before continuing:
+
+- new feature or product change still needs build ownership -> `001-sf-build`
+- project upkeep or broad maintenance triage still dominates -> `002-sf-maintain`
+- one bug lifecycle still dominates the risk story -> `003-sf-bug`
 
 ## Ownership Boundaries
 
@@ -105,6 +117,8 @@ If the user only wants:
 - one page assertion -> route to `/108-sf-browser`.
 - auth flow diagnosis -> route to `/109-sf-auth-debug`.
 - a durable manual QA campaign -> route to `/107-sf-test`.
+
+If one of those narrower asks is already the whole job, do not keep the operator inside `004-sf-deploy`.
 
 ## Phase 1 — Scope And Risk Gate
 

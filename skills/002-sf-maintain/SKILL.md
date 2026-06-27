@@ -66,6 +66,11 @@ What maintenance work needs to be handled, and how do we carry it through to ver
 
 The goal is not another report. `002-sf-maintain` owns maintenance scope selection and lifecycle continuation across the right owner lanes. It should keep the operator out of command-stitching by piloting maintenance intake, spec/readiness when needed, bounded delegated execution, verification, and ship/deploy routing.
 
+Keep the first decision explicit:
+
+- stay in `002-sf-maintain` when the dominant job is existing-project upkeep across bug/deps/docs/audit/check/release-prep lanes
+- route out early when the dominant job is one feature, one bug loop, or one release-confidence pass that already has its own owner
+
 ## Ownership Boundaries
 
 Orchestrate existing skills; do not duplicate their internals.
@@ -84,6 +89,13 @@ Orchestrate existing skills; do not duplicate their internals.
 `002-sf-maintain` may execute through these owner skills and bounded subagents. It must not silently bypass their gates, but it should not stop at recommendations when the user asked maintenance to be handled.
 
 Keep the boundary explicit: `002-sf-maintain` decides what existing-project upkeep to carry through, not generic feature implementation, standalone bug-loop ownership, or release-proof ownership.
+
+When the next owner is already obvious, route directly instead of lingering in maintenance triage:
+
+- new product/story delivery -> `001-sf-build`
+- one bug lifecycle -> `003-sf-bug`
+- bounded release confidence, deployment truth, or post-push proof -> `004-sf-deploy`
+- one obvious specialist audit lane -> `400-sf-audit`, `401-sf-audit-code`, `402-sf-deps`, or `403-sf-perf`
 
 ## Execution Modes
 
