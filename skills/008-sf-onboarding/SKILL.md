@@ -101,6 +101,10 @@ Every onboarding recommendation or implementation contract should cover:
 - **Trust**: no permission coercion, dark patterns, fake urgency, or hidden data consequences.
 - **Coherence**: docs, support copy, screenshots, public claims, changelog, and in-app states say the same thing.
 
+When onboarding is already attached to a concrete feature, route, or shipped change, anchor the guidance to the current product state first. Start from the earliest observable success path, then explain the recovery path if the user gets stuck, and only then expand into optional setup or expert shortcuts.
+
+If the user already has a broken first-run or setup flow, treat recovery to first success as the main goal, not just a nicer tutorial.
+
 ## Onboarding Contract
 
 For read-only or planning output, produce this compact structure:

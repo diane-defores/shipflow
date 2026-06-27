@@ -243,6 +243,7 @@ If any research agent returned findings that need human judgment (ambiguous, con
 - **Cadence**: designed for ~monthly runs. More frequent wastes research effort; less frequent means drift.
 - **Parallel research is the whole point.** Never do searches yourself sequentially — delegate to agents.
 - **Additive mindset**: a skill that accumulates every check ever written becomes unwieldy. When a check is strictly obsoleted by a newer one, update in place instead of stacking both.
+- **Cross-skill sync**: if a refreshed skill changes a public promise, route, prerequisite, or report behavior, verify the dependent skill docs and help surfaces in the same run instead of leaving the mismatch for later.
 - **Business doctrine**: every refresh must answer a hard operator-value question before it lands: does this replace part of the current structure with less friction, more speed, or less maintenance? If not, do not add it.
 - **Skill budget compliance stays scoped here**: enforce Codex/Claude Code skill budget rules during skill refreshes, not through broad reminders in unrelated agent guidelines.
 - **Never touch `name:` in frontmatter.** It's the invocation key.
