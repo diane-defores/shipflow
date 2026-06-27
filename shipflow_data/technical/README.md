@@ -70,6 +70,7 @@ This layer complements the existing docs:
 | `runtime-cli.md` | `shipflow.sh`, `lib.sh`, `config.sh`, PM2/Flox/Caddy/DuckDNS flows |
 | `local-tunnels-and-mcp-login.md` | `local/`, SSH tunnels, remote helper scripts, MCP OAuth login |
 | `skill-runtime-and-lifecycle.md` | `skills/`, lifecycle skills, references, templates, Reader/Executor rules |
+| `agent-clarity-pass-playbook.md` | Future agent-clarity hardening passes across overlapping skills, batching rules, and first-screen boundary method |
 | `artifact-metadata-and-linter.md` | `templates/artifacts/`, `tools/shipflow_metadata_lint.py`, frontmatter contracts |
 | `codebase-mcp.md` | `tools/codebase-mcp/` |
 | `public-site-and-content-runtime.md` | `site/`, `shipflow_data/editorial/content-map.md`, public/private doc boundaries |
