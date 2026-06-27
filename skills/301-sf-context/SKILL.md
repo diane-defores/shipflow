@@ -25,6 +25,20 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 
 Prime the session context before starting work. This avoids wasting tokens on broad file exploration.
 
+`301-sf-context` answers one priming question:
+
+```text
+What is the minimum focused context we should load before starting this known task?
+```
+
+Keep the boundary explicit: `301-sf-context` prepares context for a known task. It does not own the final route selection, execute the lifecycle work itself, or act as a repo-status dashboard.
+
+Route away instead of staying in `301-sf-context` when the operator really needs:
+
+- skill choice or workflow routing -> `000-shipflow` or `302-sf-help`
+- actual continuation of a resolved work item -> `706-continue`
+- cross-project git/sync reporting -> `308-sf-status`
+
 ### Step 1 — Check session memory
 
 Call `context_continue` with the user's task as the query (`$ARGUMENTS`).

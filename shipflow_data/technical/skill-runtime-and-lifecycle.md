@@ -145,8 +145,11 @@ Within helper/pilotage surfaces, keep the first-screen distinction explicit:
 - `302-sf-help` explains workflow, doctrine, skill choice, or route questions.
 - `303-sf-resume` summarizes the visible conversation only.
 - `706-continue` advances the currently resolved work item from durable local evidence.
+- `000-shipflow` routes or answers directly at the main entrypoint.
+- `301-sf-context` primes minimal focused context before known work.
+- `308-sf-status` reports cross-project git and sync state.
 
-Do not blur these roles. Help is not continuation, resume is not repo truth, and continue is not a passive summary.
+Do not blur these roles. Help is not continuation, resume is not repo truth, continue is not a passive summary, route is not context priming, context priming is not execution, and status reporting is not maintenance ownership.
 
 ## Owned Files
 

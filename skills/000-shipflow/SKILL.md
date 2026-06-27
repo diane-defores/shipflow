@@ -72,6 +72,8 @@ What should ShipFlow do with this instruction, and which existing skill should o
 
 The goal is not to create a new mega-master or the shortest route. The goal is to keep the operator from memorizing the skill taxonomy while preserving the quality and excellence bar, gates, delegation rules, evidence rules, and ship rules owned by existing skills.
 
+Keep the boundary explicit: `000-shipflow` routes or answers directly. It does not prime broad context for a known task, generate a portfolio status dashboard, or continue a resolved chantier after owner selection is already clear.
+
 ## Mode Detection
 
 Parse `$ARGUMENTS` as the operator instruction.
@@ -82,6 +84,12 @@ Parse `$ARGUMENTS` as the operator instruction.
 - Explicit skill name: hand off to that skill unless the request reveals a safer owner.
 - Natural-language instruction: classify using the routing matrix below.
 - Natural-language instruction with focus tags: classify using the routing matrix plus the focus-tag execution priorities; tags can change owner preference, artifact preference, and whether a direct suggestion is too passive.
+
+Route away instead of staying in `000-shipflow` when the operator already knows the helper surface needed:
+
+- context priming before real work -> `301-sf-context`
+- cross-project git/sync dashboard or portfolio state report -> `308-sf-status`
+- paused work item continuation -> `706-continue`
 
 ## Routing Matrix
 

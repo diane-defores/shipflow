@@ -30,6 +30,20 @@ Default to `report=user`: concise dashboard, attention items, limits, and `Chant
 
 Report cross-project git status, sync state, and attention items without mutating project governance.
 
+`308-sf-status` answers one reporting question:
+
+```text
+What is the current git/sync state across the portfolio, and which repos need attention first?
+```
+
+Keep the boundary explicit: `308-sf-status` reports state only. It does not route broad project work, continue a chantier, or mutate trackers, governance, or git state.
+
+Route away instead of staying in `308-sf-status` when the operator really needs:
+
+- the next maintenance or lifecycle owner to act on one repo -> `002-sf-maintain`, `005-sf-ship`, or the narrower owner skill
+- context priming for one known task -> `301-sf-context`
+- generic route selection or workflow explanation -> `000-shipflow` or `302-sf-help`
+
 ## Context
 
 - Current directory: !`pwd`
