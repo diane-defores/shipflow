@@ -26,6 +26,15 @@ const decisionDocs = [
   ["shipflow_data/technical/architecture.md", "Comment le système est organisé, où sont les frontières et quels invariants tiennent."],
   ["shipflow_data/technical/guidelines.md", "Comment contribuer dans le dépôt et quelles règles techniques restent stables."]
 ];
+
+const focusTagCombos = [
+  ["Rendre l’offre plus claire", "#offer #cta #clarity", "À utiliser quand la page ou le message explique trop de choses sans rendre la proposition de valeur ou l’action suivante évidente."],
+  ["Pousser la croissance plutôt que l’optimisation locale", "#partner #growth #roi", "À utiliser quand l’agent doit choisir le mouvement le plus utile au business plutôt que la modification technique la plus facile."],
+  ["Améliorer l’onboarding et l’utilisabilité", "#end-user #clarity #quality", "À utiliser quand la solution marche techniquement mais reste trop difficile pour un utilisateur normal."],
+  ["Réparer un copy chargé en objections", "#faq #trust #clarity", "À utiliser quand le message doit répondre aux doutes plus directement et gagner en crédibilité."],
+  ["Corriger la dérive documentaire au bon niveau", "#canon #drift #single-source", "À utiliser quand code, docs ou surfaces publiques divergent et qu’il faut réparer la source de vérité avant de patcher ailleurs."],
+  ["Travailler sur ShipFlow lui-même", "#shipflow #proof #contract", "À utiliser quand la cible est le système interne ShipFlow et que la sortie doit renforcer la doctrine, la preuve ou la qualité d’exécution."]
+];
 ---
 
 <BaseLayout
@@ -84,7 +93,7 @@ const decisionDocs = [
             <code>#shipflow</code> pour recharger le bon contrat sans relancer
             tout un workflow.
           </p>
-          <a class="doc-action" href="https://github.com/dianedef/ShipFlow/blob/main/docs/focus-tags-cheatsheet.md">Ouvrir la cheatsheet</a>
+          <a class="doc-action" href={pathFor("/docs#recommended-combos", locale)}>Voir les combinaisons recommandées</a>
         </article>
 
         <article class="doc-card">
@@ -106,6 +115,28 @@ const decisionDocs = [
           </p>
           <a class="doc-action" href={pathFor("/faq", locale)}>Ouvrir la FAQ</a>
         </article>
+      </div>
+    </section>
+
+    <section class="section" id="recommended-combos">
+      <div class="section-heading">
+        <p class="eyebrow">Combinaisons recommandées</p>
+        <h2>Commencez avec un petit pack de tags quand un seul tag ne suffit pas.</h2>
+        <p>
+          Ces combinaisons sont le moyen le plus rapide de remettre l’agent
+          dans la bonne posture business, contenu ou gouvernance sans écrire
+          une longue correction.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        {focusTagCombos.map(([title, tags, body]) => (
+          <article class="doc-card">
+            <h3>{title}</h3>
+            <p><code>{tags}</code></p>
+            <p>{body}</p>
+          </article>
+        ))}
       </div>
     </section>
 

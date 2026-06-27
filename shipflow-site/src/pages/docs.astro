@@ -42,6 +42,15 @@ const decisionDocs = [
   ["shipflow_data/technical/guidelines.md", "How contributors should work inside the repo and which technical rules stay stable."]
 ];
 
+const focusTagCombos = [
+  ["Make the offer clearer", "#offer #cta #clarity", "Use when the page or message explains too much but still does not make the value proposition or next action obvious."],
+  ["Push growth over local optimization", "#partner #growth #roi", "Use when the agent should choose the highest-leverage move instead of the easiest technical move."],
+  ["Improve onboarding and usability", "#end-user #clarity #quality", "Use when the solution works technically but still feels too hard for a normal user."],
+  ["Fix objection-heavy copy", "#faq #trust #clarity", "Use when the message needs to answer doubts directly and earn credibility."],
+  ["Repair doc drift at the right layer", "#canon #drift #single-source", "Use when code, docs, or public surfaces are out of sync and the source of truth matters more than local patching."],
+  ["Work on ShipFlow itself", "#shipflow #proof #contract", "Use when the target is the internal ShipFlow system and the output should strengthen doctrine, proof, or internal execution quality."]
+];
+
 const projectDataPolicy = [
   [
     "Project-local corpus",
@@ -136,8 +145,8 @@ const editorialPath = "/docs#editorial-governance";
             the agent back to the right contract without launching a whole
             new workflow.
           </p>
-          <a class="doc-action" href="https://github.com/dianedef/ShipFlow/blob/main/docs/focus-tags-cheatsheet.md">
-            Open the focus-tags cheatsheet
+          <a class="doc-action" href="/docs#recommended-combos">
+            See recommended tag combos
           </a>
         </article>
 
@@ -234,6 +243,28 @@ const editorialPath = "/docs#editorial-governance";
           </p>
           <a class="doc-action" href="/faq">Read the compatibility FAQ</a>
         </article>
+      </div>
+    </section>
+
+    <section class="section" id="recommended-combos">
+      <div class="section-heading">
+        <p class="eyebrow">Recommended Combos</p>
+        <h2>Start with a small tag pack when one tag is not enough.</h2>
+        <p>
+          These combinations are the fastest way to steer the agent toward the
+          right business, content, or governance posture without writing a long
+          correction message.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        {focusTagCombos.map(([title, tags, body]) => (
+          <article class="doc-card">
+            <h3>{title}</h3>
+            <p><code>{tags}</code></p>
+            <p>{body}</p>
+          </article>
+        ))}
       </div>
     </section>
 

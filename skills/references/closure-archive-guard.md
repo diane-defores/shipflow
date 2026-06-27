@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: "shipflow"
 created: "2026-06-27"
 updated: "2026-06-27"
@@ -28,6 +28,7 @@ depends_on:
 supersedes: []
 evidence:
   - "Extracted from auditing OpenSpec's archive-change skill as a reusable closure guard."
+  - "Extended from auditing OpenSpec's bulk-archive-change skill for batch closure, conflict detection, and partial-result handling."
 next_review: "2026-07-27"
 next_step: "Use before closure, archive, changelog, tracker-done, or full-close ship claims."
 ---
@@ -74,6 +75,21 @@ When moving or archiving a durable artifact:
 - preserve metadata and sidecar files unless the work item explicitly says to split them
 - keep migration evidence discoverable from the canonical governance path
 
+## Batch Closure And Archive
+
+When closing or archiving multiple work items in one run:
+
+- enumerate the selected items before acting
+- collect implementation state, proof state, task state, source-of-truth deltas, and archive target for each item
+- detect conflicts where two or more items update the same durable source of truth, public claim, bug state, spec, tracker row, runtime skill surface, or archive target
+- resolve conflicts from evidence before closure: inspect the current code/docs/project state, then choose the item(s) whose outcome is actually implemented or proven
+- when multiple implemented items update the same source of truth, apply them in a deterministic order, normally oldest-to-newest unless the spec or user explicitly chooses another precedence
+- skip or defer items with missing implementation evidence, unresolved conflicts, or unsafe closure gaps instead of weakening the whole batch
+- show one consolidated status before committing to the batch when user confirmation is required
+- track each item as `closed`, `archived`, `skipped`, `deferred`, `partial`, or `failed`
+
+Batch closure may partially succeed. A failed or skipped item must not be hidden inside a global success report, and a successful item must not inherit proof from a neighboring item.
+
 ## Status Semantics
 
 - `closed`: implementation, required proof, source-of-truth sync, and closure bookkeeping are complete for the current scope
@@ -89,6 +105,7 @@ Do not use `closed` or `archived` to hide incomplete tasks or missing proof. If 
 Verification should check:
 
 - closure target was unique
+- batch closure targets, conflicts, and per-item outcomes were listed when multiple work items were closed together
 - source-of-truth deltas were synced or explicitly routed
 - tracker/changelog/docs wording does not claim stronger proof than exists
 - archive target collision was checked when files were moved

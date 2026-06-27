@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-06-27"
 updated: "2026-06-27"
@@ -117,6 +117,28 @@ Use these when the current conversation risks drifting toward the wrong reposito
 | `#shipflow` | the internal ShipFlow system, not the current project repo | `skills/references/entrypoint-routing.md` |
 | `#shupflow` | the same thing as `#shipflow`, with a typo-tolerant fast alias | `skills/references/entrypoint-routing.md` |
 | `#shipflow-core` | ShipFlow hardening, execution fidelity, or internal doctrine work | `skills/900-shipflow-core/SKILL.md` |
+
+## Recommended Combos
+
+Use these when you do not want to build the tag set from scratch.
+
+| Goal | Recommended tags | Use when you want... |
+| --- | --- | --- |
+| Make the offer clearer | `#offer #cta #clarity` | the page or message to make the value proposition and next action obvious |
+| Push growth instead of local optimization | `#partner #growth #roi` | the agent to choose the highest-leverage move, not the easiest technical move |
+| Improve onboarding and real usability | `#end-user #clarity #quality` | the solution to become easier to understand, safer, and more useful for normal users |
+| Fix objection-heavy copy | `#faq #trust #clarity` | the message to answer doubts directly without sounding slippery |
+| Improve discoverability | `#seo-intent #pillar #distribution` | the content or structure to align better with search intent and distribution paths |
+| Rework content from an existing source | `#repurpose #audience #cta` | one source to be turned into the right surface for the right reader and action |
+| Recenter on business buyer logic | `#decision-maker #offer #monetization` | the work to speak to the approver, the budget owner, or the buyer |
+| Improve retention logic | `#retention #end-user #funnel` | the work to focus on repeat usage, activation continuity, and product loops |
+| Repair doc drift at the right layer | `#canon #drift #single-source` | the agent to fix the source of truth first instead of patching duplicate surfaces |
+| Choose the right doc surface | `#owner #entrypoint #public-docs` | the question is mostly where a message or contract should live publicly |
+| Recenter on internal operator truth | `#owner #entrypoint #internal-docs` | the issue belongs in internal docs, technical contracts, or execution-facing guidance |
+| Tighten execution without wandering | `#quality #scope #no-drift` | the agent to choose a bounded, high-quality route and stop exploring |
+| Prepare a ship-ready answer | `#ship #proof #quality` | the work to end with checks, evidence, and release discipline instead of advice only |
+| Work on ShipFlow itself | `#shipflow #proof #contract` | the target is the internal ShipFlow system and the output should strengthen doctrine or proofability |
+| Harden ShipFlow behavior | `#shipflow-core #contract #no-drift` | the goal is execution fidelity, routing discipline, or internal hardening |
 
 ## Quick Examples
 

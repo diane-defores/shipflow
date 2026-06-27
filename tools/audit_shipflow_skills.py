@@ -53,6 +53,16 @@ ACTIVATION_ROUTE_SIGNALS = (
     "guided route",
     "first success",
 )
+FOCUS_TAG_EXECUTION_SIGNALS = (
+    "focus tag",
+    "focus tags",
+    "route-bias",
+    "route bias",
+    "artifact preference",
+    "public-docs",
+    "single-source",
+    "shipflow-core",
+)
 REFERENCE_SIGNALS = (
     "required references",
     "before ",
@@ -163,6 +173,11 @@ def audit_skill(path: Path) -> FindingSet:
     if path.parent.name == "008-sf-onboarding" and not has_any(text, ACTIVATION_ROUTE_SIGNALS):
         findings.review.append(
             "onboarding contract lacks visible next-best-action guidance for recurring friction or setup forks"
+        )
+
+    if path.parent.name == "000-shipflow" and not has_any(text, FOCUS_TAG_EXECUTION_SIGNALS):
+        findings.review.append(
+            "primary router lacks visible focus-tag execution guidance beyond generic reference loading"
         )
 
     if "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/" in text and not (

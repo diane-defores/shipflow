@@ -47,6 +47,8 @@ Before classifying ShipFlow package-scope terminology, load `$SHIPFLOW_ROOT/skil
 
 Use that reference as the canonical routing matrix. Do not duplicate specialist internals here.
 
+If focus tags are present in `$ARGUMENTS`, treat them as binding route-bias cues for the current turn. Do not merely mention that the tags were seen; apply their execution implications from `entrypoint-routing.md` before choosing a route, fallback, or question.
+
 When `$ARGUMENTS` begins with a three-digit skill code or a three-digit runtime skill name, load `$SHIPFLOW_ROOT/skills/references/skill-code-index.md` before natural-language classification. Resolve `NNN`, `NNN-skill`, `NNNskill`, or `NNN skill` to the runtime skill name from that index, then hand off to that skill.
 
 Before choosing a route, answer, or fallback, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Routing must prefer the owner path that preserves correctness, security, performance, maintainability, durability, excellence, and proof quality; do not route to the fastest or easiest owner when that would weaken the work. Apply the `Structure Replacement Doctrine`: prefer the route that removes current operator friction, ambiguity, or maintenance burden when it remains quality-equivalent.
@@ -79,6 +81,7 @@ Parse `$ARGUMENTS` as the operator instruction.
 - Numeric skill code: resolve the leading three digits through `skill-code-index.md`, then hand off to the runtime skill. Accepted forms include `001`, `001-sf-build`, `001sfbuild`, and `001 sf-build`.
 - Explicit skill name: hand off to that skill unless the request reveals a safer owner.
 - Natural-language instruction: classify using the routing matrix below.
+- Natural-language instruction with focus tags: classify using the routing matrix plus the focus-tag execution priorities; tags can change owner preference, artifact preference, and whether a direct suggestion is too passive.
 
 ## Routing Matrix
 

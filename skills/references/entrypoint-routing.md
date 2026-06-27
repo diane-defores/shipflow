@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-06-11"
+updated: "2026-06-27"
 status: active
 source_skill: 009-sf-skill-build
 scope: entrypoint-routing
@@ -66,7 +66,9 @@ It defines only the routing-question rule. Load `skills/references/question-cont
 
 Route to the smallest existing owner that can safely own the outcome.
 
-Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#quality`, `#growth`, `#end-user`, `#trust`, `#scope`, `#ship`, `#leverage`, `#founder-mode`, `#no-drift`, `#shipflow`, `#shupflow`, `#routing`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
+Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#offer`, `#growth`, `#clarity`, `#canon`, `#quality`, `#shipflow`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
+
+Focus tags are not decorative reminders. They change execution posture, artifact preference, and route bias for the current turn. Do not merely acknowledge them; apply their routing implications below.
 
 If the instruction is about modifying, improving, auditing, or hardening ShipFlow behavior, contracts, routing, or skills, treat ShipFlow itself as the target system by default. Do not infer the current project repository as the edit target unless the user explicitly names that project.
 
@@ -77,6 +79,57 @@ That inference must hold even when the user's message omits the words "ShipFlow"
 If the request needs more than one phase, route to the relevant master skill. If the request clearly names one specialist phase, route to that focused owner skill. If no file work or lifecycle action is needed, answer directly.
 
 Before natural-language routing, resolve three-digit skill-code prefixes through `skills/references/skill-code-index.md`. Accepted forms include `001`, `001-sf-build`, `001sfbuild`, and `001 sf-build`. Codes point to runtime skill names such as `001-sf-build`.
+
+## Focus Tag Execution Priorities
+
+When focus tags are present, merge them into the narrowest coherent route instead of treating them as passive flavor.
+
+### Business Tags
+
+Tags such as `#partner`, `#growth`, `#offer`, `#roi`, `#funnel`, `#positioning`, `#distribution`, `#monetization`, `#retention`, `#decision-maker`, `#leverage`, and `#founder-mode` imply:
+
+- prefer routes that improve business leverage or end-user success over routes that only produce local technical cleanup
+- when the task is ambiguous between generic implementation and public/business framing, inspect `shipflow_data/business/` before choosing
+- if a stronger owner skill or ShipFlow route materially improves adoption or first success, surface it as the recommended path instead of stopping at neutral advice
+- when several edits are possible, choose the smallest durable change that improves conversion, clarity, adoption, retention, or operator leverage
+
+### Content Tags
+
+Tags such as `#end-user`, `#cta`, `#clarity`, `#faq`, `#voice`, `#audience`, `#repurpose`, `#pillar`, and `#seo-intent` imply:
+
+- bias toward `007-sf-content`, `008-sf-onboarding`, or declared public content surfaces when the problem is mainly message quality, activation clarity, discoverability, or objection handling
+- prefer public copy, onboarding flow, FAQ, or semantic-architecture fixes over isolated code edits when the friction is mostly comprehension or activation
+- treat readability, user usefulness, and discoverability as owner concerns, not as optional polish
+
+### Governance Tags
+
+Tags such as `#canon`, `#drift`, `#owner`, `#freshness`, `#traceability`, `#entrypoint`, `#contract`, `#public-docs`, `#internal-docs`, and `#single-source` imply:
+
+- prefer the canonical owner artifact instead of editing duplicated surfaces first
+- if code, docs, and public surfaces are potentially diverged, route to the owner path that can repair the source of truth and then propagate outward
+- bias toward `002-sf-maintain`, `300-sf-docs`, `009-sf-skill-build`, or ShipFlow-internal docs work when the main issue is documentation truth, routing truth, or governance drift
+- when `#public-docs` and `#internal-docs` conflict, ask one concise routing question only if the same edit cannot safely satisfy both
+
+### Execution And System Tags
+
+Tags such as `#quality`, `#scope`, `#ship`, `#routing`, `#proof`, `#no-drift`, `#shipflow`, `#shupflow`, and `#shipflow-core` imply:
+
+- prefer the narrowest owner route that still preserves proof, verification, and closure
+- when the operator says `#shipflow` or `#shupflow`, default the target to ShipFlow internal files and doctrine even if a project repo is open
+- when `#shipflow-core` appears, treat ShipFlow behavior, fidelity, or doctrine hardening as the primary route unless the operator explicitly redirects to another repo
+- when `#proof` or `#ship` appears, do not end at recommendation-only output if ShipFlow can execute a proof or ship path in the current run
+
+## Focus Tag Question Rule
+
+Do not ask the operator to restate what a focus tag already resolved.
+
+Ask a routing question only when:
+
+- two or more tags create a real owner conflict with materially different artifacts
+- the same request cannot be satisfied safely at one owner layer
+- the tags imply different destructive, production, payment, auth, or public-claim posture
+
+When asking, name the tag tension explicitly and recommend the narrowest safe route.
 
 ## Execution Topology
 

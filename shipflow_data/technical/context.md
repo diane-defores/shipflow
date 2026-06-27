@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.5.0"
+artifact_version: "0.6.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-06-26"
+updated: "2026-06-27"
 status: draft
 source_skill: manual
 scope: "context"
@@ -157,6 +157,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - Les docs ShipFlow actives doivent avoir un frontmatter versionne.
 - Les changements de code mappes par `shipflow_data/technical/code-docs-map.md` doivent produire un `Documentation Update Plan` ou une justification no-impact.
 - `shipflow_data/editorial/content-map.md` doit rester structurel : surfaces, roles, clusters et regles de mise a jour, pas backlog editorial.
+- Les focus tags ne sont pas de simples rappels de contexte : ils peuvent biaiser le owner skill, la surface d'artefact et la posture d'execution sur le tour courant.
 - Les trackers operationnels (`TASKS.md`, `AUDIT_LOG.md`, `PROJECTS.md`) ne recoivent pas de frontmatter.
 - Les contenus runtime applicatifs gardent leur propre schema de frontmatter.
 
@@ -178,6 +179,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - `local/local.sh::main`: UX locale complete pour tunnels.
 - `lib.sh::action_flutter_web`: session Flutter Web interactive en tmux et hot reload.
 - `skills/300-sf-docs/SKILL.md`: logique de migration metadata et audit documentaire.
+- `skills/references/entrypoint-routing.md`: routeur canonique, y compris les implications d'execution des focus tags.
 - `shipflow_data/technical/code-docs-map.md`: fichier partage qui mappe code, docs primaires, validations et triggers de mise a jour.
 
 ## Where To Edit What
