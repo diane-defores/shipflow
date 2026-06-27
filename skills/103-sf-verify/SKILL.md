@@ -46,6 +46,12 @@ Use `report=agent` for handoff, blocked runs, or explicit verbose request.
 
 `103-sf-verify` judges proof quality and ship-readiness against the user story, implementation completeness, correctness, coherence, dependencies, and risk. It may repair stable local issues when needed, but it must keep verification verdict ownership distinct from `102-sf-start` implementation, `104-sf-end` closure, and `005-sf-ship` commit/push.
 
+`103-sf-verify` answers one question:
+
+```text
+Is this work actually proven enough to move forward, and if not which next owner owns the missing proof?
+```
+
 ## Context
 
 - Current directory: !`pwd`

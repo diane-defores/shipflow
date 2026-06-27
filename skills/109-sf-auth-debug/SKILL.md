@@ -38,6 +38,13 @@ Default to `report=user`: concise, findings-first for audits and failures, outco
 
 This skill is the auth/session specialist, not the generic browser fallback. Use it for auth, OAuth, cookies, callbacks, sessions, redirects, tenants, and protected-route behavior when browser proof or runtime evidence must stay inside an auth-safe debugging lane.
 
+It does not own generic browser proof, full manual QA logging, deployment discovery, or direct code-fix implementation:
+
+- one-off non-auth browser proof -> `/108-sf-browser`
+- guided manual QA or durable test logging -> `/107-sf-test`
+- deploy target discovery or runtime readiness -> `/405-sf-prod`
+- implementation repair -> `/106-sf-fix` or `/102-sf-start`
+
 ## Required References
 
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:

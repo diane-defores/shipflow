@@ -35,6 +35,14 @@ Before full-close mode, or any ship report that could imply formal closure, load
 
 `005-sf-ship` owns git shipping: checks, staging, commit, push, and the post-push route when applicable. It is not the owner of implementation completeness (`102-sf-start`), proof completeness (`103-sf-verify`), or closure bookkeeping (`104-sf-end`) unless full-close mode is explicitly requested.
 
+`005-sf-ship` answers one question:
+
+```text
+What git state should be shipped now, and with what explicit limits?
+```
+
+If closure bookkeeping is still the next unresolved owner, stay with `104-sf-end` instead of using quick ship as a closure substitute.
+
 ## Context
 
 - Current directory: !`pwd`

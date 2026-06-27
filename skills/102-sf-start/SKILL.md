@@ -72,6 +72,12 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 
 ## Core Execution Rules
 
+`102-sf-start` answers one question:
+
+```text
+What implementation can be completed now without overstating proof, closure, or ship status?
+```
+
 - `102-sf-start` implements; it should not stop at planning when a valid execution contract exists.
 - Apply the shared task application loop: identify target state, load required context, implement one bounded slice at a time, update durable progress only after completion, and route proof gaps explicitly.
 - Preserve the user story outcome over task-checkbox completion.
@@ -87,6 +93,7 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 - Prefer fresh-context execution for non-trivial spec-first work when available, but keep the main thread responsible for integration, validation, and user-facing truth.
 - Do not weaken documentation, security, redaction, chantier, or validation gates to finish faster.
 - Apply `$SHIPFLOW_ROOT/skills/references/operator-last-resort-evidence.md` before asking the operator for logs, validation status, or similar evidence.
+- If implementation is complete and the next unresolved owner is proof, route to `103-sf-verify` instead of drifting into closure or ship language.
 
 ## Stop Conditions
 

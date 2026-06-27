@@ -35,6 +35,14 @@ Before tracker closure, changelog framing, or done/closed wording, load `$SHIPFL
 
 `104-sf-end` closes the current work session: summary, tracker updates, changelog prep, and explicit next work. It owns closure bookkeeping, not implementation proof or git shipping.
 
+`104-sf-end` answers one question:
+
+```text
+What can be closed in trackers and changelog framing now without overstating proof or ship status?
+```
+
+If the next unresolved owner is still proof, stay with `103-sf-verify`. If the next unresolved owner is git shipping, route to `005-sf-ship` after closure bookkeeping instead of absorbing ship behavior here.
+
 ## ShipFlow-Owned Preflight
 
 Apply `$SHIPFLOW_ROOT/skills/references/shipflow-owned-preflight.md` before reading ShipFlow-owned references, mutating ShipFlow-owned tracker/spec surfaces, or running ShipFlow-owned tools/scripts.

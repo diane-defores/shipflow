@@ -38,6 +38,8 @@ Use it for one-off browser navigation, visual checks, accessibility snapshots, s
 
 `108-sf-browser` answers one browser-visible objective and routes broader work away.
 
+If the browser objective can be satisfied only by auth/session analysis, durable QA logging, or deployment discovery, reroute immediately instead of stretching this skill into a broader proof owner.
+
 Do not use it as the specialist for auth, manual QA, deployment discovery, production logs, or code fixes:
 - Auth, OAuth, cookies, sessions, callbacks, tenants, and protected-route breaks route to `/109-sf-auth-debug`.
 - Full manual QA campaigns, retests, `TEST_LOG.md`, bug files, and optional `BUGS.md` triage views route to `/107-sf-test`.

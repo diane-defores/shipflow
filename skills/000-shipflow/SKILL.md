@@ -87,6 +87,19 @@ Parse `$ARGUMENTS` as the operator instruction.
 
 Choose exactly one route unless the user explicitly asks for a dashboard or comparison.
 
+When the ambiguity is between adjacent lifecycle owners, prefer the earliest unresolved owner instead of a later closure/ship skill:
+
+- work not yet implemented -> `102-sf-start`
+- implementation complete but proof still needs judgment or owner routing -> `103-sf-verify`
+- proof judged and only closure bookkeeping remains -> `104-sf-end`
+- closure/bookkeeping complete and the next owned action is git shipping -> `005-sf-ship`
+
+When the ambiguity is between proof lanes, prefer the narrowest evidence owner:
+
+- guided manual QA, retest logging, `TEST_LOG.md`, or bug-state update -> `107-sf-test`
+- one-off non-auth browser-visible proof -> `108-sf-browser`
+- auth/session/callback/protected-route proof -> `109-sf-auth-debug`
+
 For requests involving declared products, sales surfaces, or public claims, prefer owner skills that preserve product governance and proof coherence instead of treating the request as generic copy or generic docs work.
 
 | Intent | Route |
