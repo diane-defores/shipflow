@@ -21,7 +21,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Chantier Potential Intake
 
-Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. Add a `Chantier potentiel` block when findings reveal non-trivial future work and no unique chantier owns it.
+Apply the chantier-potential threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report.
+For `405-sf-prod`, use it when deploy/runtime findings reveal non-trivial future work and no unique chantier already owns that work.
 
 ## Report Modes
 

@@ -23,7 +23,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Chantier Potential Intake
 
-Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the browser evidence reveals non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/100-sf-spec ...` command, and next step. If the finding is only informational, a narrow direct fix, or already belongs to the current chantier, state `Chantier potentiel: non` with the concrete reason.
+Apply the chantier-potential threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report.
+For `108-sf-browser`, use it when browser evidence reveals non-trivial future work outside a narrow direct fix and no unique chantier already owns that work.
 
 ## Mission
 
@@ -75,7 +76,7 @@ Route instead of continuing when:
 - the objective mentions Clerk, Supabase Auth, OAuth, login, callback, cookies, session, tenant, protected route, or auth provider behavior -> `/109-sf-auth-debug`
 - the user asks for a full manual user-flow test, durable QA log, or bug file -> `/107-sf-test`
 - the deployment URL is unknown or unconfirmed -> `/405-sf-prod`
-- preview-push validation is required but the change has not been shipped -> `/005-sf-ship`, then `/405-sf-prod`
+- preview-push validation is required but the change has not been shipped -> apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md`
 - the request is broad, such as "check everything" -> ask for one observable objective or route to `/107-sf-test`
 - the requested action can buy, delete, publish, send email, change account data, write production data, or trigger external side effects -> ask for explicit approval or route to a safe test environment
 
@@ -101,7 +102,7 @@ In those cases, do not diagnose the app. Report the runtime or ShipFlow installa
 6. Review console messages or network requests only when relevant to the objective or when visible evidence is partial.
 7. For runtime apps, proactively look for safe diagnostics entry points such as Settings, Support, Diagnostics, Debug, error fallback, overflow menu, or `Copy diagnostics` / `Copy logs`. Use any available browser/navigation tool, but only reversible navigation/clicks.
 8. If a diagnostics/log-copy action is reachable, click it, read the copied text from clipboard when tooling/browser permissions allow it, or read the visible diagnostic text. Confirm whether the first lines contain commit/build plus Paris/UTC build time.
-9. Do not ask the operator for logs while the diagnostics surface is reachable and safe to use. Ask only when the surface is missing, blocked by auth/permissions, unsafe to open, or clipboard/text extraction fails.
+9. Apply `$SHIPFLOW_ROOT/skills/references/operator-last-resort-evidence.md` before asking the operator for logs. In `108-sf-browser`, ask only when the diagnostics surface is missing, blocked by auth/permissions, unsafe to open, or clipboard/text extraction fails.
 10. If a Sentry/support event ID is visible or supplied, correlate only that pointer and summarize it without raw payloads.
 11. Avoid raw dumps. Prefer targeted, redacted summaries.
 12. Decide a narrow verdict for the requested objective only.

@@ -24,7 +24,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Chantier Potential Intake
 
-Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the findings reveal non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/100-sf-spec ...` command, and next step. If the work is only a direct local fix or already belongs to the current chantier, state `Chantier potentiel: non` with the concrete reason.
+Apply the chantier-potential threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report.
+For `105-sf-check`, use it when findings reveal non-trivial future work outside a direct local fix and no unique chantier already owns that work.
 
 ## Mission
 
@@ -33,6 +34,11 @@ Because this skill has process role `source-de-chantier`, evaluate the standard 
 Run and interpret technical checks without overstating what they prove. `105-sf-check` is a technical confidence pass, not product proof, not a browser/manual QA substitute, and not a generic bug-fix owner.
 
 If checks generate temporary build outputs, caches, or scratch artifacts, treat them as disposable unless the project contract explicitly requires a durable artifact. Remove them after the check completes.
+
+## ShipFlow-Owned Preflight
+
+Apply `$SHIPFLOW_ROOT/skills/references/shipflow-owned-preflight.md` before reading ShipFlow-owned references, running ShipFlow-owned tools/scripts, or checking ShipFlow-owned runtime-visibility surfaces.
+For `105-sf-check`, this preflight also applies before verifying ShipFlow skill runtime visibility targets.
 
 ## Context
 
@@ -51,7 +57,7 @@ Before finalizing, load `$SHIPFLOW_ROOT/skills/references/actionable-failure-con
 
 Before choosing or interpreting checks, read `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and inspect `CLAUDE.md` or `SHIPFLOW.md`.
 - In `local` mode, local checks are the expected technical confidence pass.
-- In `vercel-preview-push` mode, local checks are pre-push confidence only. A passing local check does not authorize manual/browser/preview validation; the next deployment-sensitive step is `/005-sf-ship [scope]` then `/405-sf-prod [project or URL]`.
+- In `vercel-preview-push` mode, local checks are pre-push confidence only. Apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md` before claiming preview/browser/manual validation.
 - In `hybrid` mode, local checks are valid for unit/static work, but hosted surfaces still need `/005-sf-ship` -> `/405-sf-prod` before remote validation.
 - If Vercel is detected but the mode is missing, report `unknown-vercel` as a risky assumption and recommend documenting `## ShipFlow Development Mode`.
 
@@ -175,7 +181,7 @@ Always include a short `Risky assumptions / gaps` section when any of the follow
 If nothing indicates functional validation of the main user flow, say so plainly. Example: "Checks pass, but no evidence was gathered that checkout/login/sync actually works end-to-end."
 
 If project mode is `vercel-preview-push`, include the next deployment step explicitly:
-- `Next step: /005-sf-ship [scope]`, then `/405-sf-prod [project or URL]`
+- `Next step:` apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md`
 - If the checked change needs non-auth browser proof, add `/108-sf-browser [URL or scope] [objective]` after `405-sf-prod`
 - If the checked change affects auth or protected flows, add `/109-sf-auth-debug [scope]` after `405-sf-prod`
 - If it affects a manual user flow, add `/107-sf-test --preview [scope]` after `405-sf-prod`
@@ -189,4 +195,10 @@ If project mode is `vercel-preview-push`, include the next deployment step expli
 - A passing `105-sf-check` run means "no obvious issues in the checks that were executed", not "product is production-ready".
 - When security-relevant checks fail or are missing (for example auth flows, permission boundaries, secret/config validation, dependency audit access), call that out explicitly and recommend the next skill when appropriate (`/103-sf-verify`, `/405-sf-prod`, `/402-sf-deps`).
 - When browser-observable behavior is unproven but the issue is not auth-specific, recommend `/108-sf-browser [URL or scope] [objective]` rather than stretching `/109-sf-auth-debug`.
-- In `vercel-preview-push` or relevant `hybrid` mode, recommend `/005-sf-ship` -> `/405-sf-prod` after passing checks when changed behavior needs preview validation.
+- In `vercel-preview-push` or relevant `hybrid` mode, apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md` when changed behavior needs preview validation.
+
+## Validation
+
+- `rg -n "Trace category|Process role|Mission|ShipFlow-Owned Preflight|canonical ShipFlow path|shipflow_sync_skills|project-development-mode|actionable-failure-contract|Risky assumptions / gaps|vercel-preview-push|product is production-ready" skills/105-sf-check/SKILL.md`
+- `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
+- `tools/shipflow_sync_skills.sh --check --skill 105-sf-check`

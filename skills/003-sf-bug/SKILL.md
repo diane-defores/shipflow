@@ -41,7 +41,8 @@ Before routing to fix, retest, verify, or ship-risk claims, load `$SHIPFLOW_ROOT
 
 ## Chantier Potential Intake
 
-Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the bug reveals non-trivial future work and no unique chantier owns it, do not write to an existing spec; add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, a proposed title, reason, severity, scope, evidence, recommended `/100-sf-spec ...` command, and next step.
+Apply the chantier-potential threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report.
+For `003-sf-bug`, use it when the bug reveals non-trivial future work beyond the current bug lifecycle and no unique chantier already owns that work.
 
 ## Context
 
@@ -175,7 +176,7 @@ If the bug has repeated fix attempts without root cause evidence, route to deepe
 Read `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` and the project-local `## ShipFlow Development Mode` section in `CLAUDE.md` or `SHIPFLOW.md`.
 
 - `local`: local retests and browser checks can be authoritative when the bug is local.
-- `vercel-preview-push`: preview/manual/browser/integration retest evidence requires `005-sf-ship -> 405-sf-prod -> 107-sf-test --preview --retest BUG-ID`.
+- `vercel-preview-push`: apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md`; for bug retests, the downstream proof owner is typically `/107-sf-test --preview --retest BUG-ID`.
 - `hybrid`: require the preview-push sequence for hosted-only bugs: auth callbacks, OAuth redirect URLs, webhooks, deployment env vars, edge/serverless runtime, Vercel routing, preview/prod data, or bugs that reproduce only remotely.
 - missing mode with Vercel signals: classify as `unknown-vercel` and do not claim preview retest authority.
 
@@ -215,7 +216,7 @@ Stop and report `blocked` when:
 - the next action could mutate production or destructive data without explicit approval
 - sensitive evidence is unredacted
 - a clean ship is requested while high/critical bug state is still unresolved
-- the project development mode requires preview evidence that has not gone through `005-sf-ship -> 405-sf-prod`
+- the project development mode requires preview evidence that has not gone through the preview-proof route
 
 ## Final Report
 
@@ -278,7 +279,7 @@ Verdict 003-sf-bug:
 - Execute the bug loop through owner skills and bounded subagents; do not repair code directly inside the `003-sf-bug` master thread.
 - Do not write bug files directly except to report routing gaps; use `107-sf-test` or `106-sf-fix` for durable bug mutations.
 - Do not close bugs from intent, code diff, deployment status, or optimistic wording.
-- Do not route preview/manual/browser retests before `005-sf-ship -> 405-sf-prod` when project mode requires deployed evidence.
+- Do not route preview/manual/browser retests before the preview-proof route when project mode requires deployed evidence.
 - Follow the shared master delegation reference for delegated sequential defaults and spec/batch-gated parallelism.
 - Prefer continuing the next safe lifecycle action over ending with a broad report when a bug is actionable and no stop condition blocks execution.
 - Ask only when the missing answer changes severity, status, destructive risk, closure, or ship risk.

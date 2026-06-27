@@ -33,6 +33,43 @@ Default to `report=user`: concise, readiness verdict first, blockers only when t
 
 `101-sf-ready` is the lifecycle gate that decides whether a spec is safe to hand to `102-sf-start`. It owns readiness verdicts and scope integrity; it does not write implementation, claim proof completeness, close the chantier, or ship code.
 
+## Scope Gate
+
+Accepted scope:
+
+- one spec-first readiness review before `/102-sf-start`
+- one existing spec selected by path or resolved task name
+- bounded status mutation to `ready`, `reviewed`, or `draft` plus the required chantier trace and metadata updates
+
+Rejected scope:
+
+- implementation
+- shipping or closure
+- generic planning without a spec candidate
+- broad product discovery that belongs to `/100-sf-spec`
+
+If no unique spec can be identified safely, stop and route to `/100-sf-spec` or explicit spec selection.
+
+## Required References
+
+Always load:
+
+- `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md`
+- `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`
+- `$SHIPFLOW_ROOT/skills/101-sf-ready/references/readiness-review-playbook.md`
+
+Load on demand:
+
+- `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` before creating or mutating a `spec:` operational summary line
+- `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when the spec depends on framework, SDK, service, API, auth, build, migration, or integration behavior
+- `shipflow_data/technical/guidelines.md` when the spec touches ShipFlow artifacts, internal contracts, prompts, or user-facing copy
+
+## Mode Detection
+
+- spec path argument -> use that spec
+- task/title argument -> resolve the most likely spec candidate and explain the choice when ambiguous
+- no resolvable spec -> `not ready` routing to `/100-sf-spec`
+
 ## Context
 
 - Current directory: !`pwd`
@@ -42,29 +79,27 @@ Default to `report=user`: concise, readiness verdict first, blockers only when t
 - CLAUDE.md (constraints): !`head -60 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 - Available specs: !`find docs specs -maxdepth 2 -type f -name "*.md" 2>/dev/null | sort | head -60`
 
-## Your task
+## Readiness Gate
 
 Valider qu'une spec est réellement prête avant `/102-sf-start`.
 
 Cette gate s'applique surtout au cadrage initial. Si `103-sf-verify` découvre plus tard un petit delta de cadrage, il peut jouer localement le rôle d'une mini gate de readiness apres mise a jour de la spec, sans absorber le role de `101-sf-ready`.
 
-Cette skill applique la `Definition of Ready` du flow spec-driven :
-- zéro ambiguïté bloquante
-- alignement explicite avec la user story et le résultat métier attendu
-- forme comportementale minimale explicite : entrée/déclencheur, sortie/résultat, échec, edge case principal
-- tâches ordonnées
-- fichiers cibles identifiés
-- systèmes liés et conséquences explicités
-- cohérence documentaire explicitée pour les changements de feature
-- doctrine de langue ShipFlow explicitée quand la spec touche des contrats internes, skills, docs, prompts ou copie user-facing
-- autorité design-system explicite quand la spec touche UI, design mobile/app, composants visuels, layout, styling, tokens, thèmes, typographie, couleurs, espacements, ombres, motion ou branding implémenté
-- critères d'acceptation vérifiables
-- revue adversariale suffisante pour empêcher une implémentation naïve ou contournable
-- sécurité proportionnée au scope, pensée dès la spec
-- notes d'exécution suffisantes pour un agent frais
-- aucun `TBD`
+`101-sf-ready` applies the ShipFlow Definition of Ready. A spec is only `ready`
+when a fresh agent can implement it without blocking ambiguity, missing proof
+contracts, hidden linked-system consequences, or unresolved security questions.
 
-### Step 1 — Trouver la spec
+The top-level review must confirm these buckets; the detailed heuristics live in
+`$SHIPFLOW_ROOT/skills/101-sf-ready/references/readiness-review-playbook.md`:
+
+- structure and mandatory sections
+- user-story alignment and minimal behavior contract
+- metadata, freshness, and documentation coherence
+- task ordering, linked systems, and execution notes
+- proof contract fit, adversarial review, and security review
+- ready/not-ready status transition and report shape
+
+### Step 1 - Find the spec
 
 Si `$ARGUMENTS` est un path de spec, l'utiliser.
 
@@ -74,172 +109,7 @@ Sinon :
 
 Si aucune spec n'est trouvée, arrêter et renvoyer vers `/100-sf-spec`.
 
-### Step 2 — Vérifier la structure
-
-La spec doit contenir :
-- `Title`
-- `Status`
-- `User Story`
-- `Minimal Behavior Contract`
-- `Success Behavior`
-- `Error Behavior`
-- `Problem`
-- `Solution`
-- `Scope In`
-- `Scope Out`
-- `Constraints`
-- `Dependencies`
-- `Invariants`
-- `Links & Consequences`
-- `Documentation Coherence`
-- `Edge Cases`
-- `Implementation Tasks`
-- `Acceptance Criteria`
-- `Test Contract`
-- `Test Strategy`
-- `Risks`
-- `Execution Notes`
-- `Open Questions`
-
-Si une section obligatoire manque, verdict `not ready`.
-
-### Step 3 — Vérifier l'alignement user story -> solution
-
-Avant de regarder le détail technique, vérifier que la spec relie clairement :
-- le problème utilisateur
-- l'acteur concerné
-- le déclencheur
-- le comportement attendu
-- la valeur métier ou opérationnelle obtenue
-- les limites explicites du scope
-
-Refuser la spec si un lecteur frais ne peut pas répondre sans hésitation à :
-- qui veut quoi, et pourquoi ?
-- qu'est-ce que la feature accepte ou déclenche ?
-- qu'est-ce qu'elle produit ou rend observable ?
-- que se passe-t-il quand ça échoue ?
-- à quoi ressemble une réussite observable et vérifiable ?
-- à quoi ressemble une erreur correctement gérée ?
-- quel edge case majeur doit être couvert ?
-- qu'est-ce qui change concrètement pour l'utilisateur ou l'opérateur ?
-- qu'est-ce qui ne change pas ?
-- comment saura-t-on que la user story est satisfaite ?
-
-Exiger que `Solution`, `Implementation Tasks` et `Acceptance Criteria` soient traçables jusqu'à la user story. Une tâche purement technique sans lien explicable avec le résultat attendu doit être signalée.
-
-### Step 4 — Vérifier la readiness réelle
-
-Contrôler :
-- le frontmatter existe ou une convention metadata équivalente est présente
-- `artifact: spec`, `metadata_schema_version`, `artifact_version`, `source_skill`, `created`, `updated`, `status`, `scope`, `risk_level`, `security_impact`, `docs_impact` sont renseignés
-- `depends_on` liste les versions des docs business/techniques utilisées par la spec, ou explicite `unknown` pendant migration
-- aucune dépendance business/technique utilisée par la spec n'est connue comme `stale` sans revue explicite
-- la Documentation Freshness Gate de `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/documentation-freshness-gate.md` est satisfaite quand la spec dépend d'un framework, SDK, service, API, auth, build, migration ou intégration externe : source Context7 ou docs officielles actuelle nommée, version locale notée si disponible, et pas de `fresh-docs gap` non assumé
-- si la spec nécessite preuve manuelle, elle doit inclure un `Test Contract` complet avec :
-  - `surface`
-  - `proof_profile`
-  - `proof_order`
-  - `checklist_path` (quand un checklist artifact est prévu)
-  - `required_scenario_ids` (ou équivalent)
-  - `required_results`
-  - `exception_with_proof` / `exception_without_proof`
-- tout scénario requis doit être actionnable et lié aux tâches d'implémentation
-- `Status` est `draft` ou `reviewed`, pas déjà `ready` sans vérification
-- aucun `TBD`, `TODO`, placeholder ou formulation vague critique
-- `Open Questions` est `None`
-- aucune dépendance cachée à l'historique de conversation
-- la spec nomme les préconditions, postconditions et invariants métier importants
-- `Minimal Behavior Contract` tient en un paragraphe comportemental non technique et couvre entrée/déclencheur, sortie/résultat, échec, et edge case principal
-- `Success Behavior` explicite les préconditions, l'action, le résultat utilisateur/opérateur, l'effet système attendu et la preuve de succès
-- `Error Behavior` explicite les entrées invalides ou états d'échec pertinents, le retour utilisateur/opérateur, l'effet système attendu, et ce qui ne doit jamais arriver
-- toute action réussie produit un changement d'état observable, ou la spec justifie explicitement pourquoi le succès peut rester silencieux et comment il reste vérifiable
-- toute erreur produit une explication observable ou un état récupérable, ou la spec justifie explicitement pourquoi l'échec peut rester silencieux et comment il reste récupérable
-- `Execution Notes` expose une approche d'implémentation en étapes avant code, ainsi que les contraintes explicites : packages à utiliser/éviter, patterns existants, flux de données, abstractions à éviter, limites de scope
-- chaque tâche a :
-  - un fichier cible
-  - une action explicite
-  - un ordre de dépendance cohérent
-  - un check de validation identifiable
-- `Links & Consequences` nomme les systèmes amont/aval, les consommateurs et les validations transverses à faire
-- `Documentation Coherence` nomme les docs, README, guides, FAQ, onboarding, pricing, changelog, exemples ou support à aligner, ou explique `None, because ...`
-- `Execution Notes` donne les fichiers à lire d'abord, les commandes de validation et les stop conditions
-- les acceptance criteria couvrent :
-  - `Success Behavior`
-  - `Error Behavior`
-  - cas limites
-- si la spec touche UI/design, elle nomme le contrat design-system canonique du projet ou la tâche préalable qui le crée, couvrant brand contract, token source, technology carrier, component bridge, layout/motion authority, forbidden bypasses, et `tools/design_system_drift_check.py --changed --format markdown`
-- les prérequis de données, auth, permissions, feature flags, migrations ou config sont explicités si pertinents
-- runtime: Sentry/copy logs/build header, ou static exception
-- autonomie opérateur: diagnostic, test, vérification et preuve disent quoi collecter avant de demander à l'utilisateur
-- les non-goals de `Scope Out` bornent bien le travail
-- si la spec touche des artefacts ShipFlow, skills, rapports, docs techniques, prompts utilisateur ou copie visible produit, elle respecte la doctrine de langue ShipFlow issue de `shipflow_data/technical/guidelines.md` (fallback legacy `GUIDELINES.md`) et `shipflow-spec-driven-workflow.md` :
-  - contrats internes et ancres machine en anglais; user-facing dans la langue active du projet ou de l'utilisateur
-  - français visible naturel et accentué; citations, sources, texte légal et contenus externes gardent leur langue originale et sont labellisés
-
-Si un point change matériellement le comportement, le scope ou la sécurité et n'est ni prouvé par le code existant ni tranché par la spec, verdict `not ready`. Ne pas combler ce vide par inférence généreuse.
-
-### Step 5 — Revue adversariale
-
-Faire une vraie revue adverse, pas une passe cosmétique.
-
-Critiquer la spec comme si tu voulais :
-- provoquer une implémentation incorrecte mais "plausible"
-- contourner le flow métier
-- forcer un état incohérent
-- exploiter une hypothèse implicite
-- casser un système adjacent sans être détecté
-
-- un agent frais pourrait-il mal interpréter une exigence ?
-- le contrat comportemental minimal cache-t-il une hypothèse sur l'entrée, la sortie, l'échec ou un edge case ?
-- `Success Behavior` peut-il être validé par un test, un sanity check, un log ou un état final observable ?
-- `Error Behavior` laisse-t-il une erreur partielle, un retry, un rollback, un timeout ou un doublon sans comportement défini ?
-- un succès peut-il sembler ne rien faire pour l'utilisateur ou l'opérateur ?
-- une erreur peut-elle disparaître sans message, état récupérable, log utile ou action possible ?
-- l'approche prévue choisirait-elle le mauvais package, la mauvaise abstraction ou le mauvais flux de données ?
-- un edge case important manque-t-il ?
-- une tâche dépend-elle d'une autre mais apparaît trop tôt ?
-- une action est-elle trop vague pour être implémentée sans décision supplémentaire ?
-- un système lié pourrait-il casser sans être revalidé ?
-- une conséquence hors des fichiers principaux est-elle oubliée ?
-- une page de doc, FAQ, onboarding, pricing, screenshot, exemple ou support devient-elle fausse après la feature ?
-- une spec, skill ou doc technique peut-elle être mal interprétée parce que le contrat interne n'est pas en anglais, que la sortie user-facing n'est pas dans la langue active, que le français visible manque d'accents, ou que l'artefact mélange les langues sans raison claire ?
-- le test plan permet-il vraiment à `103-sf-verify` de juger la conformité ?
-- le `Test Contract` distingue-t-il clairement les résultats requis, optionnels et exceptions, et le mode de preuve final ?
-- la spec s'appuie-t-elle sur un comportement externe récent sans preuve de docs officielles actuelles ?
-- le flow peut-il être bypassé par saut d'étape, replay, double soumission, ordre invalide, état périmé ou entrée concurrente ?
-- une hypothèse "UI = sécurité" existe-t-elle alors qu'un contrôle serveur ou backend devrait être requis ?
-- une hypothèse "style local rapide" existe-t-elle alors qu'un token, composant, primitive, thème ou contrat design-system centralisé devrait être modifié ?
-- la spec suppose-t-elle qu'un acteur restera honnête, qu'un identifiant sera valide, qu'une donnée externe sera propre, ou qu'un ordre d'événements sera respecté ?
-- une erreur partielle peut-elle laisser des données, permissions, statuts ou side effects dans un état incohérent ?
-- un rollback, retry, timeout, refresh, duplicate request ou reprise après échec est-il couvert ?
-- les acteurs non nominaux sont-ils couverts : utilisateur sans droit, utilisateur malveillant, intégration tierce défaillante, administrateur, job asynchrone, système legacy ?
-
-Si oui, la spec n'est pas ready.
-
-### Step 6 — Solidité cyber sécurité
-
-Faire une revue sécurité proportionnée au scope, en s'inspirant au minimum des familles de risques OWASP ASVS / OWASP Top 10 et des pratiques SSDF NIST.
-
-Pour toute spec touchant auth, permissions, données sensibles, upload, rendu HTML/Markdown, API, webhooks, paiements, admin, secrets, intégrations externes, exécution d'actions, fichiers, recherche, prompts, ou automatisations, vérifier explicitement :
-- Authentification : qui peut initier l'action ? comment l'identité est-elle établie ?
-- Autorisation : qui peut lire, créer, modifier, supprimer, approuver, relancer ? les contrôles sont-ils côté serveur si nécessaire ?
-- Validation d'entrée : quelles entrées sont non fiables ? quelles bornes, formats, allowlists ou sanitizations s'appliquent ?
-- Intégrité du workflow : peut-on contourner les étapes métier, approuver sans droit, rejouer une action, injecter un état interdit ?
-- Exposition de données : quelles données sensibles existent, où transitent-elles, où sont-elles stockées, loggées, cacheées, exportées ?
-- Secrets et configuration : y a-t-il des tokens, clés, webhooks, variables d'env, permissions machine ou accès tiers à protéger ?
-- Intégrations externes : quelles hypothèses de confiance sont faites sur APIs, webhooks, fichiers entrants, contenu généré, retrievers ou services tiers ?
-- Journalisation et erreurs : que faut-il tracer pour audit et incident response, et que faut-il ne jamais logguer ?
-- Disponibilité et abus : rate limiting, quotas, tailles max, protections contre spam, brute force, boucle, coût excessif, fan-out incontrôlé
-- Multi-tenant / périmètre : un tenant, user, org ou projet peut-il voir ou agir sur les ressources d'un autre ?
-
-Refuser la spec si elle contient un angle mort sécurité matériel et non traité. Ne pas exiger une analyse disproportionnée pour un micro-changement purement local, mais exiger au minimum une phrase explicite du type :
-- `Security impact: none, because ...`
-ou
-- `Security impact: yes, mitigated by ...`
-
-Si la sécurité dépend d'une décision produit encore non prise, exiger que la spec nomme explicitement la question à poser à l'utilisateur, puis rester en `not ready`.
-
-### Step 7 — Verdict et statut
+### Step 2 - Run the detailed review
 
 Si tout passe :
 - mettre à jour la spec en `Status: ready`
@@ -257,104 +127,29 @@ Sinon :
 
 Ne pas faire semblant de "sauver" une spec par inference genereuse. Si le contrat n'est pas assez net pour un agent frais, le bon resultat est `not ready`, pas une approbation optimiste.
 
-### Rapport attendu
+### Step 3 - Report the verdict
 
-En `report=user`, utiliser ce format compact sauf si la run est bloquée ou si l'utilisateur demande le détail :
+Use the compact `report=user` shape by default and reserve the full checklist for
+`report=agent`, blocked runs, handoffs, or explicit verbose requests. The
+detailed report templates and reviewer rules live in the local readiness review
+playbook.
 
-```text
-Readiness: [ready | not ready | blocked]
-Spec: [path]
-[Blockers: 1-3 bullets only when action is required]
-[Checks: metadata/proof summary, one short line]
+## Stop Conditions
 
-## Chantier
+Stop and report `not ready` or `blocked` when:
 
-[spec path]
+- no unique spec can be identified safely
+- a required section, proof contract, or linked-system consequence is missing
+- a material scope, behavior, or security question is still unresolved
+- freshness, language-doctrine, or design-system gates apply but cannot be checked safely
+- the spec would require generous inference from conversation history to implement cleanly
 
-Flux: 100-sf-spec [marker] -> 101-sf-ready [marker] -> 102-sf-start [marker] -> 103-sf-verify [marker] -> 104-sf-end [marker] -> 005-sf-ship [marker]
-[Prochaine etape: only if real]
+## Validation
 
-Verdict 101-sf-ready: [ready | not ready | blocked]
-Horodatage du verdict: YYYY-MM-DD HH:mm Paris time
+Run after edits to this skill:
+
+```bash
+rg -n "Mission|Scope Gate|Required References|Mode Detection|Stop Conditions|Validation|Readiness Gate|report=user|readiness-review-playbook" skills/101-sf-ready/SKILL.md
+python3 tools/skill_budget_audit.py --skills-root skills --format markdown
+tools/shipflow_sync_skills.sh --check --skill 101-sf-ready
 ```
-
-Le rapport détaillé ci-dessous est réservé à `report=agent`, aux runs bloquées, aux handoffs, ou aux demandes explicites de détail :
-
-```text
-## Readiness: [spec title]
-
-Spec: [path]
-Checklist:
-- Structure: [ok / fail]
-- Metadata: [ok / fail]
-- User story alignment: [ok / fail]
-- Ambiguity: [ok / fail]
-- Task ordering: [ok / fail]
-- Links & consequences: [ok / fail]
-- Acceptance criteria: [ok / fail]
-- Success behavior: [ok / fail]
-- Error behavior: [ok / fail]
-- Documentation coherence: [ok / fail]
-- Language doctrine: [ok / fail / not applicable]
-- Execution notes: [ok / fail]
-- Minimal behavior contract: [ok / fail]
-- Adversarial review: [ok / fail]
-- Security review: [ok / fail]
-- Test contract: [ok / fail / not applicable]
-
-Not ready because:
-- [issue]
-
-Adversarial gaps:
-- [missing abuse case / bypass / bad state / cross-system consequence]
-
-Security gaps:
-- [missing auth/authz/input validation/data protection/logging/abuse control]
-
-Language doctrine gaps:
-- [internal contract not English / user-facing output not in active language / French accents missing / casual language mixing]
-
-Verdict:
-- ready
-- not ready
-
-Next step:
-- /102-sf-start [title] if ready
-- /100-sf-spec [title] if not ready
-## Chantier
-
-Skill courante: 101-sf-ready
-Chantier: [spec path | non trace]
-Trace spec: [ecrite | non ecrite]
-Flux:
-- 100-sf-spec: [status]
-- 101-sf-ready: [ready | not ready | blocked]
-- 102-sf-start: [status]
-- 103-sf-verify: [status]
-- 104-sf-end: [status]
-- 005-sf-ship: [status]
-
-Reste a faire:
-- [item or None]
-
-Prochaine etape:
-- [/102-sf-start title | /100-sf-spec title | explicit action]
-
-Verdict 101-sf-ready:
-- [ready | not ready | blocked]
-```
-
-### Rules
-
-- Ne pas implémenter
-- Être strict sur les ambiguïtés bloquantes
-- Préférer `not ready` à une validation molle
-- En user-mode, traduire les gates en conséquences utilisateur et ne pas exposer la checklist complète si elle ne change pas la décision de l'opératrice
-- Raisonner contre la user story, puis faire une passe "comment est-ce que ça casse ?" avant de conclure `ready`
-- Expliciter le niveau de risque cyber sécurité
-- Vérifier docs actives, doctrine de langue ShipFlow, autorité design-system, et Documentation Freshness Gate quand leur gate s'applique
-- Si une question manquante change le contrat ou la sécurité, bloquer au lieu de supposer
-- Donner des corrections actionnables, pas des critiques vagues
-- Refuser une spec qui dépend de clarifications futures pour être implémentée proprement
-- Si un contexte frais est nécessaire pour la suite et que la skill ne peut pas le créer elle-même, demander à l'utilisateur de le faire
-- Rester la gate canonique avant la première implémentation d'un travail non trivial

@@ -35,6 +35,11 @@ Before tracker closure, changelog framing, or done/closed wording, load `$SHIPFL
 
 `104-sf-end` closes the current work session: summary, tracker updates, changelog prep, and explicit next work. It owns closure bookkeeping, not implementation proof or git shipping.
 
+## ShipFlow-Owned Preflight
+
+Apply `$SHIPFLOW_ROOT/skills/references/shipflow-owned-preflight.md` before reading ShipFlow-owned references, mutating ShipFlow-owned tracker/spec surfaces, or running ShipFlow-owned tools/scripts.
+For `104-sf-end`, this preflight also applies before closure writes that affect ShipFlow-owned workflow state.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -80,7 +85,7 @@ If completion status is ambiguous, use the runtime's structured question tool wh
 
 Ask a targeted clarification instead of assuming `done` when:
 - the work is implemented but not meaningfully validated
-- the project is `vercel-preview-push` and the work needs browser/manual/integration proof that has not gone through `005-sf-ship` -> `405-sf-prod`
+- the project is `vercel-preview-push` and the work still needs deployed proof governed by `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md`
 - the project is `hybrid` and the changed surface depends on hosted auth/OAuth, webhooks, env vars, serverless/edge, Vercel routing, or preview/prod data without confirmed preview evidence
 - the user story or expected outcome is still unclear
 - the work touches auth, permissions, billing, secrets, tenant boundaries, destructive actions, migrations, public flows, or other security-sensitive surfaces
@@ -105,7 +110,7 @@ Using the master TASKS.md from context:
 - Apply a minimal targeted edit to the relevant rows only; never rewrite the whole file from stale context.
 - If the expected row or section moved, re-read once and recompute; if it is still ambiguous, stop and ask the user.
 - If the evidence supports only partial completion, keep or move the task to `🔄 in progress` with a short note rather than forcing `✅ done`.
-- If preview-push validation is required but missing, do not mark the task `✅ done`; keep it `🔄 in progress` with a note such as `awaiting 005-sf-ship -> 405-sf-prod preview validation`.
+- If preview-push validation is required but missing, do not mark the task `✅ done`; keep it `🔄 in progress` with a note such as `awaiting preview-proof route`.
 - Reflect product coherence and safety gaps when they materially affect closure.
 - Reflect documentation coherence gaps when a user-facing feature behavior changed.
 - No output at this step.
@@ -119,7 +124,7 @@ If mode is **Résumé seulement**, skip this step.
 - Prepend a new `## [date]` entry to CHANGELOG.md (or update today's entry if it exists)
 - Skip trivial changes (formatting, comments)
 - Keep entries evidence-based and user-facing; do not claim a feature is "done", "safe", or "production ready" unless the work actually demonstrated that.
-- In `vercel-preview-push` or relevant `hybrid` mode, do not frame the changelog entry as functionally released/validated unless `405-sf-prod` and the required preview test evidence exist.
+- In `vercel-preview-push` or relevant `hybrid` mode, apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md` before framing a changelog entry as functionally released/validated.
 - Include documentation alignment when it materially affects user-facing behavior.
 - No output at this step.
 
@@ -143,7 +148,7 @@ Output ONE concise report:
 - [what user-facing outcome was advanced, completed, or still unproven]
 
 **Development mode:**
-- [local / vercel-preview-push / hybrid / unknown] — [validation evidence or missing 005-sf-ship -> 405-sf-prod proof]
+- [local / vercel-preview-push / hybrid / unknown] — [validation evidence or missing preview-proof route]
 
 **Documentation coherence:**
 - [updated / not impacted / gap remains]
@@ -196,3 +201,9 @@ Verdict 104-sf-end:
 - Do not mark feature work fully closed if known docs remain stale and materially affect users/operators
 - Prefer partial closure when user-story completion or security posture remains uncertain
 - Prefer partial closure when required Vercel preview validation is missing.
+
+## Validation
+
+- `rg -n "Trace category|Process role|Mission|ShipFlow-Owned Preflight|canonical ShipFlow path|closure-archive-guard|operational-record-format|TASKS.md|CHANGELOG.md|vercel-preview-push|Prefer partial closure" skills/104-sf-end/SKILL.md`
+- `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
+- `tools/shipflow_sync_skills.sh --check --skill 104-sf-end`

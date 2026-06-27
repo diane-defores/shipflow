@@ -23,7 +23,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Chantier Potential Intake
 
-Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. Add a `Chantier potentiel` block when findings reveal non-trivial future work and no unique chantier owns it.
+Apply the chantier-potential threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report.
+For `109-sf-auth-debug`, use it when auth/session/callback findings reveal non-trivial future work and no unique chantier already owns that work.
 
 ## Report Modes
 
@@ -44,6 +45,11 @@ Always load shared references only when their gate applies. Load skill-local ref
 - `references/auth-debug-workflow.md`: Auth debug workflow, provider-reference routing, reproduction strategy, Playwright proof, Sentry/PM2 evidence, and report details.
 - `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md`: required when the auth target exposes settings, support, diagnostics, callback error pages, error boundaries, or copy-log UI.
 
+## ShipFlow-Owned Preflight
+
+Apply `$SHIPFLOW_ROOT/skills/references/shipflow-owned-preflight.md` before reading ShipFlow-owned references, running ShipFlow-owned tools/scripts, or checking ShipFlow-owned auth-debug/runtime surfaces.
+For `109-sf-auth-debug`, this preflight also applies before auth-safe runtime diagnostics and callback-proof surfaces.
+
 ## Mode Detection
 
 Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
@@ -55,6 +61,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 ## Core Execution Rules
 
 - Preserve auth/session/callback/provider, tenant, cookie, redirect, token, secret, and redaction safety rules.
+- Before asking the operator for logs, screenshots, callback traces, or browser repro steps, apply `$SHIPFLOW_ROOT/skills/references/operator-last-resort-evidence.md`.
 - When the agent can safely navigate the app with Playwright or any other browser/tooling path, proactively look for diagnostics/log-copy UI, use it as redacted evidence, and confirm the commit/build + Paris/UTC build-time header before asking the operator for logs.
 - Evaluate `Chantier potentiel` for auth/session/callback/provider/tenant risk beyond a direct local fix.
 - Never log secrets, cookies, tokens, OTPs, private env values, or unredacted user auth data.
@@ -72,6 +79,6 @@ Stop and report blocked when:
 
 Validate this skill after edits with:
 
-- `rg -n "Trace category|Process role|Chantier Potential|auth|session|provider|Playwright|Sentry|redaction|references/" skills/109-sf-auth-debug/SKILL.md`
+- `rg -n "Trace category|Process role|Chantier Potential|ShipFlow-Owned Preflight|canonical ShipFlow path|auth|session|provider|Playwright|Sentry|redaction|references/|operator for logs|runtime surface" skills/109-sf-auth-debug/SKILL.md`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
-- `tools/shipflow_sync_skills.sh --check --all`
+- `tools/shipflow_sync_skills.sh --check --skill 109-sf-auth-debug`

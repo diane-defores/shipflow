@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.1.0"
 project: ShipFlow
 created: "2026-06-26"
-updated: "2026-06-26"
+updated: "2026-06-27"
 status: draft
 source_skill: 900-shipflow-core
 scope: "skill-system-hardening-register"
@@ -31,9 +31,12 @@ evidence:
   - "User decision 2026-06-26: generalize preflight and system-improvement hardening across ShipFlow skills instead of treating misses as isolated incidents."
   - "2026-06-26 audit_shipflow_skills.py result: 0 hard, 1 review, 0 style; only 101-sf-ready shows body-size risk."
   - "2026-06-26 skill_budget_audit.py result: 68 skills, 1 separate risk, absolute estimate 8461/8500."
+  - "2026-06-27 transverse sweep: shared references extracted for ShipFlow-owned preflight, operator-last-resort evidence, preview-proof routing, and chantier-potential intake; remaining corpus rechecked skill-by-skill for first-screen contract gaps."
+  - "2026-06-27 audit_shipflow_skills.py result: 0 hard, 1 review, 0 style; the only remaining review signal was `skills/emailing/SKILL.md` missing a visible report-contract signal, fixed in this sweep."
+  - "2026-06-27 skill_budget_audit.py result: 69 skills, 0 separate risks, absolute estimate 8581/8500; local skill contracts are now within per-skill budget but the corpus still needs a future aggregate compaction pass."
 supersedes: []
 next_review: "2026-07-03"
-next_step: "/009-sf-skill-build audit skill-system-hardening-register batch A"
+next_step: "/009-sf-skill-build plan aggregate corpus compaction after the execution-fidelity hardening sweep"
 ---
 
 # Skill System Hardening Register
@@ -67,25 +70,25 @@ Audit each skill against these five checks:
 - `priority`: known risk already observed or flagged by audit
 - `done`: reviewed against this register and no immediate hardening needed
 
-## Current Batch Priorities
+## Sweep Outcome
 
-| Skill | Why first |
+| Area | Outcome |
 | --- | --- |
-| `101-sf-ready` | Only current audit risk: body-size pressure (`~5137` body tokens). |
-| `900-shipflow-core` | Internal hardening skill; must set the standard for preflight and system-improvement loops. |
-| `108-sf-browser` | Strong existing preflight precedent; useful reference pattern for other tool-using skills. |
-| `103-sf-verify` | High leverage because it converts implementation claims into ship/no-ship truth. |
-| `102-sf-start` | High leverage because it decides whether the agent proceeds or stops. |
+| Shared doctrine | Repetition was reduced by extracting `shipflow-owned-preflight.md`, `operator-last-resort-evidence.md`, `preview-proof-routing.md`, and reusing `chantier-tracking.md` for chantier-potential thresholds. |
+| High-risk execution skills | `101`-`109`, `003`, and `405` now expose first-screen guardrails more reliably with local anchors to shared doctrine. |
+| Remaining corpus | Mechanical and targeted review found no additional immediate contract hole beyond `emailing`, which now exposes the reporting contract explicitly. |
+| Residual system risk | The main remaining issue is corpus-wide aggregate body size (`8581 / 8500`), which is a compaction campaign, not an execution-fidelity contract gap. |
 
-## Batch A Review Snapshot
+## Hardening Snapshot
 
 | Skill | Verdict | Notes |
 | --- | --- | --- |
 | `900-shipflow-core` | strong baseline | Explicit canonical preflight, explicit system-improvement loop, and explicit stop condition for running ShipFlow-owned audit steps too early. |
-| `101-sf-ready` | priority risk remains | Readiness gate is rich but still too large; the body-size risk remains the clearest execution-fidelity pressure point in the current corpus. |
-| `102-sf-start` | mostly strong | Strong operator-autonomy and proof-path doctrine, but ShipFlow-owned tool preflight is mostly delegated to references instead of surfaced as a compact local checklist. |
-| `103-sf-verify` | mostly strong | Strong owner-routing and verification semantics, but like `102-sf-start`, some preflight behavior depends on references and detailed gate loading. |
+| `101-sf-ready` | compacted | Detailed review heuristics and report templates moved to a local playbook; the activation body is now compact enough to clear the body-size risk. |
+| `102-sf-start` | hardened | Added a compact local ShipFlow-owned preflight so canonical reference/tool resolution and operator-last-resort discipline stay visible in the activation body. |
+| `103-sf-verify` | hardened | Added a compact local ShipFlow-owned preflight so verification cannot start from inferred paths or partial reference memory under pressure. |
 | `108-sf-browser` | reference pattern | Best current example of explicit runtime preflight, safe stop behavior, and owner routing before browser proof. |
+| `emailing` | patched | Added explicit `Report Modes` so the audit tool no longer sees a hidden reporting contract on this lightweight master workflow. |
 
 ## Registry
 
@@ -93,113 +96,113 @@ Audit each skill against these five checks:
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `000-shipflow` | routing | todo | Entry router; broad blast radius if contracts drift. | audit |
-| `001-sf-build` | master | todo | Master lifecycle orchestration. | audit |
-| `002-sf-maintain` | master | todo | Master maintenance orchestration. | audit |
-| `003-sf-bug` | master | todo | Bug lifecycle orchestration. | audit |
-| `004-sf-deploy` | master | todo | Release/deploy orchestration. | audit |
-| `005-sf-ship` | master | todo | Final ship gate and closure path. | audit |
-| `006-sf-design` | master | todo | Design lifecycle orchestration. | audit |
-| `007-sf-content` | master | todo | Content lifecycle orchestration. | audit |
-| `008-sf-onboarding` | master | todo | Onboarding flow orchestration. | audit |
-| `009-sf-skill-build` | master | todo | Skill-maintenance master path. | audit |
+| `000-shipflow` | routing | done | Entry router already exposes canonical path, reporting, delegation, and routing references on the first screen. | none |
+| `001-sf-build` | master | done | Lifecycle owner already exposes canonical path, reporting, delegation, and required references early enough for pressure execution. | none |
+| `002-sf-maintain` | master | done | Maintenance master already exposes lifecycle, chantier, reporting, and ownership boundaries clearly on activation. | none |
+| `003-sf-bug` | master | done | Bug lifecycle now uses the shared preview-proof and chantier-potential doctrine without duplicating it locally. | none |
+| `004-sf-deploy` | master | done | Deploy lifecycle already exposes reporting, lifecycle routing, and hosted-proof sensitivity on the first screen. | none |
+| `005-sf-ship` | master | done | Ship gate already exposes canonical path, reporting, and required references where execution pressure is highest. | none |
+| `006-sf-design` | master | done | Design lifecycle already exposes canonical path, reporting, design-system references, and validation/stop anchors clearly. | none |
+| `007-sf-content` | master | done | Content lifecycle already exposes canonical path, reporting, scope gate, and validation discipline clearly enough. | none |
+| `008-sf-onboarding` | master | done | Onboarding lifecycle already exposes canonical path, reporting, required references, and proof gates clearly on activation. | none |
+| `009-sf-skill-build` | master | done | Skill-maintenance master already exposes lifecycle routing and governance references prominently enough for execution fidelity. | none |
 
 ### Execution Skills
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `100-sf-spec` | execution | todo | Spec entrypoint; should stay compact and deterministic. | audit |
-| `101-sf-ready` | execution | priority | Rich readiness gate, but still the only active body-size risk from the audit. | compact-or-prove |
-| `102-sf-start` | execution | verify | Strong autonomy/proof contract; check whether owned-tool preflight should be surfaced more locally. | decide local preflight wording |
-| `103-sf-verify` | execution | verify | Strong owner routing and partial semantics; check whether owned-tool preflight needs a more explicit local anchor. | decide local preflight wording |
-| `104-sf-end` | execution | todo | Closure/bookkeeping; check unnecessary operator bounce. | audit |
-| `105-sf-check` | execution | todo | Validation runner; likely preflight-sensitive. | audit |
-| `106-sf-fix` | execution | todo | Fix path; verify miss-to-system loop expectations. | audit |
-| `107-sf-test` | execution | todo | Manual QA routing; verify operator-last-resort discipline. | audit |
+| `100-sf-spec` | execution | done | Spec entrypoint stays compact and already exposes canonical path, reporting, mission, references, stop rules, and validation. | none |
+| `101-sf-ready` | execution | done | Detailed readiness heuristics moved to a local playbook; top-level gate now stays focused on activation and verdict ownership. | none |
+| `102-sf-start` | execution | done | Compact local ShipFlow-owned preflight added; validation passed and no further immediate hardening is needed in this batch. | none |
+| `103-sf-verify` | execution | done | Compact local ShipFlow-owned preflight added; validation passed and no further immediate hardening is needed in this batch. | none |
+| `104-sf-end` | execution | done | Compact local ShipFlow-owned preflight and local validation anchors added; closure bookkeeping now exposes the same first-30-seconds guardrail as the other critical lifecycle skills. | none |
+| `105-sf-check` | execution | done | Compact local ShipFlow-owned preflight and local validation anchors added; runtime-visibility checks now expose the same first-30-seconds guardrail as other critical execution skills. | none |
+| `106-sf-fix` | execution | done | Compact local ShipFlow-owned preflight and explicit operator-autonomy reminder added; bug repair now exposes the same first-30-seconds guardrail as the other critical execution skills. | none |
+| `107-sf-test` | execution | done | Manual QA skill now exposes chantier-potential and preview-proof routing while keeping operator-last-resort discipline explicit. | none |
 | `108-sf-browser` | execution | done | Strong explicit runtime preflight and owner-routing pattern; use as a reference skill for future hardening. | none |
-| `109-sf-auth-debug` | execution | todo | Auth proof path; likely sensitive to preflight and operator-last-resort. | audit |
+| `109-sf-auth-debug` | execution | done | Compact local ShipFlow-owned preflight and explicit operator-last-resort reminder added; auth debugging now exposes the same first-30-seconds guardrail as the other critical proof skills. | none |
 
 ### Content And Research Skills
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `200-sf-redact` | content | todo | Content drafting helper. | audit |
-| `201-sf-enrich` | content | todo | Content enrichment helper. | audit |
-| `202-sf-repurpose` | content | todo | Content transform helper. | audit |
-| `203-sf-research` | content | todo | Research workflow; verify source/tool preflights. | audit |
-| `204-sf-market-study` | content | todo | Market-study workflow. | audit |
-| `205-sf-veille` | content | todo | Veille intake; verify canonical-path and governance loops. | audit |
-| `206-sf-audit-copy` | content | todo | Copy audit helper. | audit |
-| `207-sf-audit-copywriting` | content | todo | Copywriting audit helper. | audit |
+| `200-sf-redact` | content | done | Drafting helper already exposes canonical path, reporting, references, stop rules, and validation cleanly. | none |
+| `201-sf-enrich` | content | done | Enrichment helper already exposes canonical path, reporting, references, stop rules, and validation cleanly. | none |
+| `202-sf-repurpose` | content | done | Repurposing helper already exposes canonical path, reporting, references, stop rules, and validation cleanly. | none |
+| `203-sf-research` | content | done | Research workflow already exposes canonical path, reporting, and required source references clearly enough for tool discipline. | none |
+| `204-sf-market-study` | content | done | Market-study workflow already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `205-sf-veille` | content | done | Veille workflow already exposes canonical path, reporting, source references, and governance routing clearly enough. | none |
+| `206-sf-audit-copy` | content | done | Copy audit helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `207-sf-audit-copywriting` | content | done | Copywriting audit helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
 
 ### Docs And Ops Skills
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `300-sf-docs` | docs-ops | todo | Doc governance owner; canonical-path discipline is critical. | audit |
-| `301-sf-context` | docs-ops | todo | Context loader; check preflight assumptions. | audit |
-| `302-sf-help` | docs-ops | todo | Help router; verify no unsupported public claims. | audit |
-| `303-sf-resume` | docs-ops | todo | Resume helper; check operator-last-resort phrasing. | audit |
-| `304-sf-changelog` | docs-ops | todo | Change summarizer. | audit |
-| `305-sf-init` | docs-ops | todo | Bootstrap helper; preflight discipline is important. | audit |
-| `306-sf-scaffold` | docs-ops | todo | Scaffold helper; verify deterministic setup and stop conditions. | audit |
-| `307-sf-skills-refresh` | docs-ops | todo | Skill-refresh helper; likely central to future hardening batches. | audit |
-| `308-sf-status` | docs-ops | todo | Status reporter; check system-improvement output quality. | audit |
-| `309-sf-tasks` | docs-ops | todo | Task tracker updater. | audit |
-| `310-sf-github-hygiene` | docs-ops | todo | GitHub hygiene workflow; verify proof routing and operator-last-resort. | audit |
+| `300-sf-docs` | docs-ops | done | Docs owner already exposes canonical path, reporting, references, stop rules, and validation where governance mistakes would matter. | none |
+| `301-sf-context` | docs-ops | done | Context loader is intentionally compact and already exposes canonical path plus low-blast-radius helper scope. | none |
+| `302-sf-help` | docs-ops | done | Help router already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `303-sf-resume` | docs-ops | done | Resume helper stays compact and already exposes canonical path, mission, and bounded helper behavior clearly enough. | none |
+| `304-sf-changelog` | docs-ops | done | Changelog helper stays compact and already exposes canonical path and deterministic output scope clearly enough. | none |
+| `305-sf-init` | docs-ops | done | Bootstrap helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `306-sf-scaffold` | docs-ops | done | Scaffold helper already exposes canonical path, references, and deterministic setup constraints prominently enough. | none |
+| `307-sf-skills-refresh` | docs-ops | done | Skills-refresh helper already exposes canonical path, reporting, and required references clearly enough for future hardening work. | none |
+| `308-sf-status` | docs-ops | done | Status reporter already exposes canonical path, reporting, references, and bounded reporting purpose clearly. | none |
+| `309-sf-tasks` | docs-ops | done | Tasks helper stays compact and already exposes deterministic tracker-updater scope clearly enough. | none |
+| `310-sf-github-hygiene` | docs-ops | done | GitHub hygiene workflow already exposes canonical path, reporting, scope gate, references, stop rules, and validation clearly. | none |
 
 ### Audit Skills
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `400-sf-audit` | audit | todo | Master audit entrypoint. | audit |
-| `401-sf-audit-code` | audit | todo | Code audit helper. | audit |
-| `402-sf-deps` | audit | todo | Dependency audit helper. | audit |
-| `403-sf-perf` | audit | todo | Performance audit helper. | audit |
-| `404-sf-migrate` | audit | todo | Migration audit/planning helper. | audit |
-| `405-sf-prod` | audit | todo | Production proof/discovery path; high operator-last-resort sensitivity. | audit |
-| `406-sf-audit-seo` | audit | todo | SEO audit helper. | audit |
-| `407-sf-audit-translate` | audit | todo | Translation audit helper. | audit |
-| `408-sf-audit-gtm` | audit | todo | GTM audit helper. | audit |
-| `409-sf-audit-a11y` | audit | todo | Accessibility audit helper. | audit |
+| `400-sf-audit` | audit | done | Audit entrypoint already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `401-sf-audit-code` | audit | done | Code audit helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `402-sf-deps` | audit | done | Dependency audit helper already exposes canonical path and dependency-proof workflow prominently enough. | none |
+| `403-sf-perf` | audit | done | Performance audit helper already exposes canonical path and heavy audit workflow clearly enough despite size. | none |
+| `404-sf-migrate` | audit | done | Migration helper already exposes canonical path and migration-planning scope clearly enough for safe routing. | none |
+| `405-sf-prod` | audit | done | Production proof skill now uses the shared preview-proof route and already exposes reporting, references, stop rules, and validation clearly. | none |
+| `406-sf-audit-seo` | audit | done | SEO audit helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `407-sf-audit-translate` | audit | done | Translation audit helper already exposes canonical path, reporting, and audit workflow clearly enough despite size. | none |
+| `408-sf-audit-gtm` | audit | done | GTM audit helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `409-sf-audit-a11y` | audit | done | Accessibility audit helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
 
 ### Design Skills
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `500-sf-design-from-scratch` | design | todo | Design-system creation path. | audit |
-| `501-sf-design-playground` | design | todo | Design playground scaffold. | audit |
-| `502-sf-audit-design` | design | todo | Design audit helper. | audit |
-| `503-sf-audit-design-tokens` | design | todo | Token audit helper; likely good place for mechanical preflights. | audit |
-| `504-sf-audit-components` | design | todo | Component audit helper. | audit |
+| `500-sf-design-from-scratch` | design | done | Design-system creation skill already exposes canonical path, reporting, scope gate, references, validation, and stop rules clearly. | none |
+| `501-sf-design-playground` | design | done | Design playground scaffold already exposes canonical path and deterministic design-playground setup clearly enough. | none |
+| `502-sf-audit-design` | design | done | Design audit helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `503-sf-audit-design-tokens` | design | done | Token audit helper already exposes canonical path, reporting, and audit workflow clearly enough despite size. | none |
+| `504-sf-audit-components` | design | done | Component audit helper already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
 
 ### Platform Skills
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `600-sf-local-cloud-sync` | platform | todo | Local/cloud sync design path. | audit |
-| `601-sf-product-entitlements` | platform | todo | Entitlements design path. | audit |
-| `602-sf-platform-parity` | platform | todo | Cross-platform parity audit path. | audit |
+| `600-sf-local-cloud-sync` | platform | done | Local/cloud sync design skill already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `601-sf-product-entitlements` | platform | done | Entitlements design skill already exposes canonical path, reporting, references, stop rules, and validation clearly. | none |
+| `602-sf-platform-parity` | platform | done | Platform parity audit already exposes canonical path, reporting, mission, stop rules, and validation clearly. | none |
 
 ### Meta Skills
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `700-sf-explore` | meta | todo | Exploration workflow; verify system-improvement output discipline. | audit |
-| `701-sf-backlog` | meta | todo | Backlog triage helper. | audit |
-| `702-sf-priorities` | meta | todo | Prioritization helper. | audit |
-| `703-sf-review` | meta | todo | Review helper; findings-first contract matters. | audit |
-| `704-sf-model` | meta | todo | Model-routing helper. | audit |
-| `705-sf-conversation-audit` | meta | todo | Conversation audit helper; strong candidate for system-loop patterns. | audit |
-| `706-continue` | meta | todo | Resume/continue helper. | audit |
-| `707-name` | meta | todo | Minimal helper; low risk but still part of corpus. | audit |
+| `700-sf-explore` | meta | done | Exploration workflow stays compact and already exposes canonical path plus bounded exploratory mission clearly. | none |
+| `701-sf-backlog` | meta | done | Backlog triage helper already exposes canonical path, reporting, references, and bounded backlog scope clearly. | none |
+| `702-sf-priorities` | meta | done | Prioritization helper already exposes canonical path, reporting, references, and bounded decision scope clearly. | none |
+| `703-sf-review` | meta | done | Review helper already exposes canonical path, reporting, references, and findings-first review posture clearly. | none |
+| `704-sf-model` | meta | done | Model router stays compact and already exposes canonical path plus bounded routing role clearly enough. | none |
+| `705-sf-conversation-audit` | meta | done | Conversation audit helper already exposes canonical private paths, safety gate, reporting, and follow-through routing clearly. | none |
+| `706-continue` | meta | done | Continue helper already exposes canonical path, bounded continuation rules, and anti-chantier-drift guardrails clearly. | none |
+| `707-name` | meta | done | Minimal helper stays low-blast-radius and already exposes canonical path plus bounded session-tagging workflow clearly enough. | none |
 
 ### Transcript Skills
 
 | Skill | Family | Status | Current signal | Next action |
 | --- | --- | --- | --- | --- |
-| `800-tmux-capture-conversation` | transcript | todo | Capture helper; verify canonical output paths. | audit |
-| `801-clean-conversation-transcript` | transcript | todo | Cleanup helper; verify deterministic output and stop rules. | audit |
+| `800-tmux-capture-conversation` | transcript | done | Capture helper already exposes canonical output-path rules and preset guardrails clearly on activation. | none |
+| `801-clean-conversation-transcript` | transcript | done | Transcript cleanup helper stays compact and already exposes mission, required input, and deterministic editing rules clearly. | none |
 
 ### Internal Operator Skill
 
@@ -211,10 +214,10 @@ Audit each skill against these five checks:
 
 | Batch | Scope | Target outcome |
 | --- | --- | --- |
-| A | `900`, `101`, `102`, `103`, `108` | Validate the baseline pattern and the known body-size risk. |
-| B | `000`-`009`, `104`-`109` | Cover the highest-leverage routing, execution, and operator-proof skills. |
-| C | `300`-`310`, `400`-`409` | Cover documentation, audits, production proof, and system reporting paths. |
-| D | `200`-`207`, `500`-`707`, `800`-`801` | Finish helper, design, content, meta, and transcript surfaces. |
+| A | `900`, `101`, `102`, `103`, `108` | completed |
+| B | `000`-`009`, `104`-`109` | completed |
+| C | `300`-`310`, `400`-`409` | completed |
+| D | `200`-`207`, `500`-`707`, `800`-`801` | completed |
 
 ## Update Rule
 

@@ -10,6 +10,12 @@ Primary artifact type: `master-workflow`.
 
 Before resolving any ShipFlow-owned file, load `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` (`$SHIPFLOW_ROOT` defaults to `$HOME/shipflow`). ShipFlow-owned tools, shared references, skill-local references, templates, workflow docs, and internal scripts must resolve from `$SHIPFLOW_ROOT`.
 
+## Report Modes
+
+Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
+
+Default to `report=user`: concise, sequence-first, and in the user's active language. Use `report=agent` only when the user explicitly asks for a detailed handoff, routing evidence, or a fuller audit matrix.
+
 ## Mission
 
 `emailing` owns audience email sequences: planning, drafting, reviewing, and routing sequence work with clear audience, cadence, CTA, and claim consequences.

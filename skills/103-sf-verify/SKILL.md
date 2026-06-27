@@ -29,7 +29,7 @@ Verification semantics:
 
 When `103-sf-verify` partial is caused by hosted/deployed/provider proof, the next routing contract is mandatory:
 
-- `103-sf-verify`: `partial` -> `005-sf-ship -> 405-sf-prod` if deploy is needed -> proof owner (`108-sf-browser`, `109-sf-auth-debug`, or `107-sf-test`) with target and scenario.
+- `103-sf-verify`: when deploy-backed proof is needed, apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md` and route the matching proof owner with target and scenario.
 
 
 Before judging implementation quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. Verification must fail or report partial when the work merely takes the fastest/easiest path and leaves correctness, security, performance, maintainability, durability, excellence, or proof quality below the accepted contract.
@@ -111,6 +111,11 @@ Load on demand:
 - `/109-sf-auth-debug` evidence for auth/session/callback/protected-route proof.
 - `/108-sf-browser` evidence for non-auth browser proof.
 
+## ShipFlow-Owned Preflight
+
+Apply `$SHIPFLOW_ROOT/skills/references/shipflow-owned-preflight.md` before reading ShipFlow-owned references, running ShipFlow-owned tools/scripts, or checking ShipFlow-owned sync surfaces.
+For `103-sf-verify`, this preflight also applies before verifying ShipFlow-owned runtime visibility or skill-sync targets.
+
 ## Editorial Score Gate
 
 When a chantier asks for an editorial score or content quality gate:
@@ -159,6 +164,6 @@ Report `not verified` or `blocked` when:
 Run focused checks based on scope and diff:
 
 ```bash
-rg -n "Trace category|Process role|Success Behavior|Error Behavior|Proof Path Fit|Task Application Loop Fit|Closure Archive Guard Fit|task-application-loop|closure-archive-guard|decision quality|proof path|evidence-first|test-first|scenario-first|fresh-docs|Chantier" skills/103-sf-verify/SKILL.md
+rg -n "Trace category|Process role|Success Behavior|Error Behavior|Proof Path Fit|Task Application Loop Fit|Closure Archive Guard Fit|ShipFlow-Owned Preflight|canonical ShipFlow path|task-application-loop|closure-archive-guard|decision quality|proof path|evidence-first|test-first|scenario-first|fresh-docs|Chantier" skills/103-sf-verify/SKILL.md
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 ```

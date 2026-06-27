@@ -23,7 +23,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Chantier Potential Intake
 
-Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the findings reveal non-trivial future work and no unique chantier owns it, add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, proposed title, reason, severity, scope, evidence, recommended `/100-sf-spec ...` command, and next step.
+Apply the chantier-potential threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report.
+For `106-sf-fix`, use it when the bug reveals non-trivial future work beyond a direct bounded repair and no unique chantier already owns that work.
 
 ## Required References
 
@@ -41,6 +42,11 @@ Load `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when the
 Load `$SHIPFLOW_ROOT/skills/references/project-development-mode.md` before deciding how the fix can be retested.
 
 Load only the relevant Supabase, Sentry, runtime diagnostics, auth-debug, or browser references when the detailed workflow triggers those gates.
+
+## ShipFlow-Owned Preflight
+
+Apply `$SHIPFLOW_ROOT/skills/references/shipflow-owned-preflight.md` before reading ShipFlow-owned references, running ShipFlow-owned tools/scripts, or checking ShipFlow-owned bug-memory/runtime surfaces.
+For `106-sf-fix`, this preflight also applies before creating or updating durable ShipFlow-owned bug memory.
 
 ## Mission
 
@@ -76,7 +82,7 @@ If `$ARGUMENTS` is provided, use it. If empty, ask: `Quel bug veux-tu corriger ?
 
 Always reconstruct the bug as a tiny user story: actor, trigger, broken behavior, expected outcome/user value. Ask targeted clarification only when the missing answer changes visible behavior, scope, permission boundary, destructive side effects, retries, failure handling, data exposure, tenant isolation, or security posture.
 
-Before asking the operator for logs, reproduction detail, screenshots, status, or validation, apply the Operator Autonomy Standard: inspect safe project files, bug memory, git diff, local checks, browser/app diagnostics, copyable logs, and bounded runtime logs yourself. Ask only for decisions, secrets, accounts/devices, manual-only proof, unavailable environments, or unsafe side effects.
+Before asking the operator for logs, reproduction detail, screenshots, status, or validation, apply `$SHIPFLOW_ROOT/skills/references/operator-last-resort-evidence.md`.
 
 ## BUG-ID And Bug Memory
 
@@ -99,6 +105,8 @@ If `direct`, apply the shared task application loop to implement the bounded pro
 If `spec-first`, do not code; route to `/100-sf-spec`, `/101-sf-ready`, then `/102-sf-start`.
 
 If `diagnostic only`, do not code; route to `109-sf-auth-debug`, `108-sf-browser`, or a concrete next step as appropriate.
+
+Before asking the operator for logs, reproduction detail, screenshots, status, or validation, apply `$SHIPFLOW_ROOT/skills/references/operator-last-resort-evidence.md`.
 
 For runtime errors, error boundaries, 5xx, crashes, or visible support states, use the app's diagnostics/log-copy surface when reachable. Confirm the copied text starts with commit/build plus Paris/UTC build time, and treat missing or unsafe diagnostics as part of the bug evidence posture.
 
@@ -129,6 +137,6 @@ Use the report shape in `bug-fix-workflow.md`: classification, reason, user stor
 
 Validate this skill after edits with:
 
-- `rg -n "Trace category|Process role|Chantier Potential|spec-driven-development-discipline|decision-quality-contract|task-application-loop|Direct fix|Spec-first|BUG-ID|Stop Conditions|bug-fix-workflow" skills/106-sf-fix/SKILL.md`
+- `rg -n "Trace category|Process role|Chantier Potential|ShipFlow-Owned Preflight|canonical ShipFlow path|spec-driven-development-discipline|decision-quality-contract|task-application-loop|Direct fix|Spec-first|BUG-ID|Stop Conditions|bug-fix-workflow|operator for logs|bug memory|runtime surface" skills/106-sf-fix/SKILL.md`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `python3 tools/shipflow_metadata_lint.py skills/106-sf-fix/references/bug-fix-workflow.md`

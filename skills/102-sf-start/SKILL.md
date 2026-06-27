@@ -25,7 +25,7 @@ Result semantics:
 - Use `implemented` when the planned code, docs, and tests within `102-sf-start` scope were completed, even if runtime, manual, hosted, production, Sentry, or device-only verification remains pending.
 - Use `partial` only when implementation work itself is incomplete, intentionally deferred, or some planned files or tasks could not be finished.
 - Missing manual QA, hosted preview proof, Sentry dashboard evidence, production verification, or device-only validation must not downgrade `102-sf-start` from `implemented` to `partial`; record those gaps for `103-sf-verify` instead.
-- When local implementation is complete but those gaps stay pending, avoid closure/ship-ready wording and route the next owner or proof step explicitly (`005-sf-ship -> 405-sf-prod`, `405-sf-prod -> 108-sf-browser/109-sf-auth-debug/107-sf-test`) with required target/environment.
+- When local implementation is complete but those gaps stay pending, avoid closure/ship-ready wording and route the next owner or proof step explicitly. Apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md` when deployed proof is required.
 - If local checks fail because the implementation is broken, use `partial` or `blocked` depending on whether the fix can continue. If checks fail because the environment cannot run a proof surface outside `102-sf-start` scope, keep `implemented` and route to `103-sf-verify partial`.
 
 Auto-verify semantics:
@@ -56,6 +56,11 @@ Load only the references needed for the active run:
 - `$SHIPFLOW_ROOT/skills/references/runtime-diagnostics-surface.md`: required when the task touches a runtime app, support/error handling, settings, auth callbacks, deploy proof, Sentry, browser debugging, or log collection.
 - Supabase, Sentry, auth-debug, browser, or model-routing references only when the workflow reference triggers their gate.
 
+## ShipFlow-Owned Preflight
+
+Apply `$SHIPFLOW_ROOT/skills/references/shipflow-owned-preflight.md` before reading ShipFlow-owned references, running ShipFlow-owned tools/scripts, or mutating ShipFlow-owned operational records.
+For `102-sf-start`, this preflight also applies before touching ShipFlow-owned tracker or spec surfaces.
+
 ## Mode Detection
 
 Parse `$ARGUMENTS`, available ready specs, and the latest user request.
@@ -81,7 +86,7 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 - Read only the files needed for the execution contract and linked systems that can change correctness.
 - Prefer fresh-context execution for non-trivial spec-first work when available, but keep the main thread responsible for integration, validation, and user-facing truth.
 - Do not weaken documentation, security, redaction, chantier, or validation gates to finish faster.
-- Apply the `Operator Autonomy Standard`: gather safe local evidence, diagnostics, logs, status, and validation yourself before asking the operator; ask only for real decisions, secrets, device/manual-only proof, unavailable environments, or unsafe side effects.
+- Apply `$SHIPFLOW_ROOT/skills/references/operator-last-resort-evidence.md` before asking the operator for logs, validation status, or similar evidence.
 
 ## Stop Conditions
 
@@ -97,6 +102,6 @@ Stop and report blocked or rerouted when:
 
 Validate this skill after edits with:
 
-- `rg -n "Trace category|Process role|Result semantics|Auto-verify semantics|auto-verify|implemented|partial|Report Modes|Required References|Spec-first|ready spec|references/execution-workflow|task-application-loop|spec-driven-development-discipline|test-first|evidence-first|proof path" skills/102-sf-start/SKILL.md`
+- `rg -n "Trace category|Process role|Result semantics|Auto-verify semantics|auto-verify|implemented|partial|Report Modes|Required References|ShipFlow-Owned Preflight|canonical ShipFlow path|Spec-first|ready spec|references/execution-workflow|task-application-loop|spec-driven-development-discipline|test-first|evidence-first|proof path" skills/102-sf-start/SKILL.md`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `tools/shipflow_sync_skills.sh --check --all`

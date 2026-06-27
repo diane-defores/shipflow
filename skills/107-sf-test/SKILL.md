@@ -23,7 +23,8 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/chanti
 
 ## Chantier Potential Intake
 
-Because this skill has process role `source-de-chantier`, evaluate the standard threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report. If the findings reveal non-trivial future work and no unique chantier owns it, add a `Chantier potentiel` block with `oui`, `non`, or `incertain`, proposed title, reason, severity, scope, evidence, recommended `/100-sf-spec ...` command, and next step.
+Apply the chantier-potential threshold from `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` before the final report.
+For `107-sf-test`, use it when QA findings reveal non-trivial future work outside the current owner flow and no unique chantier already owns that work.
 
 ## Required References
 
@@ -62,7 +63,7 @@ Apply the Operator Autonomy Standard from `$SHIPFLOW_ROOT/skills/references/deci
 
 Before generating a manual test, inspect the project-local `## ShipFlow Development Mode` section in `CLAUDE.md` or `SHIPFLOW.md`.
 
-If project mode is `vercel-preview-push` and the requested test targets changed app behavior, do not generate a preview/manual test while dirty code has not been shipped. Route first to `/005-sf-ship [scope]`, then `/405-sf-prod [project or URL]`, then rerun `/107-sf-test --preview [scope]`.
+If project mode is `vercel-preview-push` and the requested test targets changed app behavior, apply `$SHIPFLOW_ROOT/skills/references/preview-proof-routing.md`. For `107-sf-test`, rerun `/107-sf-test --preview [scope]` only after ship and confirmed deploy.
 
 If mode is `hybrid`, apply the same gate for hosted-only flows: auth/OAuth, callbacks, webhooks, deployment env vars, Vercel routing, edge/serverless behavior, preview/prod data, or remotely reproduced issues.
 
