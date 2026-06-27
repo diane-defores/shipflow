@@ -59,6 +59,7 @@ cat [project_path]/shipflow_data/business/business.md
 cat [project_path]/shipflow_data/business/product.md
 cat [project_path]/shipflow_data/business/branding.md
 cat [project_path]/shipflow_data/business/gtm.md
+cat [project_path]/shipflow_data/business/portfolio-project-pitch-links.md
 cat [project_path]/shipflow_data/editorial/content-map.md
 cat [project_path]/shipflow_data/technical/context.md
 ```

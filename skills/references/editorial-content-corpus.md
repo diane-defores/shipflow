@@ -66,6 +66,7 @@ Use these contracts to bound public copy:
 - `shipflow_data/business/product.md`: user problem, desired outcomes, workflow scope, non-goals.
 - `shipflow_data/business/branding.md`: voice, trust posture, vocabulary, and claim boundaries.
 - `shipflow_data/business/gtm.md`: public promise, channels, objections, proof limits, and conversion path.
+- `shipflow_data/business/portfolio-project-pitch-links.md`: index of versioned pitch-file URLs for `#shipflow-owner` and `#portfolio` reasoning.
 - `shipflow_data/technical/guidelines.md`: internal language doctrine and documentation rules.
 - `shipflow_data/business/project-competitors-and-inspirations.md`: optional competitors, alternatives, inspiration, and anti-pattern registry.
 - `shipflow_data/business/affiliate-programs.md`: optional affiliate, referral, partner, sponsorship, and disclosure registry.

@@ -19,6 +19,7 @@ For a solo founder, the value is simple: it helps you avoid building for a marke
 - when you have a product idea and need to know if demand is real
 - when you want to compare a few niches before choosing one
 - when you need a market brief to support `BUSINESS.md`, GTM, or pricing decisions
+- when you need a market brief that should align with the portfolio project pitch links index
 
 ## What You Give It
 

@@ -23,6 +23,7 @@ linked_artifacts:
   - "shipflow_data/business/business.md"
   - "shipflow_data/business/branding.md"
   - "shipflow_data/business/product.md"
+  - "shipflow_data/business/portfolio-project-pitch-links.md"
 depends_on:
   - artifact: "shipflow_data/business/business.md"
     artifact_version: "1.2.0"

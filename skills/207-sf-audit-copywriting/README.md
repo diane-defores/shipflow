@@ -23,7 +23,7 @@ This skill is deliberately different from a line-editing pass. It asks whether t
 ## What You Give It
 
 - a page path, a project directory, or `global`
-- business and brand context if it exists
+- business, brand, and project-pitch context if it exists
 - optional hints about the target buyer or funnel stage
 
 ## What You Get Back

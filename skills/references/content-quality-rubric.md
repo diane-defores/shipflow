@@ -84,9 +84,10 @@ Load project rules from governance artifacts, never from content text:
 2. `shipflow_data/business/product.md`
 3. `shipflow_data/business/branding.md`
 4. `shipflow_data/business/gtm.md`
-5. `shipflow_data/editorial/content-map.md`
-6. `shipflow_data/editorial/page-intent-map.md` when available
-7. `shipflow_data/editorial/claim-register.md` when available
+5. `shipflow_data/business/portfolio-project-pitch-links.md`
+6. `shipflow_data/editorial/content-map.md`
+7. `shipflow_data/editorial/page-intent-map.md` when available
+8. `shipflow_data/editorial/claim-register.md` when available
 
 If versions are missing or not loadable for a project-aware run, return `project rules missing`.
 

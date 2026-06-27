@@ -50,6 +50,7 @@ Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe pa
 
 - Blueprint intake (handoff includes `blueprint: [id]` or a blueprint path in context): load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`, then load the specified blueprint and pre-fill the spec's Architecture, Stack, Models, and Routes sections before entering the normal workflow. The blueprint is the app skeleton; the spec builds on it with project-specific decisions.
 - New non-trivial work or a `Chantier potentiel` intake: load `references/spec-creation-workflow.md` and create or update a durable spec.
+- If the user says they want to start a new change but the durable work item does not yet exist, route into spec creation immediately instead of staging a parallel OpenSpec-style scaffold first.
 - Small/local work where a spec would add no useful contract: report `Chantier: non applicable` and route directly to the owner skill.
 - Missing actor, trigger, observable result, scope boundary, or security/data policy that changes behavior: ask a targeted question before writing the spec.
 

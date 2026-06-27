@@ -64,6 +64,8 @@ Use these when you want the agent to think like a business partner instead of a 
 | `#founder-mode` | a founder-facing decision surface instead of technician-level back-and-forth | `skills/references/operator-partnership-contract.md` |
 | `#founder` | the user as a business owner who wants useful decisions, growth, and clarity | `skills/references/operator-partnership-contract.md` |
 | `#shipflow-owner` | the operator as owner of ShipFlow and adjacent assets, with portfolio-level arbitration | `skills/references/operator-partnership-contract.md` |
+| `#pitch` | the current project's pitch file and its core identity | `shipflow_data/business/portfolio-project-pitch-links.md` |
+| `#portfolio` | the project pitch links index and cross-project opportunity scanning | `shipflow_data/business/portfolio-project-pitch-links.md` |
 
 ## Content Recenter Tags
 
@@ -135,6 +137,8 @@ Use these when you do not want to build the tag set from scratch.
 | Recenter on business buyer logic | `#decision-maker #offer #monetization` | the work to speak to the approver, the budget owner, or the buyer |
 | Recenter on the founder perspective | `#founder #growth #clarity` | the work to assume business-owner responsibility and optimize for useful decisions |
 | Recenter on your portfolio view | `#shipflow-owner #partner #no-drift` | the work to arbitrate across ShipFlow and other assets without losing scope |
+| Recenter on the project identity | `#pitch #partner #clarity` | the work to reload the project's core pitch when the agent starts losing the plot |
+| Recenter on portfolio opportunity | `#portfolio #growth #partner` | the work to scan for useful cross-project leverage and transfer patterns |
 | Improve retention logic | `#retention #end-user #funnel` | the work to focus on repeat usage, activation continuity, and product loops |
 | Repair doc drift at the right layer | `#canon #drift #single-source` | the agent to fix the source of truth first instead of patching duplicate surfaces |
 | Choose the right doc surface | `#owner #entrypoint #public-docs` | the question is mostly where a message or contract should live publicly |

@@ -86,12 +86,14 @@ When focus tags are present, merge them into the narrowest coherent route instea
 
 ### Business Tags
 
-Tags such as `#partner`, `#growth`, `#offer`, `#roi`, `#funnel`, `#positioning`, `#distribution`, `#monetization`, `#retention`, `#decision-maker`, `#leverage`, and `#founder-mode` imply:
+Tags such as `#partner`, `#growth`, `#offer`, `#roi`, `#funnel`, `#positioning`, `#distribution`, `#monetization`, `#retention`, `#decision-maker`, `#leverage`, `#founder-mode`, `#pitch`, and `#portfolio` imply:
 
 - prefer routes that improve business leverage or end-user success over routes that only produce local technical cleanup
 - when the task is ambiguous between generic implementation and public/business framing, inspect `shipflow_data/business/` before choosing
 - if a stronger owner skill or ShipFlow route materially improves adoption or first success, surface it as the recommended path instead of stopping at neutral advice
 - when several edits are possible, choose the smallest durable change that improves conversion, clarity, adoption, retention, or operator leverage
+- when `#pitch` is present, reload `shipflow_data/business/portfolio-project-pitch-links.md` and prefer the pitch that matches the active project before answering or routing
+- when `#portfolio` is present, reload `shipflow_data/business/portfolio-project-pitch-links.md` and scan for the most relevant cross-project opportunity before answering or routing
 
 ### Content Tags
 

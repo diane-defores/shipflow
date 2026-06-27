@@ -23,7 +23,7 @@ This is a writing-quality audit. It treats copy as part of the product experienc
 ## What You Give It
 
 - a page file, a project directory, or `global`
-- optional brand and business context if available in the repo
+- optional brand, business, and project-pitch context if available in the repo
 
 ## What You Get Back
 

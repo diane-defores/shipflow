@@ -24,6 +24,7 @@ It is useful when the product may be technically fine but commercially weak, con
 
 - a project root, a specific page, or `global`
 - any business context already present in the repo
+- the project pitch registry when available
 - optional notes about target audience, pricing, or acquisition channel
 
 ## What You Get Back

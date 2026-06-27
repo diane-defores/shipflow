@@ -100,6 +100,8 @@ For non-trivial work, run or route through `100-sf-spec`, then `101-sf-ready`, a
 
 For trivial and local work that is safe without a full spec, allow a direct mini-contract only when the decision-quality contract is satisfied.
 
+When the chosen workflow schema requires more than one artifact before implementation, keep creating the remaining required artifacts in order until the work is truly apply-ready. Do not stop after the first valid spec if the schema still requires design, tasks, or another prerequisite artifact for the same change.
+
 ## Proof Owner Routing
 
 Do not treat browser/manual proof as generic:
