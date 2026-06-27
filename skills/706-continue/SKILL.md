@@ -21,9 +21,17 @@ As a `pilotage` skill, `706-continue` can route toward `/100-sf-spec` when the n
 
 `706-continue` is a cockpit skill for global conversations.
 
+It answers one pilotage question:
+
+```text
+What is the next action-ready step for the currently resolved work item, and how do we move it forward without switching chantiers by accident?
+```
+
 Use it when the user wants to move the current work forward without loading the whole execution path into the main conversation. The main thread stays responsible for routing, integration, user-facing status, and the final next-step recommendation. Fresh agents do bounded execution when that will reduce context drag or improve focus.
 
 The goal is not to spawn an agent every time. The goal is to choose the next useful action and run it in the right place.
+
+Keep the boundary explicit: `706-continue` advances a resolved work item. It is not a generic doctrine/help surface and not a conversation-only recap surface.
 
 ## Required References
 
@@ -36,6 +44,12 @@ The goal is not to spawn an agent every time. The goal is to choose the next use
 - If `$ARGUMENTS` is provided, treat it as the requested focus.
 - If `$ARGUMENTS` is empty, infer the next useful step from the latest user request, current conversation, TASKS.md, open specs, git status, and recent tool results.
 - If several unrelated next steps are plausible, choose the one most likely to unblock progress. Ask the user only when the choice changes product behavior, security, data handling, destructive operations, cost, or external side effects.
+
+Route away instead of staying in `706-continue` when the user really needs:
+
+- explanation of workflow, doctrine, or skill choice -> `302-sf-help`
+- thread recap only -> `303-sf-resume`
+- a new non-trivial chantier definition -> `100-sf-spec` or `700-sf-explore`
 
 ## Target Resolution
 

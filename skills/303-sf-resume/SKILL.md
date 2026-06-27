@@ -27,12 +27,26 @@ Give the user a fast closure snapshot of the current conversation only.
 
 Give the user a fast closure snapshot of the current conversation only.
 
+`303-sf-resume` answers one summary question:
+
+```text
+What happened in this visible conversation, what still appears open here, and can the user safely close this thread?
+```
+
 This skill is for users who feel lost across many chats and need to know:
 - what was done in this thread
 - what is still planned or in progress
 - whether some tasks mentioned earlier were quietly dropped, forgotten, or left implicit
 - whether they can close the conversation
 - what important context, idea, risk, next step, or product angle would be lost if they close it now
+
+Keep the boundary explicit: `303-sf-resume` summarizes the visible conversation only. It does not inspect repo state, infer hidden durable truth, continue a chantier, or decide the next implementation owner from local files.
+
+Route instead of staying here when the user needs more than a thread recap:
+
+- explain a workflow, skill, or doctrine -> `302-sf-help`
+- actually continue paused work -> `706-continue`
+- verify real repo state or run lifecycle work -> route to the owning lifecycle or specialist skill
 
 ## Speed Rules
 

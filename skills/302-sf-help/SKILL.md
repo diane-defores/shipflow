@@ -44,11 +44,25 @@ When users ask about app creation, blueprints, "crée une app", "quoi de neuf", 
 
 Parse `$ARGUMENTS` and choose the smallest safe mode as defined by `decision-quality-contract`: bounded and professional, never shortcut quality. When the question is about doctrine or tradeoffs, answer through the `Structure Replacement Doctrine` rather than treating novelty, tooling, or extra process as value by default.
 
+`302-sf-help` answers one helper question:
+
+```text
+What workflow, skill, mode, or doctrine does the operator need explained right now?
+```
+
 - If the user asks a direct help question, answer concisely from the top-level route and `references/help-catalog.md` as needed.
 - If the user asks for skill codes, numeric prefixes, or shortcut lookup, load `skill-code-index.md` and answer from the code table without renaming canonical skills.
 - If the user needs full skill taxonomy, workflow cheat sheets, or quick answers, load `references/help-catalog.md`.
 - Use `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` for canonical trace/process role doctrine instead of maintaining a duplicate role matrix here.
 - For `Skills at a Glance`, `Quick Answers`, workflow cycles, audit scoring, and file-reference help, load `references/help-catalog.md`.
+
+Keep the boundary explicit: `302-sf-help` explains, clarifies, and routes. It does not continue a chantier, summarize hidden repo truth, or mutate durable state.
+
+Route immediately instead of staying in help mode when the operator is no longer asking for explanation:
+
+- continue or advance the current work item -> `706-continue`
+- summarize only this visible thread -> `303-sf-resume`
+- do real lifecycle work -> route to the owning lifecycle or specialist skill
 
 ## Core Execution Rules
 

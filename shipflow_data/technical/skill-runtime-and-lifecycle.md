@@ -140,6 +140,14 @@ Current family boundaries:
 
 Keep overlap intentional and explicit: master skills orchestrate, specialists prove or repair, support skills document or scaffold, and helper skills route or summarize without owning lifecycle state.
 
+Within helper/pilotage surfaces, keep the first-screen distinction explicit:
+
+- `302-sf-help` explains workflow, doctrine, skill choice, or route questions.
+- `303-sf-resume` summarizes the visible conversation only.
+- `706-continue` advances the currently resolved work item from durable local evidence.
+
+Do not blur these roles. Help is not continuation, resume is not repo truth, and continue is not a passive summary.
+
 ## Owned Files
 
 | Path | Role | Edit notes |
