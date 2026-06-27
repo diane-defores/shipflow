@@ -20,6 +20,19 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 
 Explore ideas, problems, requirements, risks, and options before coding, without implementing product changes.
 
+This skill answers one operator question: should we pause and understand the problem, option space, or risk before choosing a spec, task mutation, or implementation owner?
+
+It owns exploratory reasoning plus an optional durable `exploration_report` when the exploration crosses the persistence threshold.
+
+Keep the boundary explicit:
+- stay here when the user wants to think, compare, map, challenge assumptions, or clarify what problem is worth solving
+- hand off to `100-sf-spec` when the direction is clear enough to formalize a chantier
+- hand off to `701-sf-backlog` when the outcome is "capture this for later"
+- hand off to `702-sf-priorities` when the outcome is "decide what to do first now"
+- hand off to `703-sf-review` when the user wants a retrospective or closure-oriented summary
+
+`700-sf-explore` does not reprioritize active execution, groom the backlog, mutate `TASKS.md`, or claim that a chantier is reviewed/closed.
+
 Mode réflexion. Penser en profondeur. Visualiser librement. Suivre la conversation où elle mène.
 
 **IMPORTANT : Le mode explore est fait pour réfléchir, pas pour implémenter.** Tu peux lire des fichiers, chercher dans le code, investiguer le codebase, mais tu ne dois JAMAIS écrire du code ni implémenter de fonctionnalités. Si l'utilisateur te demande d'implémenter, rappelle-lui de sortir du mode explore d'abord (ex: `/102-sf-start`). Tu PEUX créer des documents de réflexion (comparaisons, notes) si demandé, et tu peux aussi produire un `exploration_report` selon le seuil ci-dessous — c'est capturer la pensée, pas implémenter.

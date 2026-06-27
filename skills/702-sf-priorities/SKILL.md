@@ -61,6 +61,18 @@ Prioritization is local-first for project work.
 
 Analyze all tasks and reorganize them by priority using a smart prioritization framework.
 
+This skill answers one operator question: among the active tasks already on the table, what should we do first now and why?
+
+It owns current ranking of active work inside the selected task tracker, including explicit impact/effort/blocker reasoning and the recommendation for the next execution target.
+
+Keep the boundary explicit:
+- stay here when the user wants current execution order, tie-breaking, or impact/effort/blocker ranking across active tasks
+- hand off to `701-sf-backlog` when the main need is to capture, defer, or clean future work instead of ranking current work
+- hand off to `700-sf-explore` when the work is still too fuzzy to score credibly
+- hand off to `703-sf-review` when the user wants a retrospective of completed or partial work rather than a forward ranking
+
+`702-sf-priorities` does not serve as a generic idea inbox, does not replace backlog hygiene, and does not treat review bookkeeping as prioritization by another name.
+
 ### Workspace root detection
 
 If the current directory has no project markers (no `package.json`, no `src/` dir) BUT contains multiple project subdirectories, you are at the workspace root. Load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask:

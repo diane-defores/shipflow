@@ -148,8 +148,14 @@ Within helper/pilotage surfaces, keep the first-screen distinction explicit:
 - `000-shipflow` routes or answers directly at the main entrypoint.
 - `301-sf-context` primes minimal focused context before known work.
 - `308-sf-status` reports cross-project git and sync state.
+- `700-sf-explore` frames the problem or option space before commitment.
+- `701-sf-backlog` captures, defers, cleans, or promotes future work.
+- `702-sf-priorities` ranks active work for immediate execution order.
+- `703-sf-review` reconstructs what happened, what is proven, and what should happen next.
 
 Do not blur these roles. Help is not continuation, resume is not repo truth, continue is not a passive summary, route is not context priming, context priming is not execution, and status reporting is not maintenance ownership.
+
+Keep the pilotage boundary explicit as well: exploration is not backlog grooming, backlog grooming is not current prioritization, prioritization is not retrospective review, and review is not open-ended ideation.
 
 ## Owned Files
 

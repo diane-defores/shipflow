@@ -65,6 +65,18 @@ Review bookkeeping is local-first for project work.
 Conduct a comprehensive review of recent work and prepare for the next session.
 This is a review and closure aid, not a truth machine. Commits, changed files, updated docs, and changelog entries are evidence of activity; they are not by themselves proof that the product outcome is complete, coherent, or secure.
 
+This skill answers one operator question: what actually changed, what is proven, what remains open, and what should the next session pick up?
+
+It owns retrospective reconstruction, evidence-framed status, review artifacts, changelog/task bookkeeping when justified, and the next-session handoff derived from completed or partial work.
+
+Keep the boundary explicit:
+- stay here when the user wants a daily/weekly/sprint/release review, evidence-based closure framing, or a next-session summary
+- hand off to `702-sf-priorities` when the main need is to rank active work now rather than summarize what happened
+- hand off to `701-sf-backlog` when the main need is to capture or defer future work rather than review the last work period
+- hand off to `700-sf-explore` when the user needs open-ended problem framing instead of retrospective synthesis
+
+`703-sf-review` does not become a generic ideation lane, does not own backlog grooming by default, and does not silently convert retrospective evidence into current priority ranking without saying so.
+
 ### Workspace root detection
 
 If the current directory has no `.git` directory (not a git repo) BUT contains multiple project subdirectories, you are at the workspace root. Load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask:

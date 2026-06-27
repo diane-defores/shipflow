@@ -60,6 +60,18 @@ Project backlog work is local-first.
 
 Manage the backlog to keep active work focused and capture future ideas.
 
+This skill answers one operator question: what should be captured, deferred, cleaned up, or promoted in the backlog without pretending that everything belongs in active execution right now?
+
+It owns backlog state: ideas recorded for later, deferred tasks, cleanup of stale backlog items, and bounded promotion from backlog into active tracking.
+
+Keep the boundary explicit:
+- stay here when the user wants to add an idea, defer work, clean backlog noise, or review deferred items for possible promotion
+- hand off to `702-sf-priorities` when the user already has active tasks and wants the current execution order
+- hand off to `700-sf-explore` when the idea is still too fuzzy to record cleanly without deeper thinking
+- hand off to `703-sf-review` when the user wants a retrospective of what happened rather than backlog grooming
+
+`701-sf-backlog` does not become the main prioritizer of active work, does not act like an open-ended ideation mode, and does not claim closure of a completed review cycle.
+
 ### Workspace root detection
 
 If the current directory has no project markers (not inside a specific project), you are at the workspace root. Load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask:
