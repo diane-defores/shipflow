@@ -33,6 +33,19 @@ The goal is not to spawn an agent every time. The goal is to choose the next use
 
 Keep the boundary explicit: `706-continue` advances a resolved work item. It is not a generic doctrine/help surface and not a conversation-only recap surface.
 
+This skill answers one operator question: what is the single next action-ready move for the active work item, and who should own it now?
+
+It owns continuation of the currently resolved work item from durable local evidence: the next gate, next unchecked task inside that work item, next proof step, or next owner route needed to keep momentum.
+
+Keep the boundary explicit:
+- stay here when the user wants to continue the current work item without reopening broad planning
+- hand off to `309-sf-tasks` when the main need is to repair or reconcile tracker state rather than advance the work item itself
+- hand off to `303-sf-resume` when the user only wants a conversation recap with no execution push
+- hand off to `302-sf-help` when the user needs doctrine or skill-choice explanation
+- hand off to `700-sf-explore` or `100-sf-spec` when there is no resolved work item to continue safely
+
+`706-continue` does not become a generic tracker-grooming surface, does not rewrite `TASKS.md` as its primary purpose, and does not silently switch to another chantier because the current one is inconvenient.
+
 ## Required References
 
 - `$SHIPFLOW_ROOT/skills/references/canonical-paths.md` before resolving ShipFlow-owned files.

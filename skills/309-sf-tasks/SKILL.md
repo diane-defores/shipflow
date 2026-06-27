@@ -142,6 +142,19 @@ Intelligently manage the TASKS.md file by:
 3. Suggesting the next priority action
 4. **Keeping local and legacy master trackers in sync** (`shipflow_data/workflow/TASKS.md` primary, legacy master optional)
 
+This skill answers one operator question: what should change in the task tracker right now so the durable task record matches the real project state?
+
+It owns tracker bookkeeping: task records, status updates, active-vs-backlog hygiene inside `TASKS.md`, and a tracker-derived suggestion for the next step after the file is accurate.
+
+Keep the boundary explicit:
+- stay here when the main need is to create, update, migrate, clean, or reconcile the task tracker itself
+- hand off to `706-continue` when the main need is to advance the currently resolved work item rather than maintain the tracker
+- hand off to `701-sf-backlog` when the main need is deferred capture or backlog cleanup rather than active tracker maintenance
+- hand off to `702-sf-priorities` when the tracker is already credible and the user wants current execution order
+- hand off to `703-sf-review` when the user wants a retrospective summary of what happened rather than tracker mutation
+
+`309-sf-tasks` does not become the default owner for active execution, does not replace continuation of the current chantier, and does not treat every nearby `TASKS.md` mention as permission to run the work itself.
+
 ### Workspace root detection
 
 If the current directory has no project markers (not inside a specific project) — you are at the **workspace root**. Use the runtime's structured question tool when available, or a concise plain-text question:
