@@ -62,6 +62,8 @@ Use these when you want the agent to think like a business partner instead of a 
 | `#trust` | trust, public-promise discipline, claim safety, and credibility to dominate the decision | `shipflow_data/business/branding.md` |
 | `#leverage` | operator leverage, compounding impact, and drag reduction to dominate the decision | `skills/references/operator-partnership-contract.md` |
 | `#founder-mode` | a founder-facing decision surface instead of technician-level back-and-forth | `skills/references/operator-partnership-contract.md` |
+| `#founder` | the user as a business owner who wants useful decisions, growth, and clarity | `skills/references/operator-partnership-contract.md` |
+| `#shipflow-owner` | the operator as owner of ShipFlow and adjacent assets, with portfolio-level arbitration | `skills/references/operator-partnership-contract.md` |
 
 ## Content Recenter Tags
 
@@ -131,6 +133,8 @@ Use these when you do not want to build the tag set from scratch.
 | Improve discoverability | `#seo-intent #pillar #distribution` | the content or structure to align better with search intent and distribution paths |
 | Rework content from an existing source | `#repurpose #audience #cta` | one source to be turned into the right surface for the right reader and action |
 | Recenter on business buyer logic | `#decision-maker #offer #monetization` | the work to speak to the approver, the budget owner, or the buyer |
+| Recenter on the founder perspective | `#founder #growth #clarity` | the work to assume business-owner responsibility and optimize for useful decisions |
+| Recenter on your portfolio view | `#shipflow-owner #partner #no-drift` | the work to arbitrate across ShipFlow and other assets without losing scope |
 | Improve retention logic | `#retention #end-user #funnel` | the work to focus on repeat usage, activation continuity, and product loops |
 | Repair doc drift at the right layer | `#canon #drift #single-source` | the agent to fix the source of truth first instead of patching duplicate surfaces |
 | Choose the right doc surface | `#owner #entrypoint #public-docs` | the question is mostly where a message or contract should live publicly |

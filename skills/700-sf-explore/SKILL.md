@@ -158,6 +158,17 @@ Utilise ce contexte pour ancrer la réflexion dans la réalité du projet, pas d
 Les snapshots de `TASKS.md` lus ici sont informatifs seulement.
 `700-sf-explore` ne doit jamais modifier `TASKS.md`, `AUDIT_LOG.md` ou legacy `PROJECTS.md`.
 
+## Existing Work Items
+
+Quand la question porte déjà sur un chantier, une spec, un bug ou une piste active:
+
+- charge l'artefact durable le plus pertinent avant de brainstormer
+- base l'exploration sur l'état réel du travail, pas seulement sur la conversation
+- si plusieurs work items plausibles existent, signale l'ambiguïté au lieu de supposer
+- quand les décisions se cristallisent, propose le bon artefact durable à mettre à jour plutôt que d'inventer un nouveau cadre
+
+This keeps exploration grounded when the user is already mid-change, without turning the skill into an implementation workflow.
+
 ---
 
 ## Ce que tu n'as PAS à faire

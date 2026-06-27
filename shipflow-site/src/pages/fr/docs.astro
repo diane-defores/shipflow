@@ -30,6 +30,8 @@ const decisionDocs = [
 const focusTagCombos = [
   ["Rendre l’offre plus claire", "#offer #cta #clarity", "À utiliser quand la page ou le message explique trop de choses sans rendre la proposition de valeur ou l’action suivante évidente."],
   ["Pousser la croissance plutôt que l’optimisation locale", "#partner #growth #roi", "À utiliser quand l’agent doit choisir le mouvement le plus utile au business plutôt que la modification technique la plus facile."],
+  ["Recentrer sur le founder", "#founder #growth #clarity", "À utiliser quand l’utilisateur agit comme propriétaire business et que la réponse doit optimiser les décisions utiles, la croissance et la clarté."],
+  ["Recentrer sur l’owner ShipFlow", "#shipflow-owner #partner #no-drift", "À utiliser quand la conversation concerne ShipFlow lui-même ou des actifs adjacents et demande un arbitrage au niveau portefeuille."],
   ["Améliorer l’onboarding et l’utilisabilité", "#end-user #clarity #quality", "À utiliser quand la solution marche techniquement mais reste trop difficile pour un utilisateur normal."],
   ["Réparer un copy chargé en objections", "#faq #trust #clarity", "À utiliser quand le message doit répondre aux doutes plus directement et gagner en crédibilité."],
   ["Corriger la dérive documentaire au bon niveau", "#canon #drift #single-source", "À utiliser quand code, docs ou surfaces publiques divergent et qu’il faut réparer la source de vérité avant de patcher ailleurs."],
@@ -83,12 +85,28 @@ const focusTagCombos = [
         </article>
 
         <article class="doc-card">
+          <h3>Tags founder et owner</h3>
+          <p>
+            ShipFlow distingue désormais la perspective utilisateur-as-founder
+            de la perspective ShipFlow-owner. Utilisez <code>#founder</code>
+            quand la conversation doit optimiser les décisions business, la
+            croissance et la clarté. Utilisez <code>#shipflow-owner</code>
+            quand la conversation concerne ShipFlow lui-même ou des actifs
+            adjacents et demande un arbitrage au niveau portefeuille.
+          </p>
+          <a class="doc-action" href={pathFor("/focus-tags", locale)}>
+            Ouvrir la cheatsheet des tags
+          </a>
+        </article>
+
+        <article class="doc-card">
           <h3>Tags de recentrage rapides</h3>
           <p>
             Si une conversation dérive, ShipFlow accepte maintenant des tags de
             recentrage légers comme <code>#partner</code>,
             <code>#offer</code>, <code>#growth</code>,
-            <code>#clarity</code>, <code>#canon</code>,
+            <code>#clarity</code>, <code>#founder</code>,
+            <code>#shipflow-owner</code>, <code>#canon</code>,
             <code>#quality</code>, <code>#ship</code> et
             <code>#shipflow</code> pour recharger le bon contrat sans relancer
             tout un workflow.
@@ -127,6 +145,11 @@ const focusTagCombos = [
           dans la bonne posture business, contenu ou gouvernance sans écrire
           une longue correction.
         </p>
+        <div class="hero-actions">
+          <a class="button button-secondary" href="https://github.com/dianedef/ShipFlow/blob/main/docs/focus-tags-cheatsheet.md">
+            Ouvrir la cheatsheet complète
+          </a>
+        </div>
       </div>
 
       <div class="doc-grid">

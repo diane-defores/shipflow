@@ -45,6 +45,8 @@ const decisionDocs = [
 const focusTagCombos = [
   ["Make the offer clearer", "#offer #cta #clarity", "Use when the page or message explains too much but still does not make the value proposition or next action obvious."],
   ["Push growth over local optimization", "#partner #growth #roi", "Use when the agent should choose the highest-leverage move instead of the easiest technical move."],
+  ["Recenter on the founder", "#founder #growth #clarity", "Use when the user is acting as a business owner and the answer should optimize for useful decisions, growth, and clarity."],
+  ["Recenter on the ShipFlow owner", "#shipflow-owner #partner #no-drift", "Use when the conversation is about ShipFlow itself or adjacent assets and needs portfolio-level arbitration."],
   ["Improve onboarding and usability", "#end-user #clarity #quality", "Use when the solution works technically but still feels too hard for a normal user."],
   ["Fix objection-heavy copy", "#faq #trust #clarity", "Use when the message needs to answer doubts directly and earn credibility."],
   ["Repair doc drift at the right layer", "#canon #drift #single-source", "Use when code, docs, or public surfaces are out of sync and the source of truth matters more than local patching."],
@@ -135,11 +137,27 @@ const editorialPath = "/docs#editorial-governance";
         </article>
 
         <article class="doc-card">
+          <h3>Founder and owner tags</h3>
+          <p>
+            ShipFlow now distinguishes the user-as-founder perspective from the
+            ShipFlow-owner perspective. Use <code>#founder</code> when the
+            conversation should optimize for business decisions, growth, and
+            clarity. Use <code>#shipflow-owner</code> when the conversation is
+            about ShipFlow itself or adjacent assets and needs portfolio-level
+            arbitration.
+          </p>
+          <a class="doc-action" href="/focus-tags">
+            Open the tag cheatsheet
+          </a>
+        </article>
+
+        <article class="doc-card">
           <h3>Focus tags for fast recentering</h3>
           <p>
             If a conversation starts drifting, ShipFlow now supports lightweight
             focus tags such as <code>#partner</code>, <code>#offer</code>,
             <code>#growth</code>, <code>#clarity</code>,
+            <code>#founder</code>, <code>#shipflow-owner</code>,
             <code>#canon</code>, <code>#quality</code>,
             <code>#ship</code>, and <code>#shipflow</code> so you can pull
             the agent back to the right contract without launching a whole
@@ -255,6 +273,11 @@ const editorialPath = "/docs#editorial-governance";
           right business, content, or governance posture without writing a long
           correction message.
         </p>
+        <div class="hero-actions">
+          <a class="button button-secondary" href="https://github.com/dianedef/ShipFlow/blob/main/docs/focus-tags-cheatsheet.md">
+            Open the full cheatsheet
+          </a>
+        </div>
       </div>
 
       <div class="doc-grid">

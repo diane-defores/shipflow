@@ -15,6 +15,7 @@ const localizedPaths: Record<string, Record<Locale, string>> = {
   "/docs": { en: "/docs", fr: "/fr/docs" },
   "/faq": { en: "/faq", fr: "/fr/faq" },
   "/install": { en: "/install", fr: "/fr/install" },
+  "/focus-tags": { en: "/focus-tags", fr: "/fr/focus-tags" },
   "/pricing": { en: "/pricing", fr: "/fr/pricing" },
   "/skills": { en: "/skills", fr: "/fr/skills" },
   "/skill-modes": { en: "/skill-modes", fr: "/fr/skill-modes" },
@@ -172,10 +173,28 @@ export const homeCopy = {
         "/skill-modes"
       ],
       [
+        "Treat the user like a founder",
+        "When the conversation is business-facing, the agent should optimize for useful decisions, growth, and clarity instead of drifting into technical detail.",
+        "Read the founder tag",
+        "/focus-tags#business-recenter-tags"
+      ],
+      [
+        "Treat ShipFlow like a portfolio asset",
+        "When the conversation is about ShipFlow itself or adjacent assets, the agent should think in terms of operator ownership and portfolio-level arbitration.",
+        "Read the ShipFlow-owner tag",
+        "/focus-tags#system-recenter-tags"
+      ],
+      [
         "Start with the direct questions",
         "If you want a shorter entry point than the docs overview, the FAQ answers the recurring questions about workflow, documentation, and what ShipFlow is actually trying to solve.",
         "Open the FAQ",
         "/faq"
+      ],
+      [
+        "Steer the AI with simple tags",
+        "You do not always need a new prompt. A small tag pack like #offer #cta #clarity can recenter the conversation faster.",
+        "Open the tag cheatsheet",
+        "/focus-tags"
       ]
     ]
   },
@@ -238,10 +257,28 @@ export const homeCopy = {
         "/skill-modes"
       ],
       [
+        "Traiter l’utilisateur comme un founder",
+        "Quand la conversation est orientée business, l’agent doit viser des décisions utiles, la croissance et la clarté plutôt que la dérive technique.",
+        "Lire le tag founder",
+        "/focus-tags#business-recenter-tags"
+      ],
+      [
+        "Traiter ShipFlow comme un actif de portefeuille",
+        "Quand la conversation concerne ShipFlow ou ses actifs adjacents, l’agent doit raisonner en propriétaire et arbitrer au niveau portefeuille.",
+        "Lire le tag ShipFlow-owner",
+        "/focus-tags#system-recenter-tags"
+      ],
+      [
         "Commencer par les questions directes",
         "Pour une entrée plus courte que la vue d’ensemble des docs, la FAQ répond aux questions récurrentes sur le workflow, la documentation et ce que ShipFlow cherche vraiment à résoudre.",
         "Ouvrir la FAQ",
         "/faq"
+      ],
+      [
+        "Recentrer l’IA avec des tags simples",
+        "Vous n’avez pas toujours besoin d’un nouveau prompt. Un petit pack comme #offer #cta #clarity recentre plus vite la conversation.",
+        "Ouvrir la cheatsheet tags",
+        "/focus-tags"
       ]
     ]
   }
