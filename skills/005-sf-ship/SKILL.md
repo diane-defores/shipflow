@@ -27,6 +27,10 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, outcome-first, and using the compact chantier block. Use `report=agent`, `handoff`, `verbose`, or `full-report` only when explicitly requested or when another agent needs detailed ship evidence.
 
+## Required References
+
+Before full-close mode, or any ship report that could imply formal closure, load `$SHIPFLOW_ROOT/skills/references/closure-archive-guard.md`.
+
 ## Mission
 
 `005-sf-ship` owns git shipping: checks, staging, commit, push, and the post-push route when applicable. It is not the owner of implementation completeness (`102-sf-start`), proof completeness (`103-sf-verify`), or closure bookkeeping (`104-sf-end`) unless full-close mode is explicitly requested.
@@ -171,6 +175,7 @@ If a check fails:
 ## Step 5 — Full-mode bookkeeping (only in full mode)
 
 Only for mode `full`:
+- apply `$SHIPFLOW_ROOT/skills/references/closure-archive-guard.md` before done/closed/changelog wording
 - update the project-local tracker when relevant
 - update CHANGELOG.md with meaningful grouped entries
 - save useful decisions to memory
@@ -307,6 +312,7 @@ Flux: 100-sf-spec [status marker] -> 101-sf-ready [status marker] -> 102-sf-star
 - If nothing to commit, say so clearly
 - Keep report concise
 - Do not equate commit/push, green checks, or updated tracking files with proof that the product is done or secure
+- Do not use full-close wording when source-of-truth deltas, docs, bug state, or proof gaps remain unsynced and unrouted.
 - Prefer honest "shipped for iteration" wording over overstated "done" wording when validation is partial
 - Prefer honest "docs not checked" wording over implying feature docs are aligned
 - If the change may affect public behavior or safety posture and the status is unclear, ask before shipping

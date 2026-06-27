@@ -74,6 +74,7 @@ Mandatory explicit checks:
 - `Error Behavior` pass/partial/fail/not demonstrated
 - `Proof Path Fit` pass/partial/fail/not chosen: test-first, regression-first, scenario-first, evidence-first, or exception-with-proof matches the changed surface
 - `Task Application Loop Fit` pass/partial/fail/not applicable: implementation inspected target state, loaded required context, applied bounded slices without checkbox-only drift, updated durable progress after actual completion, and routed proof gaps without conflating implementation and verification
+- `Closure Archive Guard Fit` pass/partial/fail/not applicable: closure, tracker, changelog, docs, bug, spec, skill-runtime, or archive state does not claim stronger completion than implementation, proof, source-of-truth sync, and collision checks support
 - `Structure Replacement Fit` pass/partial/fail: the chosen implementation or workflow change reduces current friction, ambiguity, latency, or maintenance burden when that was part of the stated problem; reject decorative new layers that add churn without operator leverage.
 - `Fast Fix Shortcut Gate` pass/partial/fail: implementation does not bypass root cause, owner routing, shared structure, documentation, or required proof to make a symptom disappear.
 - `Flutter Mobile Proof Ladder` pass/partial/fail/not applicable: widget tests -> agent-run Flutter Web smoke through `108-sf-browser`/`109-sf-auth-debug` -> APK/device proof order is respected for Flutter mobile UI work
@@ -99,8 +100,9 @@ Always load:
 4. `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`
 5. `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`
 6. `$SHIPFLOW_ROOT/skills/references/task-application-loop.md` when scope includes task-by-task implementation, direct fixes, skill contract edits, tracker progress, or progress/completion semantics.
-7. `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` when scope includes UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual proof work.
-8. `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md` when scope includes an editorial score or content quality gate.
+7. `$SHIPFLOW_ROOT/skills/references/closure-archive-guard.md` when scope includes tracker closure, changelog framing, done/closed wording, archived artifacts, docs/source-of-truth sync, or full-close shipping.
+8. `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` when scope includes UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual proof work.
+9. `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md` when scope includes an editorial score or content quality gate.
 
 Load on demand:
 
@@ -145,6 +147,7 @@ Report `not verified` or `blocked` when:
 - high/critical bug in scope is still open
 - required validation surface is missing for `vercel-preview-push`/`hybrid` scope
 - completion evidence does not match the chosen proof path, or no proof path was chosen for behavioral, bug, skill-contract, UI/docs/auth/deploy, or operational work
+- closure, archive, tracker, changelog, or docs state would imply stronger completion than source-of-truth sync and proof evidence support
 - critical security/data/workflow risk is unproven or failing
 - the implementation is a shortcut that violates the decision-quality contract
 - the implementation is a quick-fix shortcut that bypasses durable process, ownership, root cause, shared structure, documentation, or required proof
@@ -156,6 +159,6 @@ Report `not verified` or `blocked` when:
 Run focused checks based on scope and diff:
 
 ```bash
-rg -n "Trace category|Process role|Success Behavior|Error Behavior|Proof Path Fit|Task Application Loop Fit|task-application-loop|decision quality|proof path|evidence-first|test-first|scenario-first|fresh-docs|Chantier" skills/103-sf-verify/SKILL.md
+rg -n "Trace category|Process role|Success Behavior|Error Behavior|Proof Path Fit|Task Application Loop Fit|Closure Archive Guard Fit|task-application-loop|closure-archive-guard|decision quality|proof path|evidence-first|test-first|scenario-first|fresh-docs|Chantier" skills/103-sf-verify/SKILL.md
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 ```

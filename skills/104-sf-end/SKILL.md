@@ -27,6 +27,10 @@ Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/report
 
 Default to `report=user`: concise, outcome-first, and using the compact chantier block. The detailed report template below is for `report=agent`, blocked runs, or explicit handoff.
 
+## Required References
+
+Before tracker closure, changelog framing, or done/closed wording, load `$SHIPFLOW_ROOT/skills/references/closure-archive-guard.md`.
+
 ## Mission
 
 `104-sf-end` closes the current work session: summary, tracker updates, changelog prep, and explicit next work. It owns closure bookkeeping, not implementation proof or git shipping.
@@ -62,6 +66,7 @@ From the conversation, identify:
 - Documentation surfaces updated or possibly stale after the change
 - Project development mode from `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/project-development-mode.md` and `CLAUDE.md` / `SHIPFLOW.md`
 - Whether required preview deployment evidence exists (`005-sf-ship` pushed, `405-sf-prod` confirmed, and preview test/auth proof collected when needed)
+- Whether any source-of-truth delta remains unsynced before closure: tracker, changelog, docs, bug file, spec, public copy, skill runtime links, or archive target
 
 ### Step 1.5 — Closure mode decision
 
@@ -187,6 +192,7 @@ Verdict 104-sf-end:
 - If nothing was done this session, say so honestly
 - Update BOTH master and local TASKS.md when both exist
 - Do not let TASKS/CHANGELOG imply stronger proof than the actual validation supports
+- Apply the closure archive guard before any `done`, `closed`, or archived framing.
 - Do not mark feature work fully closed if known docs remain stale and materially affect users/operators
 - Prefer partial closure when user-story completion or security posture remains uncertain
 - Prefer partial closure when required Vercel preview validation is missing.
