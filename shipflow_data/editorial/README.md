@@ -45,7 +45,7 @@ next_step: "/sf-verify ShipFlow Editorial Content Governance Layer for AI Agents
 
 ## Purpose
 
-`shipflow_data/editorial/` is the public-content governance layer for ShipFlow. It tells agents where public content lives, which contracts bound each surface, which claims need proof, and how Astro runtime content schemas constrain edits.
+`shipflow_data/editorial/` is the public-content governance layer for ShipFlow. It shows where public content lives, which contracts govern each surface, which claims need proof, and how Astro runtime content schemas constrain edits.
 
 This layer complements, but does not replace, `shipflow_data/editorial/content-map.md`.
 

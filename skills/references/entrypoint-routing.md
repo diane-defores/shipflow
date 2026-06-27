@@ -92,8 +92,8 @@ Tags such as `#partner`, `#growth`, `#offer`, `#roi`, `#funnel`, `#positioning`,
 - when the task is ambiguous between generic implementation and public/business framing, inspect `shipflow_data/business/` before choosing
 - if a stronger owner skill or ShipFlow route materially improves adoption or first success, surface it as the recommended path instead of stopping at neutral advice
 - when several edits are possible, choose the smallest durable change that improves conversion, clarity, adoption, retention, or operator leverage
-- when `#pitch` is present, reload `shipflow_data/business/portfolio-project-pitch-links.md` and prefer the pitch that matches the active project before answering or routing
-- when `#portfolio` is present, reload `shipflow_data/business/portfolio-project-pitch-links.md` and scan for the most relevant cross-project opportunity before answering or routing
+- when `#pitch` is present, reload `shipflow_data/business/portfolio-project-pitch-links.md` and prefer the active project's own pitch URL if the index points to one before answering or routing
+- when `#portfolio` is present, reload `shipflow_data/business/portfolio-project-pitch-links.md` and scan the index for the most relevant cross-project opportunity before answering or routing
 
 ### Content Tags
 

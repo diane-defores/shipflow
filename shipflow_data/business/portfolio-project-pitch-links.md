@@ -36,9 +36,9 @@ next_step: "/300-sf-docs audit project pitches"
 
 ## Purpose
 
-This index points to the versioned pitch file for each project in the ShipFlow portfolio.
+This is the portfolio index for project pitch URLs, not the pitch file for any single project.
 
-It exists so the agent can recover project identity quickly during portfolio-level reasoning, especially when the operator is speaking from a `#shipflow-owner` posture and the conversation needs to branch across multiple projects.
+It exists so the agent can recover project identity quickly during portfolio-level reasoning, especially when the operator is speaking from a `#shipflow-owner` posture and the conversation needs to branch across multiple projects. Each row should point to that project’s own pitch URL when one exists; the ShipFlow row is the index itself.
 
 ## When To Use
 
@@ -51,8 +51,9 @@ It exists so the agent can recover project identity quickly during portfolio-lev
 
 - Keep each pitch to one or two sentences.
 - Treat the pitch as a durable summary, not as a sales page.
-- Link each entry to the project's source-of-truth docs.
+- Link each entry to the project's source-of-truth docs and its own pitch URL.
 - Prefer a GitHub URL to the versioned pitch file for each project.
+- Keep the portfolio index URL separate from the per-project pitch URL.
 - Separate observable facts from inferred positioning.
 - Update the pitch when the business model, audience, or promise materially changes.
 - Do not let the pitch replace product, GTM, or brand contracts.
@@ -68,7 +69,7 @@ It exists so the agent can recover project identity quickly during portfolio-lev
 
 | Project | Pitch file URL | Audience | Business angle | Source of truth | Status | Owner | Evidence date | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ShipFlow | `https://github.com/diane-defores/shipflow/blob/main/shipflow_data/business/portfolio-project-pitch-links.md` | Solo founders first, with adjacent fit for small technical teams | Unified framework for server delivery and AI-assisted execution discipline, with explicit contracts and weaker handoffs replaced by clearer ones | `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md` | reviewed | unknown | 2026-06-27 | Keep as portfolio index and replace with a dedicated per-project pitch file when available |
+| ShipFlow | `https://github.com/diane-defores/shipflow/blob/main/shipflow_data/business/portfolio-project-pitch-links.md` | Portfolio index only | Registry of per-project pitch URLs and short routing notes for the ShipFlow portfolio | `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md` | reviewed | unknown | 2026-06-27 | Keep this file as the portfolio index; add or refresh project pitch URLs in the project rows below |
 | Winflowz | `https://github.com/diane-defores/winflowz/blob/main/PITCH.md` | Operators shipping a site plus an app from one repo | Monorepo for a governed Astro site and Flutter Android-first app with explicit deployment boundaries | `README.md`, `shipflow_data/business/business.md` | reviewed | unknown | 2026-06-27 | Replace with a richer pitch if positioning changes |
 | Socialglowz | `https://github.com/diane-defores/socialglowz/blob/master/PITCH.md` | Users who need one social dashboard across browser, desktop, and mobile | Unified social control surface with platform-specific behavior kept explicit across targets | `README.md`, `shipflow_data/business/business.md` | reviewed | unknown | 2026-06-27 | Replace with a richer pitch if positioning changes |
 | Temuglowz | `https://github.com/diane-defores/temuglowz/blob/main/PITCH.md` | Users saving Temu links into durable shopping lists | Local-first Android MVP for link capture, list management, and manual observation without fake automation claims | `README.md`, `BUSINESS.md` | reviewed | unknown | 2026-06-27 | Replace with a richer pitch if the product expands beyond MVP |
@@ -94,4 +95,4 @@ It exists so the agent can recover project identity quickly during portfolio-lev
 
 ## Maintenance Rule
 
-Update this file when a project gets a new pitch file URL, a new public story, a new internal framing, or a material change in audience, offer, or positioning. For repos without a pitch file yet, add the first versioned `PITCH.md` or `pitch.md` in the project root or governed business folder, then replace the placeholder entry with the GitHub URL.
+Update this file when a project gets a new pitch file URL, a new public story, a new internal framing, or a material change in audience, offer, or positioning. For repos without a pitch file yet, add the first versioned `PITCH.md` or `pitch.md` in the project root or governed business folder, then replace the placeholder entry with that project’s GitHub URL. Keep the top-level ShipFlow row reserved for the index itself.

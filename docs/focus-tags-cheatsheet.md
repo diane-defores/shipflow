@@ -64,8 +64,10 @@ Use these when you want the agent to think like a business partner instead of a 
 | `#founder-mode` | a founder-facing decision surface instead of technician-level back-and-forth | `skills/references/operator-partnership-contract.md` |
 | `#founder` | the user as a business owner who wants useful decisions, growth, and clarity | `skills/references/operator-partnership-contract.md` |
 | `#shipflow-owner` | the operator as owner of ShipFlow and adjacent assets, with portfolio-level arbitration | `skills/references/operator-partnership-contract.md` |
-| `#pitch` | the current project's pitch file and its core identity | `shipflow_data/business/portfolio-project-pitch-links.md` |
-| `#portfolio` | the project pitch links index and cross-project opportunity scanning | `shipflow_data/business/portfolio-project-pitch-links.md` |
+| `#pitch` | reload the current project's pitch file and core identity | `shipflow_data/business/portfolio-project-pitch-links.md` |
+| `#portfolio` | scan the pitch links index for the best cross-project opportunity | `shipflow_data/business/portfolio-project-pitch-links.md` |
+
+Short usage note: use `#pitch` for one project’s identity, and `#portfolio` when you want the wider portfolio view before answering.
 
 ## Content Recenter Tags
 

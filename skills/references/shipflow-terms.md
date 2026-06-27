@@ -92,8 +92,8 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 | `#founder-mode` | Recenter on founder-level delegation: business decision surface, not technician micromanagement | `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` |
 | `#founder` | Recenter on the user as a business owner who wants useful decisions, growth, and clarity | `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` |
 | `#shipflow-owner` | Recenter on the operator as owner of ShipFlow and adjacent assets, with portfolio-level arbitration | `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` |
-| `#pitch` | Recenter on the current project's pitch file and its core identity | `$SHIPFLOW_ROOT/shipflow_data/business/portfolio-project-pitch-links.md` |
-| `#portfolio` | Recenter on the project pitch links index and cross-project opportunity scanning | `$SHIPFLOW_ROOT/shipflow_data/business/portfolio-project-pitch-links.md` |
+| `#pitch` | Recenter on the current project's own pitch file and core identity | `$SHIPFLOW_ROOT/shipflow_data/business/portfolio-project-pitch-links.md` |
+| `#portfolio` | Recenter on the portfolio pitch-links index and cross-project opportunity scanning | `$SHIPFLOW_ROOT/shipflow_data/business/portfolio-project-pitch-links.md` |
 | `#no-drift` | Recenter on staying on target, choosing, and acting without exploratory drift | `$SHIPFLOW_ROOT/skills/references/entrypoint-routing.md` |
 | `#canon` | Recenter on the canonical source of truth and avoid parallel doctrine copies | `$SHIPFLOW_ROOT/shipflow_data/technical/code-docs-map.md` |
 | `#drift` | Recenter on code-doc divergence, stale surfaces, and misaligned contracts | `$SHIPFLOW_ROOT/shipflow_data/technical/code-docs-map.md` |

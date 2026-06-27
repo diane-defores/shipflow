@@ -11,9 +11,9 @@ scope: business
 owner: "unknown"
 confidence: medium
 risk_level: medium
-business_model: "not defined yet; current hypothesis is a simple sales motion for solo founders with autonomy-first product and documentation"
-target_audience: "solo founders first, plus small technical teams shipping server-hosted apps, websites, or software and relying on AI agents without wanting fragile handoffs"
-value_proposition: "unify server delivery operations and AI execution framing so solo founders and small technical teams lose less context, reduce ambiguity, and guide agents through explicit contracts"
+business_model: "not defined yet; current hypothesis is a simple sales motion for solo founders with product and documentation that support autonomy"
+target_audience: "solo founders first, plus small technical teams shipping server-hosted apps, websites, or software and using AI agents without wanting fragile handoffs"
+value_proposition: "unify server delivery operations and AI execution framing so solo founders and small technical teams lose less context, reduce ambiguity, and work through explicit contracts"
 market: "solo founders first, with adjacent fit for small technical teams and highly autonomous builders running simple product sales cycles"
 security_impact: yes
 docs_impact: yes
@@ -60,7 +60,7 @@ ShipFlow exists to help solo founders ship and operate software with AI agents w
 
 ## Market
 
-- Primary market assumption: solo founders who need autonomy, clarity, and a practical operating model for agent-assisted shipping.
+- Primary market assumption: solo founders who need clarity and a practical operating model for agent-assisted shipping.
 - Secondary market assumption: small technical teams are a legitimate adjacent fit, but they are not the primary narrative to optimize for now.
 - Current scope does not support broad beginner-market positioning; the product still reads as technical and operator-oriented.
 
@@ -71,7 +71,7 @@ ShipFlow exists to help solo founders ship and operate software with AI agents w
 
 ## Assumptions
 
-- The strongest wedge is context preservation and stronger agent handoffs, not generic “AI coding speed”.
+- The strongest wedge is context preservation and stronger handoffs, not generic “AI coding speed”.
 - Buyers will care about reduced ambiguity, cleaner execution framing, and fewer weak handoffs across specs, docs, code, and operations.
 - The highest-value users already feel pain from context loss and fragile agent loops.
 - The product should be positioned as neither a generic PaaS nor a generic AI prompting method.

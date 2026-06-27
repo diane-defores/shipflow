@@ -11,9 +11,9 @@ scope: gtm
 owner: "unknown"
 confidence: low
 risk_level: medium
-target_segment: "solo founders first, with adjacent fit for small technical teams and autonomous technical builders evaluating a clearer way to ship with AI agents"
+target_segment: "solo founders first, with adjacent fit for small technical teams and technical builders evaluating a clearer way to ship with AI agents"
 offer: "a unified framework that combines server delivery operations, explicit task contracts, and verification-oriented agent workflows"
-channels: "documentation-first discovery, technical content, demos, founder education, and autonomy-oriented positioning"
+channels: "documentation-first discovery, technical content, demos, founder education, and clarity-oriented positioning"
 proof_points: "context routing docs, spec-first workflow, metadata contracts, linter, verification and audit skills, plus concrete server delivery tooling"
 security_impact: unknown
 docs_impact: yes
@@ -64,7 +64,7 @@ next_step: "/sf-docs audit shipflow_data/business/gtm.md"
 - Technical documentation and examples.
 - Content explaining spec-first execution, observability of success/failure, and artifact-based workflow design.
 - Demonstrations of fresh-thread onboarding and reduced context rebuild cost.
-- Founder-facing content around autonomy, clarity, and shipping without fragile agent loops.
+- Founder-facing content around clarity and shipping without fragile agent loops.
 
 ## Conversion Path
 
