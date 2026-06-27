@@ -46,6 +46,7 @@ Default to `report=user`: concise, outcome-first, and using the compact chantier
 Load only the references needed for the active run:
 
 - `references/execution-workflow.md`: detailed task identification, scope triage, execution contract, model/delegation choice, implementation loop, validation, spec trace, and final report rules.
+- `$SHIPFLOW_ROOT/skills/references/task-application-loop.md`: required before task-by-task implementation to preserve target selection, context loading, progress semantics, stop conditions, and proof routing.
 - `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: required before selecting direct mode, model, topology, implementation path, or fallback. Bounded implementation is allowed; shortcut quality or shortcut excellence is not.
 - `$SHIPFLOW_ROOT/skills/references/operational-record-format.md`: required before creating or mutating task, audit, or `spec:` operational records in `TASKS.md`, `AUDIT_LOG.md`, or spec summary sections.
 - `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`: required before implementation when the task changes behavior, fixes a bug, changes a skill contract, or needs a proof path. Choose `test-first`, `regression-first`, `scenario-first`, `evidence-first`, or `exception-with-proof` before editing and report the chosen proof path.
@@ -67,6 +68,7 @@ Parse `$ARGUMENTS`, available ready specs, and the latest user request.
 ## Core Execution Rules
 
 - `102-sf-start` implements; it should not stop at planning when a valid execution contract exists.
+- Apply the shared task application loop: identify target state, load required context, implement one bounded slice at a time, update durable progress only after completion, and route proof gaps explicitly.
 - Preserve the user story outcome over task-checkbox completion.
 - Preserve the spec or mini-contract as the source of truth; tests and evidence prove the contract, they do not redefine it.
 - Follow the decision-quality contract: choose bounded excellent professional implementation, not the fastest/easiest patch. Speed, cost, and local convenience are secondary after correctness, security, performance, maintainability, durability, excellence, and proof quality.
@@ -95,6 +97,6 @@ Stop and report blocked or rerouted when:
 
 Validate this skill after edits with:
 
-- `rg -n "Trace category|Process role|Result semantics|Auto-verify semantics|auto-verify|implemented|partial|Report Modes|Required References|Spec-first|ready spec|references/execution-workflow|spec-driven-development-discipline|test-first|evidence-first|proof path" skills/102-sf-start/SKILL.md`
+- `rg -n "Trace category|Process role|Result semantics|Auto-verify semantics|auto-verify|implemented|partial|Report Modes|Required References|Spec-first|ready spec|references/execution-workflow|task-application-loop|spec-driven-development-discipline|test-first|evidence-first|proof path" skills/102-sf-start/SKILL.md`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `tools/shipflow_sync_skills.sh --check --all`

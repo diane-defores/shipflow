@@ -31,6 +31,7 @@ Before any fix attempt, load:
 
 - `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md`
 - `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`
+- `$SHIPFLOW_ROOT/skills/references/task-application-loop.md`
 - `$SHIPFLOW_ROOT/skills/106-sf-fix/references/bug-fix-workflow.md`
 
 Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual bug fixes.
@@ -93,7 +94,7 @@ Direct fixes must preserve security-by-default: do not rely on UI-only protectio
 
 ## Execution
 
-If `direct`, implement the bounded professional repair, attach it to durable bug memory, append a `Fix Attempts` row, run relevant checks, and keep the bug status no stronger than `fix-attempted` until retest evidence exists.
+If `direct`, apply the shared task application loop to implement the bounded professional repair one repair slice at a time, attach it to durable bug memory, append a `Fix Attempts` row after the actual attempt, run relevant checks, and keep the bug status no stronger than `fix-attempted` until retest evidence exists.
 
 If `spec-first`, do not code; route to `/100-sf-spec`, `/101-sf-ready`, then `/102-sf-start`.
 
@@ -128,6 +129,6 @@ Use the report shape in `bug-fix-workflow.md`: classification, reason, user stor
 
 Validate this skill after edits with:
 
-- `rg -n "Trace category|Process role|Chantier Potential|spec-driven-development-discipline|decision-quality-contract|Direct fix|Spec-first|BUG-ID|Stop Conditions|bug-fix-workflow" skills/106-sf-fix/SKILL.md`
+- `rg -n "Trace category|Process role|Chantier Potential|spec-driven-development-discipline|decision-quality-contract|task-application-loop|Direct fix|Spec-first|BUG-ID|Stop Conditions|bug-fix-workflow" skills/106-sf-fix/SKILL.md`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `python3 tools/shipflow_metadata_lint.py skills/106-sf-fix/references/bug-fix-workflow.md`

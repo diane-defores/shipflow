@@ -66,6 +66,8 @@ It defines only the routing-question rule. Load `skills/references/question-cont
 
 Route to the smallest existing owner that can safely own the outcome.
 
+Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#quality`, `#growth`, `#end-user`, `#shipflow`, `#shupflow`, `#routing`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
+
 If the instruction is about modifying, improving, auditing, or hardening ShipFlow behavior, contracts, routing, or skills, treat ShipFlow itself as the target system by default. Do not infer the current project repository as the edit target unless the user explicitly names that project.
 
 An invocation of `900-shipflow-core` or another ShipFlow-maintenance skill is itself sufficient evidence that the intended target is ShipFlow unless the user explicitly names a different repository.

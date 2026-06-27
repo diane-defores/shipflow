@@ -121,8 +121,10 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [.agents/skills/shipflow/SKILL.md](./.agents/skills/shipflow/SKILL.md) — fallback OpenCode-compatible skill shim
 - [shipflow_data/technical/public-site-and-content-runtime.md](./shipflow_data/technical/public-site-and-content-runtime.md) — internal contract for the Astro public site and public/private documentation boundary
 - [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
-  - [skills/references/decision-quality-contract.md](./skills/references/decision-quality-contract.md) — shared doctrine for high-quality decisions, code, model routing, and fallback choices
-  - [skills/references/operator-partnership-contract.md](./skills/references/operator-partnership-contract.md) — shared doctrine for agent autonomy, business-partner behavior, and business-aware initiative
+- [docs/focus-tags-cheatsheet.md](./docs/focus-tags-cheatsheet.md) — public cheatsheet for lightweight recentering tags such as `#partner`, `#growth`, `#end-user`, and `#shipflow`
+- [skills/references/decision-quality-contract.md](./skills/references/decision-quality-contract.md) — shared doctrine for high-quality decisions, code, model routing, and fallback choices
+- [skills/references/shipflow-terms.md](./skills/references/shipflow-terms.md) — shared terminology and lightweight focus tags such as `#partner`, `#quality`, `#growth`, `#end-user`, `#shipflow`, `#routing`, and `#proof`
+- [skills/references/operator-partnership-contract.md](./skills/references/operator-partnership-contract.md) — shared doctrine for agent autonomy, business-partner behavior, and business-aware initiative
   - [skills/references/master-delegation-semantics.md](./skills/references/master-delegation-semantics.md) — shared execution-topology doctrine for master/orchestrator skills
 - [skills/references/master-workflow-lifecycle.md](./skills/references/master-workflow-lifecycle.md) — shared lifecycle skeleton and work item model for master/orchestrator skills
 - [shipflow_data/business/business.md](./shipflow_data/business/business.md) — target audience, value proposition, business assumptions, and market framing

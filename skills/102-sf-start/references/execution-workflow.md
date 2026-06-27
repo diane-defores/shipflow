@@ -18,6 +18,7 @@ linked_systems:
   - "skills/references/canonical-paths.md"
   - "skills/references/chantier-tracking.md"
   - "skills/references/reporting-contract.md"
+  - "skills/references/task-application-loop.md"
 depends_on:
   - artifact: "skills/references/skill-instruction-layering.md"
     artifact_version: "0.1.0"
@@ -140,6 +141,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - Sentry observability, safe diagnostics/log-copy, and commit/build + Paris/UTC build-time header expectations when runtime evidence or instrumentation is relevant
   - documentation surfaces to update or explicitly leave unchanged
   - chosen proof path, exception reason if any, and validation/evidence expected before completion
+  - task application loop state: target work item, required context files, active slice, progress semantics, durable progress target, and proof route
   - checklist strategy: when manual proof remains, include `shipflow_data/workflow/test-checklists/<scope>.md` and required scenario IDs
   - project development mode and validation surface: whether success must be proven locally or through `005-sf-ship` -> `405-sf-prod` on a Vercel preview
   - for Flutter mobile/UI work: the proof ladder expected before APK/device testing, starting with widget tests when practical, then agent-run Flutter Web smoke for shared UI behavior via `108-sf-browser` or `109-sf-auth-debug`, then APK/device proof only for native-only behavior
@@ -265,6 +267,13 @@ If `multi-agent` is chosen:
 - integrate returned changes, then run focused validation across the combined result
 
 ### Step 6 — Implement
+
+Follow `${SHIPFLOW_ROOT:-$HOME/shipflow}/skills/references/task-application-loop.md` during implementation:
+- confirm target state and remaining slices before editing
+- load all context files required by the execution contract
+- implement one bounded slice at a time
+- update durable progress only after the slice is actually complete
+- stop or reroute when a slice exposes a contract, design, security, data, or proof gap
 
 Execute the changes directly.
 

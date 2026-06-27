@@ -136,6 +136,8 @@ For non-trivial work, spec-first is mandatory.
 
 Before modifying a skill contract, load `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md` and choose `scenario-first` unless the change is purely mechanical. Define the pressure scenario, routing ambiguity, failure mode, or mechanical check that proves the old contract is insufficient. If no scenario is practical, record `exception-with-proof` and the alternate validation before editing.
 
+Before editing `SKILL.md`, app blueprints, shared references, or public skill docs, load `$SHIPFLOW_ROOT/skills/references/task-application-loop.md` and apply it to the skill-maintenance task list: inspect the target state, load required context, change one bounded slice at a time, update durable progress only after completion, and keep implementation completion separate from verification.
+
 ## Implementation Flow
 
 ### Step 1 — Build or update the skill contract
