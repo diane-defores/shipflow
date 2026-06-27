@@ -46,6 +46,13 @@ REPORT_SIGNALS = (
     "report=agent",
     "reporting-contract",
 )
+ACTIVATION_ROUTE_SIGNALS = (
+    "next best action",
+    "owner skill",
+    "recommended path",
+    "guided route",
+    "first success",
+)
 REFERENCE_SIGNALS = (
     "required references",
     "before ",
@@ -152,6 +159,11 @@ def audit_skill(path: Path) -> FindingSet:
 
     if "$SHIPFLOW_ROOT" in text and not has_any(text, REFERENCE_SIGNALS):
         findings.style.append("$SHIPFLOW_ROOT appears but reference-loading intent is not obvious")
+
+    if path.parent.name == "008-sf-onboarding" and not has_any(text, ACTIVATION_ROUTE_SIGNALS):
+        findings.review.append(
+            "onboarding contract lacks visible next-best-action guidance for recurring friction or setup forks"
+        )
 
     if "${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/" in text and not (
         has_any(text, PREFLIGHT_SIGNALS) or has_shared_canonical_paths_preflight(path, text)

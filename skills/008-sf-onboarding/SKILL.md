@@ -93,6 +93,7 @@ Every onboarding recommendation or implementation contract should cover:
 - **Dependency order**: required prerequisites before advanced or fragile setup.
 - **Required vs optional**: separate core value from enhancers and nice-to-have modules.
 - **User control**: defer, skip, revisit, or disable optional setup without punishment.
+- **Next best action**: when a recurring friction or setup fork appears, present the continue path, the recommended path, and the owner skill or guided ShipFlow route when it materially improves first success.
 - **Visual cues**: use quickly identifiable icons, colors, badges, and affordances for current, completed, skipped, blocked, and warning states; completed state must visually win over current state when both are true.
 - **Visible state**: current, completed, skipped, blocked, unsupported, revoked, and recoverable states when relevant.
 - **Recovery**: refresh/recheck actions, settings deep links, resume paths, and clear next actions after leaving the app.
@@ -118,6 +119,7 @@ Visual cues:
 States:
 Recovery paths:
 Why/how copy notes:
+Next best action:
 Docs/editorial impact:
 Proof path:
 Implementation route:
@@ -137,6 +139,14 @@ For permissions, system settings, billing, integrations, API keys, auth, data sy
 - do not imply the app can grant permission itself when the OS/provider owns it
 - do not hide privacy, billing, quota, data, or security consequences
 - use fresh official docs when current external behavior affects the guidance
+
+For repeated setup forks, migration choices, or recovery moments, prefer a compact decision surface:
+
+- continue now
+- recommended guided route
+- cancel or defer when appropriate
+
+If ShipFlow has a relevant owner skill, Codex route, or launcher path, name it explicitly when that lowers user friction or increases success probability.
 
 ## Proof Paths
 
@@ -217,6 +227,7 @@ Agent/handoff mode may include the full Onboarding Contract, owner-skill routing
 ## Rules
 
 - Do not treat onboarding as a tooltip-only task.
+- Do not stop at passive warnings when a contextual owner skill or guided ShipFlow route would materially improve first success.
 - Do not duplicate `006-sf-design`, `007-sf-content`, `300-sf-docs`, `107-sf-test`, `108-sf-browser`, `109-sf-auth-debug`, or `001-sf-build` internals.
 - Keep internal contracts in English and user-facing output in the active user language.
 - Ask only when the answer changes activation promise, setup order, permission/security posture, docs/public claims, proof, or implementation scope.

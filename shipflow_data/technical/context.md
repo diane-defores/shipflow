@@ -171,6 +171,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 ## Hotspots
 
 - `lib.sh::env_start`: plus gros noeud fonctionnel.
+- `lib.sh::env_start` et `init_flox_env`: auto-install Node avec guidage package manager quand `npm` est detecte, et chemin de migration pnpm optionnel.
 - `lib.sh::show_dashboard`: aggregation d'etat.
 - `lib.sh::deploy_github_project`: deploy depuis GitHub.
 - `lib.sh::action_publish`: integration Caddy + DuckDNS.

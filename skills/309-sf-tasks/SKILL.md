@@ -82,6 +82,41 @@ Use this sub-flow when the user asks to "tri", "rename", "clean up", or "review"
 6. If the conversation implies a durable repo task, add it to `TASKS.md` with a clear actionable title.
 7. Report the renamed thread ids, the new titles, and any tracker updates.
 
+## Conversation Naming
+
+Use this sub-flow when the user asks for a name for the current conversation, wants a title that is more explicit, or wants a quick verdict like `done` / `pas done` based on the visible thread state.
+
+### Goal
+
+- Propose one or more clear conversation titles from the current thread context.
+- Include a status suffix recommendation: `done` when the discussed work is finished, `pas done` when important work remains.
+- Keep the title short enough to fit naturally in the Codex session list.
+
+### Naming Rules
+
+- Derive the title from the actual work discussed in the thread, not from vague filler words.
+- Prefer a title that names the project, action, or outcome.
+- Use `done` when the thread shows the task was completed and no important follow-up remains.
+- Use `pas done` when the thread still has active work, missing verification, or an unresolved follow-up.
+- If the thread is ambiguous, give the safest title plus a caveat rather than inventing certainty.
+
+### Output Shape
+
+Return:
+
+- `Suggested title: ...`
+- `Status: done | pas done`
+- `Why: ...`
+- `Optional alternates: ...` when the thread supports more than one strong title
+
+### Suggested Workflow
+
+1. Read the current conversation context.
+2. Extract the main action, object, and outcome.
+3. Produce one strong title and, if useful, one alternate.
+4. Add `done` or `pas done` to the suggested title when the status is clear.
+5. If the user wants a rename, use the same analysis to update the Codex session title.
+
 ## Tracker synchronization rules
 
 - Distinguish clearly between:

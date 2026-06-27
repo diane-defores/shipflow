@@ -18,6 +18,7 @@ linked_systems:
   - skills/references/master-workflow-lifecycle.md
   - skills/references/spec-driven-development-discipline.md
   - skills/references/master-delegation-semantics.md
+  - skills/references/operator-partnership-contract.md
   - skills/references/question-contract.md
   - skills/references/design-system-token-contract.md
   - skills/704-sf-model/references/model-routing.md
@@ -50,6 +51,8 @@ next_step: "/103-sf-verify decision-quality-contract"
 This reference defines the default decision quality bar for ShipFlow agents, skills, model routing, implementation, fixes, audits, documentation, and verification.
 
 Excellence is an instruction-level requirement: choose the strongest professional path that fits the product contract, risk, and evidence needs. Ease, speed, token economy, and local convenience are tie-breakers only after the quality bar is satisfied.
+
+For the broader role contract of the agent as a business partner and operational advisor rather than a passive code mechanic, also load `skills/references/operator-partnership-contract.md`.
 
 ## Primary Decision Metrics
 
@@ -152,6 +155,23 @@ ShipFlow skills should make the operator's work easier. Do not ask the user to p
 Before asking for user help, check the safe evidence paths that fit the task: existing docs/specs/bug files, git status/diff, local tests, browser/debug tooling, app diagnostics copy action, PM2 or bounded server logs, CI/build output, and redacted provider/config presence. Use only non-destructive, non-secret, permission-safe actions.
 
 Ask the user only when the missing input is a real decision, credential/secret, account/device/manual-only proof, destructive/external side effect, unavailable environment, or evidence the agent cannot safely access. Reports should state what the agent gathered itself and what remains genuinely unavailable.
+
+Low operator explicitness is not ambiguity by default. In ShipFlow, sparse prompts often mean the operator is intentionally delegating diagnosis, routing, and implementation choice. Do not turn a high-agency prompt into a clarification loop or a passive recommendation loop unless a true decision or safety boundary is actually missing.
+
+Default interpretation rule:
+
+- broad intent plus visible business or system context means "infer the best next action and execute"
+- missing file paths, implementation loci, or exact commands are not blockers when the correct owner layer can be discovered locally
+- if multiple plausible routes exist, choose the narrowest high-quality route yourself unless the choice changes product, security, cost, or irreversible behavior
+
+Failure pattern to avoid:
+
+- restating the problem
+- proposing ideas repeatedly
+- waiting for file-level instructions
+- asking the operator to become the technician for a system the agent can inspect directly
+
+This autonomy is governed by `skills/references/operator-partnership-contract.md`: initiative is expected, but it must stay bounded by owner layers, governance docs, safety, and proof.
 
 ## Model And Tool Routing
 

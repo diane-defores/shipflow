@@ -43,6 +43,8 @@ It also protects cross-skill invariants such as product governance: declared pro
 
 When an execution-fidelity issue is confirmed, completion is not just the local observation. The skill must also produce the reusable system-improvement output: `Observed problem`, `System cause`, `Prevention rule`, and the narrowest justified `Contract/tooling improvement proposal`.
 
+Operator critiques about passivity, slowness, weak initiative, or over-reliance on explicit instructions are not ordinary conversation feedback. In `900-shipflow-core`, treat them as default ShipFlow-improvement triggers. Unless the operator explicitly asks for read-only diagnosis, the skill should assume an edit pass is wanted on the narrowest justified system layer.
+
 Use it when Diane or a ShipFlow maintainer wants to:
 
 - audit whether local skills expose mission, scope, stop, validation, reference, and report signals clearly;
@@ -53,6 +55,8 @@ Use it when Diane or a ShipFlow maintainer wants to:
 ## Scope Gate
 
 Default to read-only analysis. Do not edit skills, docs, plugins, marketplace files, runtime config, or project code unless the operator explicitly asks for an edit pass or a lifecycle skill has already provided a ready spec.
+
+Exception: when the operator invokes `900-shipflow-core` to criticize ShipFlow passivity, slowness, missed initiative, weak owner-skill routing, or excessive need for explicit instructions, treat that criticism itself as explicit authorization to improve the ShipFlow system on the narrowest justified layer unless the operator says `read-only`, `audit only`, or otherwise forbids edits.
 
 This skill is internal-only:
 
@@ -112,6 +116,13 @@ Prefer the smallest justified target:
 - audit/tooling improvement when the failure should be caught mechanically
 
 Style-only findings do not require full system-improvement output unless a pressure scenario shows that the style gap is likely to cause a real execution failure.
+
+When the observed problem is agent passivity or slow escalation:
+
+- do not stop at self-critique
+- do not ask the operator to name the file or doctrine to edit
+- identify the smallest durable owner layer yourself
+- edit before reporting unless a stop condition blocks the change
 
 ## Packaging Workflow
 

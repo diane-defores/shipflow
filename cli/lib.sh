@@ -5146,6 +5146,91 @@ detect_project_type() {
     fi
 }
 
+detect_node_package_manager() {
+    local project_dir=$1
+
+    if [ -f "$project_dir/pnpm-lock.yaml" ]; then
+        echo "pnpm"
+    elif [ -f "$project_dir/yarn.lock" ]; then
+        echo "yarn"
+    elif [ -f "$project_dir/package-lock.json" ]; then
+        echo "npm"
+    elif [ -f "$project_dir/package.json" ]; then
+        echo "npm"
+    else
+        echo ""
+    fi
+}
+
+migrate_node_project_to_pnpm() {
+    local project_dir=$1
+
+    if [ ! -f "$project_dir/package.json" ]; then
+        error "Aucun package.json trouvé pour la migration pnpm"
+        return 1
+    fi
+
+    echo -e "${BLUE}🔁 Migration Node.js vers pnpm...${NC}"
+    echo -e "${YELLOW}Cette action va créer ou mettre à jour pnpm-lock.yaml puis réinstaller les dépendances.${NC}"
+
+    if ! ui_confirm "Continuer avec la migration pnpm ?"; then
+        echo -e "${BLUE}❌ Migration annulée${NC}"
+        return 1
+    fi
+
+    (
+        cd "$project_dir" || exit 1
+        flox install pnpm >/dev/null 2>&1 || true
+        if command -v corepack >/dev/null 2>&1; then
+            corepack enable >/dev/null 2>&1 || true
+        fi
+        if [ -f "package-lock.json" ]; then
+            flox activate -- pnpm import 2>&1 | grep -v "Progress:" || true
+        fi
+        rm -rf node_modules
+        flox activate -- pnpm install 2>&1 | grep -v "Progress:" || true
+    )
+    local rc=$?
+
+    if [ $rc -ne 0 ]; then
+        error "Échec de la migration pnpm"
+        info "Projet: $project_dir"
+        info "Essai manuel: cd \"$project_dir\" && pnpm install"
+        return 1
+    fi
+
+    echo -e "${GREEN}✅ Migration pnpm terminée${NC}"
+    return 0
+}
+
+prompt_node_package_manager_choice() {
+    local project_dir=$1
+    local current_pm=$2
+    local choice
+
+    echo -e "${BLUE}Astuce ShipFlow:${NC} pour une migration guidée, ouvre Codex et lance ${CYAN}/404-sf-migrate pnpm${NC}. ShipFlow te prend par la main sur le parcours de migration."
+
+    choice=$(printf '%s\n' \
+        "Keep npm and continue" \
+        "Open Codex and migrate to pnpm" \
+        "Cancel deployment" \
+        | ui_choose "Package manager detected: ${current_pm}. What do you want to do now?") || return 1
+
+    case "$choice" in
+        "Keep npm and continue")
+            echo "npm"
+            return 0
+            ;;
+        "Open Codex and migrate to pnpm")
+            migrate_node_project_to_pnpm "$project_dir"
+            return $?
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
 validate_flox_runtime_package_token() {
     local token=$1
 
@@ -5356,6 +5441,9 @@ init_flox_env() {
     if [ "$lang" = "nodejs" ]; then
         echo -e "${BLUE}📦 Installation des dépendances du projet...${NC}"
         cd "$project_dir"
+        if [ "$pm" = "npm" ]; then
+            pm=$(prompt_node_package_manager_choice "$project_dir" "$pm") || return 1
+        fi
         if [ "$pm" = "pnpm" ] && [ -f "pnpm-lock.yaml" ]; then
             flox activate -- pnpm install 2>&1 | grep -v "Progress:" || true
         elif [ "$pm" = "yarn" ] && [ -f "yarn.lock" ]; then
@@ -6093,10 +6181,9 @@ env_start() {
         if [ ! -d "$project_dir/node_modules" ] || [ -z "$(ls -A "$project_dir/node_modules" 2>/dev/null)" ]; then
             echo -e "${YELLOW}⚠️  node_modules manquant, installation des dépendances...${NC}"
             local pm_file=""
-            if [ -f "$project_dir/pnpm-lock.yaml" ]; then
-                pm_file="pnpm"
-            elif [ -f "$project_dir/yarn.lock" ]; then
-                pm_file="yarn"
+            pm_file=$(detect_node_package_manager "$project_dir")
+            if [ "$pm_file" = "npm" ]; then
+                pm_file=$(prompt_node_package_manager_choice "$project_dir" "$pm_file") || return 1
             fi
             case "$pm_file" in
                 pnpm) flox activate --dir "$project_dir" -- pnpm install 2>&1 | grep -v "Progress:" || true ;;

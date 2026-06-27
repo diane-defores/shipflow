@@ -66,6 +66,8 @@ Do not infer caller identity from runtime state. If a master skill wants a detai
 
 Human-launched user mode is not a simplified agent report. It is a decision surface for a human operator. It must translate internal gates into the user's active language and expose only the information needed to trust the outcome or choose the next action.
 
+User-facing reports should default to result-first phrasing. Avoid narrating intermediate actions, tool sequences, or step-by-step execution unless the user explicitly asked for process detail or the report is blocked/partial and the action path matters.
+
 ## User Mode
 
 Keep the final report compact and outcome-first.
@@ -84,6 +86,8 @@ Default user-mode reports must fit this shape unless the skill has a stricter lo
 Do not include full checklists, validation matrices, phase ledgers, file inventories, raw command output, or lifecycle internals in successful user-mode reports. Keep that detail in the durable artifact or use `report=agent`.
 
 Do not report routine subagent orchestration in user mode. Mention it only when availability, degraded execution, model override status, cost/risk, or topology changes trust or the user's next decision.
+
+When a task is complete, prefer the end state over the story of how it was completed. One short sentence about what changed is usually enough.
 
 Use a few status emojis when they improve scanning, not as decoration. Good
 defaults are `🚀` for pushed/shipped, `✅` for passed checks, `⚠️` for limits or

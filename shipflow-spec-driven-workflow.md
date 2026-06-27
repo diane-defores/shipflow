@@ -26,6 +26,7 @@ linked_systems:
   - skills/003-sf-bug/SKILL.md
   - skills/references/entrypoint-routing.md
   - skills/references/decision-quality-contract.md
+  - skills/references/operator-partnership-contract.md
   - templates/artifacts/
   - tools/shipflow_metadata_lint.py
   - skills/references/canonical-paths.md
@@ -96,6 +97,7 @@ Default operating stance:
 - make the contract implementable by a fresh agent
 - avoid “prompt and correct” loops as the normal path
 - treat late clarification as a bounded exception, not the workflow itself
+- treat sparse operator prompts as delegated intent when the owner layer is inferable locally
 
 Skill launch cheatsheet:
 

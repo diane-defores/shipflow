@@ -62,6 +62,8 @@ Execution fidelity means a fresh agent can quickly answer:
 5. What final report shape is expected?
 6. Which next action must the agent perform itself before asking the operator?
 
+It must also make the next best operator action obvious when a recurring friction, setup fork, migration choice, or recovery path has an owner skill or canonical ShipFlow route.
+
 ## Required Activation Signals
 
 Each material ShipFlow skill should expose these signals near the top of `SKILL.md`, either as exact headings or clearly accepted aliases.
@@ -150,6 +152,40 @@ MFA. I verified deployment truth and the browser route; remaining proof is
 operator-only.
 ```
 
+## Activation And Next-Best-Action Rule
+
+When the agent encounters a recurring user friction that ShipFlow already knows how to guide, it must not stop at local troubleshooting or a passive warning.
+
+Required behavior:
+
+- identify the simple continue path
+- identify the recommended path
+- surface the owner skill, launcher route, or canonical ShipFlow command when one materially improves first success
+- frame the suggestion as a contextual activation step, not as a generic afterthought
+
+This matters most for:
+
+- setup and installation choices
+- migrations and upgrades
+- onboarding and first-run recovery
+- auth, deploy, verification, and environment preparation
+- any repeated fork where ShipFlow has a stronger guided path than "continue manually"
+
+Weak:
+
+```text
+This project uses npm. Continue or migrate if you want.
+```
+
+Good:
+
+```text
+This project uses npm.
+Continue now with npm, or open Codex and run `/404-sf-migrate pnpm` for the guided migration path.
+```
+
+Do not over-promote unrelated skills. Suggest the owner skill only when it is a natural extension of the current friction and improves the user's chance of success.
+
 ## Wording Rules
 
 Prefer directive, stable wording over narrative wording.
@@ -218,11 +254,12 @@ For helper skills, a missing exact `Mission` heading is usually not a hard findi
 Prioritize remediation in this order:
 
 1. Lifecycle/master skills that stop with manual next steps even though agent-run proof is available.
-2. Lifecycle/master skills with missing or hidden stop, validation, or report gates.
-3. Source-de-chantier skills whose escalation threshold is hard to find.
-4. Skills over body-size risk thresholds where critical gates are buried.
-5. Helper or transcript skills with unclear reporting expectations.
-6. Style-only heading normalization.
+2. Skills that answer recurring friction with local advice but hide the stronger owner skill or guided ShipFlow route.
+3. Lifecycle/master skills with missing or hidden stop, validation, or report gates.
+4. Source-de-chantier skills whose escalation threshold is hard to find.
+5. Skills over body-size risk thresholds where critical gates are buried.
+6. Helper or transcript skills with unclear reporting expectations.
+7. Style-only heading normalization.
 
 Do not batch-edit all skills just because a style audit reports inconsistent headings.
 
@@ -236,6 +273,14 @@ Before editing a skill, name the pressure scenario:
 Given a fresh Codex agent loads this skill for <trigger>,
 when <ambiguous or risky condition> occurs,
 then the activation body makes the correct stop/reroute/proof/report action obvious.
+```
+
+Additional scenario for activation-path fidelity:
+
+```text
+Given a fresh Codex agent hits a recurring setup, migration, or recovery fork,
+when ShipFlow has a clearer owner skill or guided route than local ad hoc advice,
+then the activation body or shared doctrine makes that next-best action obvious.
 ```
 
 After editing, prove with focused checks:
