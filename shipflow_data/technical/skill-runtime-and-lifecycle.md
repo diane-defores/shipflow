@@ -153,7 +153,6 @@ Within helper/pilotage surfaces, keep the first-screen distinction explicit:
 - `702-sf-priorities` ranks active work for immediate execution order.
 - `703-sf-review` reconstructs what happened, what is proven, and what should happen next.
 - `309-sf-tasks` maintains the durable task tracker so project state is recorded correctly.
-- `706-continue` advances the currently resolved work item from durable local evidence.
 - `704-sf-model` recommends the right model policy for the current scope.
 - `707-name` tags or renames the current session.
 - `800-tmux-capture-conversation` exports a raw tmux conversation transcript to Markdown.
