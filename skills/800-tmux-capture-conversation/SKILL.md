@@ -21,6 +21,17 @@ This skill captures a local terminal transcript and does not write to chantier s
 
 Default to the current tmux pane when the user does not provide a tab/window number. This matches `tmux capture-pane -p -S -` from inside the active conversation.
 
+This skill answers one operator question: which tmux pane should be exported to a Markdown transcript, under what title, and to which destination?
+
+It owns raw transcript export only: target pane selection, title/destination inference, confirmation, and deterministic Markdown capture through the bundled script.
+
+Keep the boundary explicit:
+- stay here when the user wants to export a tmux conversation into a Markdown transcript
+- hand off to `801-clean-conversation-transcript` after capture when the user wants the transcript cleaned for readability
+- hand off to `202-sf-repurpose` only when the user explicitly wants the captured transcript turned into downstream content
+
+`800-tmux-capture-conversation` does not clean transcript content beyond capture planning, does not rewrite the exported conversation for readability, and does not become a content strategy skill.
+
 Ask for a tab/window number only when the user wants to capture a different tab and has not identified which one.
 
 When a tab number is provided, interpret it as a 1-based ordinal in the tmux window list. In a zero-based tmux session, tab 2 resolves to window index `:1`, matching `tmux capture-pane -t :1 -p -S -`; in a one-based tmux session, tab 2 resolves to `:2`.

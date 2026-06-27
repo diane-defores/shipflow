@@ -154,12 +154,18 @@ Within helper/pilotage surfaces, keep the first-screen distinction explicit:
 - `703-sf-review` reconstructs what happened, what is proven, and what should happen next.
 - `309-sf-tasks` maintains the durable task tracker so project state is recorded correctly.
 - `706-continue` advances the currently resolved work item from durable local evidence.
+- `704-sf-model` recommends the right model policy for the current scope.
+- `707-name` tags or renames the current session.
+- `800-tmux-capture-conversation` exports a raw tmux conversation transcript to Markdown.
+- `801-clean-conversation-transcript` cleans one existing transcript for readability.
 
 Do not blur these roles. Help is not continuation, resume is not repo truth, continue is not a passive summary, route is not context priming, context priming is not execution, and status reporting is not maintenance ownership.
 
 Keep the pilotage boundary explicit as well: exploration is not backlog grooming, backlog grooming is not current prioritization, prioritization is not retrospective review, and review is not open-ended ideation.
 
 Keep the execution-pilotage boundary explicit too: task-tracker maintenance is not continuation of the active work item, and continuation is not a generic request to rewrite tracker state.
+
+Keep the residual helper boundary explicit as well: model routing is not execution, session naming is not recap, transcript capture is not transcript cleaning, and transcript cleaning is not content repurposing by default.
 
 ## Owned Files
 

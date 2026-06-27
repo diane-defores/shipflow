@@ -21,6 +21,17 @@ This skill edits a submitted transcript for readability and does not write to ch
 
 Clean one exported tmux/Codex transcript into a readable Markdown source while preserving user intent, decisions, commands, errors, and outcomes.
 
+This skill answers one operator question: how do we turn this one transcript file into a readable source without losing the important conversation substance?
+
+It owns transcript cleanup only: reading one submitted transcript, removing obvious chrome/noise, relabeling turns, preserving key commands/outcomes, and saving the cleaned result in place.
+
+Keep the boundary explicit:
+- stay here when the user already has a transcript file and wants it cleaned for readability
+- hand off to `800-tmux-capture-conversation` when the transcript has not been exported yet
+- hand off to `202-sf-repurpose` only when the user explicitly wants the cleaned source turned into another content artifact
+
+`801-clean-conversation-transcript` does not capture new transcripts, does not produce a separate strategy report by default, and does not invent content beyond the submitted transcript.
+
 ## Goal
 
 Transform one exported Markdown transcript into a readable working source for documentation or content repurposing. Edit the submitted file directly. Do not create a separate report, pack, summary file, or sidecar unless the user explicitly asks for one.

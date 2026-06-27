@@ -29,6 +29,18 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 
 Choisir un modèle avant une exécution ShipFlow, que la session tourne dans Codex/OpenAI ou dans Claude Code, sans transformer cette étape en débat interminable.
 
+This skill answers one operator question: which model policy is the best fit for this scope right now, and is that recommendation for the current conversation, a subagent override, or the next run?
+
+It owns model-routing advice only: runtime/provider identification, primary model choice, reasoning level or Claude alias choice, and quality-equivalent fallback guidance.
+
+Keep the boundary explicit:
+- stay here when the user wants model choice, runtime-fit advice, or a decision on reasoning strength before execution
+- hand off to `102-sf-start` once the model choice is clear and the user wants the work executed
+- hand off to `302-sf-help` when the user needs broader workflow doctrine rather than a concrete model choice
+- hand off to `700-sf-explore` or `100-sf-spec` when the task itself is still too fuzzy to route a model credibly
+
+`704-sf-model` does not become the execution owner, does not mutate the work item itself, and does not pretend that recommending a model means the main thread already switched runtime.
+
 Avant toute recommandation, charger `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`. La sélection de modèle optimise d'abord la fiabilité, la sécurité, la performance attendue, la maintenabilité, l'excellence et la qualité de preuve. Les alternatives rapides ou moins chères ne sont valides que si elles restent équivalentes sur ces axes pour le risque réel.
 
 Le but de `704-sf-model` est de répondre à six questions :

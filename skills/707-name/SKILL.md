@@ -21,6 +21,17 @@ This skill does not write to chantier specs. If invoked inside a spec-first flow
 
 Name the current session so it appears in the statusline and is saved for future reference.
 
+This skill answers one operator question: what short name should the current session carry so the operator can recognize it later?
+
+It owns local session tagging only: getting or confirming the session name, resolving the current session id, and storing the statusline label.
+
+Keep the boundary explicit:
+- stay here when the user wants to name or rename the current session label
+- hand off to `303-sf-resume` when the user wants a summary of what the session is about
+- hand off to `309-sf-tasks` when the user wants project tracker bookkeeping rather than a local session tag
+
+`707-name` does not summarize the work, does not mutate project artifacts, and does not act like a conversation cleanup or continuation owner.
+
 The argument provided is: `{{ args }}`
 
 ### Steps
