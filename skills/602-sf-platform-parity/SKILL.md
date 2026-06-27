@@ -1,6 +1,6 @@
 ---
 name: 602-sf-platform-parity
-description: "Audit and steer product and technical parity across supported platforms."
+description: "Audit product and technical parity across supported platforms."
 argument-hint: '<project | feature | spec path> [platforms=web,android,ios,windows,macos,linux] [report=agent]'
 ---
 

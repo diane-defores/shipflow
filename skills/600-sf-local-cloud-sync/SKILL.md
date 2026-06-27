@@ -1,6 +1,6 @@
 ---
 name: 600-sf-local-cloud-sync
-description: "Frame and route local-to-cloud data promotion, merge, sync UX, and security work."
+description: "Frame local-cloud promotion, merge, sync UX, and security work."
 argument-hint: <project, feature, data domains, or sync question>
 ---
 

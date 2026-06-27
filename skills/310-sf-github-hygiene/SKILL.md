@@ -1,6 +1,6 @@
 ---
 name: 310-sf-github-hygiene
-description: "Audit and maintain git sync, stale branches, GitHub PR drift, and Dependabot hygiene."
+description: "Audit git sync, stale branches, PR drift, and Dependabot hygiene."
 argument-hint: '[audit|fix|branches|dependabot] [current repo|workspace]'
 ---
 

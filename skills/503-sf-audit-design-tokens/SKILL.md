@@ -28,6 +28,8 @@ Default to `report=user`: concise, findings-first, and focused on top issues, pr
 
 Before scoring token quality, load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` and `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`. The `UI And Design-System Shortcut Ban` makes unexplained hardcoded visual values a quality finding, not an acceptable quick fix.
 
+For `PROJECT MODE`, `FILE MODE`, or `GLOBAL MODE`, load `$SHIPFLOW_ROOT/skills/503-sf-audit-design-tokens/references/deep-audit-playbook.md` before running the deep audit phases or emitting the detailed design-tokens report.
+
 
 ## Context
 
@@ -79,225 +81,35 @@ Next steps:
 
 ## PROJECT MODE
 
-Run all 7 phases sequentially. Each phase produces a sub-score (A/B/C/D) and contributes to the final report.
+Load `$SHIPFLOW_ROOT/skills/503-sf-audit-design-tokens/references/deep-audit-playbook.md` and run its seven sequential phases:
 
-### Phase 1 — Inventory of the 4 design token systems
+1. inventory of color, typography, spacing, and motion token systems
+2. token coverage matrix across declared modes
+3. modular-ratio analysis for typography and spacing
+4. dependency-graph health
+5. historical drift from git history
+6. DTCG compliance when token JSON exists
+7. theme-system architecture and visual bypass checks
 
-Read the token source files (detected in context block) and build a structured inventory:
-
-```
-COLOR PALETTE
-  Source(s): [list of files]
-  Format: [css-vars | tailwind | js-object | DTCG json | hybrid]
-  Token count: N
-  Universal semantic socle:
-    success:  [present (light+dark) / missing in dark / missing entirely]
-    warning:  [...]
-    danger:   [...]
-    info:     [...]
-    neutral:  [...]
-  Surface tokens:
-    surface-base:    [present / missing]
-    surface-raised:  [...]
-    surface-overlay: [...]
-    surface-sunken:  [...]
-  Domain-specific intents: [list project-specific tokens beyond the socle]
-  Hue-based names in components: N violations (list first 10 files)
-
-TYPOGRAPHY
-  Source(s): [files]
-  Format: [css-vars | theme object | Flutter TextTheme | hybrid]
-  Token count: N
-  Naming strategy: [t-shirt | semantic | MIXED — violation]
-  Token bundle:
-    font-size + line-height + letter-spacing co-located: [yes / partial / no]
-  Fluid clamp() usage: [all headings / partial / none]
-  Literal font-sizes outside tokens: N (adaptive severity — see Phase 7)
-
-SPACING
-  Source(s): [files]
-  Format: [css-vars | tailwind scale | theme object | hybrid]
-  Token count: N
-  Naming strategy: [t-shirt | semantic | MIXED]
-  Base unit: [4px | 8px | modular ratio | chaotic]
-  Fluid spacing (layout-level): [adopted / static-only]
-  Literal spacing outside tokens: N
-
-MOTION
-  Source(s): [files]
-  Format: [css-vars | tailwind | theme object | hybrid]
-  Duration tokens: N  (naming: [semantic | by-value | MIXED])
-  Easing tokens: N    (explicit cubic-bezier / CSS keywords)
-  Reduced-motion declarations: N (see context block)
-  Literal transition/animation outside tokens: N
-```
-
-Output this inventory verbatim at the top of the report. Every subsequent phase adds findings.
-
-### Phase 2 — Token coverage matrix (per mode)
-
-For each color/surface token, verify that it is defined for **every** declared theme mode (light, dark, any custom mode like high-contrast).
-
-Generate a matrix:
-
-```
-                    light    dark    high-contrast
---color-success     ✓        ✓       ✓
---color-warning     ✓        ✓       ✗  ← UNDEFINED
---surface-raised    ✓        ✗       ✓  ← UNDEFINED in dark
-```
-
-Any ✗ = 🟠 high severity (theme breaks silently in that mode). Count total gaps and report.
-
-### Phase 3 — Modular ratio analysis (typography + spacing)
-
-For typography and spacing scales, extract numeric values and compute the ratio between consecutive tokens:
-
-```
-TYPOGRAPHY SCALE
---fs-xs    = 0.875rem   ratio → sm: 1.143×
---fs-sm    = 1.000rem   ratio → base: 1.125×
---fs-base  = 1.125rem   ratio → lg: 1.111×
---fs-lg    = 1.250rem   ratio → xl: 1.200×
---fs-xl    = 1.500rem   ratio → 2xl: 1.333×
---fs-2xl   = 2.000rem
-```
-
-**Coherence assessment**:
-- All ratios within ±0.05 of one canonical value (e.g., 1.125 minor second, 1.2 minor third, 1.25 major third, 1.333 perfect fourth, 1.5 perfect fifth) → **coherent** ✓
-- Ratios vary by more than ±0.1 across the scale → **chaotic** ✗ — recommend regenerating with [Utopia.fyi](https://utopia.fyi) using base size + ratio + viewport range
-- Partial coherence (3+ tokens follow a ratio, 1-2 outliers) → **inconsistent** ⚠ — flag the outliers
-
-Same analysis for spacing (4px base: 4, 8, 12, 16, 24, 32, 48, 64 — each ratio ~1.5× or 1.33×).
-
-### Phase 4 — Dependency graph
-
-Build a dependency graph of tokens referencing tokens:
-
-```
---color-button-bg: var(--color-brand)
-    → --color-brand: oklch(0.6 0.18 250)
---color-button-hover: color-mix(in oklch, var(--color-brand) 90%, black)
-    → --color-brand (same as above)
-```
-
-Report:
-- **Orphan tokens** : defined but referenced nowhere in components or other tokens → candidates for deletion
-- **Cycles** : token A references token B which references token A → infinite loop or fallback hell
-- **Deep chains** : token references > 3 levels deep → indirection overhead, hard to debug
-- **Duplicate intent** : two tokens with different names resolving to the same value → consolidate (e.g., `--color-error` and `--color-danger` both = `oklch(0.55 0.2 25)`)
-- **Split-brain sources** : components consume a different theme object/file than the declared canonical token source → block migration claims until unified
-
-### Phase 5 — Historical drift (git analysis)
-
-Run `git log --follow --oneline -50 -- <token-files>` and `git log -p -20 -- <token-files>`. Look for:
-
-- **Recent ad-hoc additions** : commits in last 30 days that add tokens without clear justification (no accompanying component change or discussion)
-- **Author dispersion** : if 5+ different authors have added tokens in the last 3 months without a clear owner, the system is drifting (no steward)
-- **"fix:" commits on tokens** : multiple `fix:` commits on token files = unstable foundation, the system is being reactively patched instead of deliberately designed
-- **Token churn** : same token renamed/moved multiple times = naming wasn't locked in → flag for consolidation
-
-Output a brief timeline of the last 10 changes with assessment.
-
-### Phase 6 — DTCG compliance
-
-If the project has a `tokens.json` or similar (see context block), verify compliance with [W3C DTCG spec](https://www.designtokens.org/tr/drafts/format/) (first stable version Oct 2025):
-
-- [ ] Each token has `$value` (mandatory)
-- [ ] Each token has `$type` (`color`, `dimension`, `fontFamily`, `fontWeight`, `duration`, `cubicBezier`, etc.)
-- [ ] `$description` present for non-trivial tokens
-- [ ] Aliases use `{group.subgroup.token}` syntax (curly braces), not `$ref` (old draft)
-- [ ] Grouping is semantic (`color.semantic.success` > `color.blue.500`)
-- [ ] Modes declared via `$extensions` or dedicated `$schema` version
-
-Projects without DTCG file : skip phase, note in report ("not applicable — no DTCG file").
-
-### Phase 7 — Theme system architecture (deep)
-
-Deep version of the `502-sf-audit-design #11 Theme System Architecture` checklist, with **measured verifications** instead of yes/no questions:
-
-- [ ] **Modes available** : enumerate by reading the theme preference module. Confirm normalization (read the code, verify unknown values fallback to `system`, not crash)
-- [ ] **Persistence verified** : trace from UI selector → preference store. Confirm read-back on reload works (read the code path).
-- [ ] **Server sync if auth** : if auth is detected (see context block), grep for `updateUserPreferences`, `settings.theme`, or equivalent. If absent → 🔴 critical (preference doesn't follow the user across devices).
-- [ ] **FOUC prevention measured** : check the HTML `<head>` or SSR layout for an inline script that sets `data-theme` before CSS loads. Absent on a client-rendered app = 🟠 high (visible flash for dark-mode users on every reload).
-- [ ] **`prefers-color-scheme` honored** : trace first-render path for users with no stored preference. Must read `window.matchMedia('(prefers-color-scheme: dark)')` or equivalent.
-- [ ] **Settings UI** : grep for the theme selector component. Must be discoverable (in a primary settings page, not behind a debug flag).
-- [ ] **No `if (isDark)` branches in components** : grep `isDark\|isLight\|theme\s*===\s*['\"]dark` in component files. Every hit = violation (mode-switching logic belongs in tokens, not business code).
-- [ ] **Single-mode projects** : if only one mode declared, check for `BRANDING.md` justification. Absent = violation.
-- [ ] **No visual bypass channel** : component APIs and local styles do not expose unguarded `style`, inline maps, or arbitrary class/value props that let screens bypass tokens for colors, spacing, typography, shadows, motion, or layout constants.
-
-### Severity rules (adaptive to project size)
-
-Based on the component files count from the context block:
-
-| Project size | Threshold | Default priority for token findings |
-|---|---|---|
-| Small | < 10 | 🟡 medium unless user impact or brand trust is directly harmed |
-| Mid | 10-30 | 🟠 high |
-| Large | > 30 | 🔴 critical |
-
-Apply this to all findings. A missing semantic socle in a 5-file demo project is still a professional finding, but usually medium priority. The same missing socle in a 50-file SaaS is critical because drift compounds fast.
-
-### Final report
-
-```
-═══════════════════════════════════════
-DESIGN TOKENS AUDIT — [project name]
-═══════════════════════════════════════
-
-INVENTORY
-  [full inventory block from Phase 1]
-
-SUBSCORES
-  Theme Architecture       [A/B/C/D]
-  Typography Tokens        [A/B/C/D]
-  Spacing Tokens           [A/B/C/D]
-  Motion Tokens            [A/B/C/D]
-  Universal Palette Socle  [A/B/C/D]
-  Ratio Coherence          [A/B/C/D]
-  Dependency Health        [A/B/C/D]
-  Historical Drift         [A/B/C/D]
-  DTCG Compliance          [A/B/C/D | N/A]
-───────────────────────────────────────
-OVERALL DESIGN TOKENS      [A/B/C/D]
-
-CRITICAL ISSUES (🔴)
-  file:line — description — Why: [principle]
-
-HIGH SEVERITY (🟠)
-  file:line — description — Why: [principle]
-
-PRIORITY IMPROVEMENTS (⚡)
-  file:line — description — Why: [principle]
-  ⚡ (if no playground detected) Run /501-sf-design-playground to scaffold a live token preview page.
-  ⚡ (if tokens exist but pages/components still use hardcoded values) Run /006-sf-design "migrer le site pour consommer les tokens design centralises sans changement visuel volontaire".
-
-Fixed: 0 (this audit is read-only)
-Tasks created: X in TASKS.md
-═══════════════════════════════════════
-```
+Use the severity rules and final report template from that playbook. Keep the activation body focused on routing, context, pre-check, tracking, and guardrails.
 
 ---
 
 ## FILE MODE
 
-If `$ARGUMENTS` is a file path, audit only that token file. Run:
-- Phase 1 (limited to that file's tokens)
-- Phase 3 (ratio analysis on that file)
-- Phase 6 (DTCG compliance if applicable)
+Load the local deep-audit playbook. Audit only that token file and run the scoped subset:
 
-Skip Phase 2 (coverage matrix requires all modes), Phase 4 (dep graph requires cross-file), Phase 5 (git log still applies), Phase 7 (theme architecture is project-wide).
+- Phase 1 limited to that file
+- Phase 3 ratio analysis on that file
+- Phase 6 DTCG compliance when applicable
+
+Skip the project-wide phases that require full mode coverage, cross-file dependency context, or theme-architecture review.
 
 ---
 
 ## GLOBAL MODE
 
-Same pattern as `502-sf-audit-design` GLOBAL MODE:
-1. Read discovered project-local corpora (`shipflow_data/` markers) Domain Applicability table — identify projects with Design ✓
-2. Use the runtime's structured question tool when available to let the user select projects
-3. Launch one bounded worker per selected project with available parallel agent/tooling in a single parallel batch when supported. If unavailable, run the selected projects sequentially.
-4. Each worker runs this skill's PROJECT MODE and returns the structured report
-5. Compile a cross-project design tokens report with aggregated findings
+Load the local deep-audit playbook. Follow the same cross-project pattern as `502-sf-audit-design`: select applicable Design projects, run one bounded `PROJECT MODE` worker per approved project when tooling allows, then compile the aggregated cross-project design-tokens report.
 
 ---
 

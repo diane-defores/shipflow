@@ -1,6 +1,6 @@
 ---
 name: 601-sf-product-entitlements
-description: "Design safe product entitlement ownership, gates, provider-event handling, and sync handoffs."
+description: "Design product entitlements, provider events, and sync handoffs."
 argument-hint: <project or feature with access, plans, provider events, or support questions>
 ---
 

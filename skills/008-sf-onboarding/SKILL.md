@@ -1,6 +1,6 @@
 ---
 name: 008-sf-onboarding
-description: "User onboarding, activation paths, setup guidance, and first-success recovery."
+description: "User onboarding, activation, setup, and first-success recovery."
 argument-hint: <feature, flow, shipped change, or onboarding audit target>
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: 900-shipflow-core
-description: "Internal operator skill for auditing ShipFlow skill execution fidelity and plugin-packaging readiness."
+description: "Audit ShipFlow skill execution fidelity and plugin packaging."
 argument-hint: "[audit|packaging|help] <instruction>"
 ---
 

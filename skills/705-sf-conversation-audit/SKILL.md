@@ -1,6 +1,6 @@
 ---
 name: 705-sf-conversation-audit
-description: "Audit stored ShipFlow conversations and produce durable, actionable improvement routes."
+description: "Audit stored ShipFlow conversations into actionable improvement routes."
 argument-hint: "[default|latest|path <file-or-dir>|export shipflow|report=agent]"
 ---
 

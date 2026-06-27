@@ -1,0 +1,116 @@
+---
+artifact: spec
+metadata_schema_version: "1.0"
+artifact_version: "1.0.0"
+project: "shipflow"
+created: "2026-06-27"
+created_at: "2026-06-27 00:00:00 UTC"
+updated: "2026-06-27"
+updated_at: "2026-06-27 00:00:00 UTC"
+status: ready
+source_skill: 100-sf-spec
+source_model: "GPT-5 Codex"
+scope: "aggregate-skill-corpus-compaction-phase-1"
+owner: "Diane"
+user_story: "As the ShipFlow operator, I want the skill corpus to return under the aggregate activation-budget threshold without weakening first-screen execution guardrails, so the system stays both compact and reliable under pressure."
+confidence: high
+risk_level: medium
+security_impact: none
+docs_impact: yes
+linked_systems:
+  - "skills/503-sf-audit-design-tokens/SKILL.md"
+  - "skills/503-sf-audit-design-tokens/references/*"
+  - "skills/008-sf-onboarding/SKILL.md"
+  - "skills/310-sf-github-hygiene/SKILL.md"
+  - "skills/600-sf-local-cloud-sync/SKILL.md"
+  - "skills/601-sf-product-entitlements/SKILL.md"
+  - "skills/602-sf-platform-parity/SKILL.md"
+  - "skills/705-sf-conversation-audit/SKILL.md"
+  - "skills/900-shipflow-core/SKILL.md"
+  - "skills/references/skill-instruction-layering.md"
+  - "shipflow_data/workflow/TASKS.md"
+  - "tools/skill_budget_audit.py"
+  - "tools/audit_shipflow_skills.py"
+depends_on:
+  - artifact: "skills/references/skill-instruction-layering.md"
+    artifact_version: "1.0.0"
+    required_status: "active"
+  - artifact: "skills/references/skill-execution-fidelity.md"
+    artifact_version: "1.2.0"
+    required_status: "active"
+evidence:
+  - "2026-06-27 skill_budget_audit.py result after the execution-fidelity sweep: absolute estimate 8581 / 8500 with 0 hard violations, 0 warnings, and 0 separate risks."
+  - "The remaining system problem is aggregate corpus size, not a first-screen execution-contract gap."
+  - "`503-sf-audit-design-tokens` is one of the heaviest activation bodies (`~4808` estimated body tokens) and contains long deep-audit playbook material that can move to a skill-local reference."
+  - "During phase-1 validation, the budget tool showed that the remaining aggregate overage is driven by `absolute_budget = path + name + description`, so concise description trims on the longest frontmatter descriptions are also an in-scope lever."
+supersedes: []
+next_step: "/009-sf-skill-build continue aggregate compaction after the phase-1 pilot"
+---
+
+# Title
+
+Aggregate Skill Corpus Compaction Phase 1
+
+## Status
+
+ready
+
+## User Story
+
+As the ShipFlow operator, I want the skill corpus to return under the aggregate activation-budget threshold without weakening first-screen execution guardrails, so the system stays both compact and reliable under pressure.
+
+## Minimal Behavior Contract
+
+This phase must reduce aggregate skill-body pressure by moving deep procedural detail out of `SKILL.md` and into skill-local references, while preserving the first-screen execution contract, required loaders, stop behavior, and report behavior. If a compaction change makes the activation contract less clear about routing, validation, or ownership, the phase fails even if the body gets shorter.
+
+## Success Behavior
+
+- `503-sf-audit-design-tokens` keeps canonical paths, chantier behavior, report modes, context, pre-check, mode detection, tracking, and important constraints visible in `SKILL.md`.
+- The detailed seven-phase deep audit playbook moves to a skill-local reference and is explicitly loaded before use.
+- The highest-cost discovery descriptions are shortened without losing trigger clarity.
+- `audit_shipflow_skills.py` still returns no hard or review findings.
+- `skill_budget_audit.py` returns an aggregate estimate below `8500`.
+
+## Error Behavior
+
+- If the extracted material is still necessary to choose the next safe action from the first screen, stop and keep it in `SKILL.md`.
+- If the new reference is ambiguous about when to load it, verification fails.
+- If the aggregate budget remains above threshold after this pilot, report the residual and queue the next highest-yield slice instead of broadening scope ad hoc.
+
+## Scope In
+
+- `skills/503-sf-audit-design-tokens/SKILL.md`
+- `skills/503-sf-audit-design-tokens/references/deep-audit-playbook.md`
+- targeted frontmatter description trims for the highest-cost skills that still remain clear at discovery time
+- narrow tracker update in `shipflow_data/workflow/TASKS.md` if the next-step pointer should reference this spec
+
+## Scope Out
+
+- unrelated skill rewrites
+- public site docs
+- execution-fidelity doctrine already hardened in the previous sweep
+- broad multi-skill batch work in the same commit
+
+## Constraints
+
+- Keep the activation contract compact and decision-oriented.
+- Prefer a skill-local reference over a new shared reference unless repetition across multiple skills is proven.
+- Do not reopen the already-completed hardening register sweep in this phase.
+- Do not ship unrelated dirty files.
+
+## Test Contract
+
+- `python3 tools/audit_shipflow_skills.py`
+- `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
+- `tools/shipflow_sync_skills.sh --check --skill 503-sf-audit-design-tokens`
+- `python3 tools/shipflow_metadata_lint.py shipflow_data/workflow/specs/aggregate-skill-corpus-compaction-phase-1.md skills/503-sf-audit-design-tokens/references/deep-audit-playbook.md`
+- targeted `rg` checks for the new reference path and retained top-level headings
+
+## Implementation Tasks
+
+- [ ] Create the phase-1 compaction spec and bind the next-step pointer to it.
+- [ ] Extract the deep `PROJECT MODE` playbook from `503-sf-audit-design-tokens` into a skill-local reference.
+- [ ] Reduce the activation body to a compact route-and-contract summary that still loads the local playbook explicitly.
+- [ ] Trim the highest-cost skill descriptions enough to clear the aggregate discovery-metadata threshold.
+- [ ] Validate audit, budget, metadata lint, and runtime visibility.
+- [ ] Ship only the bounded phase-1 slice if validation passes.
