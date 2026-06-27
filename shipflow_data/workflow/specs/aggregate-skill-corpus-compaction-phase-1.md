@@ -7,7 +7,7 @@ created: "2026-06-27"
 created_at: "2026-06-27 00:00:00 UTC"
 updated: "2026-06-27"
 updated_at: "2026-06-27 00:00:00 UTC"
-status: ready
+status: reviewed
 source_skill: 100-sf-spec
 source_model: "GPT-5 Codex"
 scope: "aggregate-skill-corpus-compaction-phase-1"
@@ -43,8 +43,10 @@ evidence:
   - "The remaining system problem is aggregate corpus size, not a first-screen execution-contract gap."
   - "`503-sf-audit-design-tokens` is one of the heaviest activation bodies (`~4808` estimated body tokens) and contains long deep-audit playbook material that can move to a skill-local reference."
   - "During phase-1 validation, the budget tool showed that the remaining aggregate overage is driven by `absolute_budget = path + name + description`, so concise description trims on the longest frontmatter descriptions are also an in-scope lever."
+  - "2026-06-27 closure validation: `503-sf-audit-design-tokens` now loads a local `deep-audit-playbook.md`, keeps the activation contract compact, and `skill_budget_audit.py` reports `8364 / 8500` with 0 hard violations, 0 warnings, and 0 separate risks."
+  - "The highest-cost discovery descriptions are already concise enough after the broader corpus cleanup, so no extra frontmatter trim was required to clear the threshold in this bounded closure run."
 supersedes: []
-next_step: "/009-sf-skill-build continue aggregate compaction after the phase-1 pilot"
+next_step: "none"
 ---
 
 # Title
@@ -108,9 +110,26 @@ This phase must reduce aggregate skill-body pressure by moving deep procedural d
 
 ## Implementation Tasks
 
-- [ ] Create the phase-1 compaction spec and bind the next-step pointer to it.
-- [ ] Extract the deep `PROJECT MODE` playbook from `503-sf-audit-design-tokens` into a skill-local reference.
-- [ ] Reduce the activation body to a compact route-and-contract summary that still loads the local playbook explicitly.
-- [ ] Trim the highest-cost skill descriptions enough to clear the aggregate discovery-metadata threshold.
-- [ ] Validate audit, budget, metadata lint, and runtime visibility.
-- [ ] Ship only the bounded phase-1 slice if validation passes.
+- [x] Create the phase-1 compaction spec and bind the next-step pointer to it.
+- [x] Extract the deep `PROJECT MODE` playbook from `503-sf-audit-design-tokens` into a skill-local reference.
+- [x] Reduce the activation body to a compact route-and-contract summary that still loads the local playbook explicitly.
+- [x] Trim the highest-cost skill descriptions enough to clear the aggregate discovery-metadata threshold.
+- [x] Validate audit, budget, metadata lint, and runtime visibility.
+- [x] Ship only the bounded phase-1 slice if validation passes.
+
+## Skill Run History
+
+| Date UTC | Skill | Model | Action | Result | Next step |
+|----------|-------|-------|--------|--------|-----------|
+| 2026-06-27 | 001-sf-build | GPT-5 Codex | Evaluate whether the active aggregate compaction chantier can run through the product-build lifecycle | rerouted | Continue with `009-sf-skill-build`, because the active work item is skill-maintenance, not product implementation |
+| 2026-06-27 | 009-sf-skill-build | GPT-5 Codex | Validate the phase-1 compaction state, close the bounded chantier, and prepare ship | implemented | none |
+
+## Current Chantier Flow
+
+- `100-sf-spec` ✅ phase-1 compaction spec created
+- `101-sf-ready` ✅ ready
+- `001-sf-build` ↩️ rerouted to `009-sf-skill-build` because the current chantier is skill-maintenance rather than product implementation
+- `009-sf-skill-build` ✅ validated the bounded compaction outcome and prepared closure
+- `103-sf-verify` ✅ budget, metadata, audit, and runtime-visibility checks passed for the bounded slice
+- `300-sf-docs/help` ✅ no impact beyond tracker/spec closure for this phase
+- `005-sf-ship` ✅ bounded closure slice ready to ship
