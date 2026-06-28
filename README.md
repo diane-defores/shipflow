@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.13.0"
+artifact_version: "0.13.1"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-06-28"
@@ -62,6 +62,7 @@ evidence:
   - "Updated README to reflect the live public site and lightweight plugin distribution path."
   - "Added App Blueprints system: blueprint gate in 001-sf-build, blueprint consumption in 100-sf-spec and 306-sf-scaffold, flutter-crud-content blueprint from ContentGlowz."
   - "Clarified public/docs runtime handoffs: help explains, 000-shipflow routes, owner skills execute, and OpenCode/KiloCode internal calls are not manual operator commands."
+  - "Added dedicated repo-visible runtime pages for OpenCode and KiloCode and linked them from the core docs section."
 next_step: "/300-sf-docs audit README.md"
 ---
 
@@ -120,6 +121,8 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [shipflow_data/technical/codex-plugin-packaging.md](./shipflow_data/technical/codex-plugin-packaging.md) — internal contract for the lightweight Codex plugin, sparse bootstrap, marketplace entry, and docs links
 - [.opencode/skills/shipflow/SKILL.md](./.opencode/skills/shipflow/SKILL.md) — OpenCode-compatible repository skill shim
 - [.agents/skills/shipflow/SKILL.md](./.agents/skills/shipflow/SKILL.md) — fallback OpenCode-compatible skill shim
+- [docs/opencode-shipflow.md](./docs/opencode-shipflow.md) — repo-visible OpenCode usage, discovery, and configuration page
+- [docs/kilocode-shipflow.md](./docs/kilocode-shipflow.md) — repo-visible KiloCode usage and compatibility-boundary page
 - [shipflow_data/technical/public-site-and-content-runtime.md](./shipflow_data/technical/public-site-and-content-runtime.md) — internal contract for the Astro public site and public/private documentation boundary
 - [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
 - [docs/focus-tags-cheatsheet.md](./docs/focus-tags-cheatsheet.md) — public cheatsheet for lightweight recentering tags across business, content, governance, execution, and system focus such as `#partner`, `#offer`, `#growth`, `#clarity`, `#pitch`, `#portfolio`, `#canon`, `#ship`, and `#shipflow`

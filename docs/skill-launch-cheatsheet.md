@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.7.0"
+artifact_version: "1.7.1"
 project: ShipFlow
 created: "2026-05-04"
 updated: "2026-06-28"
@@ -41,6 +41,7 @@ evidence:
   - "900-shipflow-core added as an internal operator-only ShipFlow Core audit skill."
   - "310-sf-github-hygiene added as the git/GitHub sync, stale branch, PR drift, and Dependabot hygiene skill."
   - "Public/docs handoff clarity updated: numeric examples now match three-digit runtime names, and runtime invocation notes distinguish manual user commands from OpenCode/KiloCode internal calls."
+  - "Added direct links to repo-visible OpenCode and KiloCode runtime pages."
 next_step: "/300-sf-docs audit docs/skill-launch-cheatsheet.md"
 ---
 
@@ -93,6 +94,11 @@ Practical rule by runtime:
 - Codex or Claude-style runtime: type the visible skill name such as `000-shipflow` or `001-sf-build`.
 - OpenCode or KiloCode-style runtime: ask for the ShipFlow skill in natural language or use the runtime skill picker.
 - Internal calls such as `skill({ name: "shipflow" })` are runtime implementation details, not manual commands to type.
+
+Runtime-specific repo pages:
+
+- [OpenCode](./opencode-shipflow.md)
+- [KiloCode](./kilocode-shipflow.md)
 
 ## Current Runtime Families
 

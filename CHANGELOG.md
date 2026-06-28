@@ -29,6 +29,7 @@ next_step: "/300-sf-docs audit CHANGELOG.md"
 ## [2026-06-28]
 
 ### Changed
+- Added dedicated repo-visible runtime pages for OpenCode and KiloCode, linked them from the core docs surfaces, documented the proven OpenCode shim paths, and made the KiloCode compatibility boundary explicit where the repository does not ship a dedicated shim.
 - Clarified public and repo-visible runtime/docs handoffs so help surfaces explain and route, `000-shipflow` routes or answers directly, owner lifecycle/specialist skills own execution after handoff, and OpenCode/KiloCode internal calls such as `skill({ name: "shipflow" })` are not presented as manual operator commands.
 - Updated the launch cheatsheet numeric runtime examples to match the canonical three-digit skill naming and aligned README, workflow doctrine, runtime docs, and help catalog wording on invocation versus execution ownership.
 
