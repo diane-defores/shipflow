@@ -50,6 +50,13 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
   - `shipflow_data/editorial/*`
   - `shipflow_data/workflow/*`
 
+- In monorepos, prefer theme-first paths inside `shipflow_data/`, then scope by surface only when needed, for example:
+
+  - `shipflow_data/branding/branding.md`
+  - `shipflow_data/business/site/business.md`
+  - `shipflow_data/product/app/product.md`
+  - `shipflow_data/technical/site/*`
+
 - Root compatibility exceptions remain at repository root:
 
   - `AGENT.md`
@@ -83,17 +90,17 @@ Do not infer ShipFlow-owned tool paths from the current working directory. If th
 
 | Legacy root file | Canonical project path |
 | --- | --- |
-| `BUSINESS.md` | `shipflow_data/business/business.md` |
-| `PRODUCT.md` | `shipflow_data/business/product.md` |
-| `BRANDING.md` | `shipflow_data/business/branding.md` |
-| `GTM.md` | `shipflow_data/business/gtm.md` |
-| `INSPIRATION.md` | `shipflow_data/business/project-competitors-and-inspirations.md` |
-| `AFFILIATES.md` | `shipflow_data/business/affiliate-programs.md` |
-| `CONTEXT.md` | `shipflow_data/technical/context.md` |
-| `CONTEXT-FUNCTION-TREE.md` | `shipflow_data/technical/context-function-tree.md` |
-| `ARCHITECTURE.md` | `shipflow_data/technical/architecture.md` |
-| `GUIDELINES.md` | `shipflow_data/technical/guidelines.md` |
-| `CONTENT_MAP.md` | `shipflow_data/editorial/content-map.md` |
+| `BUSINESS.md` | `shipflow_data/business/<surface>/business.md` or shared `shipflow_data/business/business.md` |
+| `PRODUCT.md` | `shipflow_data/product/<surface>/product.md` or shared `shipflow_data/product/product.md` |
+| `BRANDING.md` | shared `shipflow_data/branding/branding.md` |
+| `GTM.md` | `shipflow_data/gtm/<surface>/gtm.md` or shared `shipflow_data/gtm/gtm.md` |
+| `INSPIRATION.md` | `shipflow_data/business/<surface>/project-competitors-and-inspirations.md` |
+| `AFFILIATES.md` | `shipflow_data/business/<surface>/affiliate-programs.md` |
+| `CONTEXT.md` | `shipflow_data/technical/<surface>/context.md` |
+| `CONTEXT-FUNCTION-TREE.md` | `shipflow_data/technical/<surface>/context-function-tree.md` |
+| `ARCHITECTURE.md` | `shipflow_data/technical/<surface>/architecture.md` |
+| `GUIDELINES.md` | `shipflow_data/technical/<surface>/guidelines.md` |
+| `CONTENT_MAP.md` | `shipflow_data/editorial/<surface>/content-map.md` |
 | `TASKS.md` | `shipflow_data/workflow/TASKS.md` |
 | `AUDIT_LOG.md` | `shipflow_data/workflow/AUDIT_LOG.md` |
 | `specs/*.md` | `shipflow_data/workflow/specs/*.md` |

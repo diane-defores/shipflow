@@ -52,7 +52,7 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 5. Produce a `Documentation Update Plan` after every code-changing execution wave and again during end verification.
 6. Keep shared docs sequential unless the ready spec assigns disjoint ownership.
 7. When a task depends on an external provider, SDK, framework, hosting platform, API, or toolchain behavior, read the matching global note under `shipflow_data/technical/external-platforms/` when it exists. Then read the governance-root usage note under `shipflow_data/technical/platforms/` only when it exists or when the task is materially affected by project-specific provider configuration.
-8. For UI projects, read `shipflow_data/technical/design-system-authority.md` or the documented equivalent before UI/design implementation, audits, scaffolding, verification, or platform parity work. If it is missing, report a technical governance bootstrap trigger and route to `/300-sf-docs technical` or `/006-sf-design` before visual changes.
+8. For UI projects, read the surface-scoped design-system authority such as `shipflow_data/technical/<surface>/design-system-authority.md`, or the documented equivalent, before UI/design implementation, audits, scaffolding, verification, or platform parity work. If it is missing, report a technical governance bootstrap trigger and route to `/300-sf-docs technical` or `/006-sf-design` before visual changes.
 
 ## `300-sf-docs` Technical Mode Contract
 
@@ -60,13 +60,13 @@ This reference tells ShipFlow skills how to use the internal `shipflow_data/tech
 
 - treat a missing `shipflow_data/technical/code-docs-map.md` as a first-run bootstrap trigger, not as an immediate read failure
 - create baseline `shipflow_data/technical/README.md` and `shipflow_data/technical/code-docs-map.md` governance scaffolding for code projects when safe
-- in monorepos, create or update the technical layer only at the monorepo root and scope app/package paths inside `code-docs-map.md`
+- in monorepos, create or update the technical layer only at the monorepo root, prefer theme-first folders, and scope surfaces inside `shipflow_data/technical/<surface>/` or `code-docs-map.md`
 - report nested app/package `shipflow_data/` directories as migration debt unless a standalone-project exception is documented
 - record an explicit `non-coverage` reason when no major code area can be mapped
 - verify that every major code area in `code-docs-map.md` has a primary technical doc or explicit non-coverage reason
 - scaffold missing subsystem docs from `templates/artifacts/technical_module_context.md`
 - check stale path references, missing validations, missing `Maintenance Rule` sections, and missing Reader triggers
-- check whether UI projects declare `shipflow_data/technical/design-system-authority.md` or an equivalent authority covering brand contract, token source, theme carrier, component bridge, layout/motion authority, forbidden bypasses, and validation
+- check whether UI projects declare `shipflow_data/technical/<surface>/design-system-authority.md` or an equivalent authority covering brand contract, token source, theme carrier, component bridge, layout/motion authority, forbidden bypasses, and validation
 - check global external platform notes when provider behavior is part of the documented technical contract
 - report a governance-root platform usage gap only when provider use is project-specific enough to affect validation, auth, deploy, runtime, SDK behavior, storage, security, migrations, secrets handling, observability, compliance, or production proof
 - verify that `technical_module_context` files pass `tools/shipflow_metadata_lint.py`

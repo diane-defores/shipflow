@@ -83,6 +83,9 @@ When bumping artifact version:
 Preferred governance locations live under the canonical governance root. In a single-project repo this is the repo root. In a monorepo this is the monorepo root.
 
 - `shipflow_data/business/*`
+- `shipflow_data/branding/*`
+- `shipflow_data/product/*`
+- `shipflow_data/gtm/*`
 - `shipflow_data/technical/*`
 - `shipflow_data/technical/design-system-authority.md` for project UI design-system authority when the project has a UI
 - `shipflow_data/technical/external-platforms/*` for global external provider source notes
@@ -93,7 +96,7 @@ Preferred governance locations live under the canonical governance root. In a si
 Monorepo rule:
 
 - keep one canonical `shipflow_data/` at the monorepo root
-- scope app/package docs inside that root, for example `shipflow_data/technical/apps/<app>.md` or map entries in `shipflow_data/technical/code-docs-map.md`
+- inside that root, prefer theme-first folders and add surface scopes under the theme, for example `shipflow_data/business/site/business.md`, `shipflow_data/product/app/product.md`, or `shipflow_data/technical/site/*`
 - do not create `shipflow_data/` inside every app/site/lab/package
 - treat nested `shipflow_data/` directories as migration debt unless the nested folder is intentionally a standalone project with its own repo lifecycle
 
@@ -124,9 +127,9 @@ Documentation must preserve the professional bug model:
 
 Projects with a UI need a declared design-system authority before agents change visual implementation.
 
-- `shipflow_data/business/branding.md` owns visual identity and brand direction.
-- `shipflow_data/technical/design-system-authority.md` owns the code-level design-system authority: canonical token/theme source, component bridge, layout/motion authority, forbidden bypasses, and validation.
-- In monorepos, keep one root `shipflow_data/technical/design-system-authority.md`; add scoped app entries there or in mapped `shipflow_data/technical/apps/<app>.md` docs instead of nested `shipflow_data/` copies.
+- `shipflow_data/branding/branding.md` owns visual identity and brand direction.
+- `shipflow_data/technical/<surface>/design-system-authority.md` owns the code-level design-system authority when the UI technology or token carrier differs by surface.
+- In monorepos, keep brand identity shared at `shipflow_data/branding/branding.md` and scope technical design-system authority by surface when site/app runtimes diverge.
 - If the authority is missing or split across competing files, `300-sf-docs technical` should create or flag the declaration before UI implementation proceeds.
 
 ## Language Doctrine
