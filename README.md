@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.12.0"
+artifact_version: "0.13.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-06-26"
+updated: "2026-06-28"
 status: draft
 source_skill: 300-sf-docs
 scope: readme
@@ -61,6 +61,7 @@ evidence:
   - "Added Codex plugin packaging and sparse source bootstrap documentation."
   - "Updated README to reflect the live public site and lightweight plugin distribution path."
   - "Added App Blueprints system: blueprint gate in 001-sf-build, blueprint consumption in 100-sf-spec and 306-sf-scaffold, flutter-crud-content blueprint from ContentGlowz."
+  - "Clarified public/docs runtime handoffs: help explains, 000-shipflow routes, owner skills execute, and OpenCode/KiloCode internal calls are not manual operator commands."
 next_step: "/300-sf-docs audit README.md"
 ---
 
@@ -431,6 +432,14 @@ Recommended non-technical entrypoint in a skill-aware agent session:
 ```
 
 Use `000-shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `001-sf-build`, upkeep to `002-sf-maintain`, bugs to `003-sf-bug`, release/deploy/prod proof to `004-sf-deploy`, content to `007-sf-content`, onboarding and activation work to `008-sf-onboarding`, local-to-cloud sync contract work to `600-sf-local-cloud-sync`, product-entitlement work to `601-sf-product-entitlements`, skill maintenance to `009-sf-skill-build`, and obvious specialist audits to `400-sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
+
+Runtime invocation note:
+
+- `302-sf-help` explains which skill to use or how a runtime behaves; it does not continue the work itself.
+- `000-shipflow` is the preferred router when you want ShipFlow to choose the owner.
+- In Codex or Claude-style runtimes, type the visible skill name such as `000-shipflow` or `001-sf-build`.
+- In OpenCode or KiloCode-style runtimes, ask for the ShipFlow skill in natural language or use the runtime skill picker.
+- Internal calls such as `skill({ name: "shipflow" })` are runtime implementation details, not manual commands to type.
 
 Decision-quality rule: ShipFlow optimizes first for correctness, security, performance where relevant, maintainability, durability, professional best practices, and proof quality. Speed, cost, token economy, local convenience, or the shortest path are tie-breakers only after that quality bar is already satisfied. "Smallest safe path" means the smallest complete professional implementation, never the fastest patch that merely works.
 

@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.20.0"
+artifact_version: "1.21.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-06-12"
+updated: "2026-06-28"
 status: reviewed
 source_skill: 102-sf-start
 scope: skill-runtime-and-lifecycle
@@ -96,6 +96,7 @@ evidence:
   - "102-sf-start local auto-verify contract added: eligible local, tool-backed, non-destructive verification can run inside 102-sf-start, while hosted/browser/manual/production/ship proof stays with owner skills and 001-sf-build remains full lifecycle orchestrator."
   - "900-shipflow-core added as an internal operator skill for skill execution-fidelity audits and plugin-packaging readiness, backed by tools/audit_shipflow_skills.py."
   - "310-sf-github-hygiene added as the git/GitHub sync, stale branch, PR drift, and Dependabot hygiene skill."
+  - "Public/docs handoff clarity updated: helper docs now distinguish explains vs routes vs invokes vs owns execution, and runtime docs clarify that OpenCode/KiloCode internal calls are not manual operator commands."
 next_review: "2026-06-01"
 next_step: "/300-sf-docs technical audit skills"
 ---
@@ -165,6 +166,32 @@ Keep the pilotage boundary explicit as well: exploration is not backlog grooming
 Keep the execution-pilotage boundary explicit too: task-tracker maintenance is not continuation of the active work item, and continuation is not a generic request to rewrite tracker state.
 
 Keep the residual helper boundary explicit as well: model routing is not execution, session naming is not recap, transcript capture is not transcript cleaning, and transcript cleaning is not content repurposing by default.
+
+## Public/Docs Handoff Vocabulary
+
+Keep public and repo-visible guidance aligned on four distinct jobs:
+
+- `explains`: a helper surface clarifies doctrine, invocation, or choice without taking over work
+- `routes`: an entrypoint decides the next owner skill or answers directly when no owner is needed
+- `invokes`: the runtime executes an internal skill/tool call after the user request is interpreted
+- `owns execution`: the selected lifecycle or specialist skill now carries the work, proof path, and stop conditions
+
+Use this vocabulary consistently:
+
+- `302-sf-help` explains and routes.
+- `000-shipflow` routes or answers directly at the main entrypoint.
+- `706-continue` resumes the current work item from durable evidence.
+- Lifecycle and specialist owners own execution once selected.
+
+Do not describe a helper as if it owns execution, and do not describe a runtime-internal invocation as if it were a manual operator command.
+
+## Runtime Invocation Note
+
+Runtime-facing docs must distinguish user input from runtime internals:
+
+- In Codex or Claude-style runtimes, the operator launches a visible skill name such as `000-shipflow` or `001-sf-build`.
+- In OpenCode or KiloCode-style runtimes, the operator should ask for the ShipFlow skill in natural language or choose it through the runtime skill picker.
+- Internal calls such as `skill({ name: "shipflow" })` may appear in runtime implementations or logs, but they are not commands the operator should type manually.
 
 ## Owned Files
 

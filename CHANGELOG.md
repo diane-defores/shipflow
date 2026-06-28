@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.4.0"
+artifact_version: "0.4.1"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-06-25"
+updated: "2026-06-28"
 status: draft
 source_skill: 300-sf-docs
 scope: documentation
@@ -25,6 +25,12 @@ evidence: []
 next_step: "/300-sf-docs audit CHANGELOG.md"
 ---
 # ShipFlow Changelog
+
+## [2026-06-28]
+
+### Changed
+- Clarified public and repo-visible runtime/docs handoffs so help surfaces explain and route, `000-shipflow` routes or answers directly, owner lifecycle/specialist skills own execution after handoff, and OpenCode/KiloCode internal calls such as `skill({ name: "shipflow" })` are not presented as manual operator commands.
+- Updated the launch cheatsheet numeric runtime examples to match the canonical three-digit skill naming and aligned README, workflow doctrine, runtime docs, and help catalog wording on invocation versus execution ownership.
 
 ## [2026-06-25]
 

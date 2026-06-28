@@ -2,6 +2,8 @@
 
 > **Priority:** 🔴 P0 blocker · 🟠 P1 high · 🟡 P2 normal · 🟢 P3 low · ⚪ deferred
 > **Status:** 📋 todo · 🔄 in progress · ✅ done · ⛔ blocked · 💤 deferred
+> **Priority last updated:** 2026-06-27 UTC · criteria: balanced (`impact`, `blockers`, `risk`, `high-roi`)
+> **Recommended next execution target:** `install.sh` supply-chain and failure handling hardening
 
 ---
 
@@ -56,6 +58,7 @@
 🟢 [ShipFlow] task: Compacter le corpus global des skills pour repasser sous le budget agrégé `8500` sans dégrader les garde-fous d'execution | status: done | area: skills-corpus-compaction | spec: shipflow_data/workflow/specs/aggregate-skill-corpus-compaction-phase-1.md | source: skill_budget_audit.py 2026-06-27 | next: none
 🟢 [ShipFlow] task: Durcir la clarté agent des frontières de rôle et du prochain owner sur les skills à plus forte ambiguïté | status: done | area: skills-agent-clarity | spec: shipflow_data/workflow/specs/agent-clarity-hardening-phase-7.md | source: decision utilisateur 2026-06-27 | next: none
 🟢 [ShipFlow] task: Capitaliser les futures passes de clarté agent avec un playbook et une checklist réutilisable | status: done | area: skills-agent-clarity | spec: shipflow_data/workflow/specs/agent-clarity-pass-playbook-and-checklist.md | source: decision utilisateur 2026-06-27 | next: none
+🟢 [ShipFlow] task: Durcir la clarté des handoffs publics/docs entre aide, runtime, invocation et ownership d'execution sur `302-sf-help`, la doc runtime, le README, le workflow et les cheatsheets | status: done | area: skills-agent-clarity-public-docs | spec: shipflow_data/workflow/specs/agent-clarity-public-docs-handoffs-phase-2.md | source: decision utilisateur 2026-06-28 | next: /005-sf-ship agent-clarity-public-docs-handoffs-phase-2
 
 | Pri | Task | Status |
 |-----|------|--------|
@@ -100,7 +103,7 @@
 ## Backlog
 
 🟢 [ShipFlow] task: Conserver les fiches skills en anglais et l’expliquer sur le site français | status: done | area: site-i18n
-🟡 [ShipFlow] task: Documenter une page OpenCode et une page KiloCode pour expliquer comment les skills ShipFlow sont découverts, invoqués et configurés selon chaque runtime, en précisant que dans OpenCode l'utilisateur écrit simplement "utilise le skill shipflow" et que `skill({ name: "shipflow" })` est un appel interne du runtime, pas une commande manuelle | status: todo | area: skills-discovery | next: /300-sf-docs shipflow skills runtime docs
+🟡 [ShipFlow] task: Documenter une page OpenCode et une page KiloCode pour expliquer comment les skills ShipFlow sont découverts, invoqués et configurés selon chaque runtime, en précisant que dans OpenCode l'utilisateur écrit simplement "utilise le skill shipflow" et que `skill({ name: "shipflow" })` est un appel interne du runtime, pas une commande manuelle | status: todo | area: skills-discovery | spec: shipflow_data/workflow/specs/agent-clarity-public-docs-handoffs-phase-2.md | next: /300-sf-docs shipflow skills runtime docs
 
 | Pri | Task | Status |
 |-----|------|--------|
@@ -139,7 +142,7 @@
 | 🟠 | Rendre les alertes de cleanup disque explicites quand `/` est en pression critique (`BUG-2026-05-04-001`) | 🔄 in progress |
 | ✅ | Corriger le raccourci CLI `sf u` et harmoniser les retours `x`/`Esc`/Backspace dans les sous-menus (`BUG-2026-05-04-002`) | ✅ done |
 | 🟠 | Consolidate duplicated tunnel lifecycle logic between `local/dev-tunnel.sh` and `local/local.sh` so the interactive menu inherits the same validation, collision handling, and managed stop behavior | 📋 todo |
-| 🟠 | Harden `install.sh` supply-chain and failure handling: replace live `curl | bash`/direct downloads with pinned, verified install steps and strict failure behavior | 🔄 in progress |
+| 🔴 | Harden `install.sh` supply-chain and failure handling: replace live `curl | bash`/direct downloads with pinned, verified install steps and strict failure behavior | 🔄 in progress |
 | 🟡 | Corriger la détection de commande dev quand un projet Flutter contient un `package.json` uniquement Convex (`BUG-2026-05-04-004`) | 🔄 in progress |
 | 🟡 | Empêcher ShipFlow de créer des symlinks `TASKS.md` dans les projets et garder le tracking dans `shipflow_data` (`BUG-2026-05-05-001`) | 🔄 in progress |
 | 🟠 | Local MCP OAuth tunnel login: commande `shipflow-mcp-login`, intégration menu local, alias install, tests de validation et docs | ✅ done |

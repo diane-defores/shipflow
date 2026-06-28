@@ -55,6 +55,20 @@ Process role: `helper`.
 
 This skill does not write to chantier specs. If invoked inside a spec-first flow, do not modify `Skill Run History`; include `Chantier: non applicable` or `Chantier: non trace` in the final report when useful, with the reason and the next lifecycle command if one is obvious.
 
+## Runtime Handoff Rules
+
+Use the same distinction everywhere:
+
+- `302-sf-help` explains or routes. It does not own execution.
+- `000-shipflow` is the primary entry router. It answers directly or hands the thread to the right owner skill.
+- Owner skills such as `001-sf-build`, `002-sf-maintain`, `003-sf-bug`, `004-sf-deploy`, `007-sf-content`, and `009-sf-skill-build` own execution once selected.
+
+Runtime invocation must stay explicit too:
+
+- In Codex or Claude-style runtimes, the operator launches the visible skill name such as `000-shipflow` or `001-sf-build`.
+- In OpenCode or KiloCode-style runtimes, the operator should ask for the ShipFlow skill in natural language or via the runtime skill picker.
+- Internal runtime calls such as `skill({ name: "shipflow" })` are runtime implementation details, not manual commands the operator should type.
+
 
 # Skill System Cheatsheet
 
@@ -97,6 +111,15 @@ Core codes:
 | `009` | `/009-sf-skill-build` |
 
 Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-399` docs/context/support, `400-499` audit/quality/ops, `500-599` design/components, `600-699` data/activation, `700-799` pilotage/session, `800-899` conversation/transcript, `900-999` rare internal/meta tools.
+
+### Public Handoff Vocabulary
+
+Use these verbs consistently in help answers and docs:
+
+- `explains`: clarifies doctrine, skill choice, or invocation without taking over work
+- `routes`: selects the next owner skill or answers directly when no owner handoff is needed
+- `invokes`: what the runtime does after the operator request is interpreted
+- `owns execution`: the selected lifecycle or specialist skill now carries the work
 
 ### Task & Workflow
 
@@ -645,6 +668,8 @@ project/shipflow_data/
 **Generate docs?** → `/300-sf-docs readme` or `/300-sf-docs api`
 
 **Research a topic?** → `/203-sf-research "topic"`
+
+**How do I use ShipFlow in OpenCode or KiloCode?** → Ask for the ShipFlow skill in natural language or select it in the runtime UI; do not type internal calls such as `skill({ name: "shipflow" })`
 
 ---
 

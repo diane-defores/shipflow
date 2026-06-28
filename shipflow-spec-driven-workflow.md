@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.18.1"
+artifact_version: "0.18.2"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-06-12"
+updated: "2026-06-28"
 status: draft
 source_skill: 300-sf-docs
 scope: spec-driven-workflow
@@ -67,6 +67,7 @@ evidence:
   - "Updated on 2026-05-08 to clarify 003-sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Updated on 2026-05-11 to add competitive intelligence and affiliate program registries as project-local business artifacts."
   - "Updated on 2026-05-11 to make project governance artifacts canonical under shipflow_data/, including workflow specs."
+  - "Updated on 2026-06-28 to clarify public/docs runtime handoffs: helpers explain, the router hands off, owner skills execute, and OpenCode/KiloCode internal calls are not manual commands."
 next_review: "unknown"
 next_step: "/300-sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -159,6 +160,13 @@ Primary non-technical router entrypoint:
 `000-shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `001-sf-build`; maintenance to `002-sf-maintain`; bug-loop work to `003-sf-bug`; release, deploy, or production proof to `004-sf-deploy`; content work to `007-sf-content`; onboarding and activation work to `008-sf-onboarding`; local-to-cloud sync contract work to `600-sf-local-cloud-sync`; product entitlement and access-gate work to `601-sf-product-entitlements`; skill maintenance to `009-sf-skill-build`; and obvious specialist audits to `400-sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
 
 The router uses direct main-thread handoff to the selected skill. It does not run a master skill inside a subagent, and it does not duplicate the selected skill's lifecycle. Once selected, each master owns its own delegated sequential execution and proof gates.
+
+Public/docs handoff rule:
+
+- `302-sf-help` explains doctrine, invocation, and routing choices.
+- `000-shipflow` routes or answers directly.
+- The selected lifecycle or specialist skill owns execution after handoff.
+- In OpenCode or KiloCode-style runtimes, the operator should ask for the ShipFlow skill in natural language or through the runtime UI. Internal calls such as `skill({ name: "shipflow" })` are runtime internals, not manual commands.
 
 Direct build entrypoint for non-trivial work:
 

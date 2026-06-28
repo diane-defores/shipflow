@@ -52,11 +52,12 @@ What workflow, skill, mode, or doctrine does the operator need explained right n
 
 - If the user asks a direct help question, answer concisely from the top-level route and `references/help-catalog.md` as needed.
 - If the user asks for skill codes, numeric prefixes, or shortcut lookup, load `skill-code-index.md` and answer from the code table without renaming canonical skills.
+- If the user asks how ShipFlow is invoked from Codex, Claude, OpenCode, KiloCode, or another runtime, load `references/help-catalog.md` and answer with the explicit distinction between what the operator types and what the runtime may call internally.
 - If the user needs full skill taxonomy, workflow cheat sheets, or quick answers, load `references/help-catalog.md`.
 - Use `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` for canonical trace/process role doctrine instead of maintaining a duplicate role matrix here.
 - For `Skills at a Glance`, `Quick Answers`, workflow cycles, audit scoring, and file-reference help, load `references/help-catalog.md`.
 
-Keep the boundary explicit: `302-sf-help` explains, clarifies, and routes. It does not continue a chantier, summarize hidden repo truth, or mutate durable state.
+Keep the boundary explicit: `302-sf-help` explains, clarifies, and routes. It tells the operator what to type and which owner takes over next. It does not continue a chantier, invoke runtime internals, summarize hidden repo truth, or mutate durable state.
 
 Route immediately instead of staying in help mode when the operator is no longer asking for explanation:
 

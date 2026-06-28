@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.6.0"
+artifact_version: "1.7.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-06-11"
+updated: "2026-06-28"
 status: reviewed
 source_skill: 300-sf-docs
 scope: skill-launch-cheatsheet
@@ -40,6 +40,7 @@ evidence:
   - "602-sf-platform-parity added as the platform parity/concordance audit and routing skill."
   - "900-shipflow-core added as an internal operator-only ShipFlow Core audit skill."
   - "310-sf-github-hygiene added as the git/GitHub sync, stale branch, PR drift, and Dependabot hygiene skill."
+  - "Public/docs handoff clarity updated: numeric examples now match three-digit runtime names, and runtime invocation notes distinguish manual user commands from OpenCode/KiloCode internal calls."
 next_step: "/300-sf-docs audit docs/skill-launch-cheatsheet.md"
 ---
 
@@ -59,24 +60,39 @@ Use a focused skill directly when you intentionally want one owner lane: checks,
 
 ShipFlow also maintains a numeric lookup for faster skill discovery without renaming skills. The canonical index is `skills/references/skill-code-index.md`.
 
-Accepted lookup forms include `01`, `01-001-sf-build`, `01sfbuild`, and `01 001-sf-build`; all resolve through `000-shipflow` to the canonical skill name. The display label is only an index label, not a new runtime skill name.
+Accepted lookup forms include `001`, `001-sf-build`, `001sfbuild`, and `001 sf-build`; all resolve through `000-shipflow` to the canonical runtime skill name. The numeric code is a lookup aid, not a second public name.
 
 Core codes:
 
 | Code | Skill |
 | --- | --- |
-| `00` | `000-shipflow` |
-| `01` | `001-sf-build` |
-| `02` | `002-sf-maintain` |
-| `03` | `003-sf-bug` |
-| `04` | `004-sf-deploy` |
-| `05` | `005-sf-ship` |
-| `06` | `006-sf-design` |
-| `07` | `007-sf-content` |
-| `08` | `008-sf-onboarding` |
-| `09` | `009-sf-skill-build` |
+| `000` | `000-shipflow` |
+| `001` | `001-sf-build` |
+| `002` | `002-sf-maintain` |
+| `003` | `003-sf-bug` |
+| `004` | `004-sf-deploy` |
+| `005` | `005-sf-ship` |
+| `006` | `006-sf-design` |
+| `007` | `007-sf-content` |
+| `008` | `008-sf-onboarding` |
+| `009` | `009-sf-skill-build` |
 
-Family bands: `10` lifecycle/proof, `20` content/research/copy, `30` docs/context/support, `40` audit/quality/ops, `50` design/components, `60` data/activation, `70` pilotage/session, `80` conversation/transcript.
+Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-399` docs/context/support, `400-499` audit/quality/ops, `500-599` design/components, `600-699` data/activation, `700-799` pilotage/session, `800-899` conversation/transcript, `900-999` internal/meta.
+
+## Runtime Invocation Note
+
+Keep four roles separate:
+
+- `302-sf-help` explains and routes.
+- `000-shipflow` routes or answers directly.
+- The selected lifecycle or specialist skill owns execution.
+- The runtime may invoke internal calls after interpreting the user request.
+
+Practical rule by runtime:
+
+- Codex or Claude-style runtime: type the visible skill name such as `000-shipflow` or `001-sf-build`.
+- OpenCode or KiloCode-style runtime: ask for the ShipFlow skill in natural language or use the runtime skill picker.
+- Internal calls such as `skill({ name: "shipflow" })` are runtime implementation details, not manual commands to type.
 
 ## Current Runtime Families
 
