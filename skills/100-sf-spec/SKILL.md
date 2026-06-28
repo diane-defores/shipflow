@@ -39,6 +39,8 @@ Load only the references needed for the active run:
 
 - `references/spec-creation-workflow.md`: detailed context gathering, user-story reconstruction, investigation, spec template, validation, metadata, acceptance criteria, and final report rules.
 - `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: required before choosing direct routing, spec scope, recommendations, or implementation-quality language.
+- `$SHIPFLOW_ROOT/skills/references/question-contract.md`: required before asking for actor, trigger, audience, product, scope, or framing decisions that materially change the spec contract.
+- `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md`: required when a missing business, audience, or product fact belongs to operator knowledge rather than repository evidence.
 - `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`: required when the spec creates, changes, audits, verifies, or fixes UI, mobile/app design, visual components, layout, styling, design tokens, theming, shadows, typography, spacing, color, motion, or branding implementation.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md`: required only when the spec depends on framework, SDK, service, API, auth/session, build, migration, cache, routing, or integration behavior.
 - `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`: required when a `blueprint:` handoff note or context provides a blueprint path. Loads the blueprint system contract for format and matching.
@@ -52,7 +54,7 @@ Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe pa
 - New non-trivial work or a `Chantier potentiel` intake: load `references/spec-creation-workflow.md` and create or update a durable spec.
 - If the user says they want to start a new change but the durable work item does not yet exist, route into spec creation immediately instead of staging a parallel OpenSpec-style scaffold first.
 - Small/local work where a spec would add no useful contract: report `Chantier: non applicable` and route directly to the owner skill.
-- Missing actor, trigger, observable result, scope boundary, or security/data policy that changes behavior: ask a targeted question before writing the spec.
+- Missing actor, trigger, observable result, scope boundary, security/data policy, or operator-owned business/product framing that changes behavior: ask the smallest targeted question before writing the spec.
 
 ## Core Execution Rules
 
@@ -65,6 +67,7 @@ Parse `$ARGUMENTS` and the latest user request, then choose the smallest safe pa
 - Runtime specs must include Sentry, safe diagnostics/log-copy, and commit/build + Paris/UTC build-time header expectations from `$SHIPFLOW_ROOT/skills/references/sentry-observability.md`, or document why the static-site exception applies.
 - UI/design specs must identify the project design-system authority before implementation: brand contract, canonical token source, technology carrier, component bridge, layout/motion authority, forbidden bypasses, and validation command. If this authority is missing, the spec must route to `300-sf-docs`, `006-sf-design`, or `500-sf-design-from-scratch` before any visual implementation task.
 - Specs must preserve the Operator Autonomy Standard from `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: implementation, diagnosis, test, and verification should gather safe evidence themselves before asking the operator.
+- Specs should not treat absent business framing as a generic blocker when one precise operator-owned question can resolve it. Ask for the smallest missing business, audience, or product truth and continue.
 - `100-sf-spec` creates or updates the durable chantier spec only; it does not edit `TASKS.md`, `AUDIT_LOG.md`, or legacy `PROJECTS.md`.
 - Before creating or mutating a `spec:` operational summary line, load `$SHIPFLOW_ROOT/skills/references/operational-record-format.md` and keep the durable spec body separate from that one-line traffic-first record.
 - External-doc freshness, security, auth, tenant, data, money, destructive, and public-claim ambiguities must be resolved before the spec is called ready.

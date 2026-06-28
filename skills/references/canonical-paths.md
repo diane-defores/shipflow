@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-04-27"
-updated: "2026-05-24"
+updated: "2026-06-28"
 status: active
 source_skill: 102-sf-start
 scope: canonical-path-resolution
@@ -24,6 +24,7 @@ evidence:
   - "Repeated skill path-resolution failures when running from project repositories"
   - "Project governance layout decision moved ShipFlow artifacts out of project roots and into shipflow_data/."
   - "Operator decision on 2026-05-24: monorepos must keep one governance corpus at the monorepo root instead of repeating shipflow_data in each app/package."
+  - "Operator decision on 2026-06-28: generated build and preview folders such as .vercel/output remain disposable local outputs, not canonical project artifacts."
 next_review: "2026-05-27"
 next_step: "/103-sf-verify canonical path policy"
 ---
@@ -73,6 +74,7 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
 - Project-local `TASKS.md` and `AUDIT_LOG.md` live at `shipflow_data/workflow/TASKS.md` and `shipflow_data/workflow/AUDIT_LOG.md`. Root `TASKS.md` and `AUDIT_LOG.md` are legacy project tracker locations unless an external project tool explicitly requires them.
 - `PROJECTS.md` is a legacy compatibility artifact when present in `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}`; treat it as migration/degraded-discovery input only, not primary governance.
 - Legacy root ShipFlow governance files such as `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `ARCHITECTURE.md`, `CONTENT_MAP.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `GUIDELINES.md`, `TASKS.md`, and `AUDIT_LOG.md` are migration sources only. They are not compliant project artifact locations.
+- Generated local-output directories such as `node_modules/`, `dist/`, `.astro/`, `.vercel/`, `.vercel/output/`, and `.playwright-mcp/` are disposable runtime artifacts, not governance artifacts, evidence artifacts, or source-of-truth project documents.
 - If a ShipFlow-owned file is missing from `$SHIPFLOW_ROOT`, report a ShipFlow installation gap. Do not report it missing just because it is absent from the project repository.
 
 ## ShipFlow-Owned Tool Preflight

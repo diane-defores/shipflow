@@ -4,7 +4,9 @@
 
 ## What It Does
 
-`300-sf-docs` handles documentation as an active product surface. It can generate a project README, document APIs or components, add inline code documentation, audit existing docs for drift, and update ShipFlow decision artifacts with the right metadata.
+`300-sf-docs` handles documentation as an active product surface. It can bootstrap governance for a new repository, generate a project README, document APIs or components, add inline code documentation, audit existing docs for drift, and update ShipFlow decision artifacts with the right metadata.
+
+For empty or near-empty repositories, `init` should produce a stable governance starter set rather than a generic product README.
 
 For solo founders, this matters because stale docs cost time twice: once when you forget how the system works, and again when users, teammates, or future-you follow instructions that are no longer true.
 
@@ -20,11 +22,12 @@ For solo founders, this matters because stale docs cost time twice: once when yo
 - when APIs or components need human-readable documentation
 - when internal docs feel fragmented or inconsistent
 - when ShipFlow artifacts need metadata migration or cleanup
+- when a new repository needs an initial documentation and governance scaffold
 
 ## What You Give It
 
 - the current project directory
-- a mode such as `readme`, `api`, `components`, `audit`, or `update`
+- a mode such as `init`, `readme`, `api`, `components`, `audit`, or `update`
 - optionally a specific file path
 
 ## What You Get Back
@@ -41,6 +44,7 @@ For solo founders, this matters because stale docs cost time twice: once when yo
 /300-sf-docs api
 /300-sf-docs components
 /300-sf-docs audit
+/300-sf-docs init
 /300-sf-docs src/lib/pricing.ts
 ```
 
@@ -51,5 +55,6 @@ For solo founders, this matters because stale docs cost time twice: once when yo
 ## Related Skills
 
 - `305-sf-init` to create the first project context docs
+- `305-sf-init` for broader project bootstrap beyond documentation ownership
 - `201-sf-enrich` for public-facing content improvements
 - `104-sf-end` when implementation changed user-facing behavior and docs were updated

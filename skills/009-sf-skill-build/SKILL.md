@@ -41,6 +41,8 @@ Before editing skill contracts or shared references, load `$SHIPFLOW_ROOT/skills
 
 Before editing or compacting a skill body, load `$SHIPFLOW_ROOT/skills/references/skill-instruction-layering.md`. `SKILL.md` is the activation contract; detailed playbooks, examples, matrices, and edge cases belong in shared or skill-local references.
 
+Before changing how a skill questions, blocks, or collaborates with the operator, load `$SHIPFLOW_ROOT/skills/references/question-contract.md` and `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md`.
+
 ## Context
 
 - Current directory: !`pwd`
@@ -209,6 +211,7 @@ Verify current-user runtime links before verification:
 ### Step 5 — Update internal and public coherence
 
 - Update `skills/302-sf-help/SKILL.md` when discoverability or lifecycle routing changed.
+- Update explicit links to `question-contract.md` and `operator-partnership-contract.md` in affected owner skills when collaboration doctrine changed.
 - Update `README.md` and `shipflow-spec-driven-workflow.md` when official workflow doctrine changed.
 - Update `shipflow_data/technical/skill-runtime-and-lifecycle.md` and `shipflow_data/technical/code-docs-map.md` (fallback legacy `docs/technical/*`) when mapped technical behavior changed.
 - Update `site/src/content/skills/<slug>.md` when the skill is public.

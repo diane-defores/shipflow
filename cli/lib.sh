@@ -2278,7 +2278,7 @@ refresh_user_caddy_from_pm2() {
     fi
 
     write_user_caddyfile "$routes" || {
-        warning "Impossible d'écrire le Caddyfile utilisateur."
+        warning "Proxy web utilisateur ignoré; l'accès direct via localhost reste disponible."
         return 1
     }
     start_user_caddy
@@ -5203,27 +5203,55 @@ migrate_node_project_to_pnpm() {
     return 0
 }
 
+launch_codex_pnpm_migration() {
+    local project_dir=$1
+    local codex_prompt
+
+    if [ -z "$project_dir" ] || [ ! -d "$project_dir" ]; then
+        error "Workspace invalide pour ouvrir Codex"
+        return 1
+    fi
+
+    if ! command -v codex >/dev/null 2>&1; then
+        error "Codex CLI introuvable dans le PATH"
+        info "Installe Codex avec ShipFlow avant de lancer la migration guidée."
+        return 1
+    fi
+
+    codex_prompt="Le projet de ce workspace utilise actuellement npm. Migre-le proprement vers pnpm: inspecte package.json et les lockfiles, convertis depuis package-lock.json si besoin, regenere les dependances avec pnpm, mets a jour les fichiers necessaires, puis valide avec des checks proportionnes. Si le workflow ShipFlow /404-sf-migrate pnpm est disponible ici, utilise-le."
+
+    if [ -r /dev/tty ]; then
+        printf '%b' "${BLUE}🧭 Ouverture de Codex pour la migration pnpm...${NC}\n" > /dev/tty
+        printf '%b' "${YELLOW}Le demarrage ShipFlow s'arrete ici pour te laisser finir la migration dans Codex.${NC}\n\n" > /dev/tty
+        codex -C "$project_dir" "$codex_prompt" < /dev/tty > /dev/tty 2>&1
+    else
+        echo -e "${BLUE}🧭 Ouverture de Codex pour la migration pnpm...${NC}"
+        echo -e "${YELLOW}Le demarrage ShipFlow s'arrete ici pour te laisser finir la migration dans Codex.${NC}"
+        codex -C "$project_dir" "$codex_prompt"
+    fi
+}
+
 prompt_node_package_manager_choice() {
     local project_dir=$1
     local current_pm=$2
     local choice
 
-    echo -e "${BLUE}Astuce ShipFlow:${NC} pour une migration guidée, ouvre Codex et lance ${CYAN}/404-sf-migrate pnpm${NC}. ShipFlow te prend par la main sur le parcours de migration."
+    echo -e "${BLUE}Astuce ShipFlow:${NC} garde npm pour un démarrage immédiat, ou ouvre Codex pour une vraie migration guidée vers ${CYAN}pnpm${NC}."
 
     choice=$(printf '%s\n' \
-        "Keep npm and continue" \
-        "Open Codex and migrate to pnpm" \
-        "Cancel deployment" \
-        | ui_choose "Package manager detected: ${current_pm}. What do you want to do now?") || return 1
+        "Conserver npm et continuer" \
+        "Ouvrir Codex pour migrer vers pnpm" \
+        "Annuler le démarrage" \
+        | ui_choose "Gestionnaire détecté: ${current_pm}. Que veux-tu faire ?") || return 1
 
     case "$choice" in
-        "Keep npm and continue")
+        "Conserver npm et continuer")
             echo "npm"
             return 0
             ;;
-        "Open Codex and migrate to pnpm")
-            migrate_node_project_to_pnpm "$project_dir"
-            return $?
+        "Ouvrir Codex pour migrer vers pnpm")
+            launch_codex_pnpm_migration "$project_dir" || return 1
+            return 20
             ;;
         *)
             return 1
@@ -5381,8 +5409,6 @@ init_flox_env() {
         if [ "$lang" = "dart" ] || [ "$lang" = "flutter" ]; then
             echo -e "${BLUE}🔄 Environnement Flox existant — vérification runtime $lang...${NC}"
             ensure_flox_runtime_packages "$project_dir" "$lang" "$pm" || return 1
-        else
-            echo -e "${GREEN}✅ Environnement Flox existe déjà${NC}"
         fi
         log DEBUG "Flox environment already exists for $project_name ($lang)"
         return 0
@@ -6181,9 +6207,16 @@ env_start() {
         if [ ! -d "$project_dir/node_modules" ] || [ -z "$(ls -A "$project_dir/node_modules" 2>/dev/null)" ]; then
             echo -e "${YELLOW}⚠️  node_modules manquant, installation des dépendances...${NC}"
             local pm_file=""
+            local pm_choice_status=0
             pm_file=$(detect_node_package_manager "$project_dir")
             if [ "$pm_file" = "npm" ]; then
-                pm_file=$(prompt_node_package_manager_choice "$project_dir" "$pm_file") || return 1
+                pm_file=$(prompt_node_package_manager_choice "$project_dir" "$pm_file")
+                pm_choice_status=$?
+                if [ $pm_choice_status -eq 20 ]; then
+                    info "Migration pnpm déléguée à Codex pour $env_name"
+                    return 20
+                fi
+                [ $pm_choice_status -ne 0 ] && return 1
             fi
             case "$pm_file" in
                 pnpm) flox activate --dir "$project_dir" -- pnpm install 2>&1 | grep -v "Progress:" || true ;;
@@ -6383,7 +6416,7 @@ EOF
         return 1
     fi
 
-    echo -e "${GREEN}✅ Fichier ecosystem.config.cjs créé/mis à jour${NC}"
+    echo -e "${GREEN}✅ ecosystem.config.cjs prêt${NC}"
 
     # Check existing process for excessive restarts before deleting it
     local old_name="$env_name"
@@ -6414,7 +6447,9 @@ for app in apps:
     # Small delay to ensure port is fully released
     sleep 0.5
 
-    if ! pm2 start "$pm2_config"; then
+    local pm2_start_output=""
+    if ! pm2_start_output=$(pm2 start "$pm2_config" 2>&1); then
+        printf '%s\n' "$pm2_start_output"
         error "Échec du démarrage PM2 pour $env_name"
         return 1
     fi
@@ -7942,6 +7977,7 @@ shipflow_init_project() {
     local project_name="$1"
     local project_dir="$2"
     local project_tasks_file="$project_dir/TASKS.md"
+    local changed=0
 
     if [ -L "$project_tasks_file" ]; then
         local current_tasks_target=""
@@ -7949,6 +7985,7 @@ shipflow_init_project() {
         case "$current_tasks_target" in
             *"/shipflow_data/projects/"*"/TASKS.md")
             rm -f "$project_tasks_file"
+            changed=1
             log INFO "Removed legacy ShipFlow TASKS.md symlink for $project_name: $current_tasks_target"
             ;;
             *)
@@ -7974,6 +8011,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Initial project setup
 CHANGELOG_EOF
+        changed=1
         log INFO "Created CHANGELOG.md for $project_name"
     fi
 
@@ -8056,6 +8094,7 @@ CHANGELOG_EOF
   "disabledMcpServers": ["codebase"]
 }
 MCP_EOF
+            changed=1
             log INFO "Configured project MCPs for $project_name"
         elif ! grep -q "codebase-mcp" "$settings_file"; then
             # settings.json exists but no codebase entry — merge it
@@ -8074,6 +8113,7 @@ if 'codebase' not in disabled:
     disabled.append('codebase')
 print(json.dumps(cfg, indent=2))
 " > "$tmp_file" && mv "$tmp_file" "$settings_file"
+            changed=1
             log INFO "Merged codebase-mcp into existing settings.json for $project_name"
         fi
         if ! grep -q '"context7"' "$settings_file"; then
@@ -8089,6 +8129,7 @@ cfg.setdefault('mcpServers', {})['context7'] = {
 }
 print(json.dumps(cfg, indent=2))
 " > "$tmp_file" && mv "$tmp_file" "$settings_file"
+            changed=1
             log INFO "Merged Context7 MCP into existing settings.json for $project_name"
         fi
         if [ "$enable_clerk_mcp" -eq 1 ] && ! grep -q '"clerk"' "$settings_file"; then
@@ -8103,6 +8144,7 @@ cfg.setdefault('mcpServers', {})['clerk'] = {
 }
 print(json.dumps(cfg, indent=2))
 " > "$tmp_file" && mv "$tmp_file" "$settings_file"
+            changed=1
             log INFO "Merged Clerk MCP into existing settings.json for $project_name"
         fi
         if [ "$enable_vercel_mcp" -eq 1 ] && ! grep -q '"vercel"' "$settings_file"; then
@@ -8117,6 +8159,7 @@ cfg.setdefault('mcpServers', {})['vercel'] = {
 }
 print(json.dumps(cfg, indent=2))
 " > "$tmp_file" && mv "$tmp_file" "$settings_file"
+            changed=1
             log INFO "Merged Vercel MCP into existing settings.json for $project_name"
         fi
         if [ "$enable_convex_mcp" -eq 1 ] && ! grep -q '"convex"' "$settings_file"; then
@@ -8132,6 +8175,7 @@ cfg.setdefault('mcpServers', {})['convex'] = {
 }
 print(json.dumps(cfg, indent=2))
 " > "$tmp_file" && mv "$tmp_file" "$settings_file"
+            changed=1
             log INFO "Merged Convex MCP into existing settings.json for $project_name"
         fi
         if [ "$enable_supabase_mcp" -eq 1 ] && ! grep -q '"supabase"' "$settings_file"; then
@@ -8146,11 +8190,14 @@ cfg.setdefault('mcpServers', {})['supabase'] = {
 }
 print(json.dumps(cfg, indent=2))
 " > "$tmp_file" && mv "$tmp_file" "$settings_file"
+            changed=1
             log INFO "Merged Supabase MCP into existing settings.json for $project_name"
         fi
     fi
 
-    echo -e "${GREEN}📋 ShipFlow tracking initialized for $project_name${NC}"
+    if [ "$changed" -eq 1 ]; then
+        echo -e "${GREEN}📋 Tracking ShipFlow prêt pour $project_name${NC}"
+    fi
 }
 
 # -----------------------------------------------------------------------------
@@ -8265,7 +8312,16 @@ deploy_github_project() {
     # Start the environment
     echo ""
     echo -e "${GREEN}🚀 Starting application...${NC}"
-    if ! env_start "$project_name"; then
+    local env_start_rc=0
+    env_start "$project_name"
+    env_start_rc=$?
+    if [ $env_start_rc -eq 20 ]; then
+        echo ""
+        echo -e "${BLUE}🧭 Migration pnpm confiée à Codex pour $project_name.${NC}"
+        echo -e "${YELLOW}Relance le démarrage ShipFlow après la migration.${NC}"
+        return 0
+    fi
+    if [ $env_start_rc -ne 0 ]; then
         log ERROR "Failed to start application after deploy: $project_name"
         echo -e "${RED}❌ Failed to start application${NC}"
         echo -e "${YELLOW}Project cloned but not started. Try manually:${NC}"

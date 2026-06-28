@@ -436,6 +436,25 @@ Recommended non-technical entrypoint in a skill-aware agent session:
 
 Use `000-shipflow <instruction>` when you want ShipFlow to choose the route. It answers pure conversational requests directly, hands non-trivial feature/code/docs work to `001-sf-build`, upkeep to `002-sf-maintain`, bugs to `003-sf-bug`, release/deploy/prod proof to `004-sf-deploy`, content to `007-sf-content`, onboarding and activation work to `008-sf-onboarding`, local-to-cloud sync contract work to `600-sf-local-cloud-sync`, product-entitlement work to `601-sf-product-entitlements`, skill maintenance to `009-sf-skill-build`, and obvious specialist audits to `400-sf-audit-*`. If the route is ambiguous, it asks one numbered question with why, the recommended answer, and practical options. When it routes, it hands the current thread directly to the selected skill; selected masters own their own delegated sequential execution.
 
+You can also activate a named operator profile through the same router. Example:
+
+```text
+%Victoire #SEO Faut-il faire le playbook, la checklist, ou l'audit SEO d'abord ?
+```
+
+Compatibility form:
+
+```text
+000-shipflow profile=victoire Faut-il faire le playbook, la checklist, ou l'audit SEO d'abord ?
+```
+
+Here, `Victoire` is not a separate skill. She is a named growth-operations profile that biases the answer toward prioritization, leverage, and explicit `not now`.
+
+Canonical syntax split:
+
+- `%<Profile>` for named operator profiles
+- `#<Tag>` for focus tags
+
 Runtime invocation note:
 
 - `302-sf-help` explains which skill to use or how a runtime behaves; it does not continue the work itself.
@@ -462,6 +481,8 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `000-shipflow <instruction>` | Routes pure conversation directly; routes real work to the right master or specialist skill; uses context-safe defaults and asks one numbered decision question when ambiguity changes route, risk, scope, or proof. |
+| Named operator profile | `%Victoire <instruction>` | Canonical profile syntax for the `Victoire` growth-operations profile. Use `#Tag` separately for focus tags such as `#SEO`. |
+| Non-technical first command with named profile | `000-shipflow profile=victoire <instruction>` | Same router, but with the `Victoire` growth-operations profile active for the turn. |
 | Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; `spark`, `codex`, `mini`, `agents`, and `sous-agent` strictly validate model-specific delegated sequential execution; for user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `002-sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `004-sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |

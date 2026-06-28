@@ -30,6 +30,8 @@ Default to `report=user`: concise, outcome-first, and in the user's active langu
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/bootstrap-workflow.md`: Detailed bootstrap workflow, generated artifact templates, MCP setup, governance corpus bootstrap, and final reporting details.
+- `$SHIPFLOW_ROOT/skills/references/question-contract.md`: required before asking bootstrap, project-intent, target-surface, runtime, or governance-scope questions.
+- `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md`: required when bootstrap depends on operator-owned business, product, audience, or framing truth that cannot be discovered locally.
 - `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`: required when bootstrapping or auditing governance for a project with a UI surface.
 
 ## Mode Detection
@@ -38,6 +40,7 @@ Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skill
 
 - Detect whether the request is a new project bootstrap, existing project governance refresh, MCP/server setup, or bootstrap audit.
 - For any mode, load `references/bootstrap-workflow.md` before creating or updating project files.
+- If business, product, target-surface, or audience framing is materially missing, ask the smallest precise question that the operator can answer and continue after the answer instead of treating bootstrap framing gaps as blocked by default.
 - For UI projects, detect whether `shipflow_data/technical/design-system-authority.md` or an equivalent project-local authority exists; create the governance gap or route to `300-sf-docs`, `006-sf-design`, or `500-sf-design-from-scratch` before any visual implementation work is considered ready.
 
 ## Core Execution Rules

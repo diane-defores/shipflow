@@ -1,8 +1,8 @@
 ---
 name: 300-sf-docs
-description: "Maintain docs, metadata, and governance-layout compliance."
+description: "Maintain docs, bootstrap governance, metadata, and governance-layout compliance."
 disable-model-invocation: true
-argument-hint: [file-path | "readme" | "api" | "components" | "audit" | "update" | "metadata" | "migrate-frontmatter" | "migrate-layout" | "technical" | "technical audit" | "editorial" | "editorial audit"]
+argument-hint: [file-path | "init" | "readme" | "api" | "components" | "audit" | "update" | "metadata" | "migrate-frontmatter" | "migrate-layout" | "technical" | "technical audit" | "editorial" | "editorial audit"]
 ---
 
 ## Canonical Paths
@@ -36,6 +36,7 @@ Use `report=agent` for blocked runs, handoff, or explicit verbose request.
 
 ## Mode Detection
 
+- `init`, `bootstrap`, `docs init`, or `governance init` -> `INIT MODE`
 - file path -> `FILE MODE`
 - `readme` -> `README MODE`
 - `api` -> `API MODE`
@@ -57,9 +58,10 @@ Always load:
 
 Load on demand:
 
+- `$SHIPFLOW_ROOT/skills/300-sf-docs/references/bootstrap-starter-templates.md` when mode is `init` or when `readme`/`auto` bootstraps an empty or near-empty repository.
 - `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` when mode is technical or update touches technical governance.
 - `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when mode is editorial or update touches public-content surfaces.
-- `$SHIPFLOW_ROOT/skills/references/question-contract.md` before any user-facing merge/replace/scope/surface question.
+- `$SHIPFLOW_ROOT/skills/references/question-contract.md` before any user-facing merge/replace/scope/surface question, including `init` bootstrap questions for unknown project intent, target surface, or runtime.
 - `$SHIPFLOW_ROOT/skills/references/documentation-freshness-gate.md` when documentation depends on current external framework, SDK, provider, runtime, schema, auth, deployment, or API behavior.
 - `$SHIPFLOW_ROOT/skills/references/skill-context-budget.md` only when scope touches `skills/`, skill discovery metadata, or Codex/Claude skill compliance.
 - `$SHIPFLOW_ROOT/shipflow-metadata-migration-guide.md` when mode is metadata/migrate-frontmatter.
@@ -67,6 +69,8 @@ Load on demand:
 ## Execution Contract
 
 - Keep internal contracts in English; user-facing output stays in the active user/project language.
+- For empty or near-empty repositories, prefer explicit bootstrap output over generic README generation: create the smallest coherent governance starter set and label unknown project facts as unknown rather than inferred.
+- For empty or near-empty repositories, do not treat missing project framing as blocked by default. Ask the smallest numbered decision question needed to define the bootstrap documents, then continue.
 - Preserve redaction/security rules: never expose secrets, cookies, tokens, private keys, or private logs.
 - Preserve documentation-update gates: changed behavior must have docs alignment proof or explicit `not impacted because ...`.
 - Preserve canonical ShipFlow paths and metadata schema rules.

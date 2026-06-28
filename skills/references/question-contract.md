@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.3.0"
+artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-05"
-updated: "2026-06-10"
+updated: "2026-06-28"
 status: active
 source_skill: 009-sf-skill-build
 scope: skill-question-contract
@@ -32,6 +32,7 @@ evidence:
   - "User decision 2026-05-24: recommended defaults must optimize for performance, security, excellence, durability, and high-quality code before speed or convenience."
   - "User decision 2026-06-09: skills should be almost fully autonomous and professionally effective, asking fewer questions and only in plain decision language when the operator truly owns the decision."
   - "User decision 2026-06-10: autonomy and question rules should be compact enough to preserve the signal."
+  - "User decision 2026-06-28: the operator is not here to code, but is happy to answer precise business-critical questions that the repository cannot answer."
 next_review: "2026-06-05"
 next_step: "/103-sf-verify shipflow-skill-reporting-and-proof-hardening"
 ---
@@ -43,6 +44,8 @@ next_step: "/103-sf-verify shipflow-skill-reporting-and-proof-hardening"
 This reference defines how ShipFlow skills ask user-facing questions.
 
 Questions should be rare, useful, and answerable by number. A question is a decision brief: why the decision matters, the recommended default when one exists, and the practical options.
+
+The goal is not to avoid questions at all costs. The goal is to avoid useless technical supervision while still asking for operator-owned business truth when that truth materially improves the work.
 
 Load `skills/references/decision-quality-contract.md` before recommending a default. The recommended answer must preserve ShipFlow's quality and excellence bar; do not recommend the fastest, cheapest, or easiest route unless it is also quality-equivalent, excellence-equivalent, and professionally correct.
 
@@ -71,6 +74,8 @@ Ask only when the answer changes at least one material outcome:
 - staging, deployment, release, closure, ship scope, or bug risk
 - validation strategy when the wrong proof would create false confidence
 
+Business, product, audience, and framing facts often belong to the operator rather than the repository. When those facts materially change the output and are not safely inferable, asking is the correct autonomous behavior.
+
 Proceed without asking when the safe default is clear, in scope, low-risk or reversible, compatible with project context and current best practices, and verifiable in the current run.
 
 If the obvious or requested option conflicts with project context, public/editorial claims, architecture, security posture, or current best practices, do not silently choose it. Either choose the safe compatible alternative when it is obvious and inside scope, or ask a numbered decision question that explains the conflict.
@@ -78,6 +83,8 @@ If the obvious or requested option conflicts with project context, public/editor
 Never ask broad "anything else?" questions.
 
 Autonomy is the default. Do not ask the operator to choose internal workflow mechanics, file-level implementation details, checklist preferences, or obvious reversible defaults. Report assumptions only when they affect trust or future review.
+
+The operator should not be asked to do the agent's technical localization work. The operator may be asked to provide the smallest missing business, product, or framing fact they uniquely own.
 
 Ask at most one user-facing decision question at a time unless several decisions are inseparable. If multiple low-level gaps exist, collapse them into the smallest operator-owned decision or choose safe defaults and continue.
 
@@ -135,9 +142,12 @@ Prefer recommendations that:
 - keep implementation scope bounded enough to verify without lowering solution quality
 - avoid premature shipping when proof is missing
 
+When the operator owns the missing truth and no responsible default exists, recommend the question path itself instead of faking certainty.
+
 Name the condition that would make another option better when that matters.
 
 ## Pressure Scenarios
 
 - `SSRP-005 safe default`: when the safe professional default is clear, reversible, in scope, and verifiable, the skill proceeds and reports the assumption only if useful.
 - `SSRP-006 required decision`: when the answer changes security, data, product behavior, validation confidence, closure, or ship risk, the skill asks one numbered plain-language question with a recommended option.
+- `SSRP-007 operator-owned business truth`: when the missing fact is business, audience, product, or framing context that the operator uniquely knows and the repository cannot prove, the skill asks one precise numbered question and continues after the answer instead of calling the task blocked.

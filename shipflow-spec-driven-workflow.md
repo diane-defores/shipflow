@@ -105,6 +105,8 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `000-shipflow <instruction>` | Routes pure conversational answers directly; routes real work to the right master or specialist skill; asks one numbered question when ambiguous. |
+| Named operator profile | `%Victoire <instruction>` | Canonical profile syntax. Activates the `Victoire` growth-operations profile; `#Tag` remains a focus-tag surface and the router still picks the owner skill. |
+| Non-technical first command with named operator profile | `000-shipflow profile=victoire <instruction>` | Same router, but with the `Victoire` growth-operations profile active so prioritization, ranking, and growth leverage shape the answer or handoff framing. |
 | Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; use `spark`, `codex`, `mini`, `agents`, or `sous-agent` to make model-specific delegated sequential execution a validation gate; for user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `002-sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `004-sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
@@ -158,6 +160,31 @@ Primary non-technical router entrypoint:
 ```
 
 `000-shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `001-sf-build`; maintenance to `002-sf-maintain`; bug-loop work to `003-sf-bug`; release, deploy, or production proof to `004-sf-deploy`; content work to `007-sf-content`; onboarding and activation work to `008-sf-onboarding`; local-to-cloud sync contract work to `600-sf-local-cloud-sync`; product entitlement and access-gate work to `601-sf-product-entitlements`; skill maintenance to `009-sf-skill-build`; and obvious specialist audits to `400-sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
+
+Named operator profiles sit above the router as a human-readable invocation layer. They do not replace skills:
+
+- skill = capability
+- operator role = decision contract
+- named profile = human-readable entry such as `Victoire`
+
+Example:
+
+```text
+%Victoire #SEO Faut-il faire le playbook, la checklist, ou l'audit SEO d'abord ?
+```
+
+Compatibility form:
+
+```text
+000-shipflow profile=victoire Faut-il faire le playbook, la checklist, ou l'audit SEO d'abord ?
+```
+
+The router still selects the owner skill, but the answer should follow the growth-oriented arbitration rules of the `Victoire` profile instead of giving a flat neutral list.
+
+Canonical syntax split:
+
+- `%<Profile>` for named operator profiles
+- `#<Tag>` for focus tags
 
 The router uses direct main-thread handoff to the selected skill. It does not run a master skill inside a subagent, and it does not duplicate the selected skill's lifecycle. Once selected, each master owns its own delegated sequential execution and proof gates.
 

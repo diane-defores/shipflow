@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.4.0"
+artifact_version: "0.5.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-05-24"
+updated: "2026-06-28"
 status: draft
 source_skill: 102-sf-start
 scope: 300-sf-docs-core-governance
@@ -32,6 +32,7 @@ evidence:
   - "Governance corpus now distinguishes global external provider notes from governance-root provider usage docs."
   - "Operator decision on 2026-05-24: provider usage notes are conditional on risk and project-specific behavior."
   - "Operator decision on 2026-05-24: monorepos use one root shipflow_data corpus instead of per-app/package copies."
+  - "Operator decision on 2026-06-28: throwaway build and verification artifacts must be cleaned after use and never treated as durable project assets."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -113,6 +114,29 @@ Do not enforce frontmatter on operational trackers:
 - `BUGS.md`
 
 If a tracker contains durable decision content, extract that decision into a versioned ShipFlow artifact and keep the tracker as pointer/task.
+
+## Disposable Artifact Hygiene Rule
+
+Generated local artifacts are not source assets and must not be kept as durable project state just because a tool produced them.
+
+Treat at least these paths as disposable by default unless a project documents an explicit exception:
+
+- `node_modules/`
+- `dist/`, `build/`, `.output/`
+- `.vercel/` and `.vercel/output/`
+- `.playwright-mcp/`
+- `.astro/`
+- generated test-output folders such as `test-results/`
+
+Rules:
+
+- never version disposable artifacts
+- keep them ignored in `.gitignore`
+- delete them after the validation, preview, deploy-proof, or local troubleshooting step that required them
+- do not cite them as canonical evidence or documentation sources
+- if a tool recreates them automatically on each run, that is still not a reason to keep them in the repo
+
+If a workflow genuinely requires a generated artifact to persist, that persistence must be documented as a bounded exception in project governance instead of being implied by the tool.
 
 ## Bug Workflow Documentation Rule
 

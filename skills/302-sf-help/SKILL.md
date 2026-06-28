@@ -31,6 +31,9 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 - `references/help-catalog.md`: Skill catalog, workflow cycles, prompts, scoring notes, file references, and quick answers.
 - `skills/references/shipflow-terms.md`: canonical package terminology for `Dev Server`, `TUI`, `local tools`, and skill-scope references.
+- `skills/references/question-contract.md`: canonical doctrine for when ShipFlow should ask questions, what shape they should take, and when not asking is the correct autonomous behavior.
+- `skills/references/operator-partnership-contract.md`: canonical doctrine for operator collaboration, delegated intent, and the boundary between technical autonomy and operator-owned business truth.
+- `skills/references/operator-roles/` and `shipflow_data/business/agent-profiles/`: canonical operator-role and named-profile layer when the user asks who should answer, how a named profile works, or how `%Profile` / `profile=` should be used.
 
 The canonical `Chantier Registry` doctrine lives in `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md`; this skill only summarizes it for help output.
 
@@ -39,6 +42,7 @@ The canonical decision-quality doctrine lives in `$SHIPFLOW_ROOT/skills/referenc
 The canonical numeric skill-code index lives in `$SHIPFLOW_ROOT/skills/references/skill-code-index.md`; load it when users ask about skill codes, numeric prefixes, shortcuts, faster skill lookup, or exact skill discovery.
 
 When users ask about app creation, blueprints, "crée une app", "quoi de neuf", or how `001-sf-build` handles new app projects, load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md` and `$SHIPFLOW_ROOT/skills/app-blueprints/README.md`. Blueprints are global spec skeletons that pre-fill architecture, stack, models, and routes for recurring app archetypes. `001-sf-build` loads them at the Blueprint Gate (after chantier check, before spec). If no blueprint matches, the normal spec-first workflow runs unchanged. Available blueprints are indexed in `$SHIPFLOW_ROOT/skills/app-blueprints/README.md`.
+When users ask who should answer, ask for a named business/operator profile, or ask how `%Profile` / `profile=...` works, explain the distinction: skill = capability, operator role = decision contract, profile = human-readable invocation layer. `%<Profile>` is canonical; `#<Tag>` remains a focus-tag surface. Load the matching files when a concrete profile is named.
 
 ## Mode Detection
 
@@ -54,6 +58,10 @@ What workflow, skill, mode, or doctrine does the operator need explained right n
 - If the user asks for skill codes, numeric prefixes, or shortcut lookup, load `skill-code-index.md` and answer from the code table without renaming canonical skills.
 - If the user asks how ShipFlow is invoked from Codex, Claude, OpenCode, KiloCode, or another runtime, load `references/help-catalog.md` and answer with the explicit distinction between what the operator types and what the runtime may call internally.
 - If the user needs full skill taxonomy, workflow cheat sheets, or quick answers, load `references/help-catalog.md`.
+- If the user asks why ShipFlow asked, did not ask, or should have asked a question, load `skills/references/question-contract.md`.
+- If the user asks about passivity, autonomy, collaboration style, business framing, or what the operator is expected to provide, load `skills/references/operator-partnership-contract.md`.
+- If the user asks about a named profile such as `Victoire`, or asks who should answer a business/growth question, load the matching profile plus its operator role and answer from that distinction.
+- If the user asks whether `%Victoire` or `#Victoire` should be used, answer: `%<Profile>` is the canonical named-profile syntax; `#<Tag>` stays for focus tags.
 - Use `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` for canonical trace/process role doctrine instead of maintaining a duplicate role matrix here.
 - For `Skills at a Glance`, `Quick Answers`, workflow cycles, audit scoring, and file-reference help, load `references/help-catalog.md`.
 

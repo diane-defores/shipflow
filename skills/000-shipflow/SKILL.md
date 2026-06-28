@@ -44,6 +44,8 @@ Use a read-only routing scout only when all of these are true:
 
 Before classifying a non-trivial instruction, load `$SHIPFLOW_ROOT/skills/references/entrypoint-routing.md`.
 Before classifying ShipFlow package-scope terminology, load `$SHIPFLOW_ROOT/skills/references/shipflow-terms.md`.
+When the instruction is a high-level critique, business goal, or collaboration complaint, load `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` before deciding whether the route is clear or a user question is needed.
+When `$ARGUMENTS` activates a named operator profile such as `%Victoire` or `profile=victoire`, load the matching profile under `$SHIPFLOW_ROOT/shipflow_data/business/agent-profiles/` and its referenced operator role under `$SHIPFLOW_ROOT/skills/references/operator-roles/` before choosing the route or shaping the answer.
 
 Use that reference as the canonical routing matrix. Do not duplicate specialist internals here.
 
@@ -80,6 +82,7 @@ Parse `$ARGUMENTS` as the operator instruction.
 
 - Empty argument: give a compact orientation answer and ask for the instruction to route.
 - `help`, `aide`, `commands`, `skills`, or route-selection questions: answer directly or route to `302-sf-help` only if the user wants the full help surface.
+- Named profile activation: when the instruction starts with `%<Profile>`, `profile=<id>`, or `profil=<id>`, or clearly asks to respond as a known profile, load the matching profile and keep its role bias active for this turn. The canonical syntax is `%<Profile>`. The profile shapes arbitration and output style; it does not replace owner-skill routing. `#<Tag>` remains reserved for focus tags and route-bias cues.
 - Numeric skill code: resolve the leading three digits through `skill-code-index.md`, then hand off to the runtime skill. Accepted forms include `001`, `001-sf-build`, `001sfbuild`, and `001 sf-build`.
 - Explicit skill name: hand off to that skill unless the request reveals a safer owner.
 - Natural-language instruction: classify using the routing matrix below.
@@ -154,6 +157,8 @@ Do not stop at "run `/skill ...`" when the user asked ShipFlow to handle the wor
 Before asking a user-facing routing question, load `$SHIPFLOW_ROOT/skills/references/question-contract.md`.
 
 Ask only when the answer changes the route or safety posture. Ask one concise routing question with why the route matters and numbered options. Include a recommended route only when one option is clearly safe from the current instruction and project context.
+
+Do not treat operator-owned business or framing truth as generic routing ambiguity. If one precise question would resolve the route safely, ask it instead of reporting blocked.
 
 Good routing questions are short and practical:
 

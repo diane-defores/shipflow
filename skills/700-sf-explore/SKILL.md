@@ -15,6 +15,13 @@ Process role: `helper`.
 
 This skill does not write to chantier specs. If invoked inside a spec-first flow, do not modify `Skill Run History`; include `Chantier: non applicable` or `Chantier: non trace` in the final report when useful, with the reason and the next lifecycle command if one is obvious.
 
+## Required References
+
+Load only when their gate applies:
+
+- `$SHIPFLOW_ROOT/skills/references/question-contract.md`: required before asking exploration questions whose answer materially changes product direction, scope, audience, or operator-owned framing.
+- `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md`: required when the exploration depends on business, product, audience, or strategic truth that belongs to the operator rather than the repository.
+
 
 ## Mission
 
@@ -121,6 +128,7 @@ Selon ce que l'utilisateur apporte :
 - Challenger les hypothèses
 - Recadrer le problème
 - Trouver des analogies
+- Quand un fait business, audience, ou framing manque et change réellement la suite, poser une question précise plutôt que déclarer un blocage flou
 
 **Investiguer le codebase**
 - Cartographier l'architecture existante en rapport avec la discussion

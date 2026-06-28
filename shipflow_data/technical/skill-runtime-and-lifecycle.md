@@ -1,7 +1,7 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.21.0"
+artifact_version: "1.23.0"
 project: ShipFlow
 created: "2026-05-01"
 updated: "2026-06-28"
@@ -78,6 +78,8 @@ evidence:
   - "Master delegation semantics extracted to skills/references/master-delegation-semantics.md and cited by master/orchestrator skills."
   - "Master workflow lifecycle extracted to skills/references/master-workflow-lifecycle.md; bug work items now use bugs/*.md as source of truth and BUGS.md as optional/generated triage."
   - "000-shipflow <instruction> documented as the primary non-technical router with direct main-thread handoff to selected skills."
+  - "300-sf-docs init clarified as the governance bootstrap lane for empty or near-empty repositories, with explicit bootstrap README and code-docs-map behavior."
+  - "Shared operator/question doctrine clarified: the operator is not a fallback coder, but is the right source for business-critical framing questions when repository evidence is insufficient."
   - "Shared question/default contract added for numbered user-facing decisions and context-safe defaults."
   - "003-sf-bug clarified as a bug lifecycle executor through owner skills and bounded subagents, not a simple next-command router."
   - "Shared Sentry observability reference added for runtime evidence, release/environment correlation, redaction, and performance overhead checks."
@@ -193,6 +195,20 @@ Runtime-facing docs must distinguish user input from runtime internals:
 - In OpenCode or KiloCode-style runtimes, the operator should ask for the ShipFlow skill in natural language or choose it through the runtime skill picker.
 - Internal calls such as `skill({ name: "shipflow" })` may appear in runtime implementations or logs, but they are not commands the operator should type manually.
 
+Named operator profiles are a separate invocation layer above skills:
+
+- `skill` = capability and execution owner
+- `operator role` = stable decision contract
+- `agent profile` = human-readable named invocation such as `Victoire`
+
+Profiles do not replace owner-skill routing. They bias the arbitration and answer shape used by `000-shipflow` or `302-sf-help`.
+
+Syntax split:
+
+- `%<Profile>` = named operator profile activation
+- `#<Tag>` = focus tag or route-bias cue
+- `profile=<id>` = compatibility syntax when a plain prefix is easier in a given runtime
+
 ## Owned Files
 
 | Path | Role | Edit notes |
@@ -214,6 +230,8 @@ Runtime-facing docs must distinguish user input from runtime internals:
 | `skills/601-sf-product-entitlements/SKILL.md` | Product entitlement skill for access ownership, provider-event handling, backend authorization gates, support flow framing, product-local mirrors, and sync/auth handoffs | Load when projects need an entitlement contract, duplicate-ledger review, product-access guard design, provider/manual grant routing, or entitlement-gated sync preconditions |
 | `skills/600-sf-local-cloud-sync/references/*.md` | Local-to-cloud sync doctrine, UX/security checklist, and Flutter implementation checklist | Load when projects touch local data promotion, cloud hydration, merge/conflict policy, sync state UX, sensitive-data exclusions, or reinstall recovery |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
+| `skills/references/operator-roles/*.md` | Operator decision-role contracts such as `growth-operations-lead` | Keep these focused on arbitration rules, preferred owner skills, stop conditions, and output shape |
+| `shipflow_data/business/agent-profiles/*.md` | Human-readable named operator profiles such as `Victoire` | Profiles bind a display name to one operator role and invocation syntax; they do not become separate skills |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
 | `tools/audit_shipflow_skills.py` | Versioned ShipFlow skill execution-fidelity audit helper used by `900-shipflow-core` and conversation follow-through gates | Keep read-only by default; audit findings classify risk but do not authorize broad edits without scenario-first triage |
 | `tools/skill_code_index_lint.py` | Numeric skill-code index validator | Run after changing `skills/references/skill-code-index.md` or the skill set |
@@ -245,14 +263,21 @@ ShipFlow-owned artifacts are classified into seven primary types:
 
 When a file materially performs two serious primary jobs, split or extract before adding further content.
 
+Operator roles and named profiles do not add new primary artifact types:
+
+- operator roles are `contract`
+- named profiles are `reference`
+
 ## Entrypoints
 
 - `000-shipflow <instruction>`: recommended non-technical first command; answers pure conversation directly or hands the main thread to the selected `sf-*` master/specialist skill.
+- `%Victoire <instruction>`: canonical named-profile activation for the `Victoire` growth-operations profile.
+- `000-shipflow profile=victoire <instruction>`: compatibility form of the same profile activation.
 - Numeric skill codes: `shipflow 01`, `shipflow 01-001-sf-build`, or equivalent code-first requests resolve through `skills/references/skill-code-index.md` to canonical skill names without renaming runtime skills.
 - `700-sf-explore -> 100-sf-spec -> 101-sf-ready -> 102-sf-start -> 103-sf-verify -> 104-sf-end`: normal non-trivial flow.
 - `106-sf-fix`: bug-first entrypoint that may route direct or spec-first.
 - `305-sf-init`: project bootstrap that reports or creates baseline technical and editorial governance corpus state.
-- `300-sf-docs`: documentation generation, audit, metadata, and technical-docs mode.
+- `300-sf-docs`: documentation generation, governance bootstrap, audit, metadata, and technical-docs mode.
 - `300-sf-docs technical`: technical governance bootstrap, code-docs map creation, and audit.
 - `300-sf-docs editorial`: editorial governance scaffolding and audit for public-content drift, claim register, page intent, and runtime content schema preservation.
 - `310-sf-github-hygiene`: git/GitHub hygiene lane for sync drift, stale branches, PR drift, and Dependabot backlog triage with bounded safe fixes.
@@ -389,6 +414,7 @@ Content lifecycle flow:
 - Master/orchestrator skills load `skills/references/master-workflow-lifecycle.md` before resolving lifecycle flow. The shared skeleton is intake, work item resolution, readiness, model/topology routing, owner-skill execution, validation/evidence, verification, post-verify closure, and bounded ship/deploy/release routing.
 - Skills load `skills/references/decision-quality-contract.md` before quality-sensitive routing, model/fallback choice, implementation, fix, verification, or recommendations. The shortest path is acceptable only when it is also the complete professional path for the risk.
 - Skills should load `skills/references/question-contract.md` before user-facing questions. They ask only when the answer changes route, scope, risk, validation, closure, ship posture, public claims, or technical/product/editorial direction; otherwise they proceed by the best-practice default only when it is clear, low-risk, reversible, context-compatible, and verifiable.
+- Skills should not use the operator as a substitute for local technical inspection. They should, however, ask precise numbered business/product/audience/framing questions when those facts are operator-owned and materially improve the work.
 - When skill bodies are edited or compacted, treat top-level `SKILL.md` as the activation contract. Keep required section labels (`Canonical Paths`, `Trace category`, `Process role`, `Report Modes`) and local non-negotiables there; move only supporting detail to references.
 - Bug work uses one Markdown bug file under `bugs/*.md` as the durable source of truth. `BUGS.md`, when present, is an optional compact/generated/triage view and must not override the bug file.
 - Short natural-language confirmations after diagnosis or proposal continue the current chantier in delegated sequential mode by intent rather than exact keyword, not parallel fan-out.

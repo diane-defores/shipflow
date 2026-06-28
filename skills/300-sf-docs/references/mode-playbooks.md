@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.4.0"
+artifact_version: "0.6.0"
 project: ShipFlow
 created: "2026-05-16"
-updated: "2026-05-24"
+updated: "2026-06-28"
 status: draft
 source_skill: 102-sf-start
 scope: 300-sf-docs-mode-playbooks
@@ -28,11 +28,57 @@ evidence:
   - "Technical docs mode extended with global external platform corpus and governance-root platform usage docs."
   - "Operator decision on 2026-05-24: provider usage notes are risk-driven, not mandatory per technology."
   - "Operator decision on 2026-05-24: monorepo documentation uses the root shipflow_data corpus with scoped app/package entries."
+  - "Operator decision on 2026-06-28: docs init for empty repositories must produce an explicit bootstrap contract instead of a generic README-only result."
+  - "Operator decision on 2026-06-28: when bootstrap facts are missing, docs init should ask precise numbered questions instead of stopping as blocked."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions"
 ---
 
 # 300-sf-docs Mode Playbooks
+
+## INIT MODE
+
+Use this mode when the repository is empty, near-empty, or the operator explicitly asks for documentation/governance bootstrap.
+
+Load `skills/300-sf-docs/references/bootstrap-starter-templates.md` before writing bootstrap output.
+
+Bootstrap output should prefer a coherent starter contract over placeholder prose. Minimum expected surfaces:
+
+- root `AGENT.md` with repository operating contract
+- root `README.md` with explicit project intent status, target surface status, and next framing step
+- `shipflow_data/workflow/TASKS.md` with real bootstrap tasks, not filler
+- technical governance starter files when no code exists yet:
+  - `shipflow_data/technical/README.md`
+  - `shipflow_data/technical/code-docs-map.md`
+
+For empty or near-empty repositories:
+
+- do not pretend the project is already defined
+- label unknown product/runtime facts as unknown
+- mark the repository as `bootstrap` / `not yet scoped`
+- make the next framing step explicit
+- avoid fake features, stack assumptions, env vars, scripts, or API sections
+
+Question rule for bootstrap:
+
+- load `skills/references/question-contract.md` when a missing fact would materially change the bootstrap documents
+- ask one numbered question at a time
+- prefer questions for:
+  - project intent
+  - target surface
+  - primary runtime/platform
+- after each answer, continue the bootstrap instead of reclassifying the run as blocked
+- report `blocked` only when the user refuses to provide a materially required decision and no safe `unknown` default can preserve document truth
+
+Recommended bootstrap question order:
+
+1. project intent
+2. target surface
+3. primary runtime/platform
+
+Bootstrap questions are part of the work, not a failure condition. The skill should guide the operator through the missing framing until the starter set can be written truthfully.
+
+If source code already exists, `init` may still bootstrap missing governance, but it must derive the README and map from observed code and config rather than the empty-repo template.
 
 ## FILE MODE
 
@@ -118,6 +164,19 @@ Generate or update README using project evidence:
 
 If README exists and user preference is unclear, ask merge/replace/skip.
 
+If the repository is empty or near-empty:
+
+- load `skills/300-sf-docs/references/bootstrap-starter-templates.md`
+- do not emit a normal product README template
+- write a bootstrap README instead
+- ask a numbered bootstrap question first when project intent or target surface is still materially unknown
+- required sections:
+  - current project intent status
+  - current implementation status
+  - known target surface or `unknown`
+  - immediate next framing step
+- keep the README explicit that governance exists before implementation
+
 ## API MODE
 
 Document detected API endpoints:
@@ -201,7 +260,17 @@ Rules:
 
 ## AUTO MODE
 
-Detect likely gaps and ask user what to document next (README/API/components/env/changelog/missing docs).
+Detect likely gaps and choose the narrowest safe default.
+
+When the repository is empty or near-empty:
+
+- prefer `INIT MODE`
+- load `skills/300-sf-docs/references/bootstrap-starter-templates.md`
+- do not stop at a generic "what do you want to document next" question unless a material decision blocks safe bootstrap
+- ask a specific numbered bootstrap question when one fact would materially improve the starter documents
+- create the governance starter set first, then report the remaining framing gap
+
+When code or public surfaces already exist, continue to choose between README/API/components/env/changelog/missing docs based on observed evidence.
 
 ## Final Reporting Templates
 
