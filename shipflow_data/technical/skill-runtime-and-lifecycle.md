@@ -209,6 +209,8 @@ Syntax split:
 - `#<Tag>` = focus tag or route-bias cue
 - `profile=<id>` = compatibility syntax when a plain prefix is easier in a given runtime
 
+The canonical behavior contract for profile resolution, precedence, fallback, and reporting lives in `skills/references/profile-activation.md`.
+
 ## Owned Files
 
 | Path | Role | Edit notes |
@@ -231,6 +233,8 @@ Syntax split:
 | `skills/600-sf-local-cloud-sync/references/*.md` | Local-to-cloud sync doctrine, UX/security checklist, and Flutter implementation checklist | Load when projects touch local data promotion, cloud hydration, merge/conflict policy, sync state UX, sensitive-data exclusions, or reinstall recovery |
 | `skills/references/subagent-roles/*.md` | Internal role contracts such as Technical Reader and Editorial Reader | Role files are read by orchestration skills; keep read-only roles explicit |
 | `skills/references/operator-roles/*.md` | Operator decision-role contracts such as `growth-operations-lead` | Keep these focused on arbitration rules, preferred owner skills, stop conditions, and output shape |
+| `skills/references/profile-activation.md` | Canonical profile resolution, precedence, fallback, and reporting contract | Load before changing named-profile semantics or examples |
+| `skills/references/profile-project-context.md` | Canonical project-context bundle mapping for named profiles | Load before changing how profiles consume project business/product/editorial/technical context |
 | `shipflow_data/business/agent-profiles/*.md` | Human-readable named operator profiles such as `Victoire` | Profiles bind a display name to one operator role and invocation syntax; they do not become separate skills |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
 | `tools/audit_shipflow_skills.py` | Versioned ShipFlow skill execution-fidelity audit helper used by `900-shipflow-core` and conversation follow-through gates | Keep read-only by default; audit findings classify risk but do not authorize broad edits without scenario-first triage |

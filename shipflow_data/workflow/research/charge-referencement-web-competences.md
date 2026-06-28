@@ -12,7 +12,10 @@ confidence: high
 risk_level: low
 security_impact: none
 docs_impact: yes
+owner: ShipFlow
 source_count: 10
+depends_on: []
+supersedes: []
 evidence:
   - "Onisep - Charge / Chargee de referencement Web"
   - "France Travail - Referenceur / Referenceuse web"

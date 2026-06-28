@@ -70,6 +70,8 @@ Before natural-language routing, check whether the user included one or more foc
 
 Focus tags are not decorative reminders. They change execution posture, artifact preference, and route bias for the current turn. Do not merely acknowledge them; apply their routing implications below.
 
+Named profiles are a separate router-layer construct above focus tags. Load `skills/references/profile-activation.md` when a known profile activation such as `%Victoire` or `profile=victoire` appears. Skills still own execution; profiles bias arbitration and output posture.
+
 If the instruction is about modifying, improving, auditing, or hardening ShipFlow behavior, contracts, routing, or skills, treat ShipFlow itself as the target system by default. Do not infer the current project repository as the edit target unless the user explicitly names that project.
 
 An invocation of `900-shipflow-core` or another ShipFlow-maintenance skill is itself sufficient evidence that the intended target is ShipFlow unless the user explicitly names a different repository.

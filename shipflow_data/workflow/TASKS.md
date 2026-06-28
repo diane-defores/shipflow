@@ -124,6 +124,7 @@
 🟢 [ShipFlow] task: Évaluer OpenPostern comme pattern pour enrichir `sf-veille`, `sf-deps`, `sf-audit-code` et les skills de codage avec scoring vendor-risk et signaux sécurité actionnables | status: deferred | area: tech-watch-security-skills | source: veille utilisateur https://betalist.com/startups/openpostern et https://openpostern.com/ 2026-06-10
 🟢 [ShipFlow] task: Évaluer Alpic comme référence d'infrastructure MCP/ChatGPT Apps pour packaging, déploiement, monitoring, sécurité et distribution de skills ou serveurs MCP ShipFlow | status: deferred | area: mcp-app-distribution | source: veille utilisateur https://alpic.ai/ et https://alpic.ai/blog/deploy-chatgpt-apps-on-alpic 2026-06-10
 🟢 [ShipFlow] task: Explorer si un index SQL opérationnel peut remplacer utilement une partie de `shipflow_data` sans dégrader la source de vérité documentaire | status: deferred | area: operational-data-architecture | source: recherche Bunny Database 2026-06-12 | next: /700-sf-explore SQL operational index over shipflow_data
+🟢 [ShipFlow] task: Réévaluer plus tard les redondances entre profils nommés et focus tags puis supprimer les doublons de gouvernance si le runtime profils les remplace proprement | status: deferred | area: operator-profiles-governance | source: décision utilisateur 2026-06-28 | next: après implémentation runtime des profils
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.5.0"
+artifact_version: "0.6.0"
 project: ShipFlow
 created: "2026-05-16"
 updated: "2026-06-28"
@@ -33,6 +33,7 @@ evidence:
   - "Operator decision on 2026-05-24: provider usage notes are conditional on risk and project-specific behavior."
   - "Operator decision on 2026-05-24: monorepos use one root shipflow_data corpus instead of per-app/package copies."
   - "Operator decision on 2026-06-28: throwaway build and verification artifacts must be cleaned after use and never treated as durable project assets."
+  - "Operator decision on 2026-06-28: duplicate governance artifacts should be audited explicitly and merged into shared theme-first files unless a real surface-specific divergence justifies separation."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -93,6 +94,8 @@ Preferred governance locations live under the canonical governance root. In a si
 - `shipflow_data/technical/platforms/*` for provider usage when local risk or complexity justifies a dedicated note
 - `shipflow_data/editorial/*`
 - `shipflow_data/workflow/specs/*`
+- `shipflow_data/workflow/playbooks/*`
+- `shipflow_data/workflow/checklists/*`
 
 Monorepo rule:
 
@@ -102,6 +105,40 @@ Monorepo rule:
 - treat nested `shipflow_data/` directories as migration debt unless the nested folder is intentionally a standalone project with its own repo lifecycle
 
 Legacy root files (`BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `ARCHITECTURE.md`, `CONTENT_MAP.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `GUIDELINES.md`, root `specs/`) are migration sources.
+
+Reusable transversal operating documents follow this split:
+
+- `shipflow_data/workflow/playbooks/*` for method and execution order
+- `shipflow_data/workflow/checklists/*` for reusable control surfaces
+- `shipflow_data/workflow/test-checklists/*` for executed proof artifacts
+
+## Duplicate Governance Decision Rule
+
+Duplicate governance files are migration debt by default, not a neutral layout choice.
+
+When multiple files appear to carry the same governance intent across shared and surface-scoped paths, classify them before keeping or deleting anything:
+
+- `merge-to-shared`: same project truth, same branding, same business model, or materially overlapping content that should live once in a shared theme-first artifact
+- `keep-surface-specific`: surface-specific implementation, runtime, UX flow, API, channel strategy, or other real divergence that would become misleading if merged
+- `split-shared-and-surface-delta`: a shared core truth exists, but one or more surfaces need a smaller scoped delta or extension
+- `collision-needs-review`: overlap exists but ownership, freshness, or truth cannot be resolved safely from repo evidence alone
+
+Decision heuristics:
+
+- branding is shared by default across a monorepo unless the project explicitly declares multiple brands
+- business is shared by default when the same product family, value proposition, or revenue logic applies across surfaces
+- product, GTM, technical, and editorial docs may diverge by surface, but only when the divergence changes operator decisions or user truth
+- if two files differ only by phrasing, formatting, stale fragments, or copy-pasted structure, merge them
+- if one file is a strict subset of another, prefer the stronger canonical file and absorb the subset where useful
+- if two files are mostly identical with a few meaningful surface deltas, extract the common core into a shared file and keep only the scoped delta
+
+Deletion rule:
+
+- do not delete a duplicate until the canonical merged destination exists and any non-redundant content has been preserved or intentionally rejected
+
+Reporting rule:
+
+- duplicate audits should report each reviewed artifact set with `classification`, `canonical target`, `action`, and `reason`
 
 ## Tracker Exception Rule
 

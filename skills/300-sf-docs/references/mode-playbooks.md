@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.6.0"
+artifact_version: "0.7.0"
 project: ShipFlow
 created: "2026-05-16"
 updated: "2026-06-28"
@@ -30,6 +30,7 @@ evidence:
   - "Operator decision on 2026-05-24: monorepo documentation uses the root shipflow_data corpus with scoped app/package entries."
   - "Operator decision on 2026-06-28: docs init for empty repositories must produce an explicit bootstrap contract instead of a generic README-only result."
   - "Operator decision on 2026-06-28: when bootstrap facts are missing, docs init should ask precise numbered questions instead of stopping as blocked."
+  - "Operator decision on 2026-06-28: docs skill should support an explicit duplicate-governance audit mode to decide whether duplicated docs are justified, mergeable, or migration debt."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions"
 ---
@@ -148,6 +149,54 @@ Must check:
 - monorepos use the root `shipflow_data/editorial/` corpus for shared public/content surfaces, with entries scoped by app/site/package where needed
 
 If no public/editorial surfaces are detected, report `skipped - no editorial surfaces detected`.
+
+## DUPLICATE GOVERNANCE MODE
+
+Use this mode when the operator wants an explicit review of duplicated governance artifacts or when a monorepo migration reveals the same truth repeated across root and surface-scoped docs.
+
+Audit order:
+
+1. inventory candidate duplicate sets across `shipflow_data/`, legacy root docs, and surface-scoped governance folders
+2. group artifacts by theme first, then by surface
+3. compare overlap, ownership, freshness, and decision impact
+4. classify each set using the duplicate-governance rule from `core-governance.md`
+5. merge or normalize when the classification is mechanically safe
+6. leave bounded divergence only where the surface truth genuinely differs
+
+Candidate families to inspect first:
+
+- branding
+- business
+- product
+- gtm
+- technical context / architecture / guidelines
+- editorial content-map / page-intent / claim docs
+- legacy root files that mirror canonical `shipflow_data/` artifacts
+
+Required output per duplicate set:
+
+- `artifact set`
+- `classification` (`merge-to-shared|keep-surface-specific|split-shared-and-surface-delta|collision-needs-review`)
+- `canonical target`
+- `action`
+- `reason`
+
+Merge rules:
+
+- preserve non-redundant content before removing the source duplicate
+- prefer theme-first canonical targets at the governance root
+- when overlap is mostly shared with a small real delta, create or keep a shared base and move the delta to the smallest scoped file
+- when evidence is insufficient to resolve conflicting truths safely, stop at `collision-needs-review` instead of guessing
+
+Default canonical targets in monorepos:
+
+- shared branding -> `shipflow_data/branding/branding.md`
+- shared business -> `shipflow_data/business/business.md`
+- shared product -> `shipflow_data/product/product.md` only when the product truth is genuinely shared; otherwise `shipflow_data/product/<surface>/product.md`
+- shared gtm -> `shipflow_data/gtm/gtm.md` only when channel/offer truth is genuinely shared; otherwise `shipflow_data/gtm/<surface>/gtm.md`
+- technical and editorial docs stay scoped by surface unless a shared root artifact is clearer and truthful
+
+When the operator asks for cleanup, this mode may also execute the merge and deletion pass, but only after preserving unique content in the chosen canonical target.
 
 ## README MODE
 

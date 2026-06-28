@@ -450,6 +450,8 @@ Compatibility form:
 
 Here, `Victoire` is not a separate skill. She is a named growth-operations profile that biases the answer toward prioritization, leverage, and explicit `not now`.
 
+Other named profiles can coexist when they carry a distinct decision posture, for example `Prudence` for risk/coherence challenge, `Ariane` for structuring a fuzzy initiative into an executable plan, and `Adhesion` for simulated end-user reaction, trust, and friction review.
+
 Canonical syntax split:
 
 - `%<Profile>` for named operator profiles

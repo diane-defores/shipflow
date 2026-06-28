@@ -2,7 +2,7 @@
 name: 300-sf-docs
 description: "Maintain docs, bootstrap governance, metadata, and governance-layout compliance."
 disable-model-invocation: true
-argument-hint: [file-path | "init" | "readme" | "api" | "components" | "audit" | "update" | "metadata" | "migrate-frontmatter" | "migrate-layout" | "technical" | "technical audit" | "editorial" | "editorial audit"]
+argument-hint: [file-path | "init" | "readme" | "api" | "components" | "audit" | "update" | "metadata" | "migrate-frontmatter" | "migrate-layout" | "technical" | "technical audit" | "editorial" | "editorial audit" | "duplicata" | "duplicates" | "duplicate audit"]
 ---
 
 ## Canonical Paths
@@ -47,6 +47,7 @@ Use `report=agent` for blocked runs, handoff, or explicit verbose request.
 - `migrate-layout` or `layout` -> `LAYOUT MIGRATION MODE`
 - `technical`, `technical audit`, `docs/technical` -> `TECHNICAL DOCS MODE`
 - `editorial`, `editorial audit`, `docs/editorial` -> `EDITORIAL GOVERNANCE MODE`
+- `duplicata`, `duplicates`, `duplicate audit` -> `DUPLICATE GOVERNANCE MODE`
 - empty args -> `AUTO MODE`
 
 ## Required References

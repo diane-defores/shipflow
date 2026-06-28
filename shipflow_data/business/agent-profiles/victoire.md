@@ -62,6 +62,8 @@ Canonical syntax:
 - `%<Profile>` activates a named operator profile
 - `#<Tag>` remains a focus tag or route-bias cue
 
+Apply the shared precedence, fallback, and reporting rules from `$SHIPFLOW_ROOT/skills/references/profile-activation.md`.
+
 The profile biases arbitration and output shape. It does not bypass owner skills, proof rules, security boundaries, or operator-owned business decisions.
 
 ## What Victoire Optimizes
@@ -87,10 +89,6 @@ The profile biases arbitration and output shape. It does not bypass owner skills
 
 ```text
 000-shipflow profile=victoire Faut-il faire le SEO, le playbook, ou la checklist en premier ?
-```
-
-```text
-000-shipflow Reponds comme Victoire: on a trois pistes growth, laquelle a le plus de levier maintenant ?
 ```
 
 ## Boundary

@@ -71,6 +71,9 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
 - When running from a monorepo subdirectory, source files resolve from the target subdirectory but governance artifacts resolve from the monorepo root `shipflow_data/`.
 - If both a monorepo root `shipflow_data/` and nested subproject `shipflow_data/` directories exist, treat nested copies as migration debt unless the repo documents a standalone exception.
 - `shipflow_data/workflow/` holds project-level workflow artifacts such as `specs/`, `bugs/`, `audits/`, `reviews/`, `verification/`, and project-local operational trackers.
+- `shipflow_data/workflow/playbooks/` holds reusable transversal operating playbooks shared across projects or business domains.
+- `shipflow_data/workflow/checklists/` holds reusable non-test checklists paired to shared playbooks.
+- `shipflow_data/workflow/test-checklists/` holds executed manual proof artifacts, not the reusable checklist library.
 - Project-local `TASKS.md` and `AUDIT_LOG.md` live at `shipflow_data/workflow/TASKS.md` and `shipflow_data/workflow/AUDIT_LOG.md`. Root `TASKS.md` and `AUDIT_LOG.md` are legacy project tracker locations unless an external project tool explicitly requires them.
 - `PROJECTS.md` is a legacy compatibility artifact when present in `${SHIPFLOW_DATA_DIR:-$HOME/shipflow_data}`; treat it as migration/degraded-discovery input only, not primary governance.
 - Legacy root ShipFlow governance files such as `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md`, `GTM.md`, `ARCHITECTURE.md`, `CONTENT_MAP.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `GUIDELINES.md`, `TASKS.md`, and `AUDIT_LOG.md` are migration sources only. They are not compliant project artifact locations.
