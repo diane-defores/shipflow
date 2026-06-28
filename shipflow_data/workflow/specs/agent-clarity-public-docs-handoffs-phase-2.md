@@ -1,7 +1,7 @@
 ---
 artifact: spec
 metadata_schema_version: "1.0"
-artifact_version: "1.0.1"
+artifact_version: "1.0.2"
 project: "shipflow"
 created: "2026-06-28"
 created_at: "2026-06-28 00:00:00 UTC"
@@ -38,7 +38,7 @@ evidence:
   - "User clarification 2026-06-28: phase 2 should cover public/docs handoff clarity, not only internal skill first-screen wording."
   - "Existing internal clarity work closed skill-boundary phases and a reusable playbook, but no bounded chantier yet owns public/docs handoff clarity across help, runtime docs, README, workflow doctrine, and cheatsheets."
   - "TASKS.md already contains a related runtime-discovery backlog item for OpenCode and KiloCode pages; that item is part of the broader public/docs clarity surface, not the whole chantier."
-next_step: "/005-sf-ship agent-clarity-public-docs-handoffs-phase-2"
+next_step: "/300-sf-docs shipflow skills runtime docs"
 ---
 
 # Title
@@ -118,6 +118,7 @@ This phase must make public and repo-visible guidance say the same thing about s
 | 2026-06-28 | 300-sf-docs | GPT-5 Codex | Align help/docs/runtime wording on explains vs routes vs invokes vs owns execution, fix numeric runtime examples, and clarify OpenCode/KiloCode invocation semantics | implemented | Run `/103-sf-verify agent-clarity-public-docs-handoffs-phase-2` |
 | 2026-06-28 | 103-sf-verify | GPT-5 Codex | Verify public/docs handoff clarity across help, runtime docs, README, workflow doctrine, cheatsheet, and spec-linked tracker wording | verified | Run `/104-sf-end agent-clarity-public-docs-handoffs-phase-2` |
 | 2026-06-28 | 104-sf-end | GPT-5 Codex | Close the bounded public/docs handoff-clarity slice, mark the main tracker item done, and leave runtime-specific public pages as a linked follow-up | closed | Run `/005-sf-ship agent-clarity-public-docs-handoffs-phase-2` |
+| 2026-06-28 | 005-sf-ship | GPT-5 Codex | Ship the bounded public/docs handoff-clarity changes on `main` with metadata, skill visibility, and budget checks passing | shipped | Run `/300-sf-docs shipflow skills runtime docs` |
 
 ## Current Chantier Flow
 
@@ -126,4 +127,4 @@ This phase must make public and repo-visible guidance say the same thing about s
 - `102-sf-start` ✅ bounded public/docs alignment completed
 - `103-sf-verify` ✅ verification passed with metadata, sync, budget, and targeted drift scans
 - `104-sf-end` ✅ bounded public/docs closure completed and tracker status aligned
-- `005-sf-ship` ⏳ pending
+- `005-sf-ship` ✅ pushed on `main`
