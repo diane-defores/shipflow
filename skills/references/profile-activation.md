@@ -1,7 +1,7 @@
 ---
 artifact: contract
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-06-28"
 updated: "2026-06-28"
@@ -52,6 +52,24 @@ Named profiles are a governance and routing layer above skills. They do not repl
 - `agent profile` = human-readable invocation handle bound to one operator role
 
 Profiles bias arbitration, prioritization, and answer shape. Skills still own execution.
+
+## Runtime Boundary
+
+ShipFlow must treat named profiles as an explicit invocation and governance convention, not as a native host-runtime primitive.
+
+Current rule:
+
+- no claimed native `%Profile` runtime primitive in Codex or other host runtimes unless the runtime actually exposes and guarantees it
+- no pseudo-runtime layer that pretends profiles persist invisibly across turns through hidden context injection or magic state
+- no silent profile carry-over beyond what the current owner skill or router explicitly loads and reports
+
+Practical consequence:
+
+- `%<Profile>` is a visible activation cue
+- `000-shipflow` and compatible owner skills may resolve and honor it explicitly
+- any profile effect must remain inspectable in the active turn through contract loading, handoff wording, or final reporting
+
+If a future runtime provides first-class profile primitives with stable semantics, this contract may be upgraded. Until then, ShipFlow keeps the behavior explicit and documented.
 
 ## Supported Activation Forms
 
@@ -137,6 +155,8 @@ Do not claim profile activation silently when the answer shape or route does not
 - profiles are not a replacement for focus tags
 - profiles are not personalities-first branding objects
 - profiles do not create a second routing system outside `000-shipflow`
+- profiles do not imply a native Codex runtime feature that ShipFlow does not control
+- profiles do not justify an opaque persistence mechanism or hidden context reinjection layer
 
 ## Maintenance Rule
 

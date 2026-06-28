@@ -1,10 +1,10 @@
 ---
 artifact: skill_reference
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: "shipflow"
 created: "2026-06-10"
-updated: "2026-06-23"
+updated: "2026-06-28"
 status: active
 source_skill: 001-sf-build
 scope: "build-lifecycle-workflow"
@@ -38,6 +38,10 @@ Use this reference after the top-level `001-sf-build` activation contract has lo
 Gather current directory, date, project name, git branch, git status, project-local `shipflow_data/workflow/TASKS.md` or fallback `TASKS.md`, local `TASKS.md` when present, and available specs under canonical project spec locations.
 
 ## Execution Mode Detail
+
+If `$ARGUMENTS` activates a named profile such as `%Victoire`, `%Ariane`, `%Prudence`, `%Adhesion`, or `profile=...`, resolve the matching profile in `$SHIPFLOW_ROOT/shipflow_data/business/agent-profiles/`, load its referenced operator-role contract, then load `skills/references/profile-project-context.md` and the smallest relevant project context bundle for the resolved role before sequencing, blueprint matching, or user-facing arbitration.
+
+Keep the active profile visible in reasoning and reporting when it materially shaped prioritization, phase order, or the final recommendation. Do not claim profile activation silently if the answer does not reflect it.
 
 ### Argument Flags
 

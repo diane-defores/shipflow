@@ -41,6 +41,8 @@ Before choosing a route, model, topology, mini-contract, or implementation path,
 
 Load `$SHIPFLOW_ROOT/skills/001-sf-build/references/build-lifecycle-workflow.md` for the detailed execution-mode playbook, question framing, governance/documentation gates, browser evidence routing, onboarding gate, and final report templates.
 
+Before applying any named operator profile semantics in `$ARGUMENTS`, load `$SHIPFLOW_ROOT/skills/references/profile-activation.md` and follow its canonical resolution, precedence, fallback, reporting, and project-context rules.
+
 Before the Blueprint Gate, load `$SHIPFLOW_ROOT/skills/references/app-blueprints.md`.
 
 Before asking a user-facing question, load `$SHIPFLOW_ROOT/skills/references/question-contract.md`.
@@ -76,6 +78,8 @@ Keep the boundary explicit: `001-sf-build` owns feature and product-change lifec
 - `main-only`: only for pure conversational output, explicit planning without mutation, or an explicit no-subagent request.
 - `delegated sequential` (default): `/001-sf-build <story>` or `$001-sf-build <story>` is bounded delegation consent for the current chantier; run one bounded implementation/validation owner at a time.
 - `spec-gated parallel`: allowed only when a ready spec defines safe `Execution Batches`. Without explicit safe batches, parallelism is blocked.
+
+When a named profile is active, let it shape route choice, sequencing, and answer framing for the current turn without bypassing lifecycle gates, proof owners, or stop conditions.
 
 Report `Agents: used`, `Agents: not needed`, or `Agents: degraded: <reason>` only when topology affects trust.
 
