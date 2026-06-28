@@ -4,11 +4,13 @@ import { alternatePath, navCopy, pathFor, type Locale } from "../i18n/ui";
 interface Props {
   locale?: Locale;
   currentPath?: string;
+  alternateHref?: string;
 }
 
-const { locale = "en", currentPath = "/" } = Astro.props;
+const { locale = "en", currentPath = "/", alternateHref } = Astro.props;
 const copy = navCopy[locale];
 const otherLocale = locale === "fr" ? "en" : "fr";
+const localeSwitchHref = alternateHref ?? alternatePath(currentPath, otherLocale);
 ---
 
 <header class="topbar">
@@ -25,7 +27,7 @@ const otherLocale = locale === "fr" ? "en" : "fr";
     <a class="button button-secondary topbar-cta" href="https://github.com/dianedef/ShipFlow">
       {copy.github}
     </a>
-    <a class="language-link" href={alternatePath(currentPath, otherLocale)} hreflang={otherLocale}>
+    <a class="language-link" href={localeSwitchHref} hreflang={otherLocale}>
       {copy.language}
     </a>
   </div>
@@ -50,7 +52,7 @@ const otherLocale = locale === "fr" ? "en" : "fr";
         <a class="button button-secondary mobile-nav-cta" href="https://github.com/dianedef/ShipFlow">
           {copy.github}
         </a>
-        <a class="language-link mobile-nav-language" href={alternatePath(currentPath, otherLocale)} hreflang={otherLocale}>
+        <a class="language-link mobile-nav-language" href={localeSwitchHref} hreflang={otherLocale}>
           {copy.language}
         </a>
       </div>

@@ -195,7 +195,7 @@ python3 tools/shipflow_metadata_lint.py shipflow_data/workflow/specs README.md s
 For public site or runtime content:
 
 ```bash
-npm --prefix site run build
+pnpm --dir shipflow-site build
 ```
 
 For public-claim and leak scans:

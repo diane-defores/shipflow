@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-01"
+updated: "2026-06-28"
 status: reviewed
 source_skill: sf-start
 scope: blog-and-article-surface-policy
@@ -30,8 +30,8 @@ depends_on:
     required_status: draft
 supersedes: []
 evidence:
-  - "CONTENT_MAP.md lists no dedicated blog directory or newsletter/social publishing surface."
-  - "Current site/src/pages inventory has no blog route and site/src/content.config.ts has no blog collection."
+  - "Current site/src/pages inventory includes `/blog` and `/fr/blog` routes."
+  - "site/src/content.config.ts declares an `articles` collection."
 next_review: "2026-06-01"
 next_step: "/sf-verify ShipFlow Editorial Content Governance Layer for AI Agents"
 ---
@@ -40,13 +40,26 @@ next_step: "/sf-verify ShipFlow Editorial Content Governance Layer for AI Agents
 
 ## Current Decision
 
-No dedicated blog path is declared yet.
+ShipFlow now has a declared indexed blog surface backed by an Astro content collection:
 
-ShipFlow can prepare governance for blog and article work, but agents must not create article content under invented paths such as `blog/`, `posts/`, `articles/`, `site/src/content/blog/`, or `site/src/pages/blog/` until a separate spec or explicit surface decision declares the route and content collection.
+- content collection: `site/src/content/articles/`
+- schema owner: `site/src/content.config.ts`
+- English routes: `site/src/pages/blog/index.astro`, `site/src/pages/blog/[slug].astro`
+- French routes: `site/src/pages/fr/blog/index.astro`, `site/src/pages/fr/blog/[slug].astro`
+
+ShipFlow also keeps declared standalone editorial article routes under `site/src/pages/`, including:
+
+- `site/src/pages/why-not-just-prompts.astro`
+- `site/src/pages/remote-mcp-oauth-tunnel.astro`
+- localized peers under `site/src/pages/fr/`
+
+Agents may add new indexed articles through the declared `articles` collection when the topic fits the blog surface, or update standalone editorial pages when the topic clearly matches their narrower route intent and source-of-truth constraints.
+
+Agents must still not invent parallel article content under undeclared paths such as `posts/`, ad hoc `site/src/content/blog/`, or a second article system outside the declared collection and routes.
 
 ## Required Response When Blog Is Requested
 
-If a user requests blog, article, newsletter, or long-form editorial output and no declared surface exists, report:
+If a user requests blog, article, newsletter, or long-form editorial output and no declared surface exists for that topic, report:
 
 ```text
 surface missing: blog
@@ -54,8 +67,9 @@ surface missing: blog
 
 Then propose the next safe step:
 
-- `/sf-spec ShipFlow blog/article surface` when the request implies repository routes, collections, RSS, SEO, or public publishing.
+- `/sf-spec ShipFlow blog/article surface` when the request implies a second article system, RSS, CMS, newsletter delivery, search, or publishing behavior outside the declared blog collection and routes.
 - A draft-only content pack in chat or a non-runtime governance artifact when the user only wants strategy or outlines.
+- A specific existing declared editorial route when the idea belongs in an existing long-form Astro page instead of a new blog surface.
 - A specific existing public surface when the idea belongs in FAQ, docs overview, pricing, landing page, README, or a public skill page instead of a new article.
 
 ## What A Future Blog Surface Must Declare
@@ -68,7 +82,7 @@ A separate spec or explicit surface decision must define:
 - rendering route and `getCollection()` / `getStaticPaths()` behavior when dynamic pages are used
 - source contracts for claims
 - target audience and page intent
-- publication validation, including `npm --prefix site run build`
+- publication validation, including `pnpm --dir shipflow-site build`
 - internal link rules from `CONTENT_MAP.md`
 - claim review through `docs/editorial/claim-register.md`
 
@@ -76,7 +90,7 @@ A separate spec or explicit surface decision must define:
 
 Stop before writing article files when:
 
-- no blog path is declared in `CONTENT_MAP.md`
+- the topic does not fit either the declared blog collection or a declared standalone editorial route
 - no Astro route exists for the requested article surface
 - no content collection schema accepts the proposed frontmatter
 - the request would publish sensitive claims without evidence
@@ -88,9 +102,11 @@ Stop before writing article files when:
 Agents may still:
 
 - produce an article brief in chat when the user asks for draft-only strategy
-- add a governance note to `CONTENT_MAP.md` or `docs/editorial/` under an explicit contract
+- add or edit content in the declared `articles` collection
+- update a declared standalone editorial article route whose page intent already exists
+- add a governance note to `shipflow_data/editorial/` under an explicit contract
 - route the idea to existing FAQ, docs, README, landing, pricing, or public skill surfaces
-- create a spec for the blog/article surface
+- create a spec for a broader publishing system beyond the current blog
 
 ## Maintenance Rule
 

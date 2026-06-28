@@ -319,7 +319,7 @@ Add a canonical conversation export preset and a new `sf-conversation-audit` lif
 - [ ] AC 8: Given a finding has weak evidence or is a one-off runtime miss, when audited, then the report marks confidence appropriately and does not recommend broad skill changes.
 - [ ] AC 9: Given a finding reveals a systemic multi-skill gap, when audited, then the report recommends `/sf-spec` or `/sf-skill-build` instead of a silent direct patch.
 - [ ] AC 10: Given the audit report is complete, when `sf-verify` checks it, then every recommendation has evidence, severity, affected skill/reference, and next owner route.
-- [ ] AC 11: Given public/operator docs are updated, when `npm --prefix site run build` runs, then the site build passes.
+- [ ] AC 11: Given public/operator docs are updated, when `pnpm --dir shipflow-site build` runs, then the site build passes.
 - [ ] AC 12: Given skills are changed, when skill validations run, then `python3 tools/skill_budget_audit.py --skills-root skills --format markdown` and `tools/shipflow_sync_skills.sh --check --all` pass or report only accepted non-blocking risks.
 
 ## Test Strategy
@@ -373,7 +373,7 @@ Add a canonical conversation export preset and a new `sf-conversation-audit` lif
   - `rg -n "sf-conversation-audit|conversation-audits|shipflow_data/workflow/conversations|missed_action|literalism_over_intent|actionable failure" skills templates tools README.md docs site/src/content/skills shipflow_data/workflow/specs`
   - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
   - `tools/shipflow_sync_skills.sh --check --all`
-  - `npm --prefix site run build` if public content changes
+  - `pnpm --dir shipflow-site build` if public content changes
 - Stop conditions:
   - transcript source is ambiguous and no safe default exists
   - redaction gate flags likely secrets

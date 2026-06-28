@@ -201,7 +201,7 @@ tools/shipflow_sync_skills.sh --check --skill sf-skills-refresh
 python3 tools/shipflow_metadata_lint.py shipflow_data/workflow/specs/docs-and-refresh-skill-governance-alignment.md skills/REFRESH_LOG.md
 rg -n "Report Modes|question-contract|master-delegation-semantics|Documentation Update Plan|Editorial Update Plan|sf-skill-build" skills/sf-skills-refresh/SKILL.md
 rg -n "question-contract|documentation-freshness-gate|skill public|skill_budget_audit|shipflow_sync_skills" skills/sf-docs/SKILL.md
-npm --prefix site run build
+pnpm --dir shipflow-site build
 ```
 
 # Risks

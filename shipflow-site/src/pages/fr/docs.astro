@@ -100,6 +100,20 @@ const focusTagCombos = [
         </article>
 
         <article class="doc-card">
+          <h3>Les profils nommés changent la posture, pas l’ownership</h3>
+          <p>
+            ShipFlow accepte aussi des profils nommés comme
+            <code>%Victoire</code>, <code>%Prudence</code>,
+            <code>%Ariane</code> et <code>%Adhesion</code>. Ils changent
+            l’arbitrage du tour, mais le routeur choisit toujours le skill owner
+            et les focus tags restent séparés.
+          </p>
+          <a class="doc-action" href={pathFor("/skill-modes", locale)}>
+            Voir le guide profils et lancement
+          </a>
+        </article>
+
+        <article class="doc-card">
           <h3>Tags de recentrage rapides</h3>
           <p>
             Si une conversation dérive, ShipFlow accepte maintenant des tags de
@@ -133,6 +147,16 @@ const focusTagCombos = [
             framework.
           </p>
           <a class="doc-action" href={pathFor("/faq", locale)}>Ouvrir la FAQ</a>
+        </article>
+
+        <article class="doc-card">
+          <h3>Le blog a désormais une vraie surface runtime</h3>
+          <p>
+            ShipFlow expose maintenant un blog indexé adossé à une collection
+            Astro, et non plus seulement quelques pages longues isolées. Le
+            repurposing a donc enfin une vraie destination de publication.
+          </p>
+          <a class="doc-action" href={pathFor("/blog", locale)}>Ouvrir le blog</a>
         </article>
       </div>
     </section>

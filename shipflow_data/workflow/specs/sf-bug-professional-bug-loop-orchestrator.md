@@ -134,7 +134,7 @@ sf-bug -> sf-test -> bug dossier -> sf-fix -> sf-test --retest -> sf-verify -> s
 - `tools/shipflow_sync_skills.sh --check --skill sf-bug`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `python3 tools/shipflow_metadata_lint.py specs/sf-bug-professional-bug-loop-orchestrator.md README.md shipflow-spec-driven-workflow.md docs/technical skills/references/chantier-tracking.md`
-- `npm --prefix site run build`
+- `pnpm --dir shipflow-site build`
 - Focused `rg` checks for `sf-bug`, bug routing, and stale duplicate ownership wording.
 
 ## Security Notes

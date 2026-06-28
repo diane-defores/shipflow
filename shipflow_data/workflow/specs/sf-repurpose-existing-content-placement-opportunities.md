@@ -104,7 +104,7 @@ Run:
 tools/shipflow_sync_skills.sh --check --skill sf-repurpose
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 python3 tools/shipflow_metadata_lint.py specs/sf-repurpose-existing-content-placement-opportunities.md
-npm --prefix site run build
+pnpm --dir shipflow-site build
 rg -n "Read-Only Delegation|master-delegation-semantics|parallel read-only|Existing Content Placement Contract|Existing Content Opportunities|Owner Skill Handoffs|sf-docs|sf-enrich|sf-redact|sf-audit-copy|sf-audit-copywriting|sf-audit-seo|apply mode|write the content" skills/sf-repurpose/SKILL.md skills/sf-repurpose/references/output-pack.md site/src/content/skills/sf-repurpose.md
 git diff --check
 ```

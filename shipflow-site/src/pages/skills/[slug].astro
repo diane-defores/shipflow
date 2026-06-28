@@ -10,7 +10,7 @@ export async function getStaticPaths() {
   const skills = await getCollection("skills");
 
   return skills.map((skill) => ({
-    params: { slug: skill.slug },
+    params: { slug: skill.id },
     props: { skill }
   }));
 }
@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 const { skill } = Astro.props;
 const allSkills = await getCollection("skills");
 const relatedSkills = skill.data.related_skills
-  .map((relatedSlug: string) => allSkills.find((entry) => entry.slug === relatedSlug))
+  .map((relatedSlug: string) => allSkills.find((entry) => entry.id === relatedSlug))
   .filter(Boolean);
 ---
 
@@ -129,7 +129,7 @@ const relatedSkills = skill.data.related_skills
           <div class="skill-grid">
             {relatedSkills.map((relatedSkill) => (
               <SkillCard
-                href={`/skills/${relatedSkill!.slug}`}
+                href={`/skills/${relatedSkill!.id}`}
                 title={relatedSkill!.data.title}
                 category={relatedSkill!.data.category}
                 tagline={relatedSkill!.data.tagline}

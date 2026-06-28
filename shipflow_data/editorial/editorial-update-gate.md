@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-06-10"
+updated: "2026-06-28"
 status: reviewed
 source_skill: sf-start
 scope: editorial-update-gate

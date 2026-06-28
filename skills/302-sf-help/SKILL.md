@@ -62,7 +62,7 @@ What workflow, skill, mode, or doctrine does the operator need explained right n
 - If the user needs full skill taxonomy, workflow cheat sheets, or quick answers, load `references/help-catalog.md`.
 - If the user asks why ShipFlow asked, did not ask, or should have asked a question, load `skills/references/question-contract.md`.
 - If the user asks about passivity, autonomy, collaboration style, business framing, or what the operator is expected to provide, load `skills/references/operator-partnership-contract.md`.
-- If the user asks about a named profile such as `Victoire`, or asks who should answer a business/growth question, load the matching profile plus its operator role and answer from that distinction.
+- If the user asks about a named profile such as `Victoire` or `SEO Specialist`, or asks who should answer a business/growth/search question, load the matching profile plus its operator role and answer from that distinction.
 - If the user asks whether `%Victoire` or `#Victoire` should be used, answer: `%<Profile>` is the canonical named-profile syntax at the router/governance layer; `#<Tag>` stays for focus tags.
 - Use `$SHIPFLOW_ROOT/skills/references/chantier-tracking.md` for canonical trace/process role doctrine instead of maintaining a duplicate role matrix here.
 - For `Skills at a Glance`, `Quick Answers`, workflow cycles, audit scoring, and file-reference help, load `references/help-catalog.md`.

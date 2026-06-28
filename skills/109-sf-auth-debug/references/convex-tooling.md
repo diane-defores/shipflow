@@ -13,7 +13,7 @@ Last reviewed: 2026-04-26
 ## Standard ShipFlow Setup
 
 - Convex MCP command: `npx -y convex@latest mcp start`
-- Convex CLI install: `npm install -g convex`
+- Convex CLI install: `pnpm add -g convex`
 
 ## Use Convex MCP When
 

@@ -73,7 +73,7 @@ Load public runtime sources only as needed:
 - `site/src/content.config.ts`
 - `site/src/content/skills/`
 - `site/package.json`
-- `site/package-lock.json`
+- `shipflow-site/pnpm-lock.yaml`
 
 ## Permissions
 

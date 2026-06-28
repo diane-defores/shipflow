@@ -116,6 +116,22 @@ Load additionally when relevant:
 
 Use this bundle for value perception, trust, comprehension, CTA friction, onboarding friction, and user desire to continue.
 
+### `seo-specialist` -> `SEO Specialist`
+
+Default bundle:
+
+- `shipflow_data/editorial/content-map.md`
+- `shipflow_data/business/gtm.md`
+- `shipflow_data/business/branding.md`
+
+Load additionally when relevant:
+
+- `shipflow_data/business/product.md`
+- `shipflow_data/technical/code-docs-map.md`
+- `README.md`
+
+Use this bundle for search intent fit, discoverability, content structure, claim safety, and SEO-related surface coherence.
+
 ## Missing Context Rule
 
 If one or more context files in the relevant bundle do not exist:

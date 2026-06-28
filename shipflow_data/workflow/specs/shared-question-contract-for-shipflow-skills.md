@@ -118,7 +118,7 @@ ShipFlow skills must use one shared question/default doctrine for user-facing qu
 
 - [x] Task 4: Update docs and public surfaces.
   - Files: `README.md`, `shipflow-spec-driven-workflow.md`, `docs/skill-launch-cheatsheet.md`, `docs/technical/skill-runtime-and-lifecycle.md`, `skills/sf-help/SKILL.md`, `site/src/content/skills/shipflow.md`, `site/src/content/skills/sf-build.md`
-  - Validate with: metadata lint where applicable and `npm --prefix site run build`.
+  - Validate with: metadata lint where applicable and `pnpm --dir shipflow-site build`.
 
 ## Skill Run History
 

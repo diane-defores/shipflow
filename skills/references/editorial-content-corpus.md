@@ -81,7 +81,7 @@ Use these files to inspect the actual public site:
 - `site/src/content.config.ts`
 - `site/src/content/skills/`
 - `site/package.json`
-- `site/package-lock.json`
+- `shipflow-site/pnpm-lock.yaml`
 
 Astro runtime content must preserve the schema declared in `site/src/content.config.ts`. Report ShipFlow context versions in the plan or final report when the runtime content schema does not accept governance metadata.
 

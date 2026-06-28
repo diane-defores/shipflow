@@ -199,7 +199,7 @@ Named operator profiles are a separate invocation layer above skills:
 
 - `skill` = capability and execution owner
 - `operator role` = stable decision contract
-- `agent profile` = human-readable named invocation such as `Victoire`
+- `agent profile` = human-readable named invocation such as `Victoire` or `SEO Specialist`
 
 Profiles do not replace owner-skill routing. They bias the arbitration and answer shape used by `000-shipflow` or `302-sf-help`.
 
@@ -235,7 +235,7 @@ The canonical behavior contract for profile resolution, precedence, fallback, an
 | `skills/references/operator-roles/*.md` | Operator decision-role contracts such as `growth-operations-lead` | Keep these focused on arbitration rules, preferred owner skills, stop conditions, and output shape |
 | `skills/references/profile-activation.md` | Canonical profile resolution, precedence, fallback, and reporting contract | Load before changing named-profile semantics or examples |
 | `skills/references/profile-project-context.md` | Canonical project-context bundle mapping for named profiles | Load before changing how profiles consume project business/product/editorial/technical context |
-| `shipflow_data/business/agent-profiles/*.md` | Human-readable named operator profiles such as `Victoire` | Profiles bind a display name to one operator role and invocation syntax; they do not become separate skills |
+| `shipflow_data/business/agent-profiles/*.md` | Human-readable named operator profiles such as `Victoire` or `SEO Specialist` | Profiles bind a display name to one operator role and invocation syntax; they do not become separate skills |
 | `tools/shipflow_sync_skills.sh` | Shared current-user Claude/Codex skill runtime sync helper | Use for check/repair instead of inline symlink snippets |
 | `tools/audit_shipflow_skills.py` | Versioned ShipFlow skill execution-fidelity audit helper used by `900-shipflow-core` and conversation follow-through gates | Keep read-only by default; audit findings classify risk but do not authorize broad edits without scenario-first triage |
 | `tools/skill_code_index_lint.py` | Numeric skill-code index validator | Run after changing `skills/references/skill-code-index.md` or the skill set |
@@ -276,7 +276,9 @@ Operator roles and named profiles do not add new primary artifact types:
 
 - `000-shipflow <instruction>`: recommended non-technical first command; answers pure conversation directly or hands the main thread to the selected `sf-*` master/specialist skill.
 - `%Victoire <instruction>`: canonical named-profile activation for the `Victoire` growth-operations profile.
+- `%SEO-specialist <instruction>`: canonical named-profile activation for the `SEO Specialist` search-discovery profile.
 - `000-shipflow profile=victoire <instruction>`: compatibility form of the same profile activation.
+- `000-shipflow profile=seo-specialist <instruction>`: compatibility form of the same profile activation.
 - Numeric skill codes: `shipflow 01`, `shipflow 01-001-sf-build`, or equivalent code-first requests resolve through `skills/references/skill-code-index.md` to canonical skill names without renaming runtime skills.
 - `700-sf-explore -> 100-sf-spec -> 101-sf-ready -> 102-sf-start -> 103-sf-verify -> 104-sf-end`: normal non-trivial flow.
 - `106-sf-fix`: bug-first entrypoint that may route direct or spec-first.

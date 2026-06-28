@@ -21,7 +21,7 @@ claim_register: docs/editorial/claim-register.md
 page_intent: docs/editorial/page-intent-map.md
 linked_systems:
   - site/package.json
-  - site/package-lock.json
+  - shipflow-site/pnpm-lock.yaml
   - site/src/content.config.ts
   - site/src/content/skills/
   - site/src/pages/skills/[slug].astro
@@ -31,7 +31,7 @@ depends_on:
     required_status: ready
 supersedes: []
 evidence:
-  - "Local Astro version is 5.18.1 from site/package-lock.json."
+  - "Local Astro version is 6.4.8 from shipflow-site/pnpm-lock.yaml."
   - "Context7 /withastro/docs confirms src/pages file-based routing, content collections with defineCollection and Zod schema, and getCollection/getStaticPaths routing."
 next_review: "2026-06-01"
 next_step: "/sf-verify ShipFlow Editorial Content Governance Layer for AI Agents"
@@ -45,12 +45,12 @@ This policy keeps ShipFlow editorial work from breaking the public Astro site. R
 
 ## Local Astro Setup
 
-- Local Astro version: `Astro 5.18.1`.
-- Runtime package files: `site/package.json` and `site/package-lock.json`.
-- Content schema file: `site/src/content.config.ts`.
-- Current content collection: `skills`.
-- Public skill entries: `site/src/content/skills/*.md`.
-- Dynamic route: `site/src/pages/skills/[slug].astro`.
+- Local Astro version: `Astro 6.4.8`.
+- Runtime package files: `shipflow-site/package.json` and `shipflow-site/pnpm-lock.yaml`.
+- Content schema file: `shipflow-site/src/content.config.ts`.
+- Current content collection: `skills`, loaded explicitly from `shipflow-site/src/content/skills/**/*.md` through `glob()` in `shipflow-site/src/content.config.ts`.
+- Public skill entries: `shipflow-site/src/content/skills/*.md`.
+- Dynamic route: `shipflow-site/src/pages/skills/[slug].astro`.
 
 ## Current Skills Collection Schema
 
@@ -95,7 +95,7 @@ This matches the current implementation: `site/src/pages/skills/[slug].astro` ca
 - Preserve frontmatter fields exactly inside the active schema.
 - Add public-copy fields only after checking `site/src/content.config.ts`.
 - Record ShipFlow context versions in the work report, Editorial Update Plan, or governance doc when the runtime schema does not accept them.
-- Validate with `npm --prefix site run build` after content collection edits.
+- Validate with `pnpm --dir shipflow-site build` after content collection edits.
 - If schema validation fails, fix the runtime content or route the schema change through a separate explicit contract.
 
 ## Governance Content Rules
@@ -112,4 +112,4 @@ This matches the current implementation: `site/src/pages/skills/[slug].astro` ca
 
 ## Maintenance Rule
 
-Update this file when `site/src/content.config.ts`, Astro major version, collection names, required skill fields, dynamic routes, or runtime content policy changes.
+Update this file when `shipflow-site/src/content.config.ts`, Astro major version, collection names, required skill fields, dynamic routes, or runtime content policy changes.

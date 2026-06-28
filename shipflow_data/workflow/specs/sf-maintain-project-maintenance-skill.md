@@ -116,7 +116,7 @@ Security maintenance is routed through existing owners:
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `tools/shipflow_sync_skills.sh --repair --skill sf-maintain`
 - `tools/shipflow_sync_skills.sh --check --skill sf-maintain`
-- `npm --prefix site run build`
+- `pnpm --dir shipflow-site build`
 
 ## Skill Run History
 

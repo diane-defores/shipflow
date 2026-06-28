@@ -100,6 +100,32 @@ Runtime-specific repo pages:
 - [OpenCode](./opencode-shipflow.md)
 - [KiloCode](./kilocode-shipflow.md)
 
+## Named Profiles
+
+Named profiles are an operator layer above skills.
+
+- `skill` = execution owner
+- `operator role` = decision contract
+- `agent profile` = human-readable invocation such as `Victoire`, `Prudence`, `Ariane`, `Adhesion`, or `SEO Specialist`
+
+Use `%<Profile>` when you want the router and owner skill to keep the same execution contract while changing arbitration posture for the turn.
+
+- `%Victoire` -> growth prioritization and leverage
+- `%Prudence` -> risk surfacing and coherence challenge
+- `%Ariane` -> phase structure, sequencing, and first-slice framing
+- `%Adhesion` -> end-user trust, clarity, and friction review
+- `%SEO-specialist` -> search intent, discoverability, and page coherence
+
+Keep `#<Tag>` separate. A tag such as `#Adhesion` or `#growth` is a focus cue, not a named profile activation.
+
+Example:
+
+```text
+%Ariane update les docs internes et surface externes #Adhesion
+```
+
+Here, `Ariane` structures the work, `#Adhesion` keeps end-user clarity and friction visible, and `000-shipflow` still chooses the owner skill.
+
 ## Current Runtime Families
 
 Public categories make the catalog easier to browse. Runtime families explain how ShipFlow routes work internally.

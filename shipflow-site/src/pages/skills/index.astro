@@ -240,7 +240,7 @@ const groupedSkills = categoryOrder.map((category) => ({
         {
           featuredSkills.map((skill) => (
             <SkillCard
-              href={`/skills/${skill.slug}`}
+              href={`/skills/${skill.id}`}
               title={skill.data.title}
               category={skill.data.category}
               tagline={skill.data.tagline}
@@ -267,7 +267,7 @@ const groupedSkills = categoryOrder.map((category) => ({
                 {
                   categorySkills.map((skill) => (
                     <SkillCard
-                      href={`/skills/${skill.slug}`}
+                      href={`/skills/${skill.id}`}
                       title={skill.data.title}
                       category={skill.data.category}
                       tagline={skill.data.tagline}

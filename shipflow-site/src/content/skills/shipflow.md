@@ -59,6 +59,29 @@ for the first moment of a request, before you know whether the work is a build,
 bug loop, maintenance run, release proof, content task, design task, skill change, audit, or
 just a question.
 
+## Named Profiles And Focus Tags
+
+If you want the same router with a different decision posture, use a named
+profile with `%<Profile>`.
+
+- `%Victoire` biases toward growth, leverage, and explicit prioritization.
+- `%Prudence` biases toward risk surfacing and coherence control.
+- `%Ariane` biases toward clean sequencing, dependency mapping, and a bounded first slice.
+- `%Adhesion` biases toward end-user trust, clarity, and friction review.
+- `%SEO-specialist` biases toward search intent, discoverability, and page coherence.
+
+Keep focus tags separate. `#growth`, `#clarity`, or `#Adhesion` are recentering
+signals, not named profile activation.
+
+Example:
+
+```text
+shipflow %Ariane update the internal docs and external surfaces #Adhesion
+```
+
+That means: keep Ariane's planning posture active, keep adhesion concerns
+visible, and let ShipFlow still route the work to the right owner skill.
+
 ## Install Path
 
 Install ShipFlow in Codex by adding the repository marketplace source:

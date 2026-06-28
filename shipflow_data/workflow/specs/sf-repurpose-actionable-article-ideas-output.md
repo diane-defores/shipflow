@@ -90,7 +90,7 @@ Run:
 tools/shipflow_sync_skills.sh --check --skill sf-repurpose
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 python3 tools/shipflow_metadata_lint.py specs/sf-repurpose-actionable-article-ideas-output.md
-npm --prefix site run build
+pnpm --dir shipflow-site build
 rg -n "Actionability Contract|Article Name Ideas|Titles For This Conversation|Best Next Actions|surface missing: blog" skills/sf-repurpose/SKILL.md skills/sf-repurpose/references/output-pack.md site/src/content/skills/sf-repurpose.md
 git diff --check
 ```

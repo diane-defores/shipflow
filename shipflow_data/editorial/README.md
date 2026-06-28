@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-06-10"
+updated: "2026-06-28"
 status: reviewed
 source_skill: sf-start
 scope: editorial-governance-index
@@ -50,7 +50,7 @@ next_step: "/sf-verify ShipFlow Editorial Content Governance Layer for AI Agents
 This layer complements, but does not replace, `shipflow_data/editorial/content-map.md`.
 
 - `shipflow_data/editorial/content-map.md` maps content surfaces and routing rules.
-- `shipflow_data/editorial/` defines governance, page intent, claim boundaries, update gates, and runtime schema policy.
+- `shipflow_data/editorial/` defines governance, page intent, claim boundaries, update gates, runtime schema policy, and the declared blog/article publishing surface.
 - `shipflow_data/technical/` remains internal code-proximate documentation and must not be published as public site content.
 
 ## Read Order
@@ -90,7 +90,7 @@ Allowed final statuses are `ready`, `needs revision`, `blocked`, and `publishabl
 - Shared editorial files are sequential integration surfaces unless a ready spec assigns exclusive write ownership.
 - Astro runtime content keeps the schema declared in `site/src/content.config.ts`.
 - ShipFlow artifact metadata belongs in governance docs and reports, not in runtime content unless that runtime schema explicitly accepts it.
-- A missing blog surface is reported as `surface missing: blog`; agents do not invent a blog route or collection.
+- The declared indexed blog surface lives in `site/src/content/articles/` plus `/blog` and `/fr/blog` routes. Agents do not invent parallel article systems outside that contract.
 - Any declared product must appear in a governed product inventory, and any product with public marketing or conversion intent must also declare its sales/product/delivery surfaces somewhere in the governed corpus; if required URLs or proof surfaces are absent, report `surface missing` or `pending final copy` instead of guessing.
 - Any public product claim must be traceable to a governing source, a real surface, or explicit proof. If a claim cannot be verified, downgrade it to `pending final copy`, `surface missing`, or remove it.
 - Product claims must be checked against the product registry, delivery path, public route, screenshot, video, or observed behavior before they are treated as validated.

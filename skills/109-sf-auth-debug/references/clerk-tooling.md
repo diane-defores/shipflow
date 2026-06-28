@@ -16,7 +16,7 @@ Last reviewed: 2026-04-26
 
 - Clerk MCP endpoint: `https://mcp.clerk.com/mcp`
 - Codex config requires remote MCP support; ShipFlow enables `rmcp = true` in `~/.codex/config.toml`
-- Clerk CLI install: `npm install -g clerk`
+- Clerk CLI install: `pnpm add -g clerk`
 
 ## Use Clerk MCP When
 

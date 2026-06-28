@@ -98,6 +98,58 @@ const modeTypes = [
     </section>
 
     <section class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Profils nommés</p>
+        <h2>Un profil nommé change la posture de décision sans remplacer le skill.</h2>
+        <p>
+          Gardez trois couches séparées : le skill exécute, le profil arbitre
+          la posture du tour, et les tags recentrent l’attention.
+        </p>
+      </div>
+
+      <div class="doc-grid">
+        <article class="doc-card">
+          <h3>Syntaxe canonique</h3>
+          <p>
+            Utilisez <code>%&lt;Profil&gt;</code> pour activer un profil nommé.
+            Exemples : <code>%Victoire</code>, <code>%Prudence</code>,
+            <code>%Ariane</code>, <code>%Adhesion</code>.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Ce que change un profil</h3>
+          <p>
+            <code>%Victoire</code> pousse la priorisation growth,
+            <code>%Prudence</code> remonte les risques,
+            <code>%Ariane</code> structure les phases et
+            <code>%Adhesion</code> regarde la confiance, la clarté et la
+            friction côté utilisateur final.
+          </p>
+        </article>
+
+        <article class="doc-card">
+          <h3>Ce que ça ne change pas</h3>
+          <p>
+            Le routeur choisit toujours le skill owner. Un tag comme
+            <code>#growth</code> ou <code>#Adhesion</code> reste un focus tag,
+            pas une activation de profil nommé.
+          </p>
+        </article>
+      </div>
+
+      <div class="cta-panel">
+        <p class="eyebrow">Exemple</p>
+        <h2>Combinez profil nommé et tags sans mélanger leurs rôles.</h2>
+        <p>
+          <code>%Ariane update les docs internes et surfaces externes #Adhesion</code>
+          signifie : Ariane structure le plan, le tag garde la perception
+          utilisateur visible, et ShipFlow route le travail vers le bon owner.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="cta-panel">
         <p class="eyebrow">Catalogue</p>
         <h2>Quand vous connaissez la voie, ouvrez le hub des skills.</h2>

@@ -1,10 +1,10 @@
 ---
 artifact: editorial_content_context
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-24"
+updated: "2026-06-28"
 status: reviewed
 source_skill: sf-start
 scope: page-intent-map
@@ -61,6 +61,7 @@ This map states the job of each public Astro page so agents can update copy with
 | `/about` | `site/src/pages/about.astro` | Visitors asking why the product exists | Ground the mission and trust posture | Docs or GitHub | `BUSINESS.md`, `PRODUCT.md`, `BRANDING.md` | Mission, audience, positioning, proof posture | Medium |
 | `/contact` | `site/src/pages/contact.astro` | Visitors who want a direct next step | Give a simple contact path without inventing support promises | Contact method or GitHub | `GTM.md`, `BRANDING.md` | Sales/support channel changes | Low |
 | `/docs` | `site/src/pages/docs.astro` | Public evaluators and operators orienting in docs | Explain context docs, decision contracts, public skills, and governance without exposing internal-only detail | Skills hub and GitHub docs | `README.md`, `shipflow-spec-driven-workflow.md`, `CONTENT_MAP.md`, `docs/editorial/README.md`, `skills/references/decision-quality-contract.md` | New artifact, content governance, technical docs layer, workflow doctrine, quality positioning, or docs routing changes | High: public/private boundary |
+| `/blog` | `site/src/pages/blog/index.astro` | Visitors browsing long-form editorial thinking | List indexed ShipFlow articles and explain when the editorial surface goes deeper than docs or FAQs | Blog article pages and docs | `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/blog-and-article-surface-policy.md`, `PRODUCT.md`, `GTM.md`, `BRANDING.md` | New article system behavior, blog strategy, schema changes, or public editorial framing changes | High: indexed editorial surface |
 | `/install` | `site/src/pages/install.astro` | New Codex users who want the shortest install path | Explain the marketplace command, plugin-directory install step, and first-run command for the public `shipflow` plugin | Skills hub, docs, shipflow skill page | `README.md`, `plugins/shipflow/README.md`, `plugins/shipflow/assets/docs-links.json`, `shipflow_data/technical/codex-plugin-packaging.md` | Marketplace source change, plugin install flow, first-run command, or public packaging posture change | High: install claims must stay exact |
 | `/faq` | `site/src/pages/faq.astro` | Visitors with recurring objections or scope questions | Answer common questions directly and safely | Skill modes, docs | `PRODUCT.md`, `GTM.md`, `BRANDING.md`, `README.md`, `skills/references/decision-quality-contract.md` | New objection, product scope change, pricing/support claim, quality positioning, skill behavior change | High: compact claims can drift |
 | `/pricing` | `site/src/pages/pricing.astro` | Visitors evaluating commercial fit | Present pricing as a current hypothesis, not a settled model | Docs, BUSINESS.md | `BUSINESS.md`, `GTM.md`, `BRANDING.md` | Business model, packaging, paid offer, proof, or pricing claim changes | High: pricing claims are sensitive |
@@ -68,7 +69,27 @@ This map states the job of each public Astro page so agents can update copy with
 | `/skill-modes` | `site/src/pages/skill-modes.astro` | Operators choosing skill entrypoints or confused by skill arguments | Explain which master/support skill to launch and how plain task arguments differ from mode switches | Skills hub, relevant skill pages | `docs/skill-launch-cheatsheet.md`, `shipflow-spec-driven-workflow.md`, `skills/*/SKILL.md`, `README.md` | Skill inventory, argument modes, mode detection, lifecycle routing | Medium |
 | `/skills` | `site/src/pages/skills/index.astro` | Visitors choosing a workflow move | Present the public skill catalog by category and use case | Skill detail pages | `site/src/content/skills/*.md`, `skills/*/SKILL.md`, `PRODUCT.md` | Skill inventory, category, featured status, public promise | High: generated from content collection |
 | `/skills/[slug]` | `site/src/pages/skills/[slug].astro` | Visitors evaluating one skill | Render one public skill promise and related workflow context | Skills hub, GitHub skills | `site/src/content/skills/*.md`, `skills/*/SKILL.md`, `site/src/content.config.ts` | Skill behavior, public description, argument modes, related skills, schema changes | High: route depends on `getCollection` and `getStaticPaths` |
+| `/blog/[slug]` | `site/src/pages/blog/[slug].astro` | Visitors reading one indexed editorial article | Render one collection-backed article with stable locale mapping and source-bounded editorial reasoning | Blog hub and docs | `site/src/content/articles/*.md`, `site/src/content.config.ts`, `shipflow_data/editorial/blog-and-article-surface-policy.md`, product/brand/GTM contracts | Article content, frontmatter schema, locale pairing, or blog routing changes | High: route depends on `getCollection`, `render`, and content schema |
 | `/why-not-just-prompts` | `site/src/pages/why-not-just-prompts.astro` | Visitors comparing ShipFlow to stronger prompting | Explain why context, contracts, and verification are the product wedge | Docs or skills | `PRODUCT.md`, `GTM.md`, `BRANDING.md` | Positioning, objection handling, proof language | Medium |
+
+## Editorial Article Surface Rule
+
+ShipFlow now has two long-form editorial surface types:
+
+- an indexed blog collection under `/blog`
+- standalone Astro editorial pages with explicit route intent
+
+Current declared standalone editorial article routes include:
+
+- `/why-not-just-prompts`
+- `/remote-mcp-oauth-tunnel`
+- corresponding localized French routes when they exist
+
+Use the blog collection for new general long-form editorial topics.
+
+Use standalone routes when a long-form explanatory topic clearly matches an existing narrow page intent.
+
+Do not create a second article system outside these declared surfaces without a separate blog/article surface decision.
 
 ## Component Intent
 

@@ -13,6 +13,7 @@ const localizedPaths: Record<string, Record<Locale, string>> = {
   "/about": { en: "/about", fr: "/fr/about" },
   "/contact": { en: "/contact", fr: "/fr/contact" },
   "/docs": { en: "/docs", fr: "/fr/docs" },
+  "/blog": { en: "/blog", fr: "/fr/blog" },
   "/faq": { en: "/faq", fr: "/fr/faq" },
   "/install": { en: "/install", fr: "/fr/install" },
   "/focus-tags": { en: "/focus-tags", fr: "/fr/focus-tags" },
@@ -33,6 +34,16 @@ export function pathFor(path: string, locale: Locale): string {
   if (path.startsWith("http")) return path;
 
   const [basePath, hash = ""] = path.split("#");
+  if (basePath.startsWith("/blog/")) {
+    const slug = basePath.replace("/blog/", "");
+    const localized = locale === "fr" ? `/fr/blog/${slug}` : `/blog/${slug}`;
+    return hash ? `${localized}#${hash}` : localized;
+  }
+  if (basePath.startsWith("/fr/blog/")) {
+    const slug = basePath.replace("/fr/blog/", "");
+    const localized = locale === "fr" ? `/fr/blog/${slug}` : `/blog/${slug}`;
+    return hash ? `${localized}#${hash}` : localized;
+  }
   const localized = localizedPaths[basePath]?.[locale] ?? basePath;
   return hash ? `${localized}#${hash}` : localized;
 }
@@ -53,6 +64,7 @@ export const navCopy = {
     mobileClose: "Close navigation menu",
     links: [
       ["Skills", "/skills"],
+      ["Blog", "/blog"],
       ["About", "/about"],
       ["FAQ", "/faq"],
       ["Why not just prompts?", "/why-not-just-prompts"],
@@ -71,6 +83,7 @@ export const navCopy = {
     mobileClose: "Fermer le menu de navigation",
     links: [
       ["Skills", "/skills"],
+      ["Blog", "/blog"],
       ["À propos", "/about"],
       ["FAQ", "/faq"],
       ["Pourquoi pas de simples prompts ?", "/why-not-just-prompts"],
@@ -98,6 +111,7 @@ export const footerCopy = {
       "Built for solo founders who want less ambiguity, stronger agent handoffs, and simpler server-side shipping.",
     links: [
       ["Skills", "/skills"],
+      ["Blog", "/blog"],
       ["GitHub", "https://github.com/dianedef/ShipFlow"],
       ["Framework", "/#how-it-works"]
     ]
@@ -107,6 +121,7 @@ export const footerCopy = {
       "Conçu pour les fondateurs solo qui veulent moins d’ambiguïté, des passages de relais plus solides entre agents et une livraison serveur plus simple.",
     links: [
       ["Skills", "/skills"],
+      ["Blog", "/blog"],
       ["GitHub", "https://github.com/dianedef/ShipFlow"],
       ["Framework", "/#how-it-works"]
     ]

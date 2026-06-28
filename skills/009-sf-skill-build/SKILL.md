@@ -197,7 +197,7 @@ Run all required checks for changed surfaces:
 ```bash
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 python3 tools/shipflow_metadata_lint.py specs/<spec>.md README.md shipflow-spec-driven-workflow.md shipflow_data/editorial/content-map.md shipflow_data/technical shipflow_data/editorial
-npm --prefix site run build
+pnpm --dir shipflow-site build
 ```
 
 Also run focused `rg` checks for stale names, claim drift, and sensitive leaks when public content changed.

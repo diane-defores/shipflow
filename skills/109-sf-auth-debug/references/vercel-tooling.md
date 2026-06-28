@@ -12,7 +12,7 @@ Last reviewed: 2026-04-26
 ## Standard ShipFlow Setup
 
 - Vercel MCP endpoint: `https://mcp.vercel.com`
-- Vercel CLI install: `npm install -g vercel`
+- Vercel CLI install: `pnpm add -g vercel`
 
 ## Use Vercel MCP When
 

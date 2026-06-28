@@ -131,6 +131,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [skills/references/operator-partnership-contract.md](./skills/references/operator-partnership-contract.md) — shared doctrine for agent autonomy, business-partner behavior, and business-aware initiative
   - [skills/references/master-delegation-semantics.md](./skills/references/master-delegation-semantics.md) — shared execution-topology doctrine for master/orchestrator skills
 - [skills/references/master-workflow-lifecycle.md](./skills/references/master-workflow-lifecycle.md) — shared lifecycle skeleton and work item model for master/orchestrator skills
+- [skills/references/operator-roles/](./skills/references/operator-roles/) — shared operator-role contracts such as `growth-operations-lead`, `product-architecture-planner`, `risk-and-coherence-guardian`, `end-user-adhesion-reviewer`, and `seo-specialist`
 - [shipflow_data/business/business.md](./shipflow_data/business/business.md) — target audience, value proposition, business assumptions, and market framing
 - [shipflow_data/business/product.md](./shipflow_data/business/product.md) — product scope, workflows, outcomes, and non-goals
 - [shipflow_data/business/branding.md](./shipflow_data/business/branding.md) — tone, trust posture, vocabulary, and claims boundaries
@@ -452,6 +453,8 @@ Here, `Victoire` is not a separate skill. She is a named growth-operations profi
 
 Other named profiles can coexist when they carry a distinct decision posture, for example `Prudence` for risk/coherence challenge, `Ariane` for structuring a fuzzy initiative into an executable plan, and `Adhesion` for simulated end-user reaction, trust, and friction review.
 
+`SEO Specialist` is another example profile when the question is about search intent, discoverability, and page/surface coherence.
+
 Canonical syntax split:
 
 - `%<Profile>` for named operator profiles
@@ -483,8 +486,8 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `000-shipflow <instruction>` | Routes pure conversation directly; routes real work to the right master or specialist skill; uses context-safe defaults and asks one numbered decision question when ambiguity changes route, risk, scope, or proof. |
-| Named operator profile | `%Victoire <instruction>` | Canonical profile syntax for the `Victoire` growth-operations profile. Use `#Tag` separately for focus tags such as `#SEO`. |
-| Non-technical first command with named profile | `000-shipflow profile=victoire <instruction>` | Same router, but with the `Victoire` growth-operations profile active for the turn. |
+| Named operator profile | `%Victoire <instruction>` or `%SEO-specialist <instruction>` | Canonical profile syntax for a named operator profile. Use `#Tag` separately for focus tags such as `#SEO`. |
+| Non-technical first command with named profile | `000-shipflow profile=victoire <instruction>` or `000-shipflow profile=seo-specialist <instruction>` | Same router, with the selected profile active for the turn. |
 | Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; `spark`, `codex`, `mini`, `agents`, and `sous-agent` strictly validate model-specific delegated sequential execution; for user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `002-sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `004-sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
@@ -587,7 +590,7 @@ For content management, use the dedicated lifecycle entrypoint:
 007-sf-content -> CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> 103-sf-verify -> 005-sf-ship
 ```
 
-`007-sf-content` routes content work through the right owner skill: `202-sf-repurpose` for source-faithful reuse, `200-sf-redact` for long-form drafting, `201-sf-enrich` for existing content upgrades, `206-sf-audit-copy` / `207-sf-audit-copywriting` / `406-sf-audit-seo` for review, and `300-sf-docs` for docs and editorial governance. It blocks undeclared blog/article surfaces with `surface missing: blog` instead of inventing paths.
+`007-sf-content` routes content work through the right owner skill: `202-sf-repurpose` for source-faithful reuse, `200-sf-redact` for long-form drafting, `201-sf-enrich` for existing content upgrades, `206-sf-audit-copy` / `207-sf-audit-copywriting` / `406-sf-audit-seo` for review, and `300-sf-docs` for docs and editorial governance. It now uses the declared Astro blog surface (`site/src/content/articles/`, `/blog`, `/fr/blog`) for indexed articles and still blocks undeclared parallel article systems with `surface missing: blog`.
 
 When a workflow or spec asks whether content is good enough for a specific project, content owner skills use the shared `skills/references/content-quality-rubric.md` contract. The rubric loads project rules from `shipflow_data/business/*` and `shipflow_data/editorial/*`, then returns a global score, criterion scores, evidence, recommendations, confidence, and one of `ready`, `needs revision`, `blocked`, or `publishable with caveats`. Blocking claims, missing project context, stale score signatures, and undeclared surfaces override the numeric score.
 

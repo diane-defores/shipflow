@@ -238,7 +238,7 @@ None. The user explicitly requested recreating the master design skill and confi
 - `"${SHIPFLOW_ROOT:-$HOME/shipflow}/tools/shipflow_sync_skills.sh" --check --skill sf-design`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `python3 tools/shipflow_metadata_lint.py specs/sf-design-master-design-lifecycle-skill.md docs/skill-launch-cheatsheet.md shipflow-spec-driven-workflow.md docs/technical/skill-runtime-and-lifecycle.md`
-- `npm --prefix site run build`
+- `pnpm --dir shipflow-site build`
 - `rg -n "BEGIN .*KEY|PRIVATE KEY|PASSWORD=|SECRET=|TOKEN=|CREDENTIAL=" skills/sf-design/SKILL.md site/src/content/skills/sf-design.md`
 
 ## Risks
