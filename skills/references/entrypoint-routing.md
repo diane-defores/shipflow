@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.4.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-06-27"
+updated: "2026-06-29"
 status: active
 source_skill: 009-sf-skill-build
 scope: entrypoint-routing
@@ -117,9 +117,10 @@ Tags such as `#canon`, `#drift`, `#owner`, `#freshness`, `#traceability`, `#entr
 
 ### Execution And System Tags
 
-Tags such as `#quality`, `#scope`, `#ship`, `#routing`, `#proof`, `#no-drift`, `#shipflow`, `#shupflow`, and `#shipflow-core` imply:
+Tags such as `#quality`, `#vfbf`, `#scope`, `#ship`, `#routing`, `#proof`, `#no-drift`, `#shipflow`, `#shupflow`, and `#shipflow-core` imply:
 
 - prefer the narrowest owner route that still preserves proof, verification, and closure
+- when `#vfbf` appears, optimize for a quick, bounded, durable pass that leaves an explicit trace without expanding the conversation into a new main focus
 - when the operator says `#shipflow` or `#shupflow`, default the target to ShipFlow internal files and doctrine even if a project repo is open
 - when `#shipflow-core` appears, treat ShipFlow behavior, fidelity, or doctrine hardening as the primary route unless the operator explicitly redirects to another repo
 - when `#proof` or `#ship` appears, do not end at recommendation-only output if ShipFlow can execute a proof or ship path in the current run

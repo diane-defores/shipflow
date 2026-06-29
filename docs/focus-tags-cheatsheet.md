@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-06-27"
-updated: "2026-06-27"
+updated: "2026-06-29"
 status: reviewed
 source_skill: 300-sf-docs
 scope: focus-tags-cheatsheet
@@ -111,6 +111,7 @@ Use these when you want to tighten how the agent executes, not just what it opti
 | Tag | Use when you want... | Canonical source |
 | --- | --- | --- |
 | `#quality` | the quality bar, anti-shortcut doctrine, and bounded excellence to dominate the decision | `skills/references/decision-quality-contract.md` |
+| `#vfbf` | a quick, bounded, traceable execution pass that stays narrow and leaves a durable trace | `skills/references/decision-quality-contract.md` |
 | `#scope` | the narrowest justified owner layer and bounded scope to dominate the decision | `skills/references/decision-quality-contract.md` |
 | `#ship` | ship readiness, checks, proof, closure, and release discipline to dominate the decision | `skills/004-sf-deploy/SKILL.md` |
 | `#routing` | owner-skill selection and direct handoff rules to dominate the decision | `skills/references/entrypoint-routing.md` |

@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.13.1"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-06-28"
+updated: "2026-06-29"
 status: draft
 source_skill: 300-sf-docs
 scope: readme
@@ -125,9 +125,9 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [docs/kilocode-shipflow.md](./docs/kilocode-shipflow.md) — repo-visible KiloCode usage and compatibility-boundary page
 - [shipflow_data/technical/public-site-and-content-runtime.md](./shipflow_data/technical/public-site-and-content-runtime.md) — internal contract for the Astro public site and public/private documentation boundary
 - [docs/skill-launch-cheatsheet.md](./docs/skill-launch-cheatsheet.md) — Markdown cheatsheet for master skills, supporting skills, and argument modes
-- [docs/focus-tags-cheatsheet.md](./docs/focus-tags-cheatsheet.md) — public cheatsheet for lightweight recentering tags across business, content, governance, execution, and system focus such as `#partner`, `#offer`, `#growth`, `#clarity`, `#pitch`, `#portfolio`, `#canon`, `#ship`, and `#shipflow`
+- [docs/focus-tags-cheatsheet.md](./docs/focus-tags-cheatsheet.md) — public cheatsheet for lightweight recentering tags across business, content, governance, execution, and system focus such as `#partner`, `#offer`, `#growth`, `#clarity`, `#pitch`, `#portfolio`, `#canon`, `#ship`, `#vfbf`, and `#shipflow`
 - [skills/references/decision-quality-contract.md](./skills/references/decision-quality-contract.md) — shared doctrine for high-quality decisions, code, model routing, and fallback choices
-- [skills/references/shipflow-terms.md](./skills/references/shipflow-terms.md) — shared terminology and lightweight focus tags such as `#partner`, `#offer`, `#quality`, `#growth`, `#clarity`, `#pitch`, `#portfolio`, `#canon`, `#shipflow`, `#routing`, and `#proof`
+- [skills/references/shipflow-terms.md](./skills/references/shipflow-terms.md) — shared terminology and lightweight focus tags such as `#partner`, `#offer`, `#quality`, `#vfbf`, `#growth`, `#clarity`, `#pitch`, `#portfolio`, `#canon`, `#shipflow`, `#routing`, and `#proof`
 - [skills/references/operator-partnership-contract.md](./skills/references/operator-partnership-contract.md) — shared doctrine for agent autonomy, business-partner behavior, and business-aware initiative
   - [skills/references/master-delegation-semantics.md](./skills/references/master-delegation-semantics.md) — shared execution-topology doctrine for master/orchestrator skills
 - [skills/references/master-workflow-lifecycle.md](./skills/references/master-workflow-lifecycle.md) — shared lifecycle skeleton and work item model for master/orchestrator skills

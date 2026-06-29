@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-06-26"
-updated: "2026-06-27"
+updated: "2026-06-29"
 status: active
 source_skill: 000-shipflow
 scope: shared-terminology
@@ -69,6 +69,7 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 | --- | --- | --- |
 | `#partner` | Recenter on the agent as business partner, advisor, and growth-aligned associate | `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` |
 | `#quality` | Recenter on quality bar, autonomy, bounded excellence, and anti-shortcut rules | `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` |
+| `#vfbf` | Recenter on a quick, bounded, traceable execution pass: do it "vite fait bien fait" without turning it into the main focus | `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` |
 | `#growth` | Recenter on business growth, distribution, conversion, and leverage | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |
 | `#offer` | Recenter on the offer, promise, packaging, pricing logic, and commercial clarity | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |
 | `#roi` | Recenter on expected impact versus effort, drag, and operating cost | `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` |
