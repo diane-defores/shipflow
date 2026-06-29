@@ -23,7 +23,7 @@ If no unique spec exists, do not write to a spec. For narrow read-only diagnosis
 
 Before producing the final report, load `$SHIPFLOW_ROOT/skills/references/reporting-contract.md`.
 
-Default to `report=user`: concise, route-first, and in the user's active language. Use `report=agent`, `handoff`, `verbose`, or `full-report` only when another agent needs the detailed routing matrix, audit evidence, validation commands, owned surfaces, or unresolved design decisions.
+Default to `report=user`: concise, route-first, and in the user's active language. Use `report=agent`, `handoff`, `verbose`, or `full-report` only when another agent needs the detailed routing matrix, audit evidence, validation commands, owned surfaces, unresolved design decisions, or the detailed template in `$SHIPFLOW_ROOT/skills/006-sf-design/references/design-proof-and-reporting.md`.
 
 ## Master Delegation
 
@@ -43,6 +43,12 @@ Load `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` before rout
 
 Load `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md` before UI, mobile, component, layout, typography, spacing, color, shadow/elevation, motion, safe-area, keyboard/IME, overlay, responsive, token, theme, or visual proof work.
 
+Load `$SHIPFLOW_ROOT/skills/006-sf-design/references/design-lifecycle-routing.md` before choosing a specialist owner, asking a routing question, or sequencing a design lifecycle.
+
+Load `$SHIPFLOW_ROOT/skills/006-sf-design/references/design-token-migration-playbook.md` before token centralization, design-system creation, token migration, or any handoff that distinguishes token creation from UI consumption.
+
+Load `$SHIPFLOW_ROOT/skills/006-sf-design/references/design-proof-and-reporting.md` before claiming design completion, reporting blocked proof, or preparing handoff evidence.
+
 Load `$SHIPFLOW_ROOT/skills/600-sf-local-cloud-sync/references/sync-guidance-overlay-and-merge-pattern.md` or route through `600-sf-local-cloud-sync` before designing, auditing, or implementing a cloud-sync widget, sync status surface, post-auth sync overlay, local/cloud merge UI, reinstall-recovery feedback, or sync/save guidance component.
 
 ## Context
@@ -55,7 +61,7 @@ Load `$SHIPFLOW_ROOT/skills/600-sf-local-cloud-sync/references/sync-guidance-ove
 - Project design docs: !`ls shipflow_data/business/branding.md shipflow_data/business/business.md shipflow_data/business/product.md shipflow_data/technical/guidelines.md BRANDING.md BUSINESS.md PRODUCT.md GUIDELINES.md 2>/dev/null || echo "no project design/business docs found"`
 - Available specs: !`find specs docs -maxdepth 2 -type f -name "*.md" 2>/dev/null | sort | head -80`
 - Framework hints: !`ls next.config.* nuxt.config.* astro.config.* svelte.config.* vite.config.* remix.config.* gatsby-config.* package.json 2>/dev/null || echo "no framework hints found"`
-- Token files: !`find . -type f \( -name "tokens*" -o -name "theme*" -o -name "design-tokens*" -o -name "_variables*" -o -name "global.css" -o -name "globals.css" \) 2>/dev/null | grep -v node_modules | head -30 || echo "none found"`
+- Token files sample: !`find . -type f \( -name "tokens*" -o -name "theme*" -o -name "design-tokens*" -o -name "_variables*" -o -name "global.css" -o -name "globals.css" \) 2>/dev/null | grep -v node_modules | head -30 || echo "none found"`
 - UI files sample: !`find src app pages components -type f \( -name "*.astro" -o -name "*.tsx" -o -name "*.jsx" -o -name "*.vue" -o -name "*.svelte" -o -name "*.css" -o -name "*.scss" \) 2>/dev/null | grep -v node_modules | sort | head -80 || echo "none found"`
 - Hardcoded design values sample: !`rg -n "#[0-9a-fA-F]{3,6}\\b|rgb\\(|rgba\\(|box-shadow:|transition:|font-size:\\s*[0-9]|gap:\\s*[0-9]|padding:\\s*[0-9]|margin:\\s*[0-9]" src app pages components 2>/dev/null | head -40 || echo "none found"`
 
@@ -63,155 +69,43 @@ Load `$SHIPFLOW_ROOT/skills/600-sf-local-cloud-sync/references/sync-guidance-ove
 
 `006-sf-design` is the recommended entrypoint for design-related work.
 
-It is the design lifecycle master (`master-workflow`): it decides how design-system, UI/UX, and visual-proof work should move across specialist owners, spec-first implementation, verification, and ship.
+It owns design lifecycle routing and proof posture across design-system, UI/UX, accessibility-adjacent, visual-proof, and token migration work. It does not replace specialist owners, generic implementation skills, browser verification, or ship/deploy skills.
 
-`006-sf-design` owns design lifecycle routing and proof posture, not generic implementation or standalone browser verification.
-
-The operator should be able to ask a natural design question:
+Expected lifecycle:
 
 ```text
-/006-sf-design améliorer la hero
-/006-sf-design centraliser les tokens et les appliquer partout
-/006-sf-design vérifier si le design est pro
-/006-sf-design créer un playground de design system
-/006-sf-design corriger les problèmes d'accessibilité visuelle
+intake -> design intent routing -> audit/discovery when needed -> spec/readiness for non-trivial changes -> owner-skill execution -> checks and browser/specialist proof -> 103-sf-verify -> closure and ship routing
 ```
 
-The skill decides the safe path and continues through the relevant owners:
+## Scope Gate
 
-```text
-intake
-  -> design intent routing
-  -> audit/discovery when needed
-  -> spec/readiness for non-trivial changes
-  -> owner-skill execution
-  -> checks and browser/specialist proof
-  -> 103-sf-verify
-  -> closure and ship routing
-```
+Use direct routing for read-only design questions, one focused specialist action, one narrow page/component fix that can be described as a mini-contract, or playground scaffolding when the token layer and route are clear.
 
-## Design Intent Routing
+Require spec-first for broad redesigns, multi-page or cross-component token migration, new visual direction, palette, typography, brand shifts, public/product-critical UI surfaces, accessibility remediation across flows, no-regression claims across many pages, or changes affecting screenshots, public claims, onboarding, pricing, docs, or trust signals.
 
-Choose the smallest safe owner under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` and `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`: the bounded professional route that preserves centralized design tokens, brand coherence, accessibility, performance, maintainability, and proof. Do not ask the user to choose a specialist when the request clearly names an intent.
+When the request is ambiguous enough that one routing question cannot settle scope, route to `700-sf-explore` before implementation.
+
+## Design Route Table
+
+Choose the smallest safe owner under the decision-quality and design-token contracts.
 
 | Intent | Route |
 | --- | --- |
 | Pure design question, workflow advice, or skill-choice help | Answer directly or provide the next command |
-| No coherent token layer; create a central professional design system from existing UI | `500-sf-design-from-scratch` |
+| Create a central professional design system from existing UI | `500-sf-design-from-scratch` |
 | Live preview/edit/export design tokens | `501-sf-design-playground` |
 | Token coherence, hardcoded values, token coverage, typography/spacing/motion/palette architecture | `503-sf-audit-design-tokens` |
 | Broad UI/UX audit, visual hierarchy, layout, responsive quality, trust, product coherence | `502-sf-audit-design` |
 | Component variants, duplication, component API, design-system component architecture | `504-sf-audit-components` |
 | Accessibility, contrast, focus, keyboard, reduced motion, target size, WCAG evidence | `409-sf-audit-a11y` |
-| Cloud-sync widget, sync status surface, post-auth sync overlay, local/cloud merge UI, reinstall-recovery feedback, or sync/save guidance component | Load the `600-sf-local-cloud-sync` SocialGlowz sync guidance reference or route through `600-sf-local-cloud-sync` before visual design |
+| Cloud-sync widget, sync status, post-auth sync overlay, local/cloud merge UI, reinstall-recovery feedback, or sync/save guidance | `600-sf-local-cloud-sync` guidance first |
 | Non-auth visual proof, screenshots, console/network summary for UI pages | `108-sf-browser` |
 | Auth/protected UI visual issue where login/session/provider state matters | `109-sf-auth-debug` |
 | Broad implementation, redesign, multi-page migration, or product-critical UI change | `001-sf-build` or `100-sf-spec -> 101-sf-ready -> 102-sf-start` |
 | Release/deploy confidence after design implementation | `004-sf-deploy` |
 | Final bounded commit after verified design work | `005-sf-ship` |
 
-When two routes are plausible and the answer changes scope, proof, brand direction, public claim, or ship risk, load `$SHIPFLOW_ROOT/skills/references/question-contract.md` and ask one numbered decision question.
-
-## Token Implementation Handoff
-
-Do not treat token centralization as complete site implementation.
-
-Always distinguish three stages:
-
-1. Token source created or updated.
-2. Pages, layouts, and components migrated to consume the token source.
-3. Visual non-regression or intended visual change verified with checks and browser proof.
-
-If a run creates tokens or a playground but migration coverage is incomplete, route the next real work explicitly:
-
-```text
-/006-sf-design "Migrer le site pour consommer les tokens design centralises sans changement visuel volontaire"
-```
-
-Internal lifecycle for that follow-up:
-
-```text
-503-sf-audit-design-tokens
--> 100-sf-spec
--> 101-sf-ready
--> 102-sf-start
--> 105-sf-check
--> 503-sf-audit-design-tokens
--> 108-sf-browser
--> 103-sf-verify
--> 104-sf-end
--> 005-sf-ship
-```
-
-If the user only asks for the exact implementation command, recommend:
-
-```text
-/001-sf-build "Actualiser le site pour utiliser les variables design centralisees dans toutes les pages, sans changement visuel volontaire"
-```
-
-## Visual Shortcut Ban
-
-Before any design implementation, apply `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` and `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`.
-
-For IME, keyboard, overlay, responsive, spacing, typography, color, motion, target-size, or layout defects, do not accept a one-off hardcoded visual value as the default repair. Route the work to the source of truth: design tokens, theme constants, component primitives, layout utilities, platform inset/measurement APIs, or documented framework behavior.
-
-If a literal value is unavoidable because the platform/API contract requires it, it must be named, scoped, explained, and proven. Otherwise route to `500-sf-design-from-scratch`, `503-sf-audit-design-tokens`, `504-sf-audit-components`, `409-sf-audit-a11y`, or spec-first implementation instead of shipping drift.
-
-Any implementation handoff must name the canonical token/theme source for spacing, typography, colors, shadows/elevation, motion, and mobile/adaptive constants. If no source exists, route to `500-sf-design-from-scratch` before changing product UI.
-
-## Scope And Readiness Rules
-
-Use direct routing for:
-
-- read-only design audits
-- one focused specialist action
-- one narrow page/component fix that can be described as a mini-contract
-- playground scaffolding when the token layer and route are clear
-
-Require spec-first for:
-
-- broad redesign
-- multi-page or cross-component token migration
-- new visual direction, palette, typography, or brand shift
-- public/product-critical UI surfaces
-- accessibility remediation across flows
-- work that claims no visual regression across many pages
-- changes that affect screenshots, public claims, onboarding, pricing, docs, or trust signals
-
-Before implementation, the ready spec must name:
-
-- user-facing outcome
-- target pages/components/layouts
-- design source of truth or brand docs
-- intended visual change or explicit non-regression contract
-- token/theme/component/source-of-truth plan for any visual dimensions, spacing, overlays, IME/keyboard behavior, or responsive layout values
-- owner skills to run
-- validation and browser proof obligations
-- docs/editorial impact
-- ship/deploy posture
-
-## Owner Skill Sequencing
-
-Typical flows:
-
-```text
-Create design system:
-500-sf-design-from-scratch -> 503-sf-audit-design-tokens -> 501-sf-design-playground optional -> 103-sf-verify
-
-Token migration across site:
-503-sf-audit-design-tokens -> 100-sf-spec -> 101-sf-ready -> 102-sf-start -> 105-sf-check -> 503-sf-audit-design-tokens -> 108-sf-browser -> 103-sf-verify -> 104-sf-end -> 005-sf-ship
-
-Visual redesign:
-502-sf-audit-design -> 100-sf-spec -> 101-sf-ready -> 102-sf-start -> 105-sf-check -> 108-sf-browser -> 409-sf-audit-a11y as needed -> 103-sf-verify -> 104-sf-end -> 005-sf-ship
-
-Deep design audit:
-502-sf-audit-design deep -> 100-sf-spec for chosen remediation -> 101-sf-ready -> 102-sf-start -> proof -> 103-sf-verify
-
-Accessibility-first design fix:
-409-sf-audit-a11y -> 100-sf-spec or 106-sf-fix depending scope -> 108-sf-browser/107-sf-test proof -> 103-sf-verify
-```
-
-For design work that changes public wording, claims, docs screenshots, page promises, or content surfaces, run the editorial/docs gates from `001-sf-build` or route to `300-sf-docs`/`007-sf-content` as needed before closure.
+For detailed sequencing, token handoff rules, shortcut bans, and report templates, use the local references listed above.
 
 ## Validation
 
@@ -241,14 +135,6 @@ Route proof:
 - `109-sf-auth-debug` when auth/session state affects the UI
 - `405-sf-prod` or `004-sf-deploy` for hosted truth
 
-## Security And Safety
-
-- Never expose private screenshots, logs, secrets, credentials, or internal operational data in design reports.
-- Never weaken contrast, focus visibility, keyboard access, target size, or reduced-motion behavior to satisfy token discipline.
-- Never invent a brand identity, palette, typography, or public claim when the existing project context does not support it.
-- Never treat screenshots alone as sufficient proof for accessibility.
-- Never ship unrelated dirty files.
-
 ## Stop Conditions
 
 Stop and report `blocked` when:
@@ -263,29 +149,6 @@ Stop and report `blocked` when:
 - ship scope includes unrelated dirty files without explicit approval
 
 Every blocked report must include the exact next recovery route.
-
-## Final Report
-
-User-mode report:
-
-```text
-## Design: [scope]
-
-Result: [implemented / partial / blocked / rerouted]
-Route: [owner skill or lifecycle]
-Design proof: [checks/browser/audit evidence or missing proof]
-Token implementation: [complete / partial / not applicable]
-Next step: [only if real]
-
-## Chantier
-
-[spec path | non trace: reason]
-Flux: 100-sf-spec [marker] -> 101-sf-ready [marker] -> 102-sf-start [marker] -> 103-sf-verify [marker] -> 104-sf-end [marker] -> 005-sf-ship [marker]
-Reste a faire: [only if non-empty]
-Prochaine etape: [only if non-empty]
-```
-
-Agent/handoff mode may add the routing matrix decision, owned surfaces, forbidden files, validation commands, browser proof obligations, docs/editorial plan, and unresolved decisions.
 
 ## Rules
 

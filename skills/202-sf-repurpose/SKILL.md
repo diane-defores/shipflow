@@ -31,6 +31,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 - `references/repurpose-workflow.md`: Source reconstruction, output selection, diffusion map, transformation catalog, safety pass, and owner handoff rules.
 - `references/output-pack.md`: Standard structured output pack used during Phase 3.
+- `$SHIPFLOW_ROOT/skills/references/source-intake-classification.md`: shared source classification when project, downstream surface, angle, or owner route is not already clear.
 - `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md`: shared rubric and structured feedback schema when producing a final repurposed content quality score.
 
 ## Mode Detection
@@ -38,6 +39,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 Parse `$ARGUMENTS` and choose the smallest safe mode under `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md`: bounded professional scope, never shortcut quality.
 
 - Read-Only Delegation: if subagents are used for source reading, they must not edit files, mutate trackers, or create content surfaces.
+- SOURCE INTAKE: load `$SHIPFLOW_ROOT/skills/references/source-intake-classification.md` before reconstructing source truth when the source's project, downstream surface, angle, or owner route is not already clear.
 - Execution contract: first reconstruct source truth, then decide justified outputs, then build only the requested or warranted output pack.
 - SOURCE ANALYSIS: load `references/repurpose-workflow.md` to reconstruct source truth and justified outputs.
 - OUTPUT PACK: load `references/output-pack.md` when building the structured pack.

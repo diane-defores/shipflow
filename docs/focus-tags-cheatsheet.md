@@ -80,6 +80,7 @@ Use these when the issue is mostly about message shape, reader understanding, or
 | `#faq` | objections, reassurance, and friction-killing answers | `shipflow_data/business/gtm.md` |
 | `#voice` | tone and brand-language discipline | `shipflow_data/business/branding.md` |
 | `#audience` | the target persona and sophistication level to dominate the decision | `shipflow_data/business/business.md` |
+| `#source` | classify an incoming source, project fit, useful angle, risks, and next owner skill | `skills/references/source-intake-classification.md` |
 | `#repurpose` | the best downstream format or surface for an existing source | `shipflow_data/editorial/content-map.md` |
 | `#pillar` | pillar-page role and semantic structure to dominate the decision | `shipflow_data/editorial/content-map.md` |
 | `#seo-intent` | search intent and query-to-page fit to dominate the decision | `shipflow_data/editorial/content-map.md` |
@@ -135,6 +136,7 @@ Use these when you do not want to build the tag set from scratch.
 | Improve onboarding and real usability | `#end-user #clarity #quality` | the solution to become easier to understand, safer, and more useful for normal users |
 | Fix objection-heavy copy | `#faq #trust #clarity` | the message to answer doubts directly without sounding slippery |
 | Improve discoverability | `#seo-intent #pillar #distribution` | the content or structure to align better with search intent and distribution paths |
+| Classify a source before acting | `#source #audience #cta` | an email, URL, transcript, note, or example to be sorted into the right project, angle, and owner skill |
 | Rework content from an existing source | `#repurpose #audience #cta` | one source to be turned into the right surface for the right reader and action |
 | Recenter on business buyer logic | `#decision-maker #offer #monetization` | the work to speak to the approver, the budget owner, or the buyer |
 | Recenter on the founder perspective | `#founder #growth #clarity` | the work to assume business-owner responsibility and optimize for useful decisions |

@@ -44,6 +44,7 @@ Use a read-only routing scout only when all of these are true:
 
 Before classifying a non-trivial instruction, load `$SHIPFLOW_ROOT/skills/references/entrypoint-routing.md`.
 Before classifying ShipFlow package-scope terminology, load `$SHIPFLOW_ROOT/skills/references/shipflow-terms.md`.
+Before classifying a user-provided source, pasted email, URL, transcript, article, note, or competitor/content example, load `$SHIPFLOW_ROOT/skills/references/source-intake-classification.md`.
 Before applying any named operator profile semantics, load `$SHIPFLOW_ROOT/skills/references/profile-activation.md`.
 Before shaping a named-profile answer from role posture alone, load `$SHIPFLOW_ROOT/skills/references/profile-project-context.md` and the smallest relevant project context bundle for the resolved role.
 When the instruction is a high-level critique, business goal, or collaboration complaint, load `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` before deciding whether the route is clear or a user question is needed.
@@ -125,6 +126,7 @@ For requests involving declared products, sales surfaces, or public claims, pref
 | Bug report, `BUG-ID`, retest, closure, fix state, or bug ship-risk question | `003-sf-bug <instruction>` |
 | Release confidence, preview/prod deploy, deployed truth, runtime logs, production health, post-deploy proof | `004-sf-deploy <instruction>` |
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, apply/publish content | `007-sf-content <instruction>` |
+| Source intake, pasted email/article/transcript/URL classification, project fit, angle selection, or owner-skill choice | Load `source-intake-classification.md`, then route to the owner skill |
 | Design request, UI/UX work, redesign, design tokens, playground, accessibility design, component design, visual proof, or token migration | `006-sf-design <instruction>` |
 | User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `008-sf-onboarding <instruction>` |
 | Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `600-sf-local-cloud-sync <instruction>` |

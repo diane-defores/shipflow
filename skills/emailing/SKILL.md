@@ -27,6 +27,7 @@ Default to `report=user`: concise, sequence-first, and in the user's active lang
 - `shipflow_data/business/branding.md`
 - `shipflow_data/business/gtm.md`
 - `shipflow_data/editorial/content-map.md`
+- `skills/references/source-intake-classification.md`
 
 ## Scope
 
@@ -36,6 +37,7 @@ Default to `report=user`: concise, sequence-first, and in the user's active lang
 ## Routing
 
 - Use `700-sf-explore` when the audience, goal, or sequence angle is still fuzzy.
+- Use `skills/references/source-intake-classification.md` when the user provides an email, URL, article, transcript, or example as inspiration before adapting it into a sequence.
 - Use `100-sf-spec` when sequence work needs a durable contract before implementation.
 - Route upstream content/source work to `007-sf-content`, `200-sf-redact`, or `202-sf-repurpose` when the brief is not yet sequence-ready.
 - Route tone, clarity, conversion, and persuasion checks to `206-sf-audit-copy` or `207-sf-audit-copywriting` when review is the main ask.
@@ -47,6 +49,7 @@ Default to `report=user`: concise, sequence-first, and in the user's active lang
 - Keep the sequence structure visible: trigger, audience, objective, cadence, CTA, stop rule.
 - Preserve governed business, product, brand, and GTM claims; do not invent proof, urgency, or conversion data.
 - Use the editorial content map when a sequence is actually a public content, landing-page, FAQ, or repurposing request.
+- When using a source email as inspiration, extract structure, angle, proof pattern, CTA, and sequence role; do not copy distinctive phrasing or unsupported claims.
 - Surface opt-out, consent, and compliance consequences when relevant.
 
 ## Stop Conditions

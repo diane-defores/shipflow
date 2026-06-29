@@ -66,7 +66,7 @@ It defines only the routing-question rule. Load `skills/references/question-cont
 
 Route to the smallest existing owner that can safely own the outcome.
 
-Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#offer`, `#growth`, `#clarity`, `#canon`, `#quality`, `#shipflow`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
+Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#offer`, `#growth`, `#clarity`, `#source`, `#canon`, `#quality`, `#shipflow`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
 
 Focus tags are not decorative reminders. They change execution posture, artifact preference, and route bias for the current turn. Do not merely acknowledge them; apply their routing implications below.
 
@@ -99,11 +99,12 @@ Tags such as `#partner`, `#growth`, `#offer`, `#roi`, `#funnel`, `#positioning`,
 
 ### Content Tags
 
-Tags such as `#end-user`, `#cta`, `#clarity`, `#faq`, `#voice`, `#audience`, `#repurpose`, `#pillar`, and `#seo-intent` imply:
+Tags such as `#end-user`, `#cta`, `#clarity`, `#faq`, `#voice`, `#audience`, `#source`, `#repurpose`, `#pillar`, and `#seo-intent` imply:
 
 - bias toward `007-sf-content`, `008-sf-onboarding`, or declared public content surfaces when the problem is mainly message quality, activation clarity, discoverability, or objection handling
 - prefer public copy, onboarding flow, FAQ, or semantic-architecture fixes over isolated code edits when the friction is mostly comprehension or activation
 - treat readability, user usefulness, and discoverability as owner concerns, not as optional polish
+- when `#source` is present, load `skills/references/source-intake-classification.md` and classify source type, project/corpus fit, useful angle, risks, and owner skill before transforming the source
 
 ### Governance Tags
 
@@ -155,6 +156,7 @@ A read-only routing scout is allowed only for cheap classification evidence and 
 | Observed defect, `BUG-ID`, retest, bug closure, bug fix state, bug ship risk | `003-sf-bug` |
 | Release confidence, preview/prod deployment, deployed truth, runtime logs, production health, post-deploy proof | `004-sf-deploy` |
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, content apply/publish | `007-sf-content` |
+| Source intake, pasted email/article/transcript/URL classification, project fit, useful angle, or owner-skill choice | Load `skills/references/source-intake-classification.md`, then route to the owner skill |
 | Design request, UI/UX work, redesign, design tokens, design playground, accessibility design, component design, visual proof, or token migration | `006-sf-design` |
 | User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `008-sf-onboarding` |
 | Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `600-sf-local-cloud-sync` |

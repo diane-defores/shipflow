@@ -1,6 +1,6 @@
 ---
 name: 007-sf-content
-description: "Content lifecycle."
+description: "Content lifecycle router."
 argument-hint: '[goal | source | file | mode: plan, repurpose, draft, enrich, audit, seo, editorial, apply, ship]'
 ---
 
@@ -45,135 +45,20 @@ It is the content lifecycle master (`master-workflow`): it decides how source, s
 
 `007-sf-content` owns content lifecycle coherence across source, surface, claims, quality, and ship, not generic writing detached from governance.
 
-It orchestrates existing owner skills:
-
-```text
-205-sf-veille / 203-sf-research / 204-sf-market-study
-  -> shipflow_data/editorial/content-map.md + editorial corpus
-  -> 700-sf-explore or 100-sf-spec when needed
-  -> 202-sf-repurpose / 200-sf-redact / 201-sf-enrich
-  -> 206-sf-audit-copy / 207-sf-audit-copywriting / 406-sf-audit-seo
-  -> 300-sf-docs
-  -> site/build/browser evidence when public
-  -> 103-sf-verify
-  -> 005-sf-ship when scope is bounded
-```
-
-The goal is not to write all content inside this master skill. The goal is to keep intent, surfaces, evidence, claims, specialist ownership, validation, and shipping coherent.
+It routes content work to specialist owner skills and keeps the lifecycle coherent.
 
 ## Scope Gate
 
-Accepted scope:
+`007-sf-content` routes content lifecycle work. It does not replace specialist owner skills or invent new public surfaces on the fly.
 
-- content strategy routing
-- source-faithful repurposing lifecycle
-- long-form drafting lifecycle
-- existing-content enrichment lifecycle
-- copy, copywriting, SEO, and docs audit routing
-- public site, README, FAQ, public docs, public skill pages, future article/blog governance
-- content validation and ship routing
+## Required References
 
-Rejected scope:
+Load before routing or execution:
 
-- generic writing without source, audience, or surface
-- inventing undeclared blog, newsletter, CMS, RSS, social, or support paths
-- replacing `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-audit-seo`, `300-sf-docs`, `205-sf-veille`, or `204-sf-market-study`
-- publishing unsupported sensitive claims
-- changing runtime content schemas without a dedicated spec
-- committing or pushing unrelated dirty files
-
-## Entry Rules
-
-1. Resolve the input as one or more of: content goal, source, target surface, file path, mode keyword, or ship request.
-2. Load `shipflow_data/editorial/content-map.md` if present. Root `CONTENT_MAP.md` is a migration source only; if it is the only map, continue for context but recommend `/300-sf-docs migrate-layout`.
-3. Load `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when the work touches public content, README public promises, docs, FAQ, pricing, support copy, public skill pages, blog/article intent, claims, or runtime content.
-4. Check `shipflow_data/editorial/claim-register.md` (or `docs/editorial/claim-register.md`), `shipflow_data/editorial/page-intent-map.md` (or `docs/editorial/page-intent-map.md`), `shipflow_data/editorial/editorial-update-gate.md` (or `docs/editorial/editorial-update-gate.md`), and `shipflow_data/editorial/astro-content-schema-policy.md` (or `docs/editorial/astro-content-schema-policy.md`) when present.
-5. If the work touches competitor comparisons, alternatives, inspiration-led positioning, affiliate links, partner recommendations, sponsorship, or disclosure, check `shipflow_data/business/project-competitors-and-inspirations.md` and `shipflow_data/business/affiliate-programs.md` when present. Their absence is acceptable; their presence requires ShipFlow metadata compliance.
-6. If no source, goal, or target can be inferred, ask one targeted question. Do not draft generic content from nothing.
-7. Load `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md` when mode includes audit, final draft, final repurpose, enrichment validation, or verification handoff with a required quality score.
-
-## Mode Detection
-
-- `plan`, `strategy`, `calendar`, `content plan`: produce a routed content plan; use `100-sf-spec` when it becomes multi-surface or durable.
-- `repurpose`, `source`, `conversation`, `faq`, `release notes`, `site update`: route to `202-sf-repurpose`.
-- `draft`, `write`, `article`, `blog`, `guide`, `editorial`: route to `200-sf-redact` after blog/article surface and claim gates.
-- `enrich`, `refresh`, `update @file`, `improve`: route to `201-sf-enrich`.
-- `audit`, `copy`, `copywriting`, `seo`: route to `206-sf-audit-copy`, `207-sf-audit-copywriting`, and/or `406-sf-audit-seo`.
-- `docs`, `readme`, `editorial`, `content governance`: route to `300-sf-docs`, usually `300-sf-docs editorial` for governance.
-- `veille`, URLs, pasted external trend/source content: route to `205-sf-veille`, `203-sf-research`, or `204-sf-market-study` before content production.
-- `apply`, `publish`, `ship`: verify the content changes, run required validations, then route to `103-sf-verify` and `005-sf-ship` only when scope is bounded.
-
-If several modes match, choose the earliest missing lifecycle phase:
-
-```text
-source unclear -> veille/research/explore
-surface unclear -> content-map/editorial gate/spec
-source ready -> repurpose
-draft needed -> redact
-existing content needs improvement -> enrich
-quality unknown -> audit
-public docs/governance impacted -> docs
-changes applied -> verify/ship
-```
-
-When an editorial quality gate is required, apply the shared rubric output schema (`ready`, `needs revision`, `blocked`, `publishable with caveats`) and pass its status plus evidence to `103-sf-verify`.
-
-## Spec Gate
-
-Apply the shared readiness rules from `$SHIPFLOW_ROOT/skills/references/master-workflow-lifecycle.md`.
-
-Use spec-first when any of these are true:
-
-- multiple public surfaces are affected
-- a new content surface, route, collection, newsletter, social repository, or blog path is needed
-- sensitive public claims are added, strengthened, or repositioned
-- content strategy, SEO architecture, funnel narrative, pricing copy, or support copy changes materially
-- parallel content work would touch shared maps, public pages, shared components, `site/src/content.config.ts`, README, FAQ, docs overview, pricing, or claim register
-- the work needs validation or ship routing beyond one direct local edit
-
-Route to `/700-sf-explore <idea>` before `/100-sf-spec` when content intent, audience, source truth, or surface placement is too fuzzy for one targeted question to settle.
-
-## Content Governance Gate
-
-For public or potentially public content:
-
-1. Read `shipflow_data/editorial/content-map.md` when present. If only root `CONTENT_MAP.md` exists, treat it as migration debt and recommend `/300-sf-docs migrate-layout`.
-2. Read `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when available.
-3. Check `shipflow_data/editorial/public-surface-map.md` (or `docs/editorial/public-surface-map.md`) and `shipflow_data/editorial/page-intent-map.md` (or `docs/editorial/page-intent-map.md`) before changing public pages.
-4. Check `shipflow_data/editorial/claim-register.md` (or `docs/editorial/claim-register.md`) before publishing sensitive claims.
-5. Check `shipflow_data/editorial/blog-and-article-surface-policy.md` (or `docs/editorial/blog-and-article-surface-policy.md`) before article or blog output.
-6. Check `shipflow_data/editorial/astro-content-schema-policy.md` (or `docs/editorial/astro-content-schema-policy.md`) before editing runtime content.
-7. Produce an `Editorial Update Plan` from `shipflow_data/editorial/editorial-update-gate.md` (or `docs/editorial/editorial-update-gate.md`) when public content, page intent, README, FAQ, pricing, public docs, public skill pages, or claims are impacted.
-8. Produce a `Claim Impact Plan` when sensitive claims are impacted.
-9. When the surface references declared products, verify that product inventory, canonical sales/product URLs, delivery path, and proof-bearing claims stay coherent with the project's governed product corpus before routing or editing.
-
-If no declared blog/article surface exists, report `surface missing: blog` and stop before path creation.
-
-## Owner Skill Routing
-
-Route by owner, not convenience:
-
-| Need | Owner |
-| --- | --- |
-| External URL/source triage | `205-sf-veille` |
-| Deep research report | `203-sf-research` |
-| Market/keyword/competitor demand study | `204-sf-market-study` |
-| Source-faithful content pack or applied repurposing | `202-sf-repurpose` |
-| Original long-form article, guide, or editorial draft | `200-sf-redact` |
-| Upgrade existing content with research and better structure | `201-sf-enrich` |
-| Clarity, tone, CTA, and page-level copy audit | `206-sf-audit-copy` |
-| Persona, offer, persuasion, and conversion audit | `207-sf-audit-copywriting` |
-| Technical/on-page SEO and search intent audit | `406-sf-audit-seo` |
-| README/docs/content governance update | `300-sf-docs` |
-| Implementation of non-trivial site/content changes | `001-sf-build` or `102-sf-start` from a ready spec |
-| Public browser proof | `108-sf-browser` |
-| Verification | `103-sf-verify` |
-| Ship | `005-sf-ship` |
-
-When calling or simulating downstream owner skills, pass `report=agent` only when the master flow needs detailed evidence. Preserve concise user reporting by default.
-
-For cross-skill consistency, use `content-quality-rubric.md` as the only source for rubric statuses, blocked codes, and structured feedback schema.
-For product-facing work, keep one rule across owner skills: declared products are governed assets, so copy, docs, and GTM routes must preserve inventory truth, public-surface mapping, delivery clarity, and evidence-backed claims.
+- `$SHIPFLOW_ROOT/skills/007-sf-content/references/content-router.md` for mode selection, spec gates, governance gates, owner routing, and rubric details.
+- `$SHIPFLOW_ROOT/skills/references/source-intake-classification.md` when the input is a pasted source, email, URL, transcript, note, article, or example whose project, angle, or owner route is not already settled.
+- `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when public content, README public promises, docs, FAQ, pricing, support copy, public skill pages, blog/article intent, claims, or runtime content are in scope.
+- `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md` when mode includes audit, final draft, final repurpose, enrichment validation, or verification handoff with a required quality score.
 
 ## Validation
 

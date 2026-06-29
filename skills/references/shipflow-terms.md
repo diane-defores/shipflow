@@ -29,6 +29,7 @@ evidence:
   - "Shared terminology was needed so ShipFlow can be referenced from other projects without repeating the definition in each skill."
   - "The package includes both server-side CLI scripts and the terminal UI, so the terminology must bind both to the same product family."
   - "Operator idea 2026-06-27: lightweight glossary tags should recenter the agent faster than invoking a full skill when the conversation drifts."
+  - "Operator request 2026-06-29: add a #source tag for shared source intake, classification, project fit, and owner-skill routing."
 next_review: "2026-07-11"
 next_step: "/103-sf-verify shared terminology routing"
 ---
@@ -83,6 +84,7 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 | `#faq` | Recenter on objections, reassurance, pre-purchase friction, and direct answers | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |
 | `#voice` | Recenter on tone, wording, and brand-language discipline | `$SHIPFLOW_ROOT/shipflow_data/business/branding.md` |
 | `#audience` | Recenter on persona fit, reader sophistication, and who the message is actually for | `$SHIPFLOW_ROOT/shipflow_data/business/business.md` |
+| `#source` | Recenter on classifying an incoming source, project fit, angle, risks, and owner-skill route | `$SHIPFLOW_ROOT/skills/references/source-intake-classification.md` |
 | `#repurpose` | Recenter on transforming one source into the right downstream content surfaces | `$SHIPFLOW_ROOT/shipflow_data/editorial/content-map.md` |
 | `#pillar` | Recenter on pillar-page role, semantic architecture, and supporting-page structure | `$SHIPFLOW_ROOT/shipflow_data/editorial/content-map.md` |
 | `#seo-intent` | Recenter on search intent, query-to-surface fit, and discoverability usefulness | `$SHIPFLOW_ROOT/shipflow_data/editorial/content-map.md` |
