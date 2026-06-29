@@ -1,10 +1,10 @@
 ---
 artifact: contract
 metadata_schema_version: "1.0"
-artifact_version: "1.0.0"
+artifact_version: "1.1.0"
 project: ShipFlow
 created: "2026-06-28"
-updated: "2026-06-28"
+updated: "2026-06-29"
 status: active
 source_skill: 900-shipflow-core
 scope: profile-project-context
@@ -131,6 +131,23 @@ Load additionally when relevant:
 - `README.md`
 
 Use this bundle for search intent fit, discoverability, content structure, claim safety, and SEO-related surface coherence.
+
+### `traffic-manager` -> `Tariq`
+
+Default bundle:
+
+- `shipflow_data/business/business.md`
+- `shipflow_data/business/gtm.md`
+- `shipflow_data/business/product.md`
+
+Load additionally when relevant:
+
+- `shipflow_data/business/affiliate-programs.md`
+- `shipflow_data/business/project-competitors-and-inspirations.md`
+- `shipflow_data/editorial/content-map.md`
+- `README.md`
+
+Use this bundle for acquisition-channel arbitration, source-to-landing fit, tracking readiness, conversion measurement, paid/organic sequencing, affiliate/referral opportunities, and traffic-quality tradeoffs.
 
 ## Missing Context Rule
 

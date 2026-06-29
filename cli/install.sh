@@ -1626,6 +1626,45 @@ install_ai_agent_clis_for_user() {
     return 0
 }
 
+verify_ai_agent_clis_for_user() {
+    local user_home="$1"
+    local username="$2"
+    local missing=0
+    local status_output=""
+    local claude_path=""
+    local codex_path=""
+
+    if [ "$username" = "root" ]; then
+        return 0
+    fi
+
+    claude_path=$(sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v claude 2>/dev/null || true')
+    codex_path=$(sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v codex 2>/dev/null || true')
+
+    if [ -n "$claude_path" ]; then
+        status_output="${status_output} claude=${claude_path}"
+    else
+        status_output="${status_output} claude=MISSING"
+        missing=1
+    fi
+
+    if [ -n "$codex_path" ]; then
+        status_output="${status_output} codex=${codex_path}"
+    else
+        status_output="${status_output} codex=MISSING"
+        missing=1
+    fi
+
+    if [ "$missing" -ne 0 ]; then
+        warning "Vérification agents IA incomplète pour $username:${status_output}"
+        warning "Action recommandée: sudo -u $username -H bash -lc 'export PNPM_HOME=\"\$HOME/.local/share/pnpm\"; export PATH=\"\$PNPM_HOME:\$PATH\"; corepack prepare pnpm@latest --activate; pnpm add -g @anthropic-ai/claude-code @openai/codex'"
+        return 1
+    fi
+
+    info "Agents IA vérifiés pour $username:${status_output}"
+    return 0
+}
+
 configure_claude_autonomous_permissions() {
     local target_home="$1"
     local mode="${2:-standard}"
@@ -1796,6 +1835,7 @@ setup_user() {
     configure_codex_playwright_mcp "$user_home"
     if [ "$username" != "root" ]; then
         install_ai_agent_clis_for_user "$user_home" "$username" || setup_failed=1
+        verify_ai_agent_clis_for_user "$user_home" "$username" || setup_failed=1
     fi
     configure_claude_autonomous_permissions "$user_home" "$effective_mode" || setup_failed=1
     configure_codex_autonomous_permissions "$user_home" "$effective_mode" || setup_failed=1
@@ -1884,6 +1924,7 @@ shipflow_log "INFO" "ShipFlow install completed"
 
 generate_install_report() {
     local status_node status_pm2 status_vercel status_convex status_clerk status_supabase status_flox status_gh status_python3 status_pyyaml status_caddy status_git status_jq status_fuser
+    local report_claude_path report_codex_path
     if command -v node >/dev/null 2>&1; then status_node="present"; else status_node=""; fi
     if command -v pm2 >/dev/null 2>&1; then status_pm2="present"; else status_pm2=""; fi
     if command -v vercel >/dev/null 2>&1; then status_vercel="present"; else status_vercel=""; fi
@@ -1898,6 +1939,8 @@ generate_install_report() {
     if command -v git >/dev/null 2>&1; then status_git="present"; else status_git=""; fi
     if command -v jq >/dev/null 2>&1; then status_jq="present"; else status_jq=""; fi
     if command -v fuser >/dev/null 2>&1; then status_fuser="present"; else status_fuser=""; fi
+    report_claude_path="$(sudo -u "$PRIMARY_USER" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v claude 2>/dev/null || true' 2>/dev/null)"
+    report_codex_path="$(sudo -u "$PRIMARY_USER" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v codex 2>/dev/null || true' 2>/dev/null)"
 
     cat > "$SHIPFLOW_REPORT_FILE" << REPORT
 # Rapport d'installation ShipFlow
@@ -1939,8 +1982,8 @@ generate_install_report() {
 
 | Élément | Résultat | Détails |
 |---|---|---|
-| claude | $(if command -v claude >/dev/null 2>&1; then echo "INSTALLÉ"; else echo "PARTIEL"; fi) | géré par ShipFlow (scope utilisateur) |
-| codex | $(if command -v codex >/dev/null 2>&1; then echo "INSTALLÉ"; else echo "PARTIEL"; fi) | géré par ShipFlow (scope utilisateur) |
+| claude | $(if [ -n "$report_claude_path" ]; then echo "INSTALLÉ"; else echo "PARTIEL"; fi) | géré par ShipFlow (scope utilisateur) ; chemin: ${report_claude_path:-missing} |
+| codex | $(if [ -n "$report_codex_path" ]; then echo "INSTALLÉ"; else echo "PARTIEL"; fi) | géré par ShipFlow (scope utilisateur) ; chemin: ${report_codex_path:-missing} |
 | tmux | NON_APPLICABLE | géré par dotfiles |
 | mosh | NON_APPLICABLE | géré par dotfiles |
 

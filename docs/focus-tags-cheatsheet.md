@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.2.0"
+artifact_version: "1.3.0"
 project: ShipFlow
 created: "2026-06-27"
 updated: "2026-06-29"
@@ -51,6 +51,8 @@ Use these when you want the agent to think like a business partner instead of a 
 | --- | --- | --- |
 | `#partner` | a business-partner stance, more initiative, and less passive assistant behavior | `skills/references/operator-partnership-contract.md` |
 | `#growth` | growth, distribution, conversion, leverage, and GTM usefulness to dominate the decision | `shipflow_data/business/gtm.md` |
+| `#traffic` | qualified traffic, channel-to-landing fit, tracking readiness, and conversion measurement | `skills/references/operator-roles/traffic-manager.md` |
+| `#acquisition` | acquisition-channel choice, source quality, funnel entry, and measurable learning | `skills/references/operator-roles/traffic-manager.md` |
 | `#offer` | the offer, promise, packaging, and commercial clarity to dominate the decision | `shipflow_data/business/gtm.md` |
 | `#roi` | expected impact versus effort, drag, and cost to dominate the decision | `skills/references/operator-partnership-contract.md` |
 | `#funnel` | acquisition, activation, conversion, and retention flow fit to dominate the decision | `shipflow_data/business/gtm.md` |
@@ -136,6 +138,7 @@ Use these when you do not want to build the tag set from scratch.
 | --- | --- | --- |
 | Make the offer clearer | `#offer #cta #clarity` | the page or message to make the value proposition and next action obvious |
 | Push growth instead of local optimization | `#partner #growth #roi` | the agent to choose the highest-leverage move, not the easiest technical move |
+| Choose an acquisition bet | `#traffic #acquisition #funnel` | the agent to rank channels by qualified intent, landing fit, and measurement readiness |
 | Improve onboarding and real usability | `#end-user #clarity #quality` | the solution to become easier to understand, safer, and more useful for normal users |
 | Fix objection-heavy copy | `#faq #trust #clarity` | the message to answer doubts directly without sounding slippery |
 | Improve discoverability | `#seo-intent #pillar #distribution` | the content or structure to align better with search intent and distribution paths |

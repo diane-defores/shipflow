@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-06-26"
 updated: "2026-06-29"
@@ -31,6 +31,8 @@ evidence:
   - "Operator idea 2026-06-27: lightweight glossary tags should recenter the agent faster than invoking a full skill when the conversation drifts."
   - "Operator request 2026-06-29: add a #source tag for shared source intake, classification, project fit, and owner-skill routing."
   - "Operator approval 2026-06-29: add a private memory store for cached project pitches and approved reusable source material."
+  - "Operator request 2026-06-29: add traffic-manager profile routing and acquisition-focused recentering tags."
+  - "Operator decision 2026-06-29: name the traffic-manager profile Tariq."
 next_review: "2026-07-11"
 next_step: "/103-sf-verify shared terminology routing"
 ---
@@ -71,6 +73,8 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 | `#quality` | Recenter on quality bar, autonomy, bounded excellence, and anti-shortcut rules | `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` |
 | `#vfbf` | Recenter on a quick, bounded, traceable execution pass: do it "vite fait bien fait" without turning it into the main focus | `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` |
 | `#growth` | Recenter on business growth, distribution, conversion, and leverage | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |
+| `#traffic` | Recenter on qualified traffic, channel-to-landing fit, tracking readiness, and conversion measurement | `$SHIPFLOW_ROOT/skills/references/operator-roles/traffic-manager.md` |
+| `#acquisition` | Recenter on acquisition-channel choice, source quality, funnel entry, and measurable learning | `$SHIPFLOW_ROOT/skills/references/operator-roles/traffic-manager.md` |
 | `#offer` | Recenter on the offer, promise, packaging, pricing logic, and commercial clarity | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |
 | `#roi` | Recenter on expected impact versus effort, drag, and operating cost | `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` |
 | `#funnel` | Recenter on acquisition, activation, conversion, and retention flow fit | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |

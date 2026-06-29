@@ -1,7 +1,7 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "1.4.0"
+artifact_version: "1.5.0"
 project: ShipFlow
 created: "2026-05-04"
 updated: "2026-06-29"
@@ -66,11 +66,11 @@ It defines only the routing-question rule. Load `skills/references/question-cont
 
 Route to the smallest existing owner that can safely own the outcome.
 
-Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#offer`, `#growth`, `#clarity`, `#source`, `#canon`, `#quality`, `#shipflow`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
+Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#offer`, `#growth`, `#traffic`, `#acquisition`, `#clarity`, `#source`, `#canon`, `#quality`, `#shipflow`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
 
 Focus tags are not decorative reminders. They change execution posture, artifact preference, and route bias for the current turn. Do not merely acknowledge them; apply their routing implications below.
 
-Named profiles are a separate router-layer construct above focus tags. Load `skills/references/profile-activation.md` when a known profile activation such as `%Victoire` or `profile=victoire` appears. Skills still own execution; profiles bias arbitration and output posture.
+Named profiles are a separate router-layer construct above focus tags. Load `skills/references/profile-activation.md` when a known profile activation such as `%Victoire`, `%Tariq`, `profile=victoire`, `profile=tariq`, or `profile=traffic-manager` appears. Skills still own execution; profiles bias arbitration and output posture.
 
 If the instruction is about modifying, improving, auditing, or hardening ShipFlow behavior, contracts, routing, or skills, treat ShipFlow itself as the target system by default. Do not infer the current project repository as the edit target unless the user explicitly names that project.
 
@@ -88,12 +88,13 @@ When focus tags are present, merge them into the narrowest coherent route instea
 
 ### Business Tags
 
-Tags such as `#partner`, `#growth`, `#offer`, `#roi`, `#funnel`, `#positioning`, `#distribution`, `#monetization`, `#retention`, `#decision-maker`, `#leverage`, `#founder-mode`, `#pitch`, and `#portfolio` imply:
+Tags such as `#partner`, `#growth`, `#traffic`, `#acquisition`, `#offer`, `#roi`, `#funnel`, `#positioning`, `#distribution`, `#monetization`, `#retention`, `#decision-maker`, `#leverage`, `#founder-mode`, `#pitch`, and `#portfolio` imply:
 
 - prefer routes that improve business leverage or end-user success over routes that only produce local technical cleanup
 - when the task is ambiguous between generic implementation and public/business framing, inspect `shipflow_data/business/` before choosing
 - if a stronger owner skill or ShipFlow route materially improves adoption or first success, surface it as the recommended path instead of stopping at neutral advice
 - when several edits are possible, choose the smallest durable change that improves conversion, clarity, adoption, retention, or operator leverage
+- when `#traffic` or `#acquisition` is present, bias toward channel-to-landing fit, tracking readiness, and measurable acquisition learning; use `Tariq` as the relevant profile when the user asks who should arbitrate
 - when `#pitch` is present, reload `shipflow_data/business/portfolio-project-pitch-links.md` and prefer the active project's own pitch URL if the index points to one before answering or routing
 - when `#portfolio` is present, reload `shipflow_data/business/portfolio-project-pitch-links.md` and scan the index for the most relevant cross-project opportunity before answering or routing
 

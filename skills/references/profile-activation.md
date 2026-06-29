@@ -1,10 +1,10 @@
 ---
 artifact: contract
 metadata_schema_version: "1.0"
-artifact_version: "1.1.0"
+artifact_version: "1.2.0"
 project: ShipFlow
 created: "2026-06-28"
-updated: "2026-06-28"
+updated: "2026-06-29"
 status: active
 source_skill: 900-shipflow-core
 scope: profile-activation
@@ -33,6 +33,8 @@ supersedes: []
 evidence:
   - "ShipFlow hardening decision 2026-06-28: named profiles need one canonical activation contract instead of duplicated local wording."
   - "Operator feedback 2026-06-28: `%Victoire` must not be presented as a runtime primitive until the runtime layer exists."
+  - "Operator request 2026-06-29: make the Traffic Manager role invokable through the same named-profile layer."
+  - "Operator decision 2026-06-29: name the traffic-manager profile Tariq."
 next_review: "2026-07-12"
 next_step: "/103-sf-verify profile-activation-contract"
 ---
@@ -99,6 +101,10 @@ When a profile activation is present:
 4. Load `skills/references/profile-project-context.md` and the smallest relevant project context bundle for the resolved role.
 5. Keep the resolved role bias active for route choice, arbitration, and answer framing during the current turn.
 6. Do not bypass owner-skill routing.
+
+Known aliases:
+
+- `%TrafficManager`, `%traffic-manager`, `profile=traffic-manager`, and `profil=traffic-manager` resolve to `shipflow_data/business/agent-profiles/tariq.md`.
 
 ## Precedence Rules
 

@@ -271,6 +271,7 @@ Required gates:
 - preserve governance corpus ownership boundaries
 - only run skill-budget audit when scope touches skills/discovery metadata
 - persist conversation-derived durable decisions to proper docs surfaces
+- when slimming or deleting local docs, run a source-to-canonical preservation pass first and update the canonical target in the same change
 - keep bug model documentation consistent
 - create/update canonical business/product/branding/architecture/gtm/content-map/guidelines docs when missing and justified
 - create/update `shipflow_data/technical/design-system-authority.md` when a project has UI code but no declared canonical token/theme/component authority
@@ -290,9 +291,21 @@ Rules:
 
 - classify each source as moveable/collision/external-root-ok/tracker/runtime-content
 - classify nested monorepo corpora as migrate/collision/standalone-exception
+- build a preservation ledger for every migrated local doc or tracker before converting it into a facade
+- migrate non-redundant tracker content into canonical workflow files, not only technical docs
 - prefer `git mv` inside git repos
 - do not overwrite collisions silently
 - run metadata lint and legacy path grep checks
+
+Required migration proof per source:
+
+- source path
+- chosen canonical target
+- preserved sections or tasks
+- intentionally rejected sections with reason
+- resulting local state
+
+If the operator asks for a consolidation pass after migration, do not treat that as redundant. Re-open the original sources, compare them against the canonical destinations, and repair any semantic loss found.
 
 ## METADATA MODE
 

@@ -75,8 +75,10 @@ Load on demand:
 - Preserve redaction/security rules: never expose secrets, cookies, tokens, private keys, or private logs.
 - Preserve documentation-update gates: changed behavior must have docs alignment proof or explicit `not impacted because ...`.
 - Preserve canonical ShipFlow paths and metadata schema rules.
+- For migration or consolidation work, treat local docs as source material until preservation is proven. Before replacing a local doc with a compatibility facade or deleting it, map it to a canonical destination, preserve non-redundant content, and record any intentional rejection.
 - When a project declares products, preserve the product-governance contract in docs: product inventory, canonical product/sales surfaces, delivery-path documentation, and claim-evidence references must remain explicit enough for other skills to reuse without discovery drift.
 - `TEST_LOG.md`, `BUGS.md`, `PROJECTS.md`, and canonical workflow trackers are operational trackers, not frontmatter-required decision artifacts.
+- Operational trackers may still contain durable planning or decision content. During migration, mine them for canonical task, QA, or decision updates instead of assuming they are disposable.
 - When scope touches `skills/`, skill README files, `site/src/content/skills/*.md`, or skill discovery metadata, verify skill contract coherence, public skill-page coherence, and runtime skill visibility together. Route non-trivial skill-contract changes through `009-sf-skill-build`.
 - Do not add ShipFlow governance frontmatter to app-rendered runtime content such as `site/src/content/skills/*.md`.
 
@@ -88,6 +90,7 @@ Stop and report `blocked` when:
 - requested migration would overwrite canonical docs without explicit merge decision
 - metadata lint fails on changed artifacts and cannot be corrected safely
 - governance conflicts cannot be resolved (for example `AGENTS.md` not a symlink to `AGENT.md`)
+- a migration would slim, delete, or facade a local doc before preservation proof exists for its non-redundant content
 - a skill documentation update changes the public promise or lifecycle route but has no bounded skill-maintenance contract
 - external behavior is documented without a required `fresh-docs checked` or explicit `fresh-docs not needed` verdict
 
@@ -101,6 +104,15 @@ rg -n "Maintenance Rule|Validation|Owned Files|Entrypoints" shipflow_data/techni
 rg -n "Editorial Update Plan|Claim Impact Plan|pending final copy|surface missing|Astro content schema" shipflow_data/editorial docs/editorial
 test ! -e AGENTS.md || { test -L AGENTS.md && test "$(readlink AGENTS.md)" = "AGENT.md"; }
 ```
+
+When a run migrates or consolidates local docs into canonical `shipflow_data/` targets:
+
+```bash
+git diff --name-only -- <migrated-local-docs> <canonical-targets>
+rg -n "Canonical|compatibility facade|shipflow_data" <migrated-local-docs>
+```
+
+Use these checks to confirm the source docs were intentionally converted into facades and that canonical targets were actually updated in the same change, not merely after the fact.
 
 When the scope touches skill discovery or skill docs policy:
 

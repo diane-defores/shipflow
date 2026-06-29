@@ -1,10 +1,10 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "1.7.1"
+artifact_version: "1.8.0"
 project: ShipFlow
 created: "2026-05-04"
-updated: "2026-06-28"
+updated: "2026-06-29"
 status: reviewed
 source_skill: 300-sf-docs
 scope: skill-launch-cheatsheet
@@ -106,7 +106,7 @@ Named profiles are an operator layer above skills.
 
 - `skill` = execution owner
 - `operator role` = decision contract
-- `agent profile` = human-readable invocation such as `Victoire`, `Prudence`, `Ariane`, `Adhesion`, or `SEO Specialist`
+- `agent profile` = human-readable invocation such as `Victoire`, `Prudence`, `Ariane`, `Adhesion`, `SEO Specialist`, or `Tariq`
 
 Use `%<Profile>` when you want the router and owner skill to keep the same execution contract while changing arbitration posture for the turn.
 
@@ -115,6 +115,7 @@ Use `%<Profile>` when you want the router and owner skill to keep the same execu
 - `%Ariane` -> phase structure, sequencing, and first-slice framing
 - `%Adhesion` -> end-user trust, clarity, and friction review
 - `%SEO-specialist` -> search intent, discoverability, and page coherence
+- `%Tariq` -> acquisition-channel choice, tracking readiness, and traffic-to-landing fit
 
 Keep `#<Tag>` separate. A tag such as `#Adhesion` or `#growth` is a focus cue, not a named profile activation.
 

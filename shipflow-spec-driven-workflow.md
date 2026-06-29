@@ -1,10 +1,10 @@
 ---
 artifact: technical_guidelines
 metadata_schema_version: "1.0"
-artifact_version: "0.18.2"
+artifact_version: "0.18.3"
 project: ShipFlow
 created: "2026-04-22"
-updated: "2026-06-28"
+updated: "2026-06-29"
 status: draft
 source_skill: 300-sf-docs
 scope: spec-driven-workflow
@@ -68,6 +68,7 @@ evidence:
   - "Updated on 2026-05-11 to add competitive intelligence and affiliate program registries as project-local business artifacts."
   - "Updated on 2026-05-11 to make project governance artifacts canonical under shipflow_data/, including workflow specs."
   - "Updated on 2026-06-28 to clarify public/docs runtime handoffs: helpers explain, the router hands off, owner skills execute, and OpenCode/KiloCode internal calls are not manual commands."
+  - "Updated on 2026-06-29 to add Tariq as a named profile for acquisition-channel arbitration and traffic measurement discipline."
 next_review: "unknown"
 next_step: "/300-sf-docs audit shipflow-spec-driven-workflow.md"
 ---
@@ -105,8 +106,8 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `000-shipflow <instruction>` | Routes pure conversational answers directly; routes real work to the right master or specialist skill; asks one numbered question when ambiguous. |
-| Named operator profile | `%Victoire <instruction>` | Canonical profile syntax. Activates the `Victoire` growth-operations profile; `#Tag` remains a focus-tag surface and the router still picks the owner skill. |
-| Non-technical first command with named operator profile | `000-shipflow profile=victoire <instruction>` | Same router, but with the `Victoire` growth-operations profile active so prioritization, ranking, and growth leverage shape the answer or handoff framing. |
+| Named operator profile | `%Victoire <instruction>`, `%SEO-specialist <instruction>`, or `%Tariq <instruction>` | Canonical profile syntax. Activates the named operator profile; `#Tag` remains a focus-tag surface and the router still picks the owner skill. |
+| Non-technical first command with named operator profile | `000-shipflow profile=victoire <instruction>`, `000-shipflow profile=seo-specialist <instruction>`, or `000-shipflow profile=tariq <instruction>` | Same router, but with the selected profile active so the role contract shapes the answer or handoff framing. |
 | Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; use `spark`, `codex`, `mini`, `agents`, or `sous-agent` to make model-specific delegated sequential execution a validation gate; for user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-end-user` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `002-sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `004-sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
@@ -165,7 +166,7 @@ Named operator profiles sit above the router as a human-readable invocation laye
 
 - skill = capability
 - operator role = decision contract
-- named profile = human-readable entry such as `Victoire`
+- named profile = human-readable entry such as `Victoire`, `SEO Specialist`, or `Tariq`
 
 Example:
 
@@ -180,6 +181,12 @@ Compatibility form:
 ```
 
 The router still selects the owner skill, but the answer should follow the growth-oriented arbitration rules of the `Victoire` profile instead of giving a flat neutral list.
+
+Example:
+
+```text
+%Tariq #acquisition Quel canal tester en premier, vers quelle landing, et avec quelle mesure ?
+```
 
 Canonical syntax split:
 

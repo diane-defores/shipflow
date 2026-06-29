@@ -1,7 +1,7 @@
 ---
 artifact: documentation
 metadata_schema_version: "1.0"
-artifact_version: "0.13.1"
+artifact_version: "0.13.2"
 project: "shipflow"
 created: "2026-04-25"
 updated: "2026-06-29"
@@ -63,6 +63,7 @@ evidence:
   - "Added App Blueprints system: blueprint gate in 001-sf-build, blueprint consumption in 100-sf-spec and 306-sf-scaffold, flutter-crud-content blueprint from ContentGlowz."
   - "Clarified public/docs runtime handoffs: help explains, 000-shipflow routes, owner skills execute, and OpenCode/KiloCode internal calls are not manual operator commands."
   - "Added dedicated repo-visible runtime pages for OpenCode and KiloCode and linked them from the core docs section."
+  - "Added Tariq as an invokable named profile for acquisition-channel arbitration and traffic measurement discipline."
 next_step: "/300-sf-docs audit README.md"
 ---
 
@@ -451,7 +452,7 @@ Compatibility form:
 
 Here, `Victoire` is not a separate skill. She is a named growth-operations profile that biases the answer toward prioritization, leverage, and explicit `not now`.
 
-Other named profiles can coexist when they carry a distinct decision posture, for example `Prudence` for risk/coherence challenge, `Ariane` for structuring a fuzzy initiative into an executable plan, and `Adhesion` for simulated end-user reaction, trust, and friction review.
+Other named profiles can coexist when they carry a distinct decision posture, for example `Prudence` for risk/coherence challenge, `Ariane` for structuring a fuzzy initiative into an executable plan, `Adhesion` for simulated end-user reaction, trust, and friction review, and `Tariq` for acquisition-channel arbitration and traffic measurement discipline.
 
 `SEO Specialist` is another example profile when the question is about search intent, discoverability, and page/surface coherence.
 
@@ -486,8 +487,8 @@ Skill launch cheatsheet:
 | Need | Launch | Useful modes |
 | --- | --- | --- |
 | Non-technical first command | `000-shipflow <instruction>` | Routes pure conversation directly; routes real work to the right master or specialist skill; uses context-safe defaults and asks one numbered decision question when ambiguity changes route, risk, scope, or proof. |
-| Named operator profile | `%Victoire <instruction>` or `%SEO-specialist <instruction>` | Canonical profile syntax for a named operator profile. Use `#Tag` separately for focus tags such as `#SEO`. |
-| Non-technical first command with named profile | `000-shipflow profile=victoire <instruction>` or `000-shipflow profile=seo-specialist <instruction>` | Same router, with the selected profile active for the turn. |
+| Named operator profile | `%Victoire <instruction>`, `%SEO-specialist <instruction>`, or `%Tariq <instruction>` | Canonical profile syntax for a named operator profile. Use `#Tag` separately for focus tags such as `#SEO`, `#traffic`, or `#acquisition`. |
+| Non-technical first command with named profile | `000-shipflow profile=victoire <instruction>`, `000-shipflow profile=seo-specialist <instruction>`, or `000-shipflow profile=tariq <instruction>` | Same router, with the selected profile active for the turn. |
 | Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; `spark`, `codex`, `mini`, `agents`, and `sous-agent` strictly validate model-specific delegated sequential execution; for user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-end-user` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `002-sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `004-sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |

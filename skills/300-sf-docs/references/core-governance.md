@@ -140,6 +140,37 @@ Reporting rule:
 
 - duplicate audits should report each reviewed artifact set with `classification`, `canonical target`, `action`, and `reason`
 
+## Migration Preservation Rule
+
+Monorepo normalization and doc consolidation are preservation work first, cleanup work second.
+
+Before turning a local doc into a compatibility facade, deleting it, or replacing it with a pointer:
+
+1. inventory the source artifact and choose the canonical target
+2. compare the source against the canonical target or planned target
+3. preserve non-redundant technical, product, planning, QA, or operational content
+4. record any intentional rejection when content is stale, duplicated, or explicitly deprecated
+5. only then slim the source into a facade or remove it
+
+Preservation proof must be semantic, not only structural. Metadata lint, symlink checks, and path normalization do not prove that meaningful content survived the migration.
+
+Minimum preservation ledger per migrated source:
+
+- `source artifact`
+- `canonical target`
+- `content preserved`
+- `content intentionally rejected`
+- `tracker/task extraction`
+- `final local state` (`kept as facade|deleted|kept scoped`)
+
+Facade rule:
+
+- local compatibility docs may remain when canonical-path doctrine allows them, but they must be clearly marked as facades and must not remain the durable source of truth
+
+Failure rule:
+
+- if the migration cannot prove where important source content went, treat the migration as incomplete rather than reporting the cleanup as done
+
 ## Tracker Exception Rule
 
 Do not enforce frontmatter on operational trackers:
@@ -151,6 +182,8 @@ Do not enforce frontmatter on operational trackers:
 - `BUGS.md`
 
 If a tracker contains durable decision content, extract that decision into a versioned ShipFlow artifact and keep the tracker as pointer/task.
+
+If a tracker contains active planning or execution work that still matters, migrate that work into the canonical workflow trackers before slimming the local tracker. Do not collapse a tracker into a facade until its actionable tasks, QA history, or planning signals have been preserved.
 
 ## Disposable Artifact Hygiene Rule
 
@@ -209,3 +242,9 @@ Projects with a UI need a declared design-system authority before agents change 
 ## Validation Minimum
 
 Always run metadata lint on changed frontmatter artifacts and add focused path checks for migrated canonical references.
+
+For migration or consolidation passes, add a preservation audit:
+
+- compare each slimmed or removed local source against the updated canonical target
+- verify that planning/task content moved into canonical workflow trackers when relevant
+- verify that the local replacement clearly states its compatibility-only role

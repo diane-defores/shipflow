@@ -48,7 +48,7 @@ Before classifying a user-provided source, pasted email, URL, transcript, articl
 Before applying any named operator profile semantics, load `$SHIPFLOW_ROOT/skills/references/profile-activation.md`.
 Before shaping a named-profile answer from role posture alone, load `$SHIPFLOW_ROOT/skills/references/profile-project-context.md` and the smallest relevant project context bundle for the resolved role.
 When the instruction is a high-level critique, business goal, or collaboration complaint, load `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` before deciding whether the route is clear or a user question is needed.
-When `$ARGUMENTS` activates a named operator profile such as `%Victoire`, `%SEO-specialist`, or `profile=victoire`, load the matching profile under `$SHIPFLOW_ROOT/shipflow_data/business/agent-profiles/` and its referenced operator role under `$SHIPFLOW_ROOT/skills/references/operator-roles/` before choosing the route or shaping the answer.
+When `$ARGUMENTS` activates a named operator profile such as `%Victoire`, `%SEO-specialist`, `%Tariq`, `profile=victoire`, `profile=tariq`, or `profile=traffic-manager`, load the matching profile under `$SHIPFLOW_ROOT/shipflow_data/business/agent-profiles/` and its referenced operator role under `$SHIPFLOW_ROOT/skills/references/operator-roles/` before choosing the route or shaping the answer.
 
 Use that reference as the canonical routing matrix. Do not duplicate specialist internals here.
 
