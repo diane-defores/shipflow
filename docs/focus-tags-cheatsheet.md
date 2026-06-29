@@ -137,6 +137,7 @@ Use these when you do not want to build the tag set from scratch.
 | Fix objection-heavy copy | `#faq #trust #clarity` | the message to answer doubts directly without sounding slippery |
 | Improve discoverability | `#seo-intent #pillar #distribution` | the content or structure to align better with search intent and distribution paths |
 | Classify a source before acting | `#source #audience #cta` | an email, URL, transcript, note, or example to be sorted into the right project, angle, and owner skill |
+| Classify a source across projects | `#source #portfolio #audience` | the source could fit several projects and should be matched against the portfolio pitch index first |
 | Rework content from an existing source | `#repurpose #audience #cta` | one source to be turned into the right surface for the right reader and action |
 | Recenter on business buyer logic | `#decision-maker #offer #monetization` | the work to speak to the approver, the budget owner, or the buyer |
 | Recenter on the founder perspective | `#founder #growth #clarity` | the work to assume business-owner responsibility and optimize for useful decisions |

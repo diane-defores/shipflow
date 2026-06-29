@@ -124,7 +124,7 @@ Frequency wins over family when a skill belongs to both. For example `007-sf-con
 | `403` | `sf-perf` | `403-sf-perf` | Audit/quality/ops |
 | `404` | `sf-migrate` | `404-sf-migrate` | Audit/quality/ops |
 | `405` | `sf-prod` | `405-sf-prod` | Audit/quality/ops |
-| `406` | `sf-audit-seo` | `406-sf-audit-seo` | Audit/quality/ops |
+| `406` | `sf-seo` | `406-sf-seo` | Audit/quality/ops |
 | `407` | `sf-audit-translate` | `407-sf-audit-translate` | Audit/quality/ops |
 | `408` | `sf-audit-gtm` | `408-sf-audit-gtm` | Audit/quality/ops |
 | `409` | `sf-audit-a11y` | `409-sf-audit-a11y` | Audit/quality/ops |

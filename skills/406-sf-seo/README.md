@@ -1,10 +1,10 @@
-# 406-sf-audit-seo
+# 406-sf-seo
 
 > Find the technical, content, and AI-search issues that limit discoverability and search trust.
 
 ## What It Does
 
-`406-sf-audit-seo` reviews a single page or full site for technical SEO, on-page structure, metadata quality, internal linking, performance signals, and AI-era visibility such as `llms.txt`, schema, and crawler rules.
+`406-sf-seo` reviews a single page or full site for technical SEO, on-page structure, metadata quality, internal linking, performance signals, and AI-era visibility such as `llms.txt`, schema, and crawler rules.
 
 It does not only ask whether the page can rank. It also checks whether search traffic would land on a truthful, current promise.
 
@@ -34,9 +34,9 @@ It does not only ask whether the page can rank. It also checks whether search tr
 ## Typical Examples
 
 ```bash
-/406-sf-audit-seo
-/406-sf-audit-seo src/pages/blog/ai-audit.astro
-/406-sf-audit-seo global
+/406-sf-seo
+/406-sf-seo src/pages/blog/ai-audit.astro
+/406-sf-seo global
 ```
 
 ## Limits

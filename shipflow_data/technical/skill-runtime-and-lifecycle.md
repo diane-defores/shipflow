@@ -400,7 +400,7 @@ Content lifecycle flow:
   -> surface, source, claim, and schema gates
   -> 205-sf-veille / 203-sf-research / 204-sf-market-study when source or market evidence is missing
   -> 202-sf-repurpose / 200-sf-redact / 201-sf-enrich
-  -> 206-sf-audit-copy / 207-sf-audit-copywriting / 406-sf-audit-seo
+  -> 206-sf-audit-copy / 207-sf-audit-copywriting / 406-sf-seo
   -> 300-sf-docs for docs or editorial governance updates
   -> npm --prefix site run build and 108-sf-browser when public site proof is needed
   -> 103-sf-verify
@@ -441,7 +441,7 @@ Content lifecycle flow:
 - `002-sf-maintain` owns the maintenance lifecycle; bugs, dependencies, docs, checks, audits, migrations, tasks, security review, repair, verification, and ship still run through their specialist owner skills and gates.
 - `310-sf-github-hygiene` owns focused git/GitHub hygiene; commit/push stays with `005-sf-ship`, dependency risk stays with `402-sf-deps`, major upgrade lanes stay with `404-sf-migrate`, and CI diagnosis stays with `github:gh-fix-ci`.
 - `007-sf-content` owns content-management orchestration; repurposing, drafting, enrichment, copy audit, copywriting audit, SEO audit, docs, veille, market study, browser proof, verification, and ship still run through their specialist owner skills and gates.
-- Content owner skills (`007-sf-content`, `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-audit-seo`) and `103-sf-verify` must use one shared rubric contract from `skills/references/content-quality-rubric.md`; recoverable score states (`needs retry`, `duplicate_in_progress`, `conflicting_score_state`, `stale_or_mismatched_score`) are never valid verification proof.
+- Content owner skills (`007-sf-content`, `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-seo`) and `103-sf-verify` must use one shared rubric contract from `skills/references/content-quality-rubric.md`; recoverable score states (`needs retry`, `duplicate_in_progress`, `conflicting_score_state`, `stale_or_mismatched_score`) are never valid verification proof.
 - `006-sf-design` owns design lifecycle orchestration; UI/UX audits, token audits, component audits, accessibility audits, playground tooling, design-system creation, browser proof, implementation, verification, and ship still run through their specialist owner skills and gates.
 - `008-sf-onboarding` owns user activation contracts; implementation, visual design, docs/content, browser proof, and manual QA still run through `001-sf-build`, `006-sf-design`, `300-sf-docs`/`007-sf-content`, `108-sf-browser`, and `107-sf-test` when needed.
 - `500-sf-design-from-scratch` owns design-system creation from existing UI values; playground tooling, token audits, component audits, accessibility audits, and general design routing stay with their specialist or master skills.

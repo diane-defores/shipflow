@@ -158,7 +158,7 @@ Use these verbs consistently in help answers and docs:
 | `/502-sf-audit-design` | UI/UX, a11y, responsiveness | `@file`, `global`, or nothing |
 | `/500-sf-design-from-scratch` | Build a professional tokenized design system from an existing UI | `tokens-only`, `with-playground`, `@file`, or nothing |
 | `/206-sf-audit-copy` | Copywriting, tone, CTAs | `@file`, `global`, or nothing |
-| `/406-sf-audit-seo` | Meta tags, structured data, links | `@file`, `global`, or nothing |
+| `/406-sf-seo` | Meta tags, structured data, links | `@file`, `global`, or nothing |
 | `/408-sf-audit-gtm` | Go-to-market, conversion, trust | `@file`, `global`, or nothing |
 | `/705-sf-conversation-audit` | Conversation quality classification and action routing from saved transcripts | `latest`, `path <file-or-dir>`, `export shipflow`, `report=agent` |
 | `/407-sf-audit-translate` | i18n completeness, consistency, missing-translation sync | `@file`, `global`, `sync`, `apply`, or nothing |
@@ -233,7 +233,7 @@ Internal role matrix:
 | `skills/503-sf-audit-design-tokens/SKILL.md` | conditionnel | source-de-chantier | Token findings become a chantier for design-system drift or migration across multiple surfaces. |
 | `skills/502-sf-audit-design/SKILL.md` | conditionnel | source-de-chantier | Design findings become a chantier for multi-screen UX, a11y, or responsive remediation. |
 | `skills/408-sf-audit-gtm/SKILL.md` | conditionnel | source-de-chantier | GTM findings become a chantier when offer, funnel, analytics, pricing, or trust changes require decisions. |
-| `skills/406-sf-audit-seo/SKILL.md` | conditionnel | source-de-chantier | SEO findings become a chantier for indexation, schema, content architecture, or multi-page remediation. |
+| `skills/406-sf-seo/SKILL.md` | conditionnel | source-de-chantier | SEO findings become a chantier for indexation, schema, content architecture, or multi-page remediation. |
 | `skills/407-sf-audit-translate/SKILL.md` | conditionnel | source-de-chantier | Translation findings become a chantier for locale strategy, broad sync, or quality gates. |
 | `skills/400-sf-audit/SKILL.md` | conditionnel | source-de-chantier | Master audit findings become a chantier for transversal P1/P2 clusters or multi-domain remediation. |
 | `skills/109-sf-auth-debug/SKILL.md` | conditionnel | source-de-chantier | Auth findings become a chantier for session, callback, provider, tenant, or permission risk beyond a direct fix. |
@@ -317,14 +317,14 @@ Report rule: every applicable report ends with a `Chantier` block. Conditional s
 
 ```bash
 # PAGE MODE — audit a single file
-/406-sf-audit-seo @src/pages/index.astro
+/406-sf-seo @src/pages/index.astro
 
 # PROJECT MODE — audit current project (default)
 /401-sf-audit-code
 
 # GLOBAL MODE — audit ALL applicable projects
 /400-sf-audit global
-/406-sf-audit-seo global
+/406-sf-seo global
 ```
 
 **Domain applicability**: Not all audits apply to all projects. Global mode discovers projects from local `shipflow_data/` corpora and root project markers, then uses each selected project's local governance corpus for business, technical, editorial, and workflow context.
@@ -457,7 +457,7 @@ Run any skill from `~/` (no project markers) and it asks **"Which project(s)?"**
 Provide explicit arguments and prompts don't appear:
 ```bash
 /703-sf-review weekly          # No scope prompt
-/406-sf-audit-seo global      # No domain prompt (SEO only)
+/406-sf-seo global      # No domain prompt (SEO only)
 /105-sf-check typecheck        # No check selection prompt
 ```
 
@@ -657,7 +657,7 @@ project/shipflow_data/
 
 **Audit everything?** → `/400-sf-audit global` (all 8 domains)
 
-**Which projects need SEO?** → `/406-sf-audit-seo global` (auto-filters)
+**Which projects need SEO?** → `/406-sf-seo global` (auto-filters)
 
 **New project?** → `/305-sf-init` (bootstrap tracking)
 

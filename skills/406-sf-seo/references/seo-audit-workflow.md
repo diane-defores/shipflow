@@ -7,22 +7,22 @@ created: "2026-05-16"
 updated: "2026-05-16"
 status: draft
 source_skill: 102-sf-start
-scope: 406-sf-audit-seo-seo-audit-workflow
+scope: 406-sf-seo-seo-audit-workflow
 owner: unknown
 confidence: high
 risk_level: high
 security_impact: yes
 docs_impact: yes
 linked_systems:
-  - skills/406-sf-audit-seo/SKILL.md
-  - skills/406-sf-audit-seo/references/seo-audit-workflow.md
+  - skills/406-sf-seo/SKILL.md
+  - skills/406-sf-seo/references/seo-audit-workflow.md
 depends_on:
   - artifact: "skills/references/skill-instruction-layering.md"
     artifact_version: "0.1.0"
     required_status: "draft"
 supersedes: []
 evidence:
-  - "Extracted from skills/406-sf-audit-seo/SKILL.md during Compact ShipFlow Skill Instructions Phase 2."
+  - "Extracted from skills/406-sf-seo/SKILL.md during Compact ShipFlow Skill Instructions Phase 2."
 next_review: "2026-06-16"
 next_step: "/103-sf-verify Compact ShipFlow Skill Instructions Phase 2"
 ---
@@ -33,7 +33,7 @@ next_step: "/103-sf-verify Compact ShipFlow Skill Instructions Phase 2"
 
 SEO modes, technical/on-page/content/schema/internal-linking/AI-visibility checklists, tracking, and report details.
 
-This reference preserves the detailed pre-compaction instructions for `406-sf-audit-seo`. The top-level `SKILL.md` is now the activation contract; load this file only when the selected mode needs the detailed workflow, checklist, templates, or examples below.
+This reference preserves the detailed pre-compaction instructions for `406-sf-seo`. The top-level `SKILL.md` is now the activation contract; load this file only when the selected mode needs the detailed workflow, checklist, templates, or examples below.
 
 ## Detailed Instructions
 

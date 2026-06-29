@@ -62,7 +62,7 @@ If I were the end user, would I understand this, trust it, want it, and continue
 - `007-sf-content`
 - `206-sf-audit-copy`
 - `207-sf-audit-copywriting`
-- `406-sf-audit-seo`
+- `406-sf-seo`
 - `408-sf-audit-gtm`
 - `502-sf-audit-design`
 

@@ -47,5 +47,5 @@ This skill is an orchestrator. It launches the relevant audits and synthesizes t
 ## Related Skills
 
 - `401-sf-audit-code` for a code-first review
-- `406-sf-audit-seo` for search visibility and metadata issues
+- `406-sf-seo` for search visibility and metadata issues
 - `103-sf-verify` for a final readiness pass after fixes

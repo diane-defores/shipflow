@@ -62,7 +62,7 @@ What are we underestimating, forgetting, or making fragile before we move?
 - `700-sf-explore`
 - `401-sf-audit-code`
 - `403-sf-perf`
-- `406-sf-audit-seo`
+- `406-sf-seo`
 - `408-sf-audit-gtm`
 - `300-sf-docs`
 

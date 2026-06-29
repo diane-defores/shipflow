@@ -138,7 +138,7 @@ Guidance:
 - `Article Name Ideas` should give durable article concepts tied to existing product, docs, skill pages, FAQ, semantic clusters, or the current chantier. Default to 5 to 8 strong ideas.
 - `Titles For This Conversation` is mandatory in workstream mode and should give title candidates that can directly repurpose the current conversation. Default to 5 to 8 strong titles.
 - `Existing Content Opportunities` should identify where the source insight can improve existing internal docs and public content. It should explain the audience learning moment, not only name a file.
-- `Owner Skill Handoffs` should route writing and improvement work to `300-sf-docs`, `201-sf-enrich`, `200-sf-redact`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, or `406-sf-audit-seo`; `202-sf-repurpose` does not write the content itself.
+- `Owner Skill Handoffs` should route writing and improvement work to `300-sf-docs`, `201-sf-enrich`, `200-sf-redact`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, or `406-sf-seo`; `202-sf-repurpose` does not write the content itself.
 - If no blog or article surface is declared, keep the ideas and titles but mark destination as `surface missing: blog`; do not invent paths.
 - `Build Summary` should read like the truth source for all other sections.
 - For external text sources, `Source Analysis` becomes the anchor section and `Build Summary` can be shortened or adapted.

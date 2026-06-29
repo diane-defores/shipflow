@@ -36,7 +36,7 @@ This keeps skills current in areas that drift quickly, like SEO, accessibility, 
 
 ```bash
 /307-sf-skills-refresh
-/307-sf-skills-refresh 406-sf-audit-seo
+/307-sf-skills-refresh 406-sf-seo
 /307-sf-skills-refresh 103-sf-verify
 ```
 

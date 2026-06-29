@@ -20,7 +20,7 @@ linked_systems:
   - skills/201-sf-enrich/SKILL.md
   - skills/206-sf-audit-copy/SKILL.md
   - skills/207-sf-audit-copywriting/SKILL.md
-  - skills/406-sf-audit-seo/SKILL.md
+  - skills/406-sf-seo/SKILL.md
   - skills/103-sf-verify/SKILL.md
   - shipflow_data/business/business.md
   - shipflow_data/business/product.md
@@ -71,7 +71,7 @@ Only these skills can produce or consume a rubric output:
 - `201-sf-enrich`
 - `206-sf-audit-copy`
 - `207-sf-audit-copywriting`
-- `406-sf-audit-seo`
+- `406-sf-seo`
 - `103-sf-verify`
 
 Any other caller must return `status: "blocked"` with `blocked_reasons.code: "unauthorized_evaluator"`.
@@ -101,7 +101,7 @@ If versions are missing or not loadable for a project-aware run, return `project
   "project_id": "<string>",
   "surface": "<blog|article|doc|newsletter|social|other>",
   "evaluator": {
-    "skill": "<007-sf-content|202-sf-repurpose|200-sf-redact|201-sf-enrich|206-sf-audit-copy|207-sf-audit-copywriting|406-sf-audit-seo|103-sf-verify>",
+    "skill": "<007-sf-content|202-sf-repurpose|200-sf-redact|201-sf-enrich|206-sf-audit-copy|207-sf-audit-copywriting|406-sf-seo|103-sf-verify>",
     "role": "<producer|auditor|verifier>",
     "initiated_by": "<operator|workflow|unknown>"
   },

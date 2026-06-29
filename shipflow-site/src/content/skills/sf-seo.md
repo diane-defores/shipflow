@@ -1,6 +1,6 @@
 ---
-title: "sf-audit-seo"
-slug: "sf-audit-seo"
+title: "sf-seo"
+slug: "sf-seo"
 tagline: "Check whether the site is set up to earn search visibility in the current AI and SEO environment."
 summary: "A technical and on-page SEO audit for discoverability, crawlability, content structure, and AI-era visibility signals."
 category: "Audit & Improve"
@@ -24,9 +24,9 @@ what_you_get:
   - "A rubric-compatible quality signal when SEO recommendations depend on project-aware editorial fit"
   - "Governance notes for indexed claims, public content surfaces, and documentation impact when relevant"
 example_prompts:
-  - "/sf-audit-seo"
-  - "/sf-audit-seo site/src/pages/docs.astro"
-  - "/sf-audit-seo docs section"
+  - "/sf-seo"
+  - "/sf-seo site/src/pages/docs.astro"
+  - "/sf-seo docs section"
 limits:
   - "It audits the current surface; it does not guarantee rankings"
   - "Long-term SEO performance still depends on content quality and external demand"

@@ -206,7 +206,7 @@ For each opportunity, include:
 - source proof from the conversation or supplied text
 - content move: add section, add example, add FAQ, add comparison, add demonstration, add warning, update claim, or skip
 - priority: `must write`, `should write`, `optional`, or `do not write`
-- next step: `300-sf-docs`, `201-sf-enrich`, `200-sf-redact`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, or `406-sf-audit-seo`
+- next step: `300-sf-docs`, `201-sf-enrich`, `200-sf-redact`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, or `406-sf-seo`
 
 When the source contains a concrete explanation, decision, demonstration, before/after contrast, or misconception correction, treat it as a potential `Audience Learning Moment`. Prefer small high-leverage insertions over inventing a full article.
 
@@ -511,7 +511,7 @@ Use this routing map:
 | New long-form article, guide, editorial, newsletter draft, or article outline to write | `200-sf-redact` |
 | Clarity, tone, CTA, page-level copy friction, or message-fit review | `206-sf-audit-copy` |
 | Persona, offer, persuasion, conversion strategy, or marketing copy review | `207-sf-audit-copywriting` |
-| Search intent, on-page SEO, metadata, internal linking, or discoverability review | `406-sf-audit-seo` |
+| Search intent, on-page SEO, metadata, internal linking, or discoverability review | `406-sf-seo` |
 
 Each handoff must include:
 
@@ -549,7 +549,7 @@ When this skill finishes:
 - if the user wants polished docs, route the best doc sections into `300-sf-docs`
 - if the user wants public copy or long-form content, route the proven marketing sections into `200-sf-redact`
 - if the user wants existing content improved, route the target surfaces into `201-sf-enrich`
-- if the user needs copy quality, conversion, persuasion, SEO, or search-intent review, route to `206-sf-audit-copy`, `207-sf-audit-copywriting`, or `406-sf-audit-seo`
+- if the user needs copy quality, conversion, persuasion, SEO, or search-intent review, route to `206-sf-audit-copy`, `207-sf-audit-copywriting`, or `406-sf-seo`
 - if the user wants current stats, market context, or external validation, route into `201-sf-enrich`
 - if the user chooses one article name or title, route to `200-sf-redact` with the selected promise, source proof, and surface status
 

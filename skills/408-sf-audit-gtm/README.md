@@ -48,5 +48,5 @@ This skill reviews what is visible in the product, docs, and repo context. It do
 ## Related Skills
 
 - `207-sf-audit-copywriting` for persuasion strategy
-- `406-sf-audit-seo` for acquisition-side visibility
+- `406-sf-seo` for acquisition-side visibility
 - `405-sf-prod` after shipping changes that affect the live funnel

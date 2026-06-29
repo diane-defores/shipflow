@@ -17,7 +17,7 @@ linked_systems:
   - skills/000-shipflow/SKILL.md
   - skills/302-sf-help/SKILL.md
   - skills/007-sf-content/SKILL.md
-  - skills/406-sf-audit-seo/SKILL.md
+  - skills/406-sf-seo/SKILL.md
   - shipflow_data/business/agent-profiles/
 depends_on:
   - artifact: "skills/references/operator-partnership-contract.md"
@@ -60,7 +60,7 @@ What should we change first so the right people can find, understand, and trust 
 
 ## Preferred Skills
 
-- `406-sf-audit-seo`
+- `406-sf-seo`
 - `007-sf-content`
 - `202-sf-repurpose`
 - `300-sf-docs`

@@ -36,7 +36,7 @@ limits:
 related_skills:
   - "sf-research"
   - "sf-redact"
-  - "sf-audit-seo"
+  - "sf-seo"
 featured: true
 order: 400
 ---

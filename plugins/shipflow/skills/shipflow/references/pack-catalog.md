@@ -88,7 +88,7 @@ Candidate skills:
 - `205-sf-veille`
 - `206-sf-audit-copy`
 - `207-sf-audit-copywriting`
-- `406-sf-audit-seo`
+- `406-sf-seo`
 - `408-sf-audit-gtm`
 
 Packaging status: planned. Needs public/private data boundary review.

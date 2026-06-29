@@ -61,7 +61,7 @@ related_skills:
   - "sf-enrich"
   - "sf-audit-copy"
   - "sf-audit-copywriting"
-  - "sf-audit-seo"
+  - "sf-seo"
   - "sf-docs"
   - "sf-veille"
   - "sf-market-study"

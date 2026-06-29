@@ -23,6 +23,7 @@ linked_systems:
   - shipflow_data/business/product.md
   - shipflow_data/business/branding.md
   - shipflow_data/business/gtm.md
+  - shipflow_data/business/portfolio-project-pitch-links.md
 depends_on:
   - artifact: "shipflow_data/editorial/content-map.md"
     artifact_version: "0.9.0"
@@ -39,6 +40,9 @@ depends_on:
   - artifact: "shipflow_data/business/gtm.md"
     artifact_version: "1.2.0"
     required_status: reviewed
+  - artifact: "shipflow_data/business/portfolio-project-pitch-links.md"
+    artifact_version: "0.1.0"
+    required_status: draft
 supersedes: []
 evidence:
   - "Operator request 2026-06-29: centralize source analysis and project/angle classification instead of repeating it in every transforming skill."
@@ -70,6 +74,37 @@ Load this reference when:
 - a skill receives an external email, URL, transcript, article, note, or competitor/content example as inspiration
 - a route could be `emailing`, `202-sf-repurpose`, `200-sf-redact`, `007-sf-content`, `203-sf-research`, `204-sf-market-study`, `205-sf-veille`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `300-sf-docs`, or a project-specific business/content route
 
+## Invocation Pattern
+
+If the operator already knows what to do with the source, treat that as a routing constraint instead of rediscovering intent.
+
+Good input shapes:
+
+```text
+#source project=Winflowz angle=email sequence
+<source email>
+```
+
+```text
+#source output=landing-page project=ShipFlow
+<source notes>
+```
+
+```text
+#source owner=emailing goal="turn this into a 4-email launch sequence"
+<source email>
+```
+
+Supported hints:
+
+- `project=<name>`: preferred project or corpus
+- `owner=<skill>`: preferred owner skill when already known
+- `angle=<use>` or `output=<format>`: intended transformation or destination
+- `audience=<persona>`: intended reader or segment
+- `constraints=<notes>`: claim, tone, channel, compliance, or scope constraints
+
+Hints are binding unless they conflict with safety, project truth, public-claim rules, or owner-skill boundaries. If a hint is unsafe or mismatched, report the mismatch and recommend the safer owner route.
+
 ## Required Context
 
 Before final classification, load only the relevant canonical context:
@@ -83,6 +118,41 @@ Before final classification, load only the relevant canonical context:
 
 Do not load every corpus by default. Load the smallest set that changes classification quality.
 
+## Portfolio Project Index
+
+When the source could belong to more than one project, load `shipflow_data/business/portfolio-project-pitch-links.md` before choosing the project. Use it as an index, not as a substitute for each project's own business, product, brand, or GTM docs.
+
+Project selection should consider:
+
+- explicit project hint from the operator
+- audience match
+- product/problem match
+- business angle match
+- source vocabulary and channel
+- whether the pitch entry is `reviewed`, `candidate`, `stale`, or `archived`
+
+If the index points to a project pitch URL, use that URL only as routing context unless the task requires deeper project truth. Do not infer private details beyond what the pitch and local governed docs support.
+
+## Cache Policy
+
+Do not create a public repo cache of fetched pitch content, pasted sources, private emails, customer text, or source excerpts.
+
+Allowed durable state in the public ShipFlow repo:
+
+- the portfolio index of project names, pitch URLs, short routing notes, statuses, and source-of-truth pointers
+- source-intake doctrine and routing rules
+- redacted summaries inside specs or reports when a lifecycle skill explicitly owns them
+
+Not allowed in the public ShipFlow repo:
+
+- copied email examples from the operator's inbox
+- private pitch contents fetched from another repo
+- customer or audience source material
+- unredacted screenshots, transcripts, or notes
+- generated cache files containing source text
+
+If reusable private source memory is needed later, route to a separate private store or project-local governed artifact with explicit operator approval.
+
 ## Classification Output
 
 Return a compact classification before transforming the source:
@@ -91,6 +161,7 @@ Return a compact classification before transforming the source:
 Source type: <email | article | transcript | note | URL | feedback | competitor example | unknown>
 Primary project or corpus: <project | ShipFlow | portfolio scan needed | unknown>
 Best angle: <email sequence | repurpose | draft | audit | research | market study | docs | FAQ | landing page | backlog | unknown>
+Intent hint: <operator-provided action | none>
 Owner skill: <skill name>
 Why: <one sentence>
 Risks: <claims | copyright | brand voice | consent | public surface | source freshness | none>

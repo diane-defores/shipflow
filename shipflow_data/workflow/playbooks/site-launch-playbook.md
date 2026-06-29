@@ -16,7 +16,7 @@ docs_impact: yes
 linked_systems:
   - shipflow_data/workflow/playbooks/README.md
   - shipflow_data/workflow/checklists/site-launch-checklist.md
-  - skills/406-sf-audit-seo/references/seo-audit-workflow.md
+  - skills/406-sf-seo/references/seo-audit-workflow.md
 depends_on:
   - artifact: "shipflow_data/workflow/checklists/site-launch-checklist.md"
     artifact_version: "1.0.0"

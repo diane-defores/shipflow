@@ -53,7 +53,7 @@ Refresh one or more skills against both current external practice and current Sh
 
 ## MODE DETECTION
 
-- **`$ARGUMENTS` is a skill name** (e.g., `406-sf-audit-seo`): refresh that single skill.
+- **`$ARGUMENTS` is a skill name** (e.g., `406-sf-seo`): refresh that single skill.
 - **`$ARGUMENTS` names governance, docs, freshness, or skill-maintenance skills**: prioritize local ShipFlow governance alignment before external trend research. Typical targets: `300-sf-docs`, `307-sf-skills-refresh`, `009-sf-skill-build`, `302-sf-help`, `305-sf-init`, and public skill pages.
 - **`$ARGUMENTS` is empty**: load `$SHIPFLOW_ROOT/skills/references/question-contract.md`, then ask one numbered selection question for which skills to refresh.
   - Question: "Which skills should I refresh?"
@@ -122,7 +122,7 @@ Each agent prompt MUST include:
 
 Use these as starting points, adapt to the specific skill:
 
-- **SEO** (406-sf-audit-seo, 201-sf-enrich): AEO/GEO evolution, llms.txt adoption, Core Web Vitals thresholds (INP, LCP, CLS), new schema.org types, E-E-A-T updates, robots.txt for AI crawlers (GPTBot, ClaudeBot, PerplexityBot), hreflang updates, structured data rich-result eligibility changes
+- **SEO** (406-sf-seo, 201-sf-enrich): AEO/GEO evolution, llms.txt adoption, Core Web Vitals thresholds (INP, LCP, CLS), new schema.org types, E-E-A-T updates, robots.txt for AI crawlers (GPTBot, ClaudeBot, PerplexityBot), hreflang updates, structured data rich-result eligibility changes
 - **Design / UI** (502-sf-audit-design): modern CSS Baseline additions, WCAG 2.2 / 3.0 draft updates, view transitions, container queries, `:has()`, `light-dark()`, OKLCH, anchor positioning / popover API, INP budget, AI-generated code smells (v0, bolt, lovable)
 - **Copy / content** (206-sf-audit-copy, 207-sf-audit-copywriting): AI-slop lexicon updates (EN + FR), conversion framework validation (StoryBrand, PAS, JTBD), LLM citation patterns, plain-language / WCAG 3 readability, trust signals in AI era
 - **Enrichment / research** (201-sf-enrich, 203-sf-research, 205-sf-veille): new schema types, interactive content data, primary source preference, content decay detection, Mermaid/diagram-as-code adoption
@@ -223,7 +223,7 @@ User mode should be concise:
 ```
 SKILLS REFRESHED — [date]
 ═══════════════════════════════════════
-  406-sf-audit-seo       +X checks, +Y updates, Z new phases
+  406-sf-seo       +X checks, +Y updates, Z new phases
   502-sf-audit-design    +X checks, +Y updates
   ...
 ═══════════════════════════════════════

@@ -233,7 +233,7 @@ Recommended content lifecycle entrypoint:
 007-sf-content -> CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> 103-sf-verify -> 005-sf-ship
 ```
 
-`007-sf-content` is the master content-management orchestrator. It does not replace `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-audit-seo`, `300-sf-docs`, `205-sf-veille`, or `204-sf-market-study`; it chooses and sequences them while enforcing public-surface, claim, runtime schema, validation, and missing-surface gates.
+`007-sf-content` is the master content-management orchestrator. It does not replace `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-seo`, `300-sf-docs`, `205-sf-veille`, or `204-sf-market-study`; it chooses and sequences them while enforcing public-surface, claim, runtime schema, validation, and missing-surface gates.
 
 Recommended user onboarding and activation entrypoint:
 

@@ -67,7 +67,7 @@ This role is not a generic brainstormer, copywriter, or passive analyst. It is a
 - `203-sf-research`
 - `204-sf-market-study`
 - `408-sf-audit-gtm`
-- `406-sf-audit-seo`
+- `406-sf-seo`
 - `007-sf-content`
 
 ## Output Shape

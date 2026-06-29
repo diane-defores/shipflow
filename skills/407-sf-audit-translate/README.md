@@ -52,5 +52,5 @@ This skill depends on the repo exposing the translation system clearly. It can i
 ## Related Skills
 
 - `206-sf-audit-copy` for localized copy quality
-- `406-sf-audit-seo` for multilingual search and indexing issues
+- `406-sf-seo` for multilingual search and indexing issues
 - `400-sf-audit` when translation quality is only one part of a wider release review

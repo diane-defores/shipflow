@@ -52,7 +52,7 @@ limits:
 related_skills:
   - "sf-docs"
   - "sf-audit-copy"
-  - "sf-audit-seo"
+  - "sf-seo"
   - "sf-redact"
 featured: false
 order: 200

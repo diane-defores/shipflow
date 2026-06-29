@@ -128,7 +128,7 @@ Read each selected domain skill to get their PROJECT MODE checklists:
 - `$HOME/.codex/skills/401-sf-audit-code/SKILL.md`
 - `$HOME/.codex/skills/502-sf-audit-design/SKILL.md`
 - `$HOME/.codex/skills/206-sf-audit-copy/SKILL.md`
-- `$HOME/.codex/skills/406-sf-audit-seo/SKILL.md`
+- `$HOME/.codex/skills/406-sf-seo/SKILL.md`
 - `$HOME/.codex/skills/408-sf-audit-gtm/SKILL.md`
 - `$HOME/.codex/skills/407-sf-audit-translate/SKILL.md`
 - `$HOME/.codex/skills/402-sf-deps/SKILL.md`

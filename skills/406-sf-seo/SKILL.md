@@ -1,5 +1,5 @@
 ---
-name: 406-sf-audit-seo
+name: 406-sf-seo
 description: "SEO domain router for audits, launches, monitoring, and fixes."
 argument-hint: <mode|page|URL|content file|project>
 ---
@@ -31,7 +31,7 @@ Default to `report=user`: concise, outcome-first, and in the user's active langu
 
 ## Mission
 
-`406-sf-audit-seo` is the SEO domain router. It selects the smallest safe SEO mode, loads the canonical doctrine, and returns an audit, launch readiness verdict, monitoring readout, or owned fix plan without duplicating SEO playbooks in the activation body.
+`406-sf-seo` is the SEO domain router. It selects the smallest safe SEO mode, loads the canonical doctrine, and returns an audit, launch readiness verdict, monitoring readout, or owned fix plan without duplicating SEO playbooks in the activation body.
 
 ## Required References
 
@@ -39,7 +39,7 @@ Always load shared references only when their gate applies. Load skill-local ref
 
 - `$SHIPFLOW_ROOT/shipflow_data/workflow/playbooks/seo-charge-referencement-web-playbook.md`: SEO operating model, execution order, gates, outputs, and failure modes.
 - `$SHIPFLOW_ROOT/shipflow_data/workflow/checklists/seo-charge-referencement-web-checklist.md`: reusable SEO control surface for launch, audit, and verification.
-- `$SHIPFLOW_ROOT/skills/406-sf-audit-seo/references/seo-audit-workflow.md`: SEO audit modes, technical/on-page/content/schema/internal-linking/AI-visibility checks, tracking, and report details.
+- `$SHIPFLOW_ROOT/skills/406-sf-seo/references/seo-audit-workflow.md`: SEO audit modes, technical/on-page/content/schema/internal-linking/AI-visibility checks, tracking, and report details.
 - `$SHIPFLOW_ROOT/skills/references/content-quality-rubric.md`: shared rubric for project-aware content quality score and blocked criteria.
 
 ## Scope Gate
@@ -60,7 +60,7 @@ Use audit as the default when `$ARGUMENTS` is empty or only names a page, URL, c
 - Load technical/editorial corpus references before changing mapped docs, public content, metadata, sitemap, robots, or schema surfaces.
 - Governance Corpora: use `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` and `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when SEO findings touch mapped docs, public content, claims, sitemap, robots, metadata, or schema.
 - Apply the Documentation Freshness Gate before changing external SEO/Search/OpenAI/ChatGPT doctrine.
-- Preserve structured data and AI Visibility checks by loading `$SHIPFLOW_ROOT/skills/406-sf-audit-seo/references/seo-audit-workflow.md` for technical SEO, schema, internal linking, and AEO/GEO review.
+- Preserve structured data and AI Visibility checks by loading `$SHIPFLOW_ROOT/skills/406-sf-seo/references/seo-audit-workflow.md` for technical SEO, schema, internal linking, and AEO/GEO review.
 - When SEO output includes editorial scoring, use `content-quality-rubric.md` for status, score, and blocking criterion handling.
 - Evaluate `Chantier potentiel` for indexation, schema, content architecture, AI visibility, or multi-page remediation.
 - Treat playbooks/checklists/references as doctrine. Do not expand this activation body with long SEO matrices, templates, provider claims, or troubleshooting trees.
@@ -78,6 +78,6 @@ Stop and report blocked when:
 
 Validate this skill after edits with:
 
-- `rg -n "Governance Corpora|OpenAI|ChatGPT|Chantier Potential|Report Modes|structured data|AI Visibility" skills/406-sf-audit-seo/SKILL.md`
+- `rg -n "Governance Corpora|OpenAI|ChatGPT|Chantier Potential|Report Modes|structured data|AI Visibility" skills/406-sf-seo/SKILL.md`
 - `python3 tools/skill_budget_audit.py --skills-root skills --format markdown`
 - `tools/shipflow_sync_skills.sh --check --all`

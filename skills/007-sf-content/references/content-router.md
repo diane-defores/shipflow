@@ -52,7 +52,7 @@ When a pasted source, email, URL, transcript, note, article, or example arrives 
 - `repurpose`, `source`, `conversation`, `faq`, `release notes`, `site update` -> `202-sf-repurpose`.
 - `draft`, `write`, `article`, `blog`, `guide`, `editorial` -> `200-sf-redact` after surface and claim gates.
 - `enrich`, `refresh`, `update @file`, `improve` -> `201-sf-enrich`.
-- `audit`, `copy`, `copywriting`, `seo` -> `206-sf-audit-copy`, `207-sf-audit-copywriting`, and/or `406-sf-audit-seo`.
+- `audit`, `copy`, `copywriting`, `seo` -> `206-sf-audit-copy`, `207-sf-audit-copywriting`, and/or `406-sf-seo`.
 - `docs`, `readme`, `editorial`, `content governance` -> `300-sf-docs`.
 - `veille`, URLs, pasted external trend/source content -> `205-sf-veille`, `203-sf-research`, or `204-sf-market-study`.
 - `apply`, `publish`, `ship` -> validate, then `103-sf-verify` and `005-sf-ship` when bounded.
@@ -92,7 +92,7 @@ For public or potentially public content:
 | Upgrade existing content with research and better structure | `201-sf-enrich` |
 | Clarity, tone, CTA, and page-level copy audit | `206-sf-audit-copy` |
 | Persona, offer, persuasion, and conversion audit | `207-sf-audit-copywriting` |
-| Technical/on-page SEO and search intent audit | `406-sf-audit-seo` |
+| Technical/on-page SEO and search intent audit | `406-sf-seo` |
 | README/docs/content governance update | `300-sf-docs` |
 | Public browser proof | `108-sf-browser` |
 | Verification | `103-sf-verify` |
