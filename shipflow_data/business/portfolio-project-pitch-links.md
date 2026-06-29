@@ -15,6 +15,8 @@ security_impact: none
 docs_impact: yes
 target_projects: "ShipFlow and project-local ShipFlow governance corpora"
 source_policy: "Keep each pitch short, stable, and tied to a single source of truth. Distinguish public pitch text from internal framing notes."
+linked_systems:
+  - skills/references/private-memory-store.md
 evidence:
   - "User asked for an internal governance doc that gives a quick pitch for each project."
 depends_on:
@@ -57,6 +59,24 @@ It exists so the agent can recover project identity quickly during portfolio-lev
 - Separate observable facts from inferred positioning.
 - Update the pitch when the business model, audience, or promise materially changes.
 - Do not let the pitch replace product, GTM, or brand contracts.
+
+## Private Cache Rule
+
+This public file is only the portfolio index. It may contain project names, pitch URLs, short routing notes, statuses, and source-of-truth pointers.
+
+Fetched pitch contents, private pitch summaries, and reusable source material belong in the approved private memory root:
+
+```text
+${SHIPFLOW_PRIVATE_ROOT:-$HOME/.shipflow/private}
+```
+
+Use `skills/references/private-memory-store.md` for the storage rules. The default pitch cache location is:
+
+```text
+${SHIPFLOW_PRIVATE_ROOT:-$HOME/.shipflow/private}/project-pitches/
+```
+
+Do not copy cached pitch bodies, private repo contents, or source excerpts into this public index.
 
 ## Status Values
 

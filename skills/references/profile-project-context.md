@@ -111,7 +111,7 @@ Default bundle:
 Load additionally when relevant:
 
 - `shipflow_data/editorial/content-map.md`
-- `skills/008-sf-onboarding/SKILL.md`
+- `skills/008-sf-end-user/SKILL.md`
 - `shipflow_data/business/business.md`
 
 Use this bundle for value perception, trust, comprehension, CTA friction, onboarding friction, and user desire to continue.

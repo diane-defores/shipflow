@@ -20,7 +20,7 @@ linked_systems:
   - skills/002-sf-maintain/SKILL.md
   - skills/007-sf-content/SKILL.md
   - skills/006-sf-design/SKILL.md
-  - skills/008-sf-onboarding/SKILL.md
+  - skills/008-sf-end-user/SKILL.md
   - skills/600-sf-local-cloud-sync/SKILL.md
   - skills/108-sf-browser/SKILL.md
   - skills/003-sf-bug/SKILL.md
@@ -62,7 +62,7 @@ evidence:
   - "Updated on 2026-05-04 to document 000-shipflow <instruction> as the primary non-technical router with direct main-thread handoff to selected skills."
   - "Updated on 2026-05-05 to document shared question/default doctrine across skills."
   - "Updated on 2026-05-06 to add 006-sf-design as the master design lifecycle entrypoint."
-  - "Updated on 2026-05-31 to add 008-sf-onboarding as the user activation lifecycle entrypoint."
+  - "Updated on 2026-05-31 to add 008-sf-end-user as the user activation lifecycle entrypoint."
   - "Updated on 2026-06-01 to add 600-sf-local-cloud-sync as the local-to-cloud data promotion, merge, sync UX, and security contract entrypoint."
   - "Updated on 2026-05-08 to clarify 003-sf-bug as a bug lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Updated on 2026-05-11 to add competitive intelligence and affiliate program registries as project-local business artifacts."
@@ -107,12 +107,12 @@ Skill launch cheatsheet:
 | Non-technical first command | `000-shipflow <instruction>` | Routes pure conversational answers directly; routes real work to the right master or specialist skill; asks one numbered question when ambiguous. |
 | Named operator profile | `%Victoire <instruction>` | Canonical profile syntax. Activates the `Victoire` growth-operations profile; `#Tag` remains a focus-tag surface and the router still picks the owner skill. |
 | Non-technical first command with named operator profile | `000-shipflow profile=victoire <instruction>` | Same router, but with the `Victoire` growth-operations profile active so prioritization, ranking, and growth leverage shape the answer or handoff framing. |
-| Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; use `spark`, `codex`, `mini`, `agents`, or `sous-agent` to make model-specific delegated sequential execution a validation gate; for user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-onboarding` after implementation; use detailed report modes only for handoff evidence. |
+| Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story; use `spark`, `codex`, `mini`, `agents`, or `sous-agent` to make model-specific delegated sequential execution a validation gate; for user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-end-user` after implementation; use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `002-sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `004-sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `003-sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `007-sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`. |
-| User onboarding and activation | `008-sf-onboarding <feature, flow, or audit target>` | First-success paths, setup order, why/how guidance, recoverable states, docs impact, and proof routing. |
+| End-user experience | `008-sf-end-user <feature, flow, screen, or audit target>` | UX/UI clarity, friction, trust, first-success paths, setup order, recoverable states, docs impact, and proof routing. |
 | Local-to-cloud data sync | `600-sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
 | Product entitlements and access gates | `601-sf-product-entitlements <project or feature>` | Entitlement ownership, provider events, activation codes, product-local mirrors, backend authorization gates, support flows, and sync handoffs. |
 | Skill creation or maintenance | `009-sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `700-sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
@@ -159,7 +159,7 @@ Primary non-technical router entrypoint:
 000-shipflow <instruction> -> direct answer or direct handoff to selected skill
 ```
 
-`000-shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `001-sf-build`; maintenance to `002-sf-maintain`; bug-loop work to `003-sf-bug`; release, deploy, or production proof to `004-sf-deploy`; content work to `007-sf-content`; onboarding and activation work to `008-sf-onboarding`; local-to-cloud sync contract work to `600-sf-local-cloud-sync`; product entitlement and access-gate work to `601-sf-product-entitlements`; skill maintenance to `009-sf-skill-build`; and obvious specialist audits to `400-sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
+`000-shipflow <instruction>` is the recommended first command when the operator does not want to choose a skill. It answers pure conversational requests in the main thread. It hands non-trivial feature, code, and docs work to `001-sf-build`; maintenance to `002-sf-maintain`; bug-loop work to `003-sf-bug`; release, deploy, or production proof to `004-sf-deploy`; content work to `007-sf-content`; onboarding and activation work to `008-sf-end-user`; local-to-cloud sync contract work to `600-sf-local-cloud-sync`; product entitlement and access-gate work to `601-sf-product-entitlements`; skill maintenance to `009-sf-skill-build`; and obvious specialist audits to `400-sf-audit-*`. Ambiguous requests get one numbered clarifying question with why, recommended answer, and practical options.
 
 Named operator profiles sit above the router as a human-readable invocation layer. They do not replace skills:
 
@@ -201,7 +201,7 @@ Direct build entrypoint for non-trivial work:
 001-sf-build -> existing chantier check -> 100-sf-spec/101-sf-ready loop -> 102-sf-start -> 103-sf-verify -> 104-sf-end -> 005-sf-ship
 ```
 
-`001-sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: invoking a master skill authorizes bounded delegated sequential execution for the current chantier, `spark`, `codex`, `sous-agent`/`subagent`/`agents`, and `mini` request model-specific subagent delegation, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`. After user-facing feature work, `001-sf-build` evaluates whether a `/008-sf-onboarding` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
+`001-sf-build` keeps the user conversation focused on decisions and status while following the shared master lifecycle reference in `skills/references/master-workflow-lifecycle.md` and the delegation reference in `skills/references/master-delegation-semantics.md`: invoking a master skill authorizes bounded delegated sequential execution for the current chantier, `spark`, `codex`, `sous-agent`/`subagent`/`agents`, and `mini` request model-specific subagent delegation, short natural-language confirmations after diagnosis or proposal continue the current chantier with one bounded subagent by intent rather than exact keyword, and parallel execution is allowed only when a ready spec defines non-overlapping `Execution Batches`. After user-facing feature work, `001-sf-build` evaluates whether a `/008-sf-end-user` pass should be handled or suggested so beginner adoption, setup, and first-success guidance are not forgotten after the code works.
 
 Recommended release entrypoint after implementation:
 
@@ -235,13 +235,13 @@ Recommended content lifecycle entrypoint:
 
 `007-sf-content` is the master content-management orchestrator. It does not replace `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-seo`, `300-sf-docs`, `205-sf-veille`, or `204-sf-market-study`; it chooses and sequences them while enforcing public-surface, claim, runtime schema, validation, and missing-surface gates.
 
-Recommended user onboarding and activation entrypoint:
+Recommended end-user experience and activation entrypoint:
 
 ```text
-008-sf-onboarding -> first-success path -> setup order -> states/recovery -> docs impact -> proof or 001-sf-build
+008-sf-end-user -> first-success path -> setup order -> states/recovery -> docs impact -> proof or 001-sf-build
 ```
 
-`008-sf-onboarding` is the user activation skill. It does not replace `006-sf-design` or `001-sf-build`; it defines the onboarding contract that helps users understand a feature, complete setup in the right order, recover from skipped or blocked steps, and reach value with proof and docs coherence.
+`008-sf-end-user` is the end-user experience skill. It does not replace `006-sf-design` or `001-sf-build`; it defines the user path contract that helps users understand a feature, trust it, reduce friction, complete setup in the right order when needed, recover from skipped or blocked steps, and reach value with proof and docs coherence.
 
 Recommended local-to-cloud sync contract entrypoint:
 
@@ -249,7 +249,7 @@ Recommended local-to-cloud sync contract entrypoint:
 600-sf-local-cloud-sync -> data inventory -> account association -> promotion/hydration -> merge/conflict/tombstones -> sync UX/security -> proof or 001-sf-build
 ```
 
-`600-sf-local-cloud-sync` is the data-trust skill for local-first products. It does not replace `001-sf-build` or `008-sf-onboarding`; it defines the sync contract that prevents silent local data loss, cross-account replay, vague merge policy, unsafe secret sync, and unproven reinstall-recovery promises.
+`600-sf-local-cloud-sync` is the data-trust skill for local-first products. It does not replace `001-sf-build` or `008-sf-end-user`; it defines the sync contract that prevents silent local data loss, cross-account replay, vague merge policy, unsafe secret sync, and unproven reinstall-recovery promises.
 
 Recommended product-entitlement contract entrypoint:
 

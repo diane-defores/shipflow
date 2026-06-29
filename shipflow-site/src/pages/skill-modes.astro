@@ -9,7 +9,7 @@ const masterSkillCheatsheet = [
     command: "shipflow <instruction>",
     when: "Recommended non-technical first command when you want ShipFlow to choose the route.",
     modes:
-      "Answers pure conversation directly; routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, design to sf-design, onboarding to sf-onboarding, local-to-cloud sync to sf-local-cloud-sync, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*. Asks one numbered question when ambiguous."
+      "Answers pure conversation directly; routes feature/code/docs to sf-build, maintenance to sf-maintain, bugs to sf-bug, release/deploy/prod proof to sf-deploy, content to sf-content, design to sf-design, end-user experience to sf-end-user, local-to-cloud sync to sf-local-cloud-sync, skill maintenance to sf-skill-build, and obvious specialist audits to sf-audit-*. Asks one numbered question when ambiguous."
   },
   {
     command: "sf-build <story, bug, or goal>",
@@ -48,8 +48,8 @@ const masterSkillCheatsheet = [
       "tokens, audit, playground, page or route targets, redesign goals, token migration, visual proof, and natural-language design requests all route through the safest owner skills."
   },
   {
-    command: "sf-onboarding <feature, flow, or audit target>",
-    when: "User activation lifecycle for first-success paths, setup sequencing, recoverable states, docs impact, and proof routing.",
+    command: "sf-end-user <feature, flow, or audit target>",
+    when: "End-user experience review for UX/UI clarity, friction, trust, first-success paths, setup sequencing, recoverable states, docs impact, and proof routing.",
     modes:
       "Use after or alongside feature work when users need context, why/how guidance, permission or integration setup, skipped/blocked recovery, and value proof."
   },
@@ -108,7 +108,7 @@ const runtimeFamilies = [
   {
     title: "Lifecycle/master",
     use: "Carry a work item across several gates.",
-    examples: "shipflow, sf-build, sf-maintain, sf-deploy, sf-design, sf-content, sf-onboarding, sf-skill-build"
+    examples: "shipflow, sf-build, sf-maintain, sf-deploy, sf-design, sf-content, sf-end-user, sf-skill-build"
   },
   {
     title: "Data trust/source",

@@ -4,6 +4,20 @@ Chronological log of skill refreshes via `/307-sf-skills-refresh`. Most recent f
 
 ---
 
+## 2026-06-29 — 008-sf-end-user
+
+**Added:**
+- [skill] `008-sf-end-user` replaces `008-sf-onboarding` as the broader end-user experience entrypoint for UX/UI clarity, friction, trust, activation, onboarding, recovery, docs impact, and proof routing
+- [reference] New `onboarding-playbook.md` keeps onboarding, activation, setup order, first-run recovery, and first-success guidance as a load-on-demand playbook
+
+**Updated:**
+- [routing/docs] Router, help catalog, skill code index, public skill page, launch cheatsheet, workflow docs, and runtime links now use `008-sf-end-user`
+
+**New phases:**
+- None
+
+**Sources:** 0 URLs consulted (local ShipFlow skill-contract refactor)
+
 ## 2026-06-12 — 307-sf-skills-refresh
 
 **Added:**
@@ -46,14 +60,14 @@ Chronological log of skill refreshes via `/307-sf-skills-refresh`. Most recent f
 
 **Sources:** 0 URLs consulted (local ShipFlow skill contracts and SocialGlowz sync reference)
 
-## 2026-06-12 — 008-sf-onboarding
+## 2026-06-12 — 008-sf-end-user
 
 **Added:**
 - [reference] New onboarding progress overlay pattern preserving the WinFlowz and Temu popup/section onboarding implementation lessons for future app onboarding work
-- [public docs] Public `sf-onboarding` page now exposes the reusable onboarding popup/progress-overlay mode
+- [public docs] Public `sf-end-user` page now exposes the reusable onboarding popup/progress-overlay mode
 
 **Updated:**
-- [skill] `008-sf-onboarding` now loads the onboarding overlay pattern reference for stepped first-run/setup flows and codifies completed-over-current state priority
+- [skill] `008-sf-end-user` now loads the onboarding overlay pattern reference for stepped first-run/setup flows and codifies completed-over-current state priority
 
 **New phases:**
 - None
@@ -75,14 +89,14 @@ Chronological log of skill refreshes via `/307-sf-skills-refresh`. Most recent f
 
 **Sources:** 0 URLs consulted (local ShipFlow governance contracts and WinFlowz chantier context)
 
-## 2026-05-31 — 008-sf-onboarding
+## 2026-05-31 — 008-sf-end-user
 
 **Added:**
-- [skill] New `skills/008-sf-onboarding/SKILL.md` reviewed against current ShipFlow routing, lifecycle, reporting, proof, docs/editorial, freshness, and budget gates
-- [public docs] Public skill page, router/help discovery, lifecycle docs, cheatsheets, and site skill-mode pages expose `008-sf-onboarding` as the user activation entrypoint
+- [skill] New `skills/008-sf-end-user/SKILL.md` reviewed against current ShipFlow routing, lifecycle, reporting, proof, docs/editorial, freshness, and budget gates
+- [public docs] Public skill page, router/help discovery, lifecycle docs, cheatsheets, and site skill-mode pages expose `008-sf-end-user` as the user activation entrypoint
 
 **Updated:**
-- [routing] `001-sf-build` now evaluates whether a user-facing feature should route to or suggest `008-sf-onboarding` after implementation; `000-shipflow` routes mixed build-plus-onboarding requests to `001-sf-build` first with that gate preserved
+- [routing] `001-sf-build` now evaluates whether a user-facing feature should route to or suggest `008-sf-end-user` after implementation; `000-shipflow` routes mixed build-plus-onboarding requests to `001-sf-build` first with that gate preserved
 
 **New phases:**
 - None

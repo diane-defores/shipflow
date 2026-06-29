@@ -30,6 +30,7 @@ evidence:
   - "The package includes both server-side CLI scripts and the terminal UI, so the terminology must bind both to the same product family."
   - "Operator idea 2026-06-27: lightweight glossary tags should recenter the agent faster than invoking a full skill when the conversation drifts."
   - "Operator request 2026-06-29: add a #source tag for shared source intake, classification, project fit, and owner-skill routing."
+  - "Operator approval 2026-06-29: add a private memory store for cached project pitches and approved reusable source material."
 next_review: "2026-07-11"
 next_step: "/103-sf-verify shared terminology routing"
 ---
@@ -77,7 +78,7 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 | `#monetization` | Recenter on revenue fit, packaging, paywalls, upsell paths, and pricing pressure | `$SHIPFLOW_ROOT/shipflow_data/business/business.md` |
 | `#retention` | Recenter on repeat usage, stickiness, and product loops that keep users active | `$SHIPFLOW_ROOT/shipflow_data/business/product.md` |
 | `#decision-maker` | Recenter on what matters to the buyer, approver, or economic decision-maker | `$SHIPFLOW_ROOT/shipflow_data/business/business.md` |
-| `#end-user` | Recenter on first success, user usefulness, clarity, and beginner adoption | `$SHIPFLOW_ROOT/skills/008-sf-onboarding/SKILL.md` |
+| `#end-user` | Recenter on first success, user usefulness, clarity, and beginner adoption | `$SHIPFLOW_ROOT/skills/008-sf-end-user/SKILL.md` |
 | `#trust` | Recenter on trust, promise discipline, claim safety, and credibility | `$SHIPFLOW_ROOT/shipflow_data/business/branding.md` |
 | `#cta` | Recenter on the next action the page, flow, or message should drive clearly | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |
 | `#clarity` | Recenter on readability, explicit structure, and removal of vague language | `$SHIPFLOW_ROOT/shipflow_data/business/branding.md` |
@@ -85,6 +86,7 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 | `#voice` | Recenter on tone, wording, and brand-language discipline | `$SHIPFLOW_ROOT/shipflow_data/business/branding.md` |
 | `#audience` | Recenter on persona fit, reader sophistication, and who the message is actually for | `$SHIPFLOW_ROOT/shipflow_data/business/business.md` |
 | `#source` | Recenter on classifying an incoming source, project fit, angle, risks, and owner-skill route | `$SHIPFLOW_ROOT/skills/references/source-intake-classification.md` |
+| `#private-memory` | Recenter on the approved private runtime store for pitch caches and reusable private source memory | `$SHIPFLOW_ROOT/skills/references/private-memory-store.md` |
 | `#repurpose` | Recenter on transforming one source into the right downstream content surfaces | `$SHIPFLOW_ROOT/shipflow_data/editorial/content-map.md` |
 | `#pillar` | Recenter on pillar-page role, semantic architecture, and supporting-page structure | `$SHIPFLOW_ROOT/shipflow_data/editorial/content-map.md` |
 | `#seo-intent` | Recenter on search intent, query-to-surface fit, and discoverability usefulness | `$SHIPFLOW_ROOT/shipflow_data/editorial/content-map.md` |
@@ -109,7 +111,7 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 | `#single-source` | Recenter on one authoritative artifact instead of duplicated explanation | `$SHIPFLOW_ROOT/shipflow_data/technical/code-docs-map.md` |
 | `#shipflow` | Recenter on the internal ShipFlow system rather than the current project repo | `$SHIPFLOW_ROOT/skills/references/entrypoint-routing.md` |
 | `#shupflow` | Alias for `#shipflow` when used as a fast recentering tag in conversation | `$SHIPFLOW_ROOT/skills/references/entrypoint-routing.md` |
-| `#onboarding` | Recenter on first success, setup order, recoverable states, and adoption guidance | `$SHIPFLOW_ROOT/skills/008-sf-onboarding/SKILL.md` |
+| `#onboarding` | Recenter on first success, setup order, recoverable states, and adoption guidance | `$SHIPFLOW_ROOT/skills/008-sf-end-user/SKILL.md` |
 | `#routing` | Recenter on owner-skill selection and direct handoff rules | `$SHIPFLOW_ROOT/skills/references/entrypoint-routing.md` |
 | `#proof` | Recenter on proof paths, validation proportion, and evidence claims | `$SHIPFLOW_ROOT/skills/references/spec-driven-development-discipline.md` |
 | `#shipflow-core` | Recenter on ShipFlow system hardening, skill fidelity, and internal doctrine | `$SHIPFLOW_ROOT/skills/900-shipflow-core/SKILL.md` |

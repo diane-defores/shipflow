@@ -107,7 +107,7 @@ Core codes:
 | `005` | `/005-sf-ship` |
 | `006` | `/006-sf-design` |
 | `007` | `/007-sf-content` |
-| `008` | `/008-sf-onboarding` |
+| `008` | `/008-sf-end-user` |
 | `009` | `/009-sf-skill-build` |
 
 Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-399` docs/context/support, `400-499` audit/quality/ops, `500-599` design/components, `600-699` data/activation, `700-799` pilotage/session, `800-899` conversation/transcript, `900-999` rare internal/meta tools.
@@ -133,7 +133,7 @@ Use these verbs consistently in help answers and docs:
 | `/002-sf-maintain` | Master maintenance lifecycle from triage through delegated fixes, verification, and ship | `quick`, `full`, `security`, `global`, `no-ship` |
 | `/007-sf-content` | Master content lifecycle for strategy, repurposing, drafting, enrichment, project-aware quality scoring, audits, docs, validation, and ship routing | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`, `score`, `quality gate`, `grille projet` |
 | `/006-sf-design` | Master design lifecycle for UI/UX, tokens, playgrounds, a11y, implementation, proof, and ship routing | `tokens`, `audit`, `playground`, page/route, or natural-language design goal |
-| `/008-sf-onboarding` | User activation lifecycle for first-success paths, setup guidance, recoverable states, docs impact, and proof routing | `<feature, flow, shipped change, or onboarding audit target>` |
+| `/008-sf-end-user` | End-user experience skill for UX/UI clarity, friction, trust, activation, onboarding, recovery, docs impact, and proof routing | `<feature, flow, screen, shipped change, or end-user audit target>` |
 | `/600-sf-local-cloud-sync` | Local-to-cloud data sync contract for promotion, merge, sync UX, sensitive-data policy, and proof routing | `<project, feature, data domains, or sync question>` |
 | `/601-sf-product-entitlements` | Product access lifecycle contract for entitlement ownership, provider events, backend gates, support flows, and sync handoffs | `<project or feature with access, plans, provider events, or support questions>` |
 | `/003-sf-bug` | Professional bug loop lifecycle executor for intake, bug files, fixes, retests, verification, and ship risk | `BUG-ID`, `--retest BUG-ID`, `--ship BUG-ID` |
@@ -189,7 +189,7 @@ Note: `/001-sf-build` is the recommended end-user entrypoint for non-trivial wor
 Note: `/004-sf-deploy` is the recommended release entrypoint when the operator wants the whole confidence loop after implementation: checks, bounded ship, deployment truth, post-deploy evidence routing, verification, and optional changelog.
 Note: `/002-sf-maintain` is the recommended recurring maintenance entrypoint for existing projects; by default it carries maintenance through spec/readiness when needed, bounded delegated execution, verification, and ship/deploy routing. Use `/002-sf-maintain quick` for read-only triage.
 Note: `/007-sf-content` is the recommended entrypoint for content management (`CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> 103-sf-verify -> 005-sf-ship`). When the operator asks to score or grade content for a project, content owner skills use `skills/references/content-quality-rubric.md` and project rules from `shipflow_data/business/*` plus `shipflow_data/editorial/*`.
-Note: `/008-sf-onboarding` is the recommended entrypoint for user activation after feature work: first-success path, why/how guidance, setup order, skipped/blocked/recoverable states, docs impact, and proof routing.
+Note: `/008-sf-end-user` is the recommended entrypoint for end-user experience after feature work: UX/UI clarity, friction, trust, first-success path, setup order, skipped/blocked/recoverable states, docs impact, and proof routing.
 Note: `/600-sf-local-cloud-sync` is the recommended entrypoint when local-first user data must become account-backed cloud data: account association, promotion, hydration, merge/conflict policy, tombstones, sync/save UX states, sensitive-data exclusions, and proof routing.
 Note: `/601-sf-product-entitlements` is the recommended entrypoint when identity, provider events, paid plans, activation codes, refunds/revokes, product-local access mirrors, backend authorization gates, or entitlement-gated sync preconditions are in scope.
 Note: `/009-sf-skill-build` is the recommended entrypoint for ShipFlow skill maintenance (`700-sf-explore when needed -> 100-sf-spec -> SKILL.md -> 307-sf-skills-refresh -> budget audit -> 103-sf-verify -> 300-sf-docs/help update -> 005-sf-ship`).
@@ -262,7 +262,7 @@ Internal role matrix:
 | `skills/404-sf-migrate/SKILL.md` | conditionnel | source-de-chantier | Migration findings become a chantier for breaking changes, staged upgrades, or rollback/validation planning. |
 | `skills/002-sf-maintain/SKILL.md` | obligatoire | lifecycle | Master maintenance lifecycle: triage, spec/readiness, bounded delegated execution, verification, and ship/deploy routing. |
 | `skills/704-sf-model/SKILL.md` | non-applicable | helper | Model advice does not mutate specs; report non-trace when useful. |
-| `skills/008-sf-onboarding/SKILL.md` | conditionnel | source-de-chantier | User activation findings become a chantier when onboarding implementation spans product behavior, permissions, docs, proof, or multiple surfaces. |
+| `skills/008-sf-end-user/SKILL.md` | conditionnel | source-de-chantier | End-user experience findings become a chantier when UX/UI clarity, activation, onboarding, permissions, docs, proof, or multiple surfaces need implementation. |
 | `skills/600-sf-local-cloud-sync/SKILL.md` | conditionnel | source-de-chantier | Sync findings become a chantier when local/cloud data promotion, account association, merge policy, sync UX, sensitive-data policy, or proof needs implementation. |
 | `skills/601-sf-product-entitlements/SKILL.md` | obligatoire | lifecycle | Product-entitlement work becomes a chantier for access ownership, provider events, backend gates, support flows, and sync handoff implementation. |
 | `skills/403-sf-perf/SKILL.md` | conditionnel | source-de-chantier | Perf findings become a chantier for Core Web Vitals risk, systemic rendering/fetching issues, or multi-file remediation. |

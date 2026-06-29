@@ -153,7 +153,7 @@ Purpose: onboarding, sync, entitlements, platform parity, exploration, backlog, 
 
 Candidate skills:
 
-- `008-sf-onboarding`
+- `008-sf-end-user`
 - `600-sf-local-cloud-sync`
 - `601-sf-product-entitlements`
 - `602-sf-platform-parity`

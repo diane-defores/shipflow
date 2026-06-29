@@ -62,7 +62,7 @@ related_skills:
   - "sf-browser"
   - "sf-auth-debug"
   - "sf-prod"
-  - "sf-onboarding"
+  - "sf-end-user"
 featured: true
 order: 20
 ---

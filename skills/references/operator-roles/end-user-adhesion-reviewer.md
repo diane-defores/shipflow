@@ -58,7 +58,7 @@ If I were the end user, would I understand this, trust it, want it, and continue
 
 ## Preferred Skills
 
-- `008-sf-onboarding`
+- `008-sf-end-user`
 - `007-sf-content`
 - `206-sf-audit-copy`
 - `207-sf-audit-copywriting`

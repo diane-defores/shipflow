@@ -87,7 +87,7 @@ Frequency wins over family when a skill belongs to both. For example `007-sf-con
 | `005` | `sf-ship` | `005-sf-ship` | Master |
 | `006` | `sf-design` | `006-sf-design` | Master |
 | `007` | `sf-content` | `007-sf-content` | Master |
-| `008` | `sf-onboarding` | `008-sf-onboarding` | Master |
+| `008` | `sf-end-user` | `008-sf-end-user` | Master |
 | `009` | `sf-skill-build` | `009-sf-skill-build` | Master |
 | `100` | `sf-spec` | `100-sf-spec` | Lifecycle/proof |
 | `101` | `sf-ready` | `101-sf-ready` | Lifecycle/proof |

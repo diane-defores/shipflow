@@ -25,7 +25,7 @@ linked_systems:
   - skills/002-sf-maintain/SKILL.md
   - skills/007-sf-content/SKILL.md
   - skills/006-sf-design/SKILL.md
-  - skills/008-sf-onboarding/SKILL.md
+  - skills/008-sf-end-user/SKILL.md
   - skills/600-sf-local-cloud-sync/SKILL.md
   - skills/009-sf-skill-build/SKILL.md
   - skills/900-shipflow-core/SKILL.md
@@ -72,7 +72,7 @@ evidence:
   - "Skill launch cheatsheet added for master and supporting modes."
   - "009-sf-skill-build exploration gate added before 100-sf-spec for fuzzy skill ideas or placement decisions."
   - "007-sf-content added as the master content lifecycle for strategy, repurposing, drafting, enrichment, audits, docs, validation, and ship routing."
-  - "008-sf-onboarding added as the user activation lifecycle for first-success paths, setup guidance, recoverable states, docs impact, and proof routing."
+  - "008-sf-end-user added as the user activation lifecycle for first-success paths, setup guidance, recoverable states, docs impact, and proof routing."
   - "600-sf-local-cloud-sync added as the local-to-cloud data promotion, merge, sync UX, and security contract skill."
   - "001-sf-build delegated sequential subagent consent clarified; subagents and parallelism are distinct runtime concepts."
   - "Master delegation semantics extracted to skills/references/master-delegation-semantics.md and cited by master/orchestrator skills."
@@ -131,7 +131,7 @@ Three-digit skill codes are part of the runtime-visible skill identity. The cano
 
 Current family boundaries:
 
-- Lifecycle/master: `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `104-sf-end`, `005-sf-ship`, `001-sf-build`, `004-sf-deploy`, `002-sf-maintain`, `006-sf-design`, `007-sf-content`, `008-sf-onboarding`, `009-sf-skill-build`.
+- Lifecycle/master: `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `104-sf-end`, `005-sf-ship`, `001-sf-build`, `004-sf-deploy`, `002-sf-maintain`, `006-sf-design`, `007-sf-content`, `008-sf-end-user`, `009-sf-skill-build`.
 - Data trust/source: `600-sf-local-cloud-sync`, `601-sf-product-entitlements`.
 - Audit/source: `400-sf-audit*`, `402-sf-deps`, `403-sf-perf`.
 - Bug/proof/source: `003-sf-bug`, `106-sf-fix`, `107-sf-test`, `108-sf-browser`, `109-sf-auth-debug`, `405-sf-prod`, `105-sf-check`, `404-sf-migrate`.
@@ -295,7 +295,7 @@ Operator roles and named profiles do not add new primary artifact types:
 - `007-sf-content`: master content lifecycle (`CONTENT_MAP + editorial corpus -> owner content skills -> audits/docs -> validation -> 103-sf-verify -> 005-sf-ship`).
 - `skills/references/content-quality-rubric.md`: shared editorial scoring contract used by content owner skills and verification gates.
 - `006-sf-design`: master design lifecycle (`design intent -> specialist audit/token/playground route -> spec-first implementation when needed -> checks/browser proof -> 103-sf-verify -> 005-sf-ship`).
-- `008-sf-onboarding`: user activation lifecycle (`first-success path -> setup order -> states/recovery -> docs impact -> proof or 001-sf-build`).
+- `008-sf-end-user`: user activation lifecycle (`first-success path -> setup order -> states/recovery -> docs impact -> proof or 001-sf-build`).
 - `600-sf-local-cloud-sync`: local-to-cloud data sync contract (`data inventory -> account association -> promotion/hydration -> merge/conflict/tombstones -> sync UX/security -> proof or 001-sf-build`).
 - `601-sf-product-entitlements`: product access lifecycle contract (`identity/provider/access separation -> ledger ownership -> backend gates/support -> sync/auth handoff or 001-sf-build`).
 - `500-sf-design-from-scratch`: design-system creation skill for extracting an existing UI into a complete professional token system before playground or token audit work.
@@ -314,7 +314,7 @@ Primary router flow:
 ```text
 000-shipflow <instruction>
   -> direct conversational answer
-  -> or direct main-thread handoff to 001-sf-build / 002-sf-maintain / 003-sf-bug / 004-sf-deploy / 007-sf-content / 006-sf-design / 008-sf-onboarding / 600-sf-local-cloud-sync / 009-sf-skill-build / 400-sf-audit-*
+  -> or direct main-thread handoff to 001-sf-build / 002-sf-maintain / 003-sf-bug / 004-sf-deploy / 007-sf-content / 006-sf-design / 008-sf-end-user / 600-sf-local-cloud-sync / 009-sf-skill-build / 400-sf-audit-*
   -> one numbered question when the route is ambiguous
 ```
 
@@ -443,7 +443,7 @@ Content lifecycle flow:
 - `007-sf-content` owns content-management orchestration; repurposing, drafting, enrichment, copy audit, copywriting audit, SEO audit, docs, veille, market study, browser proof, verification, and ship still run through their specialist owner skills and gates.
 - Content owner skills (`007-sf-content`, `202-sf-repurpose`, `200-sf-redact`, `201-sf-enrich`, `206-sf-audit-copy`, `207-sf-audit-copywriting`, `406-sf-seo`) and `103-sf-verify` must use one shared rubric contract from `skills/references/content-quality-rubric.md`; recoverable score states (`needs retry`, `duplicate_in_progress`, `conflicting_score_state`, `stale_or_mismatched_score`) are never valid verification proof.
 - `006-sf-design` owns design lifecycle orchestration; UI/UX audits, token audits, component audits, accessibility audits, playground tooling, design-system creation, browser proof, implementation, verification, and ship still run through their specialist owner skills and gates.
-- `008-sf-onboarding` owns user activation contracts; implementation, visual design, docs/content, browser proof, and manual QA still run through `001-sf-build`, `006-sf-design`, `300-sf-docs`/`007-sf-content`, `108-sf-browser`, and `107-sf-test` when needed.
+- `008-sf-end-user` owns user activation contracts; implementation, visual design, docs/content, browser proof, and manual QA still run through `001-sf-build`, `006-sf-design`, `300-sf-docs`/`007-sf-content`, `108-sf-browser`, and `107-sf-test` when needed.
 - `500-sf-design-from-scratch` owns design-system creation from existing UI values; playground tooling, token audits, component audits, accessibility audits, and general design routing stay with their specialist or master skills.
 - `009-sf-skill-build` owns skill-maintenance orchestration and must route to `700-sf-explore` before `100-sf-spec` when skill intent, placement, public promise, or governance policy is too fuzzy for one targeted question to settle.
 - A release is not considered verified from push success, provider success, or a bare `200 OK` alone.

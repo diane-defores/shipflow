@@ -15,10 +15,11 @@ security_impact: none
 docs_impact: yes
 linked_systems:
   - skills/references/shipflow-terms.md
+  - skills/references/private-memory-store.md
   - skills/references/entrypoint-routing.md
   - skills/references/operator-partnership-contract.md
   - skills/references/decision-quality-contract.md
-  - skills/008-sf-onboarding/SKILL.md
+  - skills/008-sf-end-user/SKILL.md
   - shipflow_data/business/gtm.md
   - README.md
   - shipflow-site/src/pages/docs.astro
@@ -58,7 +59,7 @@ Use these when you want the agent to think like a business partner instead of a 
 | `#monetization` | revenue fit, paywalls, upsell paths, and pricing pressure to dominate the decision | `shipflow_data/business/business.md` |
 | `#retention` | repeat usage, stickiness, and product loops to dominate the decision | `shipflow_data/business/product.md` |
 | `#decision-maker` | the buyer or approver perspective to dominate the decision | `shipflow_data/business/business.md` |
-| `#end-user` | real user usefulness, first success, clarity, and beginner adoption to dominate the decision | `skills/008-sf-onboarding/SKILL.md` |
+| `#end-user` | real user usefulness, first success, clarity, and beginner adoption to dominate the decision | `skills/008-sf-end-user/SKILL.md` |
 | `#trust` | trust, public-promise discipline, claim safety, and credibility to dominate the decision | `shipflow_data/business/branding.md` |
 | `#leverage` | operator leverage, compounding impact, and drag reduction to dominate the decision | `skills/references/operator-partnership-contract.md` |
 | `#founder-mode` | a founder-facing decision surface instead of technician-level back-and-forth | `skills/references/operator-partnership-contract.md` |
@@ -81,6 +82,7 @@ Use these when the issue is mostly about message shape, reader understanding, or
 | `#voice` | tone and brand-language discipline | `shipflow_data/business/branding.md` |
 | `#audience` | the target persona and sophistication level to dominate the decision | `shipflow_data/business/business.md` |
 | `#source` | classify an incoming source, project fit, useful angle, risks, and next owner skill | `skills/references/source-intake-classification.md` |
+| `#private-memory` | use the approved private cache for project pitches or reusable source memory | `skills/references/private-memory-store.md` |
 | `#repurpose` | the best downstream format or surface for an existing source | `shipflow_data/editorial/content-map.md` |
 | `#pillar` | pillar-page role and semantic structure to dominate the decision | `shipflow_data/editorial/content-map.md` |
 | `#seo-intent` | search intent and query-to-page fit to dominate the decision | `shipflow_data/editorial/content-map.md` |
@@ -138,6 +140,7 @@ Use these when you do not want to build the tag set from scratch.
 | Improve discoverability | `#seo-intent #pillar #distribution` | the content or structure to align better with search intent and distribution paths |
 | Classify a source before acting | `#source #audience #cta` | an email, URL, transcript, note, or example to be sorted into the right project, angle, and owner skill |
 | Classify a source across projects | `#source #portfolio #audience` | the source could fit several projects and should be matched against the portfolio pitch index first |
+| Reuse cached private context | `#source #private-memory #portfolio` | the source or project pitch should be matched against the approved private cache instead of refetching public URLs |
 | Rework content from an existing source | `#repurpose #audience #cta` | one source to be turned into the right surface for the right reader and action |
 | Recenter on business buyer logic | `#decision-maker #offer #monetization` | the work to speak to the approver, the budget owner, or the buyer |
 | Recenter on the founder perspective | `#founder #growth #clarity` | the work to assume business-owner responsibility and optimize for useful decisions |

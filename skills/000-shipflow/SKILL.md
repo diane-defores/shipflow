@@ -119,7 +119,7 @@ For requests involving declared products, sales surfaces, or public claims, pref
 | Intent | Route |
 | --- | --- |
 | Pure question, explanation, or advice with no file work | Answer directly |
-| Build or change a user-facing feature and also think about onboarding, activation, beginner adoption, or first-success guidance | `001-sf-build <instruction>` first; `001-sf-build` evaluates the post-implementation `008-sf-onboarding` gate |
+| Build or change a user-facing feature and also think about end-user clarity, UX/UI friction, activation, beginner adoption, or first-success guidance | `001-sf-build <instruction>` first; `001-sf-build` evaluates the post-implementation `008-sf-end-user` gate |
 | Non-trivial feature, code, site, docs, product, or workflow work | `001-sf-build <instruction>` |
 | Create a new app from scratch (carnet, gestion, CRUD, etc.) | `001-sf-build <instruction>` — le Blueprint Gate cherchera un blueprint correspondant dans `skills/app-blueprints/` pour guider la creation |
 | Recurring maintenance, security upkeep, dependencies, docs drift, checks, audit freshness, migrations, or project hygiene | `002-sf-maintain <mode or instruction>` |
@@ -128,7 +128,7 @@ For requests involving declared products, sales surfaces, or public claims, pref
 | Content strategy, repurposing, drafting, enrichment, SEO/copy audit, editorial governance, apply/publish content | `007-sf-content <instruction>` |
 | Source intake, pasted email/article/transcript/URL classification, project fit, angle selection, or owner-skill choice | Load `source-intake-classification.md`, then route to the owner skill |
 | Design request, UI/UX work, redesign, design tokens, playground, accessibility design, component design, visual proof, or token migration | `006-sf-design <instruction>` |
-| User onboarding, feature activation, setup guidance, first-success path, permission/setup sequencing, or recoverable onboarding states | `008-sf-onboarding <instruction>` |
+| End-user experience, UX/UI clarity, trust, friction, feature activation, onboarding, setup guidance, first-success path, permission/setup sequencing, or recoverable states | `008-sf-end-user <instruction>` |
 | Local-first data promotion, cloud hydration, account sync, merge/conflict policy, reinstall recovery, or sync/save UX state | `600-sf-local-cloud-sync <instruction>` |
 | Product access, paid plans, premium gates, entitlement ledgers, provider events, activation codes, refunds/revokes, support access flows, or backend access gates | `601-sf-product-entitlements <instruction>` |
 | Create, modify, rename, document, refresh, or validate ShipFlow skills | `009-sf-skill-build <instruction>` |
@@ -152,7 +152,7 @@ When routing a user-facing feature to `001-sf-build` and the instruction mention
 onboarding, activation, beginner users, setup guidance, discoverability, or
 first-success, preserve that as a post-build activation requirement. `001-sf-build`
 owns the implementation lifecycle first, then evaluates whether to route or
-suggest `008-sf-onboarding`.
+suggest `008-sf-end-user`.
 
 Do not stop at "run `/skill ...`" when the user asked ShipFlow to handle the work and the route is safe. A command recommendation is acceptable only for pure orientation, unsupported runtime handoff, or a blocked state.
 

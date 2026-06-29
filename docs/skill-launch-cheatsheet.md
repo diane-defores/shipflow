@@ -33,7 +33,7 @@ evidence:
   - "000-shipflow <instruction> documented as the primary non-technical router with direct handoff to selected skills."
   - "Shared question/default contract added for numbered decisions and context-safe defaults."
   - "006-sf-design added as the master design lifecycle entrypoint for UI/UX, tokens, playgrounds, implementation, proof, and ship routing."
-  - "008-sf-onboarding added as the user activation lifecycle for first-success paths, setup guidance, recoverable states, and proof routing."
+  - "008-sf-end-user added as the user activation lifecycle for first-success paths, setup guidance, recoverable states, and proof routing."
   - "600-sf-local-cloud-sync added as the local-to-cloud data promotion, merge, sync UX, and security contract entrypoint."
   - "003-sf-bug clarified as a lifecycle executor that continues through owner skills and bounded subagents when safe."
   - "Skill taxonomy description audit clarified runtime families while keeping public skill names and invocation paths stable."
@@ -75,7 +75,7 @@ Core codes:
 | `005` | `005-sf-ship` |
 | `006` | `006-sf-design` |
 | `007` | `007-sf-content` |
-| `008` | `008-sf-onboarding` |
+| `008` | `008-sf-end-user` |
 | `009` | `009-sf-skill-build` |
 
 Family bands: `100-199` lifecycle/proof, `200-299` content/research/copy, `300-399` docs/context/support, `400-499` audit/quality/ops, `500-599` design/components, `600-699` data/activation, `700-799` pilotage/session, `800-899` conversation/transcript, `900-999` internal/meta.
@@ -132,7 +132,7 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 
 | Family | Role | Examples |
 | --- | --- | --- |
-| Lifecycle/master | Carry work across several gates. | `000-shipflow`, `001-sf-build`, `002-sf-maintain`, `004-sf-deploy`, `006-sf-design`, `007-sf-content`, `008-sf-onboarding`, `009-sf-skill-build`, plus `100-sf-spec -> 101-sf-ready -> 102-sf-start -> 103-sf-verify -> 104-sf-end -> 005-sf-ship` |
+| Lifecycle/master | Carry work across several gates. | `000-shipflow`, `001-sf-build`, `002-sf-maintain`, `004-sf-deploy`, `006-sf-design`, `007-sf-content`, `008-sf-end-user`, `009-sf-skill-build`, plus `100-sf-spec -> 101-sf-ready -> 102-sf-start -> 103-sf-verify -> 104-sf-end -> 005-sf-ship` |
 | Data trust/source | Frame local-first data becoming account-backed cloud data and product access becoming entitlement-backed. | `600-sf-local-cloud-sync`, `601-sf-product-entitlements` |
 | Audit/source | Expose quality, security, performance, SEO, copy, design, dependency, parity, or GTM risk that may deserve a chantier. | `400-sf-audit*`, `402-sf-deps`, `403-sf-perf`, `602-sf-platform-parity` |
 | Bug/proof | Diagnose failures, validate behavior, or confirm deployment truth. | `003-sf-bug`, `106-sf-fix`, `107-sf-test`, `108-sf-browser`, `109-sf-auth-debug`, `405-sf-prod`, `105-sf-check`, `404-sf-migrate` |
@@ -144,15 +144,15 @@ Public categories make the catalog easier to browse. Runtime families explain ho
 
 | Need | Launch | Useful modes |
 | --- | --- | --- |
-| Non-technical first command | `000-shipflow <instruction>` | Routes pure conversation directly; routes feature/code/docs to `001-sf-build`, maintenance to `002-sf-maintain`, bugs to `003-sf-bug`, release/deploy/prod proof to `004-sf-deploy`, content to `007-sf-content`, design to `006-sf-design`, onboarding to `008-sf-onboarding`, local-to-cloud sync to `600-sf-local-cloud-sync`, skill maintenance to `009-sf-skill-build`, and obvious specialist audits to `400-sf-audit-*`. Uses context-safe defaults and asks one numbered question when ambiguity changes route, risk, scope, or proof. |
-| Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story. Use `spark`, `codex`, `mini`, `agents`, or `sous-agent` to make model-specific delegated sequential execution a validation gate. For user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-onboarding` after implementation. Use detailed report modes only for handoff evidence. |
+| Non-technical first command | `000-shipflow <instruction>` | Routes pure conversation directly; routes feature/code/docs to `001-sf-build`, maintenance to `002-sf-maintain`, bugs to `003-sf-bug`, release/deploy/prod proof to `004-sf-deploy`, content to `007-sf-content`, design to `006-sf-design`, onboarding to `008-sf-end-user`, local-to-cloud sync to `600-sf-local-cloud-sync`, skill maintenance to `009-sf-skill-build`, and obvious specialist audits to `400-sf-audit-*`. Uses context-safe defaults and asks one numbered question when ambiguity changes route, risk, scope, or proof. |
+| Non-trivial product, code, site, or docs work | `001-sf-build [spark|codex|mini|agents|sous-agent|no-agents] <story, bug, or goal>` | Plain task text is the story. Use `spark`, `codex`, `mini`, `agents`, or `sous-agent` to make model-specific delegated sequential execution a validation gate. For user-facing features, `001-sf-build` evaluates whether to suggest or route `/008-sf-end-user` after implementation. Use detailed report modes only for handoff evidence. |
 | Recurring project upkeep | `002-sf-maintain [mode]` | `full`/no argument, `quick`, `security`, `deps`, `docs`, `audits`, `no-ship`, `global`. |
 | Release confidence after implementation | `004-sf-deploy [target or mode]` | no argument, `skip-check`, `--preview`, `--prod`, `no-changelog`. |
 | Bug-loop lifecycle | `003-sf-bug [BUG-ID, summary, or mode]` | no argument, `BUG-ID`, `--fix`, `--retest`, `--verify`, `--ship`, `--close`. |
 | Content management | `007-sf-content [goal, source, file, or mode]` | `plan`, `repurpose`, `draft`, `enrich`, `audit`, `seo`, `editorial`, `apply`, `ship`; add `score`, `quality gate`, or `grille projet` when you want project-aware scoring through the shared rubric. |
 | Conversation quality audit | `705-sf-conversation-audit [latest|path <file-or-dir>|export shipflow|report=agent]` | Audit recurring operator-facing defects in conversation transcripts and route durable owner actions. |
 | Design lifecycle | `006-sf-design <design question or goal>` | `tokens`, `audit`, `playground`, page/route targets, redesign goals, token migration, visual proof, or natural-language design requests. |
-| User onboarding and activation | `008-sf-onboarding <feature, flow, or audit target>` | First-success paths, setup order, why/how guidance, recoverable states, docs impact, and proof routing. |
+| End-user experience | `008-sf-end-user <feature, flow, screen, or audit target>` | UX/UI clarity, friction, trust, first-success paths, setup order, recoverable states, docs impact, and proof routing. |
 | Local-to-cloud data sync | `600-sf-local-cloud-sync <project, feature, or data domains>` | Local data promotion, cloud hydration, merge/conflict policy, sync/save UX states, sensitive-data exclusions, and proof routing. |
 | Product entitlements and access gates | `601-sf-product-entitlements <project or feature>` | Entitlement ownership, provider events, activation codes, product-local mirrors, backend authorization gates, support flows, and sync handoffs. |
 | Skill creation or maintenance | `009-sf-skill-build <idea or path>` | new skill idea, existing skill path, optional `700-sf-explore` for fuzzy placement, public page/docs/runtime validation gates. |
@@ -203,7 +203,7 @@ Model routing note: `704-sf-model` recommends the right model for the current sc
 | `003-sf-bug` | no argument; `BUG-ID`; free-text summary; `--fix`; `--retest`; `--verify`; `--ship`; `--close` |
 | `007-sf-content` | no argument or content goal; `plan`; `repurpose`; `draft`; `article`; `blog`; `guide`; `enrich`; `audit`; `copy`; `copywriting`; `seo`; `editorial`; `apply`; `publish`; `ship`; `score`; `quality gate`; `grille projet` |
 | `006-sf-design` | design question; page/route; `tokens`; `audit`; `playground`; redesign goal; token migration; visual proof; detailed report modes |
-| `008-sf-onboarding` | feature, flow, shipped change, onboarding audit target; permission/setup focus; detailed report modes |
+| `008-sf-end-user` | feature, flow, shipped change, onboarding audit target; permission/setup focus; detailed report modes |
 | `600-sf-local-cloud-sync` | project, feature, data domains, sync question; audit; Flutter focus; secrets/sensitive-data focus; detailed report modes |
 | `009-sf-skill-build` | new skill idea; existing skill path; `700-sf-explore` reroute when placement or public promise is too fuzzy |
 | `310-sf-github-hygiene` | no argument/`audit`; `branches`; `dependabot`; `fix`; `current repo`; `workspace` |

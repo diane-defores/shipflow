@@ -18,6 +18,7 @@ linked_systems:
   - skills/007-sf-content/SKILL.md
   - skills/202-sf-repurpose/SKILL.md
   - skills/emailing/SKILL.md
+  - skills/references/private-memory-store.md
   - shipflow_data/editorial/content-map.md
   - shipflow_data/business/business.md
   - shipflow_data/business/product.md
@@ -43,6 +44,9 @@ depends_on:
   - artifact: "shipflow_data/business/portfolio-project-pitch-links.md"
     artifact_version: "0.1.0"
     required_status: draft
+  - artifact: "skills/references/private-memory-store.md"
+    artifact_version: "1.0.0"
+    required_status: active
 supersedes: []
 evidence:
   - "Operator request 2026-06-29: centralize source analysis and project/angle classification instead of repeating it in every transforming skill."
@@ -115,6 +119,7 @@ Before final classification, load only the relevant canonical context:
 - `shipflow_data/business/gtm.md` when offer, CTA, funnel, distribution, or positioning matters
 - `shipflow_data/editorial/content-map.md` when public content, repurposing, docs, FAQ, article, landing page, or skill-page placement matters
 - `shipflow_data/business/portfolio-project-pitch-links.md` when choosing between several portfolio projects matters
+- `skills/references/private-memory-store.md` when cached private pitch contents or reusable private source memory could change classification
 
 Do not load every corpus by default. Load the smallest set that changes classification quality.
 
@@ -132,6 +137,20 @@ Project selection should consider:
 - whether the pitch entry is `reviewed`, `candidate`, `stale`, or `archived`
 
 If the index points to a project pitch URL, use that URL only as routing context unless the task requires deeper project truth. Do not infer private details beyond what the pitch and local governed docs support.
+
+## Private Memory Store
+
+When portfolio routing needs reusable pitch contents, use the private memory contract in `skills/references/private-memory-store.md`.
+
+The approved private root is:
+
+```text
+${SHIPFLOW_PRIVATE_ROOT:-$HOME/.shipflow/private}
+```
+
+Use `${SHIPFLOW_PRIVATE_ROOT:-$HOME/.shipflow/private}/project-pitches/` for cached project pitches and summaries. Use `${SHIPFLOW_PRIVATE_ROOT:-$HOME/.shipflow/private}/source-cache/` only for operator-approved reusable source material.
+
+Do not cache source text in `$SHIPFLOW_ROOT`, project repos, public specs, public docs, or generated files under version control.
 
 ## Cache Policy
 
@@ -151,7 +170,7 @@ Not allowed in the public ShipFlow repo:
 - unredacted screenshots, transcripts, or notes
 - generated cache files containing source text
 
-If reusable private source memory is needed later, route to a separate private store or project-local governed artifact with explicit operator approval.
+If reusable private source memory is needed, use `${SHIPFLOW_PRIVATE_ROOT:-$HOME/.shipflow/private}` under the rules in `skills/references/private-memory-store.md`.
 
 ## Classification Output
 
@@ -210,4 +229,5 @@ Validate references after edits with:
 ```bash
 rg -n "#source|source-intake-classification|Source type|Source-Inspiration|Owner skill" skills/references/source-intake-classification.md skills/references/shipflow-terms.md skills/references/entrypoint-routing.md skills/000-shipflow/SKILL.md skills/007-sf-content/SKILL.md skills/202-sf-repurpose/SKILL.md skills/emailing/SKILL.md docs/focus-tags-cheatsheet.md
 python3 tools/skill_budget_audit.py --skills-root skills --format markdown
+python3 tools/shipflow_metadata_lint.py skills/references/source-intake-classification.md skills/references/private-memory-store.md
 ```
