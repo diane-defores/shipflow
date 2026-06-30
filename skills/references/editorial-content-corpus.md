@@ -18,7 +18,7 @@ linked_systems:
   - shipflow_data/editorial/
   - shipflow_data/business/business.md
   - shipflow_data/business/product.md
-  - shipflow_data/business/branding.md
+  - shipflow_data/branding/branding.md
   - shipflow_data/business/gtm.md
   - site/src/pages/
   - site/src/content/
@@ -64,7 +64,7 @@ Use these contracts to bound public copy:
 
 - `shipflow_data/business/business.md`: audience, value proposition, market, business model uncertainty.
 - `shipflow_data/business/product.md`: user problem, desired outcomes, workflow scope, non-goals.
-- `shipflow_data/business/branding.md`: voice, trust posture, vocabulary, and claim boundaries.
+- `shipflow_data/branding/branding.md`: voice, trust posture, vocabulary, and claim boundaries.
 - `shipflow_data/business/gtm.md`: public promise, channels, objections, proof limits, and conversion path.
 - `shipflow_data/business/portfolio-project-pitch-links.md`: index of versioned pitch-file URLs for `#shipflow-owner` and `#portfolio` reasoning.
 - `shipflow_data/technical/guidelines.md`: internal language doctrine and documentation rules.

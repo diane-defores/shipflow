@@ -21,14 +21,14 @@ evidence:
   - "Current repo demonstrates the mechanics of the framework but not yet validated acquisition or conversion data"
 linked_artifacts:
   - "shipflow_data/business/business.md"
-  - "shipflow_data/business/branding.md"
+  - "shipflow_data/branding/branding.md"
   - "shipflow_data/business/product.md"
   - "shipflow_data/business/portfolio-project-pitch-links.md"
 depends_on:
   - artifact: "shipflow_data/business/business.md"
     artifact_version: "1.2.0"
     required_status: "reviewed"
-  - artifact: "shipflow_data/business/branding.md"
+  - artifact: "shipflow_data/branding/branding.md"
     artifact_version: "1.1.0"
     required_status: "reviewed"
 supersedes: []

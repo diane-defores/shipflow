@@ -54,6 +54,8 @@ ShipFlow skills often run from a project repository, but ShipFlow-owned tools an
 - In monorepos, prefer theme-first paths inside `shipflow_data/`, then scope by surface only when needed, for example:
 
   - `shipflow_data/branding/branding.md`
+  - `shipflow_data/branding/voice-and-tone.md`
+  - `shipflow_data/branding/visual-identity.md`
   - `shipflow_data/business/site/business.md`
   - `shipflow_data/product/app/product.md`
   - `shipflow_data/technical/site/*`
@@ -97,7 +99,7 @@ Do not infer ShipFlow-owned tool paths from the current working directory. If th
 | --- | --- |
 | `BUSINESS.md` | `shipflow_data/business/<surface>/business.md` or shared `shipflow_data/business/business.md` |
 | `PRODUCT.md` | `shipflow_data/product/<surface>/product.md` or shared `shipflow_data/product/product.md` |
-| `BRANDING.md` | shared `shipflow_data/branding/branding.md` |
+| `BRANDING.md` | shared `shipflow_data/branding/branding.md` with optional sibling brand bundle files under `shipflow_data/branding/` |
 | `GTM.md` | `shipflow_data/gtm/<surface>/gtm.md` or shared `shipflow_data/gtm/gtm.md` |
 | `INSPIRATION.md` | `shipflow_data/business/<surface>/project-competitors-and-inspirations.md` |
 | `AFFILIATES.md` | `shipflow_data/business/<surface>/affiliate-programs.md` |

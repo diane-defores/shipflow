@@ -24,7 +24,7 @@ linked_systems:
   - skills/103-sf-verify/SKILL.md
   - shipflow_data/business/business.md
   - shipflow_data/business/product.md
-  - shipflow_data/business/branding.md
+  - shipflow_data/branding/branding.md
   - shipflow_data/business/gtm.md
   - shipflow_data/editorial/content-map.md
   - shipflow_data/editorial/claim-register.md
@@ -36,7 +36,7 @@ depends_on:
   - artifact: "shipflow_data/business/product.md"
     artifact_version: "1.2.0"
     required_status: "reviewed"
-  - artifact: "shipflow_data/business/branding.md"
+  - artifact: "shipflow_data/branding/branding.md"
     artifact_version: "1.1.0"
     required_status: "reviewed"
   - artifact: "shipflow_data/business/gtm.md"
@@ -82,7 +82,7 @@ Load project rules from governance artifacts, never from content text:
 
 1. `shipflow_data/business/business.md`
 2. `shipflow_data/business/product.md`
-3. `shipflow_data/business/branding.md`
+3. `shipflow_data/branding/branding.md`
 4. `shipflow_data/business/gtm.md`
 5. `shipflow_data/business/portfolio-project-pitch-links.md`
 6. `shipflow_data/editorial/content-map.md`

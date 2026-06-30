@@ -149,7 +149,7 @@ If `spec-first` and no matching `Status: ready` spec exists:
   - abuse cases / misuse cases and security constraints when present
 - validation commands and stop conditions
 - auto-verify eligibility: whether `102-sf-start` may run local verification itself, the exact `auto-verify: run` or `auto-verify: skipped` report value, and any out-of-scope proof owner route
-- For every business or technical contract listed in `depends_on` (`shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, docs API, pricing, personas, onboarding/support docs):
+- For every business or technical contract listed in `depends_on` (`shipflow_data/business/business.md`, `shipflow_data/branding/branding.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, docs API, pricing, personas, onboarding/support docs):
   - preserve the referenced `artifact_version` and `required_status` in the execution context
   - read the current file when it is present and its version/status may affect the implementation
   - stop and route back to `/101-sf-ready` if the current document is `stale`, has a newer incompatible `artifact_version`, or contradicts the spec

@@ -100,4 +100,4 @@ next_step: "/sf-docs audit shipflow_data/business/product.md"
 - The tool can be mistaken for “just a PM2 server script with helpers” if the AI framing layer is underexplained.
 - The tool can be mistaken for “just a prompting method” if the environment-delivery layer is underexplained.
 - Documentation volume can grow faster than its clarity if doc roles are not kept exclusive.
-- Content repurposing can drift into generic marketing if `shipflow_data/editorial/content-map.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, and `shipflow_data/business/gtm.md` are not kept current.
+- Content repurposing can drift into generic marketing if `shipflow_data/editorial/content-map.md`, `shipflow_data/business/product.md`, `shipflow_data/branding/branding.md`, and `shipflow_data/business/gtm.md` are not kept current.

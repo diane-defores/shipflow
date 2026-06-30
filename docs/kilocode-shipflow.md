@@ -81,3 +81,7 @@ Use this order:
 2. if repository-local compatible-skill import is needed, use `.agents/skills/shipflow/`
 3. treat internal runtime calls as implementation details only
 4. do not assume a dedicated KiloCode repo shim unless the repo later adds one explicitly
+
+## Installer Note
+
+When you use `ShipFlow`'s root installer on a server, `cli/install.sh` can also install the user-space `kilocode` CLI via `pnpm` if the operator selects it. That does not change the repository boundary documented here: the repo still proves only the generic compatible shim path, not a dedicated KiloCode-named shim directory.

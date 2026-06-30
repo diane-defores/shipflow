@@ -86,11 +86,11 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 | `#retention` | Recenter on repeat usage, stickiness, and product loops that keep users active | `$SHIPFLOW_ROOT/shipflow_data/business/product.md` |
 | `#decision-maker` | Recenter on what matters to the buyer, approver, or economic decision-maker | `$SHIPFLOW_ROOT/shipflow_data/business/business.md` |
 | `#end-user` | Recenter on first success, user usefulness, clarity, and beginner adoption | `$SHIPFLOW_ROOT/skills/008-sf-end-user/SKILL.md` |
-| `#trust` | Recenter on trust, promise discipline, claim safety, and credibility | `$SHIPFLOW_ROOT/shipflow_data/business/branding.md` |
+| `#trust` | Recenter on trust, promise discipline, claim safety, and credibility | `$SHIPFLOW_ROOT/shipflow_data/branding/branding.md` |
 | `#cta` | Recenter on the next action the page, flow, or message should drive clearly | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |
-| `#clarity` | Recenter on readability, explicit structure, and removal of vague language | `$SHIPFLOW_ROOT/shipflow_data/business/branding.md` |
+| `#clarity` | Recenter on readability, explicit structure, and removal of vague language | `$SHIPFLOW_ROOT/shipflow_data/branding/branding.md` |
 | `#faq` | Recenter on objections, reassurance, pre-purchase friction, and direct answers | `$SHIPFLOW_ROOT/shipflow_data/business/gtm.md` |
-| `#voice` | Recenter on tone, wording, and brand-language discipline | `$SHIPFLOW_ROOT/shipflow_data/business/branding.md` |
+| `#voice` | Recenter on tone, wording, and brand-language discipline | `$SHIPFLOW_ROOT/shipflow_data/branding/branding.md` |
 | `#audience` | Recenter on persona fit, reader sophistication, and who the message is actually for | `$SHIPFLOW_ROOT/shipflow_data/business/business.md` |
 | `#source` | Recenter on classifying an incoming source, project fit, angle, risks, and owner-skill route | `$SHIPFLOW_ROOT/skills/references/source-intake-classification.md` |
 | `#private-memory` | Recenter on the approved private runtime store for pitch caches and reusable private source memory | `$SHIPFLOW_ROOT/skills/references/private-memory-store.md` |

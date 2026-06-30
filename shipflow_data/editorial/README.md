@@ -78,14 +78,14 @@ This layer complements, but does not replace, `shipflow_data/editorial/content-m
 
 Use `skills/references/content-quality-rubric.md` when a workflow, spec, or operator asks whether content is good enough for a specific project. The rubric is shared across `sf-content`, `sf-repurpose`, `sf-redact`, `sf-enrich`, `sf-audit-copy`, `sf-audit-copywriting`, `sf-seo`, and `sf-verify`; do not create a project-specific skill for scoring.
 
-The scoring context comes from `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/portfolio-project-pitch-links.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/page-intent-map.md`, and `shipflow_data/editorial/claim-register.md`. A valid report includes the global score, criterion scores, weights, final status, blocked reasons, evidence, recommendations, confidence, and applied project-rule revisions.
+The scoring context comes from `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/branding/branding.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/portfolio-project-pitch-links.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/page-intent-map.md`, and `shipflow_data/editorial/claim-register.md`. A valid report includes the global score, criterion scores, weights, final status, blocked reasons, evidence, recommendations, confidence, and applied project-rule revisions.
 
 Allowed final statuses are `ready`, `needs revision`, `blocked`, and `publishable with caveats`. Blocking criteria such as unsupported sensitive claims, unresolved project context, missing or invalid surfaces, stale rules, conflicting score state, or missing required schema fields override the numeric score.
 
 ## Invariants
 
 - `shipflow_data/editorial/content-map.md` remains the canonical content surface map.
-- Public content must stay inside `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/portfolio-project-pitch-links.md`, specs, verified behavior, and explicit evidence.
+- Public content must stay inside `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/branding/branding.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/portfolio-project-pitch-links.md`, specs, verified behavior, and explicit evidence.
 - The Editorial Reader diagnoses public-content impact and claim impact. It does not edit, stage, format, or run destructive commands.
 - Shared editorial files are sequential integration surfaces unless a ready spec assigns exclusive write ownership.
 - Astro runtime content keeps the schema declared in `site/src/content.config.ts`.

@@ -75,7 +75,7 @@ The final report must include these governance outcomes when relevant:
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -100 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 - Business context: !`if [ -f shipflow_data/business/business.md ]; then head -60 shipflow_data/business/business.md; else head -60 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md) — run /305-sf-init or /300-sf-docs update"; fi`
-- Brand voice: !`if [ -f shipflow_data/business/branding.md ]; then head -60 shipflow_data/business/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md) — run /305-sf-init or /300-sf-docs update"; fi`
+- Brand voice: !`if [ -f shipflow_data/branding/branding.md ]; then head -60 shipflow_data/branding/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/branding/branding.md (and no legacy BRANDING.md) — run /305-sf-init or /300-sf-docs update"; fi`
 - All pages: !`find src/pages src/app -name "*.astro" -o -name "*.tsx" -o -name "*.vue" 2>/dev/null | grep -v node_modules | sort`
 - Content collections: !`find src/content -type f 2>/dev/null | head -20 || echo "no content dir"`
 - Pricing/checkout pages: !`find src -path "*pric*" -o -path "*checkout*" -o -path "*offre*" -o -path "*tarif*" 2>/dev/null | head -10 || echo "none found"`

@@ -190,7 +190,7 @@ Merge rules:
 
 Default canonical targets in monorepos:
 
-- shared branding -> `shipflow_data/branding/branding.md`
+- shared branding -> `shipflow_data/branding/branding.md` with optional sibling brand bundle files under `shipflow_data/branding/`
 - shared business -> `shipflow_data/business/business.md`
 - shared product -> `shipflow_data/product/product.md` only when the product truth is genuinely shared; otherwise `shipflow_data/product/<surface>/product.md`
 - shared gtm -> `shipflow_data/gtm/gtm.md` only when channel/offer truth is genuinely shared; otherwise `shipflow_data/gtm/<surface>/gtm.md`
@@ -274,6 +274,7 @@ Required gates:
 - when slimming or deleting local docs, run a source-to-canonical preservation pass first and update the canonical target in the same change
 - keep bug model documentation consistent
 - create/update canonical business/product/branding/architecture/gtm/content-map/guidelines docs when missing and justified
+- when branding is non-trivial, prefer a governed bundle under `shipflow_data/branding/` rather than stuffing all brand doctrine into one file
 - create/update `shipflow_data/technical/design-system-authority.md` when a project has UI code but no declared canonical token/theme/component authority
 
 Priority buckets:

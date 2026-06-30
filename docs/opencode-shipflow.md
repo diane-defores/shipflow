@@ -92,3 +92,7 @@ scripts/bootstrap_shipflow_repo.sh
 ```
 
 Use that route only when the lightweight surface is not enough.
+
+## Installer Note
+
+When you use `ShipFlow`'s root installer on a server, `cli/install.sh` can also install the user-space `opencode` CLI via `pnpm` if the operator selects it. That installer choice is separate from the repository shim path described on this page.

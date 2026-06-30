@@ -57,7 +57,7 @@ ShipFlow combine deux couches :
 - `shipflow-metadata-migration-guide.md`: doctrine de migration metadata.
 - `shipflow_data/editorial/content-map.md`: carte des surfaces de contenu, pages piliers, cocons semantiques et destinations de repurposing.
 - `shipflow_data/technical/`: couche interne de documentation technique proche du code.
-- `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`: contrats business, produit et promesse publique.
+- `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/branding/branding.md`, `shipflow_data/business/gtm.md`: contrats business, produit et promesse publique.
 - `shipflow_data/business/project-competitors-and-inspirations.md`: registre par projet des concurrents, alternatives, inspirations et anti-patterns.
 - `shipflow_data/business/affiliate-programs.md`: registre par projet des affiliations, referrals, partners, disclosures et contraintes non secretes.
 - `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`: contrats structurels et techniques.
@@ -196,7 +196,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - Changer l'UI shell (sélecteurs, menus, headers) : `cli/lib.sh` autour des primitives `ui_choose`, `ui_filter_choose`, `ui_text_center`, `ui_list_filter`, `ui_traffic_color`.
 - Changer la TUI (dashboard, filtres, tri, statuts) : `tui/src/statusMaps.ts` (mappings partagés), `tui/src/sources/` (lecture/parsing), `tui/src/viewModels/dashboard.ts` (logique de vue), `tui/src/views/dashboardView.ts` (rendu).
 - Changer la cartographie editoriale, les destinations de contenu ou les cocons semantiques : `shipflow_data/editorial/content-map.md`, puis `shipflow-site/src/pages/docs.astro` ou les surfaces concernees.
-- Changer le positionnement, l'audience ou le scope produit : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/business/branding.md`.
+- Changer le positionnement, l'audience ou le scope produit : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/gtm.md`, `shipflow_data/branding/branding.md`.
 - Changer les concurrents, alternatives, inspirations marche, anti-patterns ou notes de differenciation par projet : `shipflow_data/business/project-competitors-and-inspirations.md`.
 - Changer les programmes d'affiliation, referral, sponsorship, partner ou disclosure commerciale : `shipflow_data/business/affiliate-programs.md`.
 - Changer la structure technique globale : `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, puis `lib.sh` ou les scripts concernes.
@@ -209,7 +209,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - Metadata docs : `shipflow-metadata-migration-guide.md`, `skills/300-sf-docs/SKILL.md`, `tools/shipflow_metadata_lint.py`.
 - Docs techniques / code change : `shipflow_data/technical/code-docs-map.md`, puis le doc primaire mappe.
 - Tunnels / acces local : `local/README.md`, `local/local.sh`, `local/dev-tunnel.sh`.
-- Produit / business / site : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/business/branding.md`, `shipflow_data/business/gtm.md`, puis les registres `shipflow_data/business/project-competitors-and-inspirations.md` et `shipflow_data/business/affiliate-programs.md` si la tache touche marche, inspirations, differenciation ou monetisation partenaire.
+- Produit / business / site : `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/branding/branding.md`, `shipflow_data/business/gtm.md`, puis les registres `shipflow_data/business/project-competitors-and-inspirations.md` et `shipflow_data/business/affiliate-programs.md` si la tache touche marche, inspirations, differenciation ou monetisation partenaire.
 - Contenu / repurposing : `shipflow_data/editorial/content-map.md`, `skills/202-sf-repurpose/SKILL.md`, puis la surface cible.
 - Architecture / conventions : `shipflow_data/technical/architecture.md`, `shipflow_data/technical/guidelines.md`, `CLAUDE.md`.
 
@@ -226,7 +226,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - [shipflow-metadata-migration-guide.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow-metadata-migration-guide.md)
 - [business/business.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/business.md)
 - [business/product.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/product.md)
-- [business/branding.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/branding.md)
+- [business/branding.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/branding/branding.md)
 - [business/gtm.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/gtm.md)
 - [business/project-competitors-and-inspirations.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/project-competitors-and-inspirations.md)
 - [business/affiliate-programs.md](${SHIPFLOW_ROOT:-$HOME/shipflow}/shipflow_data/business/affiliate-programs.md)

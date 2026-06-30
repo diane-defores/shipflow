@@ -23,7 +23,7 @@ evidence:
 linked_artifacts:
   - "shipflow_data/business/product.md"
   - "shipflow_data/business/gtm.md"
-  - "shipflow_data/business/branding.md"
+  - "shipflow_data/branding/branding.md"
   - "shipflow_data/business/portfolio-project-pitch-links.md"
 depends_on: []
 supersedes: []

@@ -106,7 +106,7 @@ Default bundle:
 
 - `shipflow_data/business/product.md`
 - `shipflow_data/business/gtm.md`
-- `shipflow_data/business/branding.md`
+- `shipflow_data/branding/branding.md`
 
 Load additionally when relevant:
 
@@ -122,7 +122,7 @@ Default bundle:
 
 - `shipflow_data/editorial/content-map.md`
 - `shipflow_data/business/gtm.md`
-- `shipflow_data/business/branding.md`
+- `shipflow_data/branding/branding.md`
 
 Load additionally when relevant:
 

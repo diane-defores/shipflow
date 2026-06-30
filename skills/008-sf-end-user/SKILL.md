@@ -42,7 +42,7 @@ Load only the references required by the active run:
 - Project name: !`basename $(pwd)`
 - Git branch: !`git branch --show-current 2>/dev/null || echo "unknown"`
 - Git status: !`git status --short 2>/dev/null || echo "not a git repo"`
-- Project product docs: !`ls shipflow_data/business/product.md shipflow_data/business/business.md shipflow_data/business/branding.md shipflow_data/technical/guidelines.md PRODUCT.md BUSINESS.md BRANDING.md GUIDELINES.md 2>/dev/null || echo "no project product docs found"`
+- Project product docs: !`ls shipflow_data/business/product.md shipflow_data/business/business.md shipflow_data/branding/branding.md shipflow_data/technical/guidelines.md PRODUCT.md BUSINESS.md BRANDING.md GUIDELINES.md 2>/dev/null || echo "no project product docs found"`
 - Available specs: !`find shipflow_data/workflow/specs specs docs -maxdepth 3 -type f -name "*.md" 2>/dev/null | sort | head -80`
 
 ## Mission

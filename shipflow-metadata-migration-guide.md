@@ -48,7 +48,7 @@ Official migration scope for legacy adoption. These root names are migration sou
 - `CLAUDE.md` only when the project explicitly promotes it as an active repository-guidance artifact
 - `BUSINESS.md`, migrated to `shipflow_data/business/business.md`
 - `PRODUCT.md`, migrated to `shipflow_data/business/product.md`
-- `BRANDING.md`, migrated to `shipflow_data/business/branding.md`
+- `BRANDING.md`, migrated to `shipflow_data/branding/branding.md`
 - `GTM.md`, migrated to `shipflow_data/business/gtm.md`
 - `ARCHITECTURE.md`, migrated to `shipflow_data/technical/architecture.md`
 - `GUIDELINES.md`, migrated to `shipflow_data/technical/guidelines.md`
@@ -79,7 +79,7 @@ Metadata is required for ShipFlow decision artifacts, including:
 
 - `shipflow_data/business/business.md`
 - `shipflow_data/business/product.md`
-- `shipflow_data/business/branding.md`
+- `shipflow_data/branding/branding.md`
 - `shipflow_data/business/gtm.md`
 - `shipflow_data/technical/architecture.md`
 - `shipflow_data/technical/guidelines.md`
@@ -210,7 +210,7 @@ Artifact-specific conservative defaults are recommended:
 
 - `BUSINESS.md` -> `shipflow_data/business/business.md`, `artifact: business_context`
 - `PRODUCT.md` -> `shipflow_data/business/product.md`, `artifact: product_context`
-- `BRANDING.md` -> `shipflow_data/business/branding.md`, `artifact: brand_context`
+- `BRANDING.md` -> `shipflow_data/branding/branding.md`, `artifact: brand_context`
 - `GTM.md` -> `shipflow_data/business/gtm.md`, `artifact: gtm_context`
 - project competitors/inspirations registry -> `artifact: competitive_intelligence`
 - affiliate/referral/partner program registry -> `artifact: affiliate_program_registry`

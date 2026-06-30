@@ -62,7 +62,7 @@ Use these when you want the agent to think like a business partner instead of a 
 | `#retention` | repeat usage, stickiness, and product loops to dominate the decision | `shipflow_data/business/product.md` |
 | `#decision-maker` | the buyer or approver perspective to dominate the decision | `shipflow_data/business/business.md` |
 | `#end-user` | real user usefulness, first success, clarity, and beginner adoption to dominate the decision | `skills/008-sf-end-user/SKILL.md` |
-| `#trust` | trust, public-promise discipline, claim safety, and credibility to dominate the decision | `shipflow_data/business/branding.md` |
+| `#trust` | trust, public-promise discipline, claim safety, and credibility to dominate the decision | `shipflow_data/branding/branding.md` |
 | `#leverage` | operator leverage, compounding impact, and drag reduction to dominate the decision | `skills/references/operator-partnership-contract.md` |
 | `#founder-mode` | a founder-facing decision surface instead of technician-level back-and-forth | `skills/references/operator-partnership-contract.md` |
 | `#founder` | the user as a business owner who wants useful decisions, growth, and clarity | `skills/references/operator-partnership-contract.md` |
@@ -79,9 +79,9 @@ Use these when the issue is mostly about message shape, reader understanding, or
 | Tag | Use when you want... | Canonical source |
 | --- | --- | --- |
 | `#cta` | the next action to be clearer and stronger | `shipflow_data/business/gtm.md` |
-| `#clarity` | readability, explicit structure, and less vague wording | `shipflow_data/business/branding.md` |
+| `#clarity` | readability, explicit structure, and less vague wording | `shipflow_data/branding/branding.md` |
 | `#faq` | objections, reassurance, and friction-killing answers | `shipflow_data/business/gtm.md` |
-| `#voice` | tone and brand-language discipline | `shipflow_data/business/branding.md` |
+| `#voice` | tone and brand-language discipline | `shipflow_data/branding/branding.md` |
 | `#audience` | the target persona and sophistication level to dominate the decision | `shipflow_data/business/business.md` |
 | `#source` | classify an incoming source, project fit, useful angle, risks, and next owner skill | `skills/references/source-intake-classification.md` |
 | `#private-memory` | use the approved private cache for project pitches or reusable source memory | `skills/references/private-memory-store.md` |

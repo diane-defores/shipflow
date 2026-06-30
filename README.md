@@ -135,7 +135,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [skills/references/operator-roles/](./skills/references/operator-roles/) — shared operator-role contracts such as `growth-operations-lead`, `product-architecture-planner`, `risk-and-coherence-guardian`, `end-user-adhesion-reviewer`, and `seo-specialist`
 - [shipflow_data/business/business.md](./shipflow_data/business/business.md) — target audience, value proposition, business assumptions, and market framing
 - [shipflow_data/business/product.md](./shipflow_data/business/product.md) — product scope, workflows, outcomes, and non-goals
-- [shipflow_data/business/branding.md](./shipflow_data/business/branding.md) — tone, trust posture, vocabulary, and claims boundaries
+- [shipflow_data/branding/branding.md](./shipflow_data/branding/branding.md) — tone, trust posture, vocabulary, and claims boundaries
 - [shipflow_data/business/gtm.md](./shipflow_data/business/gtm.md) — public promise, acquisition path, proof points, objections, and funnel assumptions
 - [shipflow_data/technical/architecture.md](./shipflow_data/technical/architecture.md) — system structure, boundaries, flows, and technical invariants
 - [shipflow_data/technical/guidelines.md](./shipflow_data/technical/guidelines.md) — technical rules, preferred patterns, anti-patterns, and validation expectations
@@ -227,7 +227,18 @@ The recommended server shape is:
 - let ShipFlow manage the local Caddy proxy with the environment lifecycle
   instead of keeping a global root Caddy service running
 
-`dotfiles` may prepare generic user tooling in `~/.local/bin`, `~/.local/share/pnpm`, and `~/.config`. ShipFlow owns the AI/code workflow layer: skills, Claude/Codex settings, MCP registrations, ShipFlow aliases, and each project's local `shipflow_data`. `pnpm` is the default package manager for ShipFlow-managed projects; `npm` remains only a compatibility fallback when a third-party tool still hard-requires it.
+`dotfiles` may prepare generic user tooling in `~/.local/bin`, `~/.local/share/pnpm`, and `~/.config`. ShipFlow owns the AI/code workflow layer: skills, Claude/Codex settings, MCP registrations, ShipFlow aliases, optional user-space AI CLIs, and each project's local `shipflow_data`. `pnpm` is the default package manager for ShipFlow-managed projects; `npm` remains only a compatibility fallback when a third-party tool still hard-requires it.
+
+`cli/install.sh` now keeps the machine-level scope automatic but lets the operator choose the user-space agent/runtime layer interactively. The install can enable any combination of:
+
+- `claude`
+- `codex`
+- `opencode`
+- `kilocode`
+- ShipFlow runtime config for Claude/Codex (`~/.claude`, `~/.codex`, MCP registration, skills, aliases)
+- ShipFlow TUI
+
+The current agent installs use `pnpm add -g` at install time, so ShipFlow pulls the then-current npm package release rather than shipping pinned local binaries. For non-interactive runs, `SHIPFLOW_INSTALL_COMPONENTS` accepts values such as `claude,ai-runtime`, `claude,kilocode,tui`, `codex`, `ai-agents`, `all`, or `none`.
 
 Before the first install on a machine, restore project-local tracking data from your
 existing project repositories or workspace artifacts. Legacy `~/shipflow_data`
@@ -251,7 +262,7 @@ for the internal architecture contract.
 
 ## Codex TUI Defaults
 
-`cli/install.sh` configures Codex for selected eligible users (plus root baseline setup) by writing `~/.codex/config.toml` with either the permissive or standard mode selected during install:
+`cli/install.sh` configures Codex for selected eligible users (plus root baseline setup) by writing `~/.codex/config.toml` with either the permissive or standard mode selected during install, when the ShipFlow runtime layer is selected:
 
 ```toml
 tui.status_line = ["model-with-reasoning", "current-dir", "context-remaining", "five-hour-limit", "weekly-limit"]
@@ -693,7 +704,7 @@ ShipFlow also separates decision contracts by role:
 
 - `shipflow_data/business/business.md` for who the product is for and why it matters
 - `shipflow_data/business/product.md` for what the product should do and not do
-- `shipflow_data/business/branding.md` for how the product should sound
+- `shipflow_data/branding/branding.md` for how the product should sound
 - `shipflow_data/business/gtm.md` for how the product should be presented and distributed
 - `shipflow_data/business/project-competitors-and-inspirations.md` for competitors, alternatives, inspirations, anti-patterns, and differentiation notes by project
 - `shipflow_data/business/affiliate-programs.md` for affiliate, referral, partner, sponsorship, disclosure, and non-secret credential pointers by project
@@ -710,7 +721,7 @@ The current documentation structure is already solid on four axes:
 
 - technical: `CLAUDE.md`, `shipflow_data/technical/context.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/technical/guidelines.md`, and `shipflow_data/workflow/specs/`
 - workflow: `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `300-sf-docs`, and versioned metadata
-- product/business: `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, versioned docs, and `depends_on` relationships
+- product/business: `shipflow_data/business/business.md`, `shipflow_data/branding/branding.md`, versioned docs, and `depends_on` relationships
 - editorial coherence: `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/`, public content, claims, page intent, and Astro content schema boundaries
 
 The recent step forward is structural clarity:
@@ -822,9 +833,9 @@ Application runtime content keeps the schema required by the application. Blog p
 
 ### Business documentation is technical documentation
 
-ShipFlow treats `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/technical/guidelines.md`, `shipflow_data/editorial/content-map.md`, personas, pricing notes, positioning, and GTM documents as technical artifacts because they drive technical, product, and content-routing decisions.
+ShipFlow treats `shipflow_data/business/business.md`, `shipflow_data/branding/branding.md`, `shipflow_data/technical/guidelines.md`, `shipflow_data/editorial/content-map.md`, personas, pricing notes, positioning, and GTM documents as technical artifacts because they drive technical, product, and content-routing decisions.
 
-If `shipflow_data/business/business.md` says the product serves solo founders, then copy, onboarding, pricing, feature scope, support, and prioritization should be evaluated against that audience. If `shipflow_data/business/branding.md` says trust and clarity are core values, then UI copy, error messages, claims, screenshots, and documentation must preserve that trust. If a pricing or positioning document is stale, a technically correct feature can still be strategically wrong.
+If `shipflow_data/business/business.md` says the product serves solo founders, then copy, onboarding, pricing, feature scope, support, and prioritization should be evaluated against that audience. If `shipflow_data/branding/branding.md` says trust and clarity are core values, then UI copy, error messages, claims, screenshots, and documentation must preserve that trust. If a pricing or positioning document is stale, a technically correct feature can still be strategically wrong.
 
 Business documentation therefore needs the same discipline as code documentation:
 

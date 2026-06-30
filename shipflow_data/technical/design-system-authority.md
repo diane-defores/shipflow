@@ -14,12 +14,12 @@ risk_level: high
 security_impact: none
 docs_impact: yes
 linked_systems:
-  - shipflow_data/business/branding.md
+  - shipflow_data/branding/branding.md
   - shipflow_data/technical/guidelines.md
   - shipflow_data/technical/code-docs-map.md
   - skills/references/design-system-token-contract.md
 depends_on:
-  - artifact: shipflow_data/business/branding.md
+  - artifact: shipflow_data/branding/branding.md
     artifact_version: "1.1.0"
     required_status: reviewed
   - artifact: skills/references/design-system-token-contract.md
@@ -57,7 +57,7 @@ Use this compact schema in the project artifact:
 ```yaml
 design_system_authority:
   status: declared | missing | split-brain | not-applicable
-  brand_contract: shipflow_data/business/branding.md
+  brand_contract: shipflow_data/branding/branding.md
   canonical_source: "path/to/tokens-or-theme"
   technology_carrier: css-custom-properties | tailwind-theme | flutter-theme | react-native-theme | native-platform-theme | dtcg-json | other
   component_bridge: "path/to/component primitives or variant system"
@@ -118,7 +118,7 @@ Update this artifact whenever the project adds a frontend, changes styling techn
 
 - `shipflow-site`:
   - status: `declared`
-  - brand_contract: `shipflow_data/business/branding.md`
+  - brand_contract: `shipflow_data/branding/branding.md`
   - canonical_source: `shipflow-site/src/styles/global.css`
   - technology_carrier: `css-custom-properties`
   - component_bridge: `shipflow-site/src/components/NavBar.astro`, `shipflow-site/src/components/Hero.astro`, and the shared component set under `shipflow-site/src/components`

@@ -24,7 +24,7 @@ Default to `report=user`: concise, sequence-first, and in the user's active lang
 
 - `shipflow_data/business/business.md`
 - `shipflow_data/business/product.md`
-- `shipflow_data/business/branding.md`
+- `shipflow_data/branding/branding.md`
 - `shipflow_data/business/gtm.md`
 - `shipflow_data/editorial/content-map.md`
 - `skills/references/source-intake-classification.md`

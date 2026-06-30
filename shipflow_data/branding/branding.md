@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.1.0"
 project: "shipflow"
 created: "2026-04-26"
-updated: "2026-05-11"
+updated: "2026-06-30"
 status: reviewed
 source_skill: manual
 scope: brand
@@ -27,7 +27,7 @@ depends_on:
     required_status: "reviewed"
 supersedes: []
 next_review: "2026-05-26"
-next_step: "/sf-docs audit shipflow_data/business/branding.md"
+next_step: "/sf-docs audit shipflow_data/branding/branding.md"
 ---
 
 # Brand Context
@@ -75,3 +75,16 @@ next_step: "/sf-docs audit shipflow_data/business/branding.md"
 - The product should read as operational and work-focused rather than playful or futuristic.
 - Visual trust should come from structure, legibility, and specificity, not decorative hype.
 - Any future site should make the product category legible quickly: disciplined AI delivery framework plus server-side environment control.
+
+## Bundle Boundary
+
+This file is the shared brand root. When a project needs more explicit brand governance, the preferred bundle shape is:
+
+- `shipflow_data/branding/branding.md`
+- `shipflow_data/branding/voice-and-tone.md`
+- `shipflow_data/branding/messaging-pillars.md`
+- `shipflow_data/branding/visual-identity.md`
+- `shipflow_data/branding/brand-rules.md`
+- `shipflow_data/branding/assets/README.md`
+
+Not every project needs every file immediately, but `branding/` is the canonical family for shared brand doctrine.

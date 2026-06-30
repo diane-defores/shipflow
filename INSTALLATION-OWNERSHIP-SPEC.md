@@ -8,6 +8,7 @@ created_at: "2026-04-28 14:15:00 UTC"
 updated: "2026-04-28"
 updated_at: "2026-04-28 14:15:00 UTC"
 status: draft
+source_skill: "300-sf-docs"
 scope: cross-repository
 owner: ShipFlow maintainer
 user_story: "En tant qu'operateur qui initialise un serveur de travail, je veux une separation claire entre l'installation du tooling generique et l'installation IA/code, afin d'eviter les conflits de droits, les doublons et les configurations appliquees au mauvais utilisateur."
@@ -15,6 +16,8 @@ confidence: medium
 risk_level: medium
 security_impact: yes
 docs_impact: yes
+depends_on: []
+supersedes: []
 linked_repositories:
   - ShipFlow
   - dotfiles
@@ -44,7 +47,7 @@ draft
 
 Les deux repos installent ou configurent aujourd'hui des elements proches:
 - `dotfiles` installe des outils terminal/editor, mais aussi des outils IA (`claude`, `codex`, MCP, aliases IA).
-- `ShipFlow` configure les espaces Claude/Codex/skills/MCP, mais installe aussi plusieurs CLIs globales et configure automatiquement `root` + tous les utilisateurs `/home`.
+- `ShipFlow` configure les espaces Claude/Codex/skills/MCP, installe les CLIs IA/code de son workflow via `pnpm`, et doit maintenant permettre une sélection fine par agent au lieu d'imposer un bundle unique.
 
 Cette superposition rend flou:
 - qui installe les binaires IA,
@@ -83,11 +86,11 @@ Les deux scripts doivent etre complementaires, pas concurrents.
 ### ShipFlow owns: AI, code agents, active development
 
 `ShipFlow` est responsable de:
-- Claude Code / Codex install policy or validation.
+- AI/code CLI install policy or validation for the ShipFlow workflow: `claude`, `codex`, `opencode`, `kilocode`.
 - `~/.claude`, `~/.codex`, skills, MCP servers, statusline, agent settings.
 - ShipFlow aliases and active workflow entrypoints (`shipflow`, `sf`, optional `co` if Codex is in scope).
 - project-local `shipflow_data` corpora and active development metadata.
-- AI/code CLIs when they are part of the ShipFlow workflow: `claude`, `codex`, MCP helper CLIs, agent-specific tooling.
+- AI/code CLIs when they are part of the ShipFlow workflow: `claude`, `codex`, `opencode`, `kilocode`, MCP helper CLIs, agent-specific tooling.
 - explicit user targeting for profiles that receive AI/code configuration.
 
 `ShipFlow` must not own:
@@ -219,7 +222,7 @@ Already aligned:
 
 Needs alignment:
 - Stops configuring `root + all /home/*` by default.
-- Defines whether it installs `claude` and `codex` binaries or only validates them.
+- Keeps explicit per-agent selection so `claude`, `codex`, `opencode`, and `kilocode` can be installed independently.
 - Moves generic tooling responsibilities out of ShipFlow unless required by ShipFlow runtime.
 - Uses explicit user targeting for all user-scope AI/code configuration.
 
@@ -259,7 +262,7 @@ For an existing workstation:
 - [ ] AC3: No user-scope config is applied to all `/home/*` users unless explicitly selected.
 - [ ] AC4: Fresh-server bootstrap detects absence of a non-root operational user and prompts or recommends creation.
 - [ ] AC5: `dotfiles` no longer silently owns Claude/Codex/MCP configuration once ShipFlow owns that domain.
-- [ ] AC6: ShipFlow either installs `claude`/`codex` or validates and explains the missing binaries; the responsibility is explicit.
+- [ ] AC6: ShipFlow either installs or validates the selected AI CLIs (`claude`, `codex`, `opencode`, `kilocode`) and explains missing binaries explicitly.
 - [ ] AC7: Project dependencies are never installed globally by either script.
 - [ ] AC8: Root remains acceptable for system setup but is not presented as the default daily working user.
 
@@ -272,7 +275,7 @@ For an existing workstation:
 
 ## Open Questions
 
-- Should `ShipFlow` install `claude` and `codex`, or should it require them and provide exact install guidance?
+- Should ShipFlow keep following latest npm releases for selected agents, or expose a pinned/stable channel later?
 - Should `dotfiles` be allowed to call `shipflow/install.sh`, or should it only print the next command?
 - What is the default user target for non-interactive server bootstrap: `all-users` for compatibility, or require explicit `user-list`?
 - Should compatibility mode preserve existing broad behavior behind an explicit flag?

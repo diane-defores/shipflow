@@ -66,7 +66,7 @@ Ce fichier est le point d'entree rapide pour un agent qui arrive dans le repo. I
 - `shipflow_data/technical/blacksmith.md`: Blacksmith CI, APK builds, logs, Run History, Metrics, SSH Access, Testboxes.
 - `shipflow_data/business/business.md`: contrat business.
 - `shipflow_data/business/product.md`: contrat produit.
-- `shipflow_data/business/branding.md`: contrat de marque.
+- `shipflow_data/branding/branding.md`: contrat de marque.
 - `shipflow_data/business/gtm.md`: contrat de promesse publique et de distribution.
 - `shipflow_data/business/project-competitors-and-inspirations.md`: registre des concurrents, alternatives, inspirations et anti-patterns par projet.
 - `shipflow_data/business/affiliate-programs.md`: registre des programmes d'affiliation, referral, partner et disclosure par projet.

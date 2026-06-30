@@ -102,7 +102,7 @@ This file defines stable engineering and documentation rules for working inside 
 - `shipflow_data/technical/code-docs-map.md` maps code paths to primary docs, validation, and docs update triggers.
 - Every technical module doc needs owned files, entrypoints, invariants, validation, Reader checklist, and a maintenance rule.
 - Business, product, GTM, brand, architecture, and guidelines docs should each keep an exclusive role in their canonical `shipflow_data/` locations.
-- `shipflow_data/business/branding.md` owns visual identity; `shipflow_data/technical/design-system-authority.md` owns the code-level token/theme/component source of truth.
+- `shipflow_data/branding/branding.md` owns visual identity; `shipflow_data/technical/design-system-authority.md` owns the code-level token/theme/component source of truth.
 
 ## Technical Docs Maintenance
 

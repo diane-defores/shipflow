@@ -64,7 +64,7 @@ The final report must include these governance outcomes when relevant:
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -120 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Branding: !`if [ -f shipflow_data/business/branding.md ]; then head -80 shipflow_data/business/branding.md; else head -80 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md)"; fi`
+- Branding: !`if [ -f shipflow_data/branding/branding.md ]; then head -80 shipflow_data/branding/branding.md; else head -80 BRANDING.md 2>/dev/null || echo "no shipflow_data/branding/branding.md (and no legacy BRANDING.md)"; fi`
 - Business: !`if [ -f shipflow_data/business/business.md ]; then head -80 shipflow_data/business/business.md; else head -80 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md)"; fi`
 - Inspiration: !`head -60 INSPIRATION.md 2>/dev/null || echo "no INSPIRATION.md"`
 - Source: !`head -60 SOURCE.md 2>/dev/null || echo "no SOURCE.md"`

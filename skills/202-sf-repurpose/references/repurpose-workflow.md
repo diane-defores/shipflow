@@ -79,7 +79,7 @@ If subagents are unavailable, continue with a sequential read scan and report th
 - Changed files: !`git diff --name-only HEAD 2>/dev/null | head -40 || echo "no changed files"`
 - CLAUDE.md: !`head -60 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 - Business context: !`if [ -f shipflow_data/business/business.md ]; then head -60 shipflow_data/business/business.md; else head -60 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md)"; fi`
-- Brand context: !`if [ -f shipflow_data/business/branding.md ]; then head -60 shipflow_data/business/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md)"; fi`
+- Brand context: !`if [ -f shipflow_data/branding/branding.md ]; then head -60 shipflow_data/branding/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/branding/branding.md (and no legacy BRANDING.md)"; fi`
 - Product context: !`if [ -f shipflow_data/business/product.md ]; then head -60 shipflow_data/business/product.md; else head -60 PRODUCT.md 2>/dev/null || echo "no shipflow_data/business/product.md (and no legacy PRODUCT.md)"; fi`
 - GTM context: !`if [ -f shipflow_data/business/gtm.md ]; then head -60 shipflow_data/business/gtm.md; else head -60 GTM.md 2>/dev/null || echo "no shipflow_data/business/gtm.md (and no legacy GTM.md)"; fi`
 - Competitors/inspirations registry: !`if [ -f shipflow_data/business/project-competitors-and-inspirations.md ]; then head -60 shipflow_data/business/project-competitors-and-inspirations.md; else echo "no optional shipflow_data/business/project-competitors-and-inspirations.md"; fi`

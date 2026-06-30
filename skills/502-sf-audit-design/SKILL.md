@@ -35,7 +35,7 @@ Use `report=agent`, `handoff`, `verbose`, or `full-report` for full matrices and
 
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -100 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
-- Branding summary: !`if [ -f shipflow_data/business/branding.md ]; then head -60 shipflow_data/business/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/business/branding.md (and no legacy BRANDING.md)"; fi`
+- Branding summary: !`if [ -f shipflow_data/branding/branding.md ]; then head -60 shipflow_data/branding/branding.md; else head -60 BRANDING.md 2>/dev/null || echo "no shipflow_data/branding/branding.md (and no legacy BRANDING.md)"; fi`
 - Representative pages/components: !`find src/pages src/app src/components -name "*.astro" -o -name "*.tsx" -o -name "*.vue" 2>/dev/null | grep -v node_modules | sort | head -80`
 
 ## Mode Detection

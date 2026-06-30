@@ -289,7 +289,7 @@ Créer les fichiers de contexte business/marque dans le dossier `shipflow_data/`
 
 **Pour chaque fichier** : vérifier d'abord s'il existe déjà dans le projet. Si oui, sauter.
 
-`shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/editorial/content-map.md` et `shipflow_data/technical/guidelines.md` sont des artefacts ShipFlow, pas de simples notes. Les anciens fichiers racine (`BUSINESS.md`, `BRANDING.md`, `CONTENT_MAP.md`, `GUIDELINES.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `PRODUCT.md`, `GTM.md`, `ARCHITECTURE.md`) ne servent que de sources de migration quand ils existent encore. Ils ne sont pas des emplacements finaux conformes. Les artefacts doivent commencer par un frontmatter YAML ShipFlow avec `metadata_schema_version`, `artifact_version`, `status`, `confidence`, `risk_level`, `evidence`, `next_review`, `depends_on` et `supersedes`. À l'initialisation, utiliser `metadata_schema_version: "1.0"` et `artifact_version: "0.1.0"` tant que le contenu n'a pas été revu explicitement par l'utilisateur; passer à `artifact_version: "1.0.0"` seulement si les réponses utilisateur couvrent les décisions essentielles sans placeholder.
+`shipflow_data/business/business.md`, `shipflow_data/branding/branding.md`, `shipflow_data/editorial/content-map.md` et `shipflow_data/technical/guidelines.md` sont des artefacts ShipFlow, pas de simples notes. Les anciens fichiers racine (`BUSINESS.md`, `BRANDING.md`, `CONTENT_MAP.md`, `GUIDELINES.md`, `CONTEXT.md`, `CONTEXT-FUNCTION-TREE.md`, `PRODUCT.md`, `GTM.md`, `ARCHITECTURE.md`) ne servent que de sources de migration quand ils existent encore. Ils ne sont pas des emplacements finaux conformes. Les artefacts doivent commencer par un frontmatter YAML ShipFlow avec `metadata_schema_version`, `artifact_version`, `status`, `confidence`, `risk_level`, `evidence`, `next_review`, `depends_on` et `supersedes`. À l'initialisation, utiliser `metadata_schema_version: "1.0"` et `artifact_version: "0.1.0"` tant que le contenu n'a pas été revu explicitement par l'utilisateur; passer à `artifact_version: "1.0.0"` seulement si les réponses utilisateur couvrent les décisions essentielles sans placeholder.
 
 Les registres `shipflow_data/business/project-competitors-and-inspirations.md` et `shipflow_data/business/affiliate-programs.md` sont optionnels. `305-sf-init` ne les crée pas par défaut pour tous les projets. Si l'un d'eux existe déjà, reporter son statut et le faire valider par `/300-sf-docs update` ou le linter ShipFlow. Si l'utilisateur demande explicitement une initialisation marché/affiliation, utiliser les templates `templates/artifacts/competitive_intelligence.md` et `templates/artifacts/affiliate_program_registry.md`; sinon reporter `absent optionnel`.
 
@@ -352,7 +352,7 @@ next_step: "/300-sf-docs update"
 
 Si l'utilisateur donne une réponse courte, compléter intelligemment à partir du stack détecté et du contenu existant. Marquer clairement les sections devinées avec `<!-- à confirmer -->`.
 
-#### 5b. shipflow_data/business/branding.md
+#### 5b. shipflow_data/branding/ bundle
 
 Utiliser **AskUserQuestion** :
 - Question : "Quel ton pour ce projet ?"
@@ -362,7 +362,19 @@ Utiliser **AskUserQuestion** :
   - **Décontracté & fun** — "Familier, emojis OK, humour"
   - **Technique & précis** — "Documentation style, pas de fluff"
 
-Puis générer `[project_dir]/shipflow_data/business/branding.md` :
+Puis générer au minimum :
+
+- `[project_dir]/shipflow_data/branding/branding.md`
+- `[project_dir]/shipflow_data/branding/voice-and-tone.md`
+- `[project_dir]/shipflow_data/branding/messaging-pillars.md`
+- `[project_dir]/shipflow_data/branding/brand-rules.md`
+
+Générer aussi si le projet a une vraie surface publique ou UI :
+
+- `[project_dir]/shipflow_data/branding/visual-identity.md`
+- `[project_dir]/shipflow_data/branding/assets/README.md`
+
+`branding.md` reste l'index canonique du bundle :
 
 ```markdown
 ---
@@ -396,6 +408,23 @@ next_step: "/300-sf-docs update"
 
 # Branding — [project name]
 
+## Bundle
+
+- `voice-and-tone.md`
+- `messaging-pillars.md`
+- `brand-rules.md`
+- `visual-identity.md` [si surface UI/publique]
+- `assets/README.md` [si assets ou surface UI/publique]
+
+## Rôle
+[Décrire ce que le branding gouverne et ce qui reste côté business/technical]
+```
+
+Puis générer `voice-and-tone.md` :
+
+```markdown
+# Voice And Tone — [project name]
+
 ## Voix de marque
 [Ton choisi — description en 2-3 phrases]
 
@@ -403,11 +432,56 @@ next_step: "/300-sf-docs update"
 [tu/vous — déduit du ton + langue du projet]
 
 ## Personnalité
-[3-5 adjectifs qui décrivent la marque — ex: "fiable, direct, chaleureux"]
+[3-5 adjectifs qui décrivent la marque]
+```
 
-## Tagline
-[À compléter — laisser vide si pas encore défini]
+Puis `messaging-pillars.md` :
 
+```markdown
+# Messaging Pillars — [project name]
+
+## Promesse
+[Promesse centrale]
+
+## Messages clés
+- [...]
+- [...]
+
+## Claims boundaries
+[Ce qui peut ou ne peut pas être promis]
+```
+
+Puis `brand-rules.md` :
+
+```markdown
+# Brand Rules — [project name]
+
+## Copy rules
+- do
+- don't
+
+## Claim rules
+- allowed
+- forbidden
+```
+
+Puis `visual-identity.md` si nécessaire :
+
+```markdown
+# Visual Identity — [project name]
+
+## Direction visuelle
+[Palette, typographie, imagerie, principes]
+```
+
+Puis `assets/README.md` si nécessaire :
+
+```markdown
+# Brand Assets — [project name]
+
+## Inventory
+- [asset path]
+```
 ## Valeurs
 [Déduites de la mission et du ton — 3-5 valeurs]
 
@@ -712,7 +786,7 @@ CLAUDE.md:   [created / skipped / already existed]
 shipflow_data/workflow/TASKS.md:    [created / skipped / already existed / legacy root migration debt]
 shipflow_data/workflow/AUDIT_LOG.md: [created / skipped / already existed / legacy root migration debt]
 shipflow_data/business/business.md: [created / skipped / already existed]
-shipflow_data/business/branding.md: [created / skipped / already existed]
+shipflow_data/branding/branding.md: [created / skipped / already existed]
 shipflow_data/business/project-competitors-and-inspirations.md: [absent optional / created on request / already existed / needs audit]
 shipflow_data/business/affiliate-programs.md: [absent optional / created on request / already existed / needs audit]
 shipflow_data/editorial/content-map.md: [created / skipped / already existed]

@@ -133,7 +133,7 @@ Nested `apps/foo/shipflow_data/` or sibling `foo_app/shipflow_data/` directories
 | --- | --- |
 | `BUSINESS.md` | `shipflow_data/business/business.md` |
 | `PRODUCT.md` | `shipflow_data/business/product.md` |
-| `BRANDING.md` | `shipflow_data/business/branding.md` |
+| `BRANDING.md` | `shipflow_data/branding/branding.md` |
 | `GTM.md` | `shipflow_data/business/gtm.md` |
 | `INSPIRATION.md` | `shipflow_data/business/project-competitors-and-inspirations.md` |
 | `AFFILIATES.md` | `shipflow_data/business/affiliate-programs.md` |

@@ -22,7 +22,7 @@ linked_systems:
   - shipflow_data/editorial/content-map.md
   - shipflow_data/business/business.md
   - shipflow_data/business/product.md
-  - shipflow_data/business/branding.md
+  - shipflow_data/branding/branding.md
   - shipflow_data/business/gtm.md
   - shipflow_data/business/portfolio-project-pitch-links.md
 depends_on:
@@ -35,7 +35,7 @@ depends_on:
   - artifact: "shipflow_data/business/product.md"
     artifact_version: "1.2.0"
     required_status: reviewed
-  - artifact: "shipflow_data/business/branding.md"
+  - artifact: "shipflow_data/branding/branding.md"
     artifact_version: "1.1.0"
     required_status: reviewed
   - artifact: "shipflow_data/business/gtm.md"
@@ -115,7 +115,7 @@ Before final classification, load only the relevant canonical context:
 
 - `shipflow_data/business/business.md` when audience, buyer, market, or monetization matters
 - `shipflow_data/business/product.md` when product fit, user problem, workflow, or non-goals matter
-- `shipflow_data/business/branding.md` when voice, trust posture, vocabulary, or claim boundaries matter
+- `shipflow_data/branding/branding.md` when voice, trust posture, vocabulary, or claim boundaries matter
 - `shipflow_data/business/gtm.md` when offer, CTA, funnel, distribution, or positioning matters
 - `shipflow_data/editorial/content-map.md` when public content, repurposing, docs, FAQ, article, landing page, or skill-page placement matters
 - `shipflow_data/business/portfolio-project-pitch-links.md` when choosing between several portfolio projects matters

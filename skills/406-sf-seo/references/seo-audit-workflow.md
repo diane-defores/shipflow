@@ -75,7 +75,7 @@ The final report must include these governance outcomes when relevant:
 - Current directory: !`pwd`
 - Project CLAUDE.md: !`head -100 CLAUDE.md 2>/dev/null || echo "no CLAUDE.md"`
 - Business context: !`if [ -f shipflow_data/business/business.md ]; then head -40 shipflow_data/business/business.md; else head -40 BUSINESS.md 2>/dev/null || echo "no shipflow_data/business/business.md (and no legacy BUSINESS.md) — run /305-sf-init or /300-sf-docs update"; fi`
-- Business metadata: !`for pair in "shipflow_data/business/business.md BUSINESS.md" "shipflow_data/business/branding.md BRANDING.md" "shipflow_data/technical/guidelines.md GUIDELINES.md"; do set -- $pair; if [ -f "$1" ]; then f="$1"; elif [ -f "$2" ]; then f="$2"; else echo "$2: missing (no $1)"; continue; fi; printf '%s: ' "$f"; sed -n '1,40p' "$f" | grep -E '^(metadata_schema_version|artifact_version|status|updated|confidence|next_review):' | tr '\n' ' '; printf '\n'; done`
+- Business metadata: !`for pair in "shipflow_data/business/business.md BUSINESS.md" "shipflow_data/branding/branding.md BRANDING.md" "shipflow_data/technical/guidelines.md GUIDELINES.md"; do set -- $pair; if [ -f "$1" ]; then f="$1"; elif [ -f "$2" ]; then f="$2"; else echo "$2: missing (no $1)"; continue; fi; printf '%s: ' "$f"; sed -n '1,40p' "$f" | grep -E '^(metadata_schema_version|artifact_version|status|updated|confidence|next_review):' | tr '\n' ' '; printf '\n'; done`
 - All pages: !`find src/pages src/app -name "*.astro" -o -name "*.tsx" -o -name "*.vue" 2>/dev/null | grep -v node_modules | sort`
 - Sitemap: !`cat public/sitemap*.xml 2>/dev/null | head -50 || echo "no sitemap found"`
 - Robots.txt: !`cat public/robots.txt 2>/dev/null || echo "no robots.txt"`

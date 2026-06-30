@@ -83,7 +83,7 @@ The current documentation frame is already solid on three axes:
 
 - technical: `CLAUDE.md`, `shipflow_data/technical/context.md`, `shipflow_data/technical/context-function-tree.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/technical/guidelines.md`, and `shipflow_data/workflow/specs/`
 - workflow: `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, `300-sf-docs`, and versioned metadata
-- product/business: `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, versioned docs, and `depends_on` relationships
+- product/business: `shipflow_data/business/business.md`, `shipflow_data/branding/branding.md`, versioned docs, and `depends_on` relationships
 - editorial coherence: `shipflow_data/editorial/content-map.md`, `shipflow_data/editorial/`, public content, claims, page intent, and Astro content schema policy
 
 The recent progress is structural rather than cosmetic:
@@ -474,7 +474,7 @@ Location rule:
   - historical completed context
 - Do not copy completed historical entries from the master tracker into the local active backlog.
 - Per-project decision artifacts belong in the project repository that they govern.
-- `shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/technical/guidelines.md`, project competitor/inspiration registries, affiliate/referral/partner registries, specs, research, and decision records should be edited and versioned in the repo they affect, not duplicated into an external master data directory.
+- `shipflow_data/business/business.md`, `shipflow_data/branding/branding.md`, `shipflow_data/editorial/content-map.md`, `shipflow_data/technical/guidelines.md`, project competitor/inspiration registries, affiliate/referral/partner registries, specs, research, and decision records should be edited and versioned in the repo they affect, not duplicated into an external master data directory.
 - If `shipflow_data` needs visibility, add a reference or inventory entry, not a second canonical copy.
 
 Skill-aligned artifact templates live in `templates/artifacts/`. They should encode the structures expected by the active skills (`100-sf-spec`, `101-sf-ready`, `103-sf-verify`, `703-sf-review`, `203-sf-research`) instead of replacing those conventions. The current templates cover:
@@ -563,7 +563,7 @@ ShipFlow also separates decision contracts by role to avoid turning one document
 
 - `shipflow_data/business/business.md` defines audience, business model assumptions, value proposition, and market frame.
 - `shipflow_data/business/product.md` defines product scope, workflows, outcomes, and non-goals.
-- `shipflow_data/business/branding.md` defines voice, trust posture, vocabulary, and claims boundaries.
+- `shipflow_data/branding/branding.md` defines voice, trust posture, vocabulary, and claims boundaries.
 - `shipflow_data/business/gtm.md` defines public promise, acquisition channels, proof points, objections, and funnel assumptions.
 - `shipflow_data/editorial/content-map.md` defines content surfaces, semantic clusters, pillar pages, and repurposing destinations.
 - `shipflow_data/editorial/` defines public-content governance, claims, page intent, and runtime content schema boundaries.
@@ -576,7 +576,7 @@ In practice, this clarifies the product surface:
 
 - `shipflow_data/business/business.md` = for whom / what value / what model
 - `shipflow_data/business/product.md` = what / workflows / non-goals
-- `shipflow_data/business/branding.md` = how we speak
+- `shipflow_data/branding/branding.md` = how we speak
 - `shipflow_data/business/gtm.md` = how we present and distribute it
 - `shipflow_data/editorial/content-map.md` = where content lives / how ideas move across surfaces
 - `shipflow_data/editorial/` = content governance / claims / page intent / Astro content
@@ -595,7 +595,7 @@ Documentation role map:
 - `shipflow-spec-driven-workflow.md` -> ShipFlow work doctrine
 - `shipflow-metadata-migration-guide.md` -> frontmatter migration procedure
 - `shipflow_data/business/business.md` -> business/product contract: for whom, what problem, what value, what model
-- `shipflow_data/business/branding.md` -> brand contract: tone, posture, vocabulary, claims
+- `shipflow_data/branding/branding.md` -> brand contract: tone, posture, vocabulary, claims
 - `shipflow_data/business/gtm.md` -> public promise and sales contract: offer, funnel, objections, proof, channels, KPIs
 - `shipflow_data/editorial/content-map.md` -> content architecture contract: surfaces, page roles, semantic clusters, pillar pages, and update rules
 - `docs/editorial/` -> editorial governance contract: public surfaces, claim register, page intent, content gates, and runtime schema policy
@@ -673,7 +673,7 @@ depends_on:
   - artifact: shipflow_data/business/business.md
     artifact_version: "1.2.0"
     required_status: reviewed
-  - artifact: shipflow_data/business/branding.md
+  - artifact: shipflow_data/branding/branding.md
     artifact_version: "1.0.0"
     required_status: reviewed
   - artifact: docs/API.md
@@ -689,7 +689,7 @@ The metadata must not pretend certainty. If an artifact is inferred from old fil
 
 ShipFlow treats business documentation as technical documentation because agents use it to make technical choices.
 
-`shipflow_data/business/business.md`, `shipflow_data/business/branding.md`, `shipflow_data/technical/guidelines.md`, personas, market studies, pricing notes, positioning docs, and GTM docs influence:
+`shipflow_data/business/business.md`, `shipflow_data/branding/branding.md`, `shipflow_data/technical/guidelines.md`, personas, market studies, pricing notes, positioning docs, and GTM docs influence:
 
 - what user story a feature should serve
 - what copy and UX should promise
@@ -737,7 +737,7 @@ evidence:
   - "user interview notes"
   - "current product positioning"
 linked_artifacts:
-  - "shipflow_data/business/branding.md"
+  - "shipflow_data/branding/branding.md"
   - "shipflow-spec-driven-workflow.md"
 depends_on: []
 supersedes: []

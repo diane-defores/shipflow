@@ -221,7 +221,13 @@ Documentation must preserve the professional bug model:
 
 Projects with a UI need a declared design-system authority before agents change visual implementation.
 
-- `shipflow_data/branding/branding.md` owns visual identity and brand direction.
+- `shipflow_data/branding/branding.md` owns the shared brand root, bundle boundaries, and brand direction.
+- Optional shared brand bundle files may extend it when the project needs stronger normalization:
+  - `shipflow_data/branding/voice-and-tone.md`
+  - `shipflow_data/branding/messaging-pillars.md`
+  - `shipflow_data/branding/visual-identity.md`
+  - `shipflow_data/branding/brand-rules.md`
+  - `shipflow_data/branding/assets/README.md`
 - `shipflow_data/technical/<surface>/design-system-authority.md` owns the code-level design-system authority when the UI technology or token carrier differs by surface.
 - In monorepos, keep brand identity shared at `shipflow_data/branding/branding.md` and scope technical design-system authority by surface when site/app runtimes diverge.
 - If the authority is missing or split across competing files, `300-sf-docs technical` should create or flag the declaration before UI implementation proceeds.

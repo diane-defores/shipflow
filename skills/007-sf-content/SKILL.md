@@ -74,7 +74,7 @@ python3 tools/skill_budget_audit.py --skills-root skills --format markdown
 For ShipFlow docs/specs/content-map artifacts:
 
 ```bash
-python3 tools/shipflow_metadata_lint.py shipflow_data/workflow/specs README.md shipflow-spec-driven-workflow.md shipflow_data/editorial/content-map.md shipflow_data/business/business.md shipflow_data/business/product.md shipflow_data/business/branding.md shipflow_data/business/gtm.md shipflow_data/business/project-competitors-and-inspirations.md shipflow_data/business/affiliate-programs.md shipflow_data/technical/context.md shipflow_data/technical shipflow_data/editorial docs/skill-launch-cheatsheet.md
+python3 tools/shipflow_metadata_lint.py shipflow_data/workflow/specs README.md shipflow-spec-driven-workflow.md shipflow_data/editorial/content-map.md shipflow_data/business/business.md shipflow_data/business/product.md shipflow_data/branding/branding.md shipflow_data/business/gtm.md shipflow_data/business/project-competitors-and-inspirations.md shipflow_data/business/affiliate-programs.md shipflow_data/technical/context.md shipflow_data/technical shipflow_data/editorial docs/skill-launch-cheatsheet.md
 ```
 
 For public site or runtime content:

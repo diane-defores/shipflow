@@ -1,10 +1,10 @@
 ---
 artifact: technical_module_context
 metadata_schema_version: "1.0"
-artifact_version: "1.0.5"
+artifact_version: "1.0.6"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-05-23"
+updated: "2026-06-30"
 status: reviewed
 source_skill: sf-start
 scope: installer-and-user-scope
@@ -32,6 +32,7 @@ evidence:
   - "Turso remote login helper command wrapper added."
   - "Remote Agents menu includes Turso guidance while local menu owns the SSH tunnel flow."
   - "Short remote ShipFlow bootstrap added for clone-free install."
+  - "Installer now supports per-agent user-space selection for Claude, Codex, OpenCode, and KiloCode, plus separate runtime/TUI choices."
 next_review: "2026-06-01"
 next_step: "/sf-docs technical audit installer"
 ---
@@ -59,6 +60,7 @@ This doc covers `cli/install.sh` and the root/user boundary for ShipFlow setup. 
 - `sudo ./cli/install.sh`: server installer.
 - `configure_command_wrappers`: installs global `shipflow`, `sf`, and helper command symlinks such as `shipflow-turso-login` and `shipflow-turso-ssh`.
 - `setup_user`: per-user configuration for eligible users.
+- `resolve_install_components`: interactive or env-driven selector for user-space agents (`claude`, `codex`, `opencode`, `kilocode`), ShipFlow runtime config, and TUI.
 - `configure_*_mcp`: Claude/Codex MCP provider setup. Codex MCP entries
   are registered disabled by default and enabled per session by the ShipFlow
   launcher.
@@ -79,6 +81,7 @@ sudo ./cli/install.sh
   -> install system tools
   -> configure global commands
   -> collect eligible users
+  -> resolve user-space component selection
   -> setup_user
   -> write aliases, skill links, MCP config, Codex config, shipflow_data
   -> generate install report
@@ -96,6 +99,11 @@ sudo ./cli/install.sh
   default system `caddy.service`; normal environment proxying is launched later
   by ShipFlow in user mode and tied to PM2 app lifecycle.
 - Existing user config must be preserved outside ShipFlow-managed blocks.
+- User-space agent CLI install is selection-based. `claude`, `codex`,
+  `opencode`, and `kilocode` may be installed independently.
+- The current user-space agent install path uses `pnpm add -g` inside
+  `PNPM_HOME`, so the installer follows the package registry version current at
+  install time instead of shipping pinned local binaries.
 - Symlinks and aliases should be idempotent and updated consistently. The managed bash aliases include `shipflow`/`sf`/`s`, Claude/Codex launch shortcuts, reload helpers, and `ch` for clearing the current terminal plus tmux pane history (`clear; tmux clear-history`).
 - Helper command wrappers under `/usr/local/bin` should point back to scripts in
   `$SHIPFLOW_ROOT`; do not duplicate helper logic into generated files.
@@ -112,6 +120,8 @@ sudo ./cli/install.sh
 - Live downloads or package installers can fail partially; messages must identify the failing step.
 - `--only` or component-scoped install paths can leave stale aliases or symlinks if final synchronization is skipped.
 - Missing runtime tools should produce direct diagnostics, not secondary shell errors.
+- When only some agents are selected, verification and reporting must show
+  unselected agents as intentionally skipped rather than failed.
 - Missing Playwright Chromium runtime libraries can still break a
   Playwright-enabled Codex launch; the installer records the local Chromium
   path while keeping Playwright MCP disabled until explicitly requested.
@@ -130,7 +140,7 @@ bash -n cli/install.sh local/install.sh local/turso-login.sh local/turso-ssh.sh
 bash -n tools/shipflow_sync_skills.sh test_skill_runtime_sync.sh
 bash test_skill_runtime_sync.sh
 tools/shipflow_sync_skills.sh --check --all
-rg -n "configure_aliases|configure_skills|configure_data|setup_user|collect_target_users|configure_codex|shipflow-turso-login|shipflow-turso-ssh" cli/install.sh local/
+rg -n "resolve_install_components|install_ai_agent_clis_for_user|verify_ai_agent_clis_for_user|configure_aliases|configure_skills|configure_data|setup_user|collect_target_users|configure_codex|shipflow-turso-login|shipflow-turso-ssh" cli/install.sh local/
 ```
 
 For behavioral changes, prefer a disposable host/container or a narrowly scoped installer dry run before claiming install success.
