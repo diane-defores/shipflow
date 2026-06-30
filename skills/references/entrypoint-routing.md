@@ -66,7 +66,7 @@ It defines only the routing-question rule. Load `skills/references/question-cont
 
 Route to the smallest existing owner that can safely own the outcome.
 
-Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#offer`, `#growth`, `#traffic`, `#acquisition`, `#clarity`, `#source`, `#canon`, `#quality`, `#shipflow`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
+Before natural-language routing, check whether the user included one or more focus tags defined in `skills/references/shipflow-terms.md` such as `#partner`, `#offer`, `#growth`, `#traffic`, `#acquisition`, `#clarity`, `#source`, `#rules`, `#docs`, `#canon`, `#quality`, `#shipflow`, or `#proof`. When present, load the referenced canonical documents first and treat them as routing priorities for the current turn.
 
 Focus tags are not decorative reminders. They change execution posture, artifact preference, and route bias for the current turn. Do not merely acknowledge them; apply their routing implications below.
 
@@ -109,8 +109,10 @@ Tags such as `#end-user`, `#cta`, `#clarity`, `#faq`, `#voice`, `#audience`, `#s
 
 ### Governance Tags
 
-Tags such as `#canon`, `#drift`, `#owner`, `#freshness`, `#traceability`, `#entrypoint`, `#contract`, `#public-docs`, `#internal-docs`, and `#single-source` imply:
+Tags such as `#rules`, `#docs`, `#canon`, `#drift`, `#owner`, `#freshness`, `#traceability`, `#entrypoint`, `#contract`, `#public-docs`, `#internal-docs`, and `#single-source` imply:
 
+- prefer the full governed-project rule set before deciding whether a missing artifact is bootstrap, migration debt, or real non-compliance
+- when `#docs` is present, bias toward documentation architecture, metadata, canonical placement, and `300-sf-docs` owner routing before treating the issue as generic project governance
 - prefer the canonical owner artifact instead of editing duplicated surfaces first
 - if code, docs, and public surfaces are potentially diverged, route to the owner path that can repair the source of truth and then propagate outward
 - bias toward `002-sf-maintain`, `300-sf-docs`, `009-sf-skill-build`, or ShipFlow-internal docs work when the main issue is documentation truth, routing truth, or governance drift

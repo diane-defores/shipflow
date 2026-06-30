@@ -142,6 +142,13 @@ Parse `$ARGUMENTS`:
 
 If the user asks to fix, migrate, deploy, or build a specific thing, keep `002-sf-maintain` as the master only when the work is part of maintenance. Otherwise route directly to the owning skill.
 
+## On-Demand References
+
+Load these references when the maintenance scope touches documentation governance:
+
+- `$SHIPFLOW_ROOT/skills/references/project-governance-rules.md` when the task is about whether the project respects ShipFlow governance shape, ownership, monorepo topology, or corpus completeness.
+- `$SHIPFLOW_ROOT/skills/references/documentation-governance-rules.md` when the task is about documentation architecture, metadata compliance, canonical placement, duplicate docs, or update discipline.
+
 ## Maintenance Levels
 
 ### Quick Maintenance
@@ -152,6 +159,7 @@ If the user asks to fix, migrate, deploy, or build a specific thing, keep `002-s
 2. Identify open high/critical bugs, stale bug statuses, missing bug files, or stale optional bug indexes.
 3. Identify dependency signals: lockfile age if visible, package manager, high/critical audit command availability, outdated major-upgrade hints when cheap.
 4. Identify docs/governance signals: missing `CLAUDE.md`/`SHIPFLOW.md` development mode, missing technical/editorial corpus when relevant, stale frontmatter next steps, missing `SECURITY.md` when the project has public/auth/payment surfaces.
+   Classify each docs finding as bootstrap gap, migration debt, drift, or non-compliance instead of a generic docs warning.
 5. Identify check coverage gaps: no typecheck, lint, tests, build, or meaningful runtime validation scripts.
 6. Identify audit recency gaps from `AUDIT_LOG.md`.
 7. Return the top 3 maintenance actions with owner skill commands or the recommended master lifecycle mode.

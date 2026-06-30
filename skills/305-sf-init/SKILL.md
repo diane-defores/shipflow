@@ -30,6 +30,8 @@ Default to `report=user`: concise, outcome-first, and in the user's active langu
 Always load shared references only when their gate applies. Load skill-local references precisely by mode:
 
 - `references/bootstrap-workflow.md`: Detailed bootstrap workflow, generated artifact templates, MCP setup, governance corpus bootstrap, and final reporting details.
+- `$SHIPFLOW_ROOT/skills/references/project-governance-rules.md`: required when deciding the minimum compliant governed-project shape, especially for monorepos and governance-root expectations.
+- `$SHIPFLOW_ROOT/skills/references/documentation-governance-rules.md`: required when bootstrapping, auditing, or normalizing documentation architecture, metadata, or canonical placement.
 - `$SHIPFLOW_ROOT/skills/references/question-contract.md`: required before asking bootstrap, project-intent, target-surface, runtime, or governance-scope questions.
 - `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md`: required when bootstrap depends on operator-owned business, product, audience, or framing truth that cannot be discovered locally.
 - `$SHIPFLOW_ROOT/skills/references/design-system-token-contract.md`: required when bootstrapping or auditing governance for a project with a UI surface.

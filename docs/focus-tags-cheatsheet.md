@@ -95,6 +95,8 @@ Use these when the issue is mostly about documentation truth, ownership, and sys
 
 | Tag | Use when you want... | Canonical source |
 | --- | --- | --- |
+| `#rules` | the full ShipFlow project-governance rule set to dominate the decision | `skills/references/project-governance-rules.md` |
+| `#docs` | strict documentation-governance compliance to dominate the decision | `skills/references/documentation-governance-rules.md` |
 | `#canon` | the canonical source of truth to dominate the decision | `shipflow_data/technical/code-docs-map.md` |
 | `#drift` | divergence between code, docs, and public surfaces to dominate the decision | `shipflow_data/technical/code-docs-map.md` |
 | `#owner` | artifact or decision ownership to dominate the decision | `skills/references/canonical-paths.md` |
@@ -153,6 +155,8 @@ Use these when you do not want to build the tag set from scratch.
 | Recenter on portfolio opportunity | `#portfolio #growth #partner` | the work to scan for useful cross-project leverage and transfer patterns |
 | Improve retention logic | `#retention #end-user #funnel` | the work to focus on repeat usage, activation continuity, and product loops |
 | Repair doc drift at the right layer | `#canon #drift #single-source` | the agent to fix the source of truth first instead of patching duplicate surfaces |
+| Recenter on governance compliance | `#rules #canon #owner` | the agent to reload the full governed-project rule set before deciding what is missing, duplicated, or non-compliant |
+| Recenter on documentation compliance | `#docs #canon #internal-docs` | the agent to enforce documentation architecture, metadata, and canonical placement before patching local surfaces |
 | Choose the right doc surface | `#owner #entrypoint #public-docs` | the question is mostly where a message or contract should live publicly |
 | Recenter on internal operator truth | `#owner #entrypoint #internal-docs` | the issue belongs in internal docs, technical contracts, or execution-facing guidance |
 | Tighten execution without wandering | `#quality #scope #no-drift` | the agent to choose a bounded, high-quality route and stop exploring |

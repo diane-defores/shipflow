@@ -69,6 +69,8 @@ If a tag is present, treat it as a high-priority context cue even when the rest 
 
 | Tag | Meaning | Canonical document |
 | --- | --- | --- |
+| `#rules` | Recenter on the full rule set for what a ShipFlow-governed project must respect | `$SHIPFLOW_ROOT/skills/references/project-governance-rules.md` |
+| `#docs` | Recenter on strict documentation-governance compliance: architecture, metadata, placement, and update discipline | `$SHIPFLOW_ROOT/skills/references/documentation-governance-rules.md` |
 | `#partner` | Recenter on the agent as business partner, advisor, and growth-aligned associate | `$SHIPFLOW_ROOT/skills/references/operator-partnership-contract.md` |
 | `#quality` | Recenter on quality bar, autonomy, bounded excellence, and anti-shortcut rules | `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` |
 | `#vfbf` | Recenter on a quick, bounded, traceable execution pass: do it "vite fait bien fait" without turning it into the main focus | `$SHIPFLOW_ROOT/skills/references/decision-quality-contract.md` |

@@ -166,6 +166,62 @@ resolve_root_autonomy_opt_in() {
     fi
 }
 
+resolve_install_components() {
+    local value="${SHIPFLOW_INSTALL_COMPONENTS:-ask}"
+    SHIPFLOW_INSTALL_AI_AGENTS="1"
+    SHIPFLOW_INSTALL_AI_RUNTIME="1"
+    SHIPFLOW_INSTALL_TUI="1"
+
+    case "$value" in
+        all|"")
+            return 0
+            ;;
+        none)
+            SHIPFLOW_INSTALL_AI_AGENTS="0"
+            SHIPFLOW_INSTALL_AI_RUNTIME="0"
+            SHIPFLOW_INSTALL_TUI="0"
+            return 0
+            ;;
+        ask)
+            if [ -r /dev/tty ] && [ -w /dev/tty ]; then
+                if prompt_yes_no "Installer les CLI IA utilisateur (claude, codex, opencode, kilocode) ?" yes; then
+                    SHIPFLOW_INSTALL_AI_AGENTS="1"
+                else
+                    SHIPFLOW_INSTALL_AI_AGENTS="0"
+                fi
+
+                if prompt_yes_no "Installer la couche runtime ShipFlow (settings Claude/Codex, MCP, skills, aliases) ?" yes; then
+                    SHIPFLOW_INSTALL_AI_RUNTIME="1"
+                else
+                    SHIPFLOW_INSTALL_AI_RUNTIME="0"
+                fi
+
+                if prompt_yes_no "Installer la TUI ShipFlow pour les utilisateurs ciblés ?" yes; then
+                    SHIPFLOW_INSTALL_TUI="1"
+                else
+                    SHIPFLOW_INSTALL_TUI="0"
+                fi
+            fi
+            return 0
+            ;;
+        *)
+            SHIPFLOW_INSTALL_AI_AGENTS="0"
+            SHIPFLOW_INSTALL_AI_RUNTIME="0"
+            SHIPFLOW_INSTALL_TUI="0"
+            case ",$value," in
+                *,ai-agents,*) SHIPFLOW_INSTALL_AI_AGENTS="1" ;;
+            esac
+            case ",$value," in
+                *,ai-runtime,*) SHIPFLOW_INSTALL_AI_RUNTIME="1" ;;
+            esac
+            case ",$value," in
+                *,tui,*) SHIPFLOW_INSTALL_TUI="1" ;;
+            esac
+            return 0
+            ;;
+    esac
+}
+
 SHIPFLOW_PRE_STATUS_DIR_NODE=""
 SHIPFLOW_PRE_STATUS_PM2=""
 SHIPFLOW_PRE_STATUS_VERCEL=""
@@ -1564,7 +1620,7 @@ install_shipflow_tui_for_user() {
     local username="$2"
     local installer="$SHIPFLOW_DIR/tui/scripts/install-shipflow-tui.sh"
 
-    if [ "${SHIPFLOW_SKIP_TUI_INSTALL:-0}" = "1" ]; then
+    if [ "${SHIPFLOW_SKIP_TUI_INSTALL:-0}" = "1" ] || [ "${SHIPFLOW_INSTALL_TUI:-1}" != "1" ]; then
         echo -e "  ${YELLOW}⚠️ ShipFlow TUI ignorée pour :${NC} $username"
         return 0
     fi
@@ -1623,6 +1679,8 @@ install_ai_agent_clis_for_user() {
     ensure_user_local_npm_bootstrap "$user_home" "$username"
     sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; corepack prepare pnpm@latest --activate >/dev/null 2>&1; command -v claude >/dev/null 2>&1 || pnpm add -g @anthropic-ai/claude-code' || return 1
     sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; corepack prepare pnpm@latest --activate >/dev/null 2>&1; command -v codex >/dev/null 2>&1 || pnpm add -g @openai/codex' || return 1
+    sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; corepack prepare pnpm@latest --activate >/dev/null 2>&1; command -v opencode >/dev/null 2>&1 || pnpm add -g opencode-ai' || return 1
+    sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; corepack prepare pnpm@latest --activate >/dev/null 2>&1; command -v kilocode >/dev/null 2>&1 || pnpm add -g @kilocode/cli' || return 1
     return 0
 }
 
@@ -1633,6 +1691,8 @@ verify_ai_agent_clis_for_user() {
     local status_output=""
     local claude_path=""
     local codex_path=""
+    local opencode_path=""
+    local kilocode_path=""
 
     if [ "$username" = "root" ]; then
         return 0
@@ -1640,6 +1700,8 @@ verify_ai_agent_clis_for_user() {
 
     claude_path=$(sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v claude 2>/dev/null || true')
     codex_path=$(sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v codex 2>/dev/null || true')
+    opencode_path=$(sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v opencode 2>/dev/null || true')
+    kilocode_path=$(sudo -u "$username" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v kilocode 2>/dev/null || true')
 
     if [ -n "$claude_path" ]; then
         status_output="${status_output} claude=${claude_path}"
@@ -1655,9 +1717,23 @@ verify_ai_agent_clis_for_user() {
         missing=1
     fi
 
+    if [ -n "$opencode_path" ]; then
+        status_output="${status_output} opencode=${opencode_path}"
+    else
+        status_output="${status_output} opencode=MISSING"
+        missing=1
+    fi
+
+    if [ -n "$kilocode_path" ]; then
+        status_output="${status_output} kilocode=${kilocode_path}"
+    else
+        status_output="${status_output} kilocode=MISSING"
+        missing=1
+    fi
+
     if [ "$missing" -ne 0 ]; then
         warning "Vérification agents IA incomplète pour $username:${status_output}"
-        warning "Action recommandée: sudo -u $username -H bash -lc 'export PNPM_HOME=\"\$HOME/.local/share/pnpm\"; export PATH=\"\$PNPM_HOME:\$PATH\"; corepack prepare pnpm@latest --activate; pnpm add -g @anthropic-ai/claude-code @openai/codex'"
+        warning "Action recommandée: sudo -u $username -H bash -lc 'export PNPM_HOME=\"\$HOME/.local/share/pnpm\"; export PATH=\"\$PNPM_HOME:\$PATH\"; corepack prepare pnpm@latest --activate; pnpm add -g @anthropic-ai/claude-code @openai/codex opencode-ai @kilocode/cli'"
         return 1
     fi
 
@@ -1816,32 +1892,38 @@ setup_user() {
         warning "Root garde un mode standard: l'autonomie permissive n'a pas ete explicitement autorisee."
     fi
 
-    configure_statusline "$user_home"
-    configure_context7_mcp "$user_home"
-    configure_vercel_mcp "$user_home"
-    configure_convex_mcp "$user_home"
-    configure_clerk_mcp "$user_home"
-    configure_supabase_mcp "$user_home"
-    configure_dataforseo_mcp "$user_home"
-    configure_playwright_mcp "$user_home"
-    configure_codex_tui "$user_home"
-    configure_codex_rmcp "$user_home"
-    configure_codex_context7_mcp "$user_home"
-    configure_codex_vercel_mcp "$user_home"
-    configure_codex_convex_mcp "$user_home"
-    configure_codex_clerk_mcp "$user_home"
-    configure_codex_supabase_mcp "$user_home"
-    configure_codex_dataforseo_mcp "$user_home"
-    configure_codex_playwright_mcp "$user_home"
-    if [ "$username" != "root" ]; then
+    if [ "${SHIPFLOW_INSTALL_AI_RUNTIME:-1}" = "1" ]; then
+        configure_statusline "$user_home"
+        configure_context7_mcp "$user_home"
+        configure_vercel_mcp "$user_home"
+        configure_convex_mcp "$user_home"
+        configure_clerk_mcp "$user_home"
+        configure_supabase_mcp "$user_home"
+        configure_dataforseo_mcp "$user_home"
+        configure_playwright_mcp "$user_home"
+        configure_codex_tui "$user_home"
+        configure_codex_rmcp "$user_home"
+        configure_codex_context7_mcp "$user_home"
+        configure_codex_vercel_mcp "$user_home"
+        configure_codex_convex_mcp "$user_home"
+        configure_codex_clerk_mcp "$user_home"
+        configure_codex_supabase_mcp "$user_home"
+        configure_codex_dataforseo_mcp "$user_home"
+        configure_codex_playwright_mcp "$user_home"
+    fi
+    if [ "$username" != "root" ] && [ "${SHIPFLOW_INSTALL_AI_AGENTS:-1}" = "1" ]; then
         install_ai_agent_clis_for_user "$user_home" "$username" || setup_failed=1
         verify_ai_agent_clis_for_user "$user_home" "$username" || setup_failed=1
     fi
-    configure_claude_autonomous_permissions "$user_home" "$effective_mode" || setup_failed=1
-    configure_codex_autonomous_permissions "$user_home" "$effective_mode" || setup_failed=1
-    configure_skills "$user_home" || setup_failed=1
+    if [ "${SHIPFLOW_INSTALL_AI_RUNTIME:-1}" = "1" ]; then
+        configure_claude_autonomous_permissions "$user_home" "$effective_mode" || setup_failed=1
+        configure_codex_autonomous_permissions "$user_home" "$effective_mode" || setup_failed=1
+        configure_skills "$user_home" || setup_failed=1
+    fi
     configure_shipflow_environment "$user_home"
-    configure_aliases "$user_home" "$effective_mode"
+    if [ "${SHIPFLOW_INSTALL_AI_RUNTIME:-1}" = "1" ]; then
+        configure_aliases "$user_home" "$effective_mode"
+    fi
     install_shipflow_tui_for_user "$user_home" "$username" || setup_failed=1
 
     # Fix ownership — everything we created must belong to the user
@@ -1864,8 +1946,10 @@ configure_command_wrappers
 collect_target_users
 resolve_autonomy_mode
 resolve_root_autonomy_opt_in
+resolve_install_components
 info "Mode IA autonome ShipFlow: ${SHIPFLOW_AUTONOMY_MODE_RESOLVED}"
 info "Autonomie root: $([ "${SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED:-0}" = "1" ] && echo autorisee || echo standard)"
+info "Composants user ShipFlow: ai-agents=${SHIPFLOW_INSTALL_AI_AGENTS:-1}, ai-runtime=${SHIPFLOW_INSTALL_AI_RUNTIME:-1}, tui=${SHIPFLOW_INSTALL_TUI:-1}"
 setup_user "$PRIMARY_USER_HOME" "$PRIMARY_USER"
 for username in "${TARGET_USERS[@]}"; do
     [ "$username" = "$PRIMARY_USER" ] && continue
@@ -1924,7 +2008,7 @@ shipflow_log "INFO" "ShipFlow install completed"
 
 generate_install_report() {
     local status_node status_pm2 status_vercel status_convex status_clerk status_supabase status_flox status_gh status_python3 status_pyyaml status_caddy status_git status_jq status_fuser
-    local report_claude_path report_codex_path
+    local report_claude_path report_codex_path report_opencode_path report_kilocode_path
     if command -v node >/dev/null 2>&1; then status_node="present"; else status_node=""; fi
     if command -v pm2 >/dev/null 2>&1; then status_pm2="present"; else status_pm2=""; fi
     if command -v vercel >/dev/null 2>&1; then status_vercel="present"; else status_vercel=""; fi
@@ -1941,6 +2025,8 @@ generate_install_report() {
     if command -v fuser >/dev/null 2>&1; then status_fuser="present"; else status_fuser=""; fi
     report_claude_path="$(sudo -u "$PRIMARY_USER" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v claude 2>/dev/null || true' 2>/dev/null)"
     report_codex_path="$(sudo -u "$PRIMARY_USER" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v codex 2>/dev/null || true' 2>/dev/null)"
+    report_opencode_path="$(sudo -u "$PRIMARY_USER" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v opencode 2>/dev/null || true' 2>/dev/null)"
+    report_kilocode_path="$(sudo -u "$PRIMARY_USER" -H bash -lc 'export PNPM_HOME="$HOME/.local/share/pnpm"; export PATH="$PNPM_HOME:$PATH"; command -v kilocode 2>/dev/null || true' 2>/dev/null)"
 
     cat > "$SHIPFLOW_REPORT_FILE" << REPORT
 # Rapport d'installation ShipFlow
@@ -1954,6 +2040,7 @@ generate_install_report() {
 - Mode: root (system + user config)
 - Mode IA autonome: ${SHIPFLOW_AUTONOMY_MODE_RESOLVED:-standard}
 - Autonomie root: $(if [ "${SHIPFLOW_ROOT_AUTONOMOUS_ALLOWED:-0}" = "1" ]; then echo "autorisee"; else echo "standard"; fi)
+- Composants user sélectionnés: ai-agents=${SHIPFLOW_INSTALL_AI_AGENTS:-1}, ai-runtime=${SHIPFLOW_INSTALL_AI_RUNTIME:-1}, tui=${SHIPFLOW_INSTALL_TUI:-1}
 - Version script: local
 - Machine: $(hostname)
 - Log brut: $SHIPFLOW_LOG_FILE
@@ -1984,6 +2071,8 @@ generate_install_report() {
 |---|---|---|
 | claude | $(if [ -n "$report_claude_path" ]; then echo "INSTALLÉ"; else echo "PARTIEL"; fi) | géré par ShipFlow (scope utilisateur) ; chemin: ${report_claude_path:-missing} |
 | codex | $(if [ -n "$report_codex_path" ]; then echo "INSTALLÉ"; else echo "PARTIEL"; fi) | géré par ShipFlow (scope utilisateur) ; chemin: ${report_codex_path:-missing} |
+| opencode | $(if [ -n "$report_opencode_path" ]; then echo "INSTALLÉ"; else echo "PARTIEL"; fi) | géré par ShipFlow (scope utilisateur) ; chemin: ${report_opencode_path:-missing} |
+| kilocode | $(if [ -n "$report_kilocode_path" ]; then echo "INSTALLÉ"; else echo "PARTIEL"; fi) | géré par ShipFlow (scope utilisateur) ; chemin: ${report_kilocode_path:-missing} |
 | tmux | NON_APPLICABLE | géré par dotfiles |
 | mosh | NON_APPLICABLE | géré par dotfiles |
 

@@ -59,6 +59,8 @@ Always load:
 
 Load on demand:
 
+- `$SHIPFLOW_ROOT/skills/references/project-governance-rules.md` when the task is about governed-project compliance, canonical governance shape, monorepo governance expectations, or whether a project respects ShipFlow governance rules.
+- `$SHIPFLOW_ROOT/skills/references/documentation-governance-rules.md` when the task is about documentation architecture, metadata, canonical placement, duplicate docs, update discipline, or when the operator uses `#docs`.
 - `$SHIPFLOW_ROOT/skills/300-sf-docs/references/bootstrap-starter-templates.md` when mode is `init` or when `readme`/`auto` bootstraps an empty or near-empty repository.
 - `$SHIPFLOW_ROOT/skills/references/technical-docs-corpus.md` when mode is technical or update touches technical governance.
 - `$SHIPFLOW_ROOT/skills/references/editorial-content-corpus.md` when mode is editorial or update touches public-content surfaces.
@@ -74,7 +76,7 @@ Load on demand:
 - For empty or near-empty repositories, do not treat missing project framing as blocked by default. Ask the smallest numbered decision question needed to define the bootstrap documents, then continue.
 - Preserve redaction/security rules: never expose secrets, cookies, tokens, private keys, or private logs.
 - Preserve documentation-update gates: changed behavior must have docs alignment proof or explicit `not impacted because ...`.
-- Preserve canonical ShipFlow paths and metadata schema rules.
+- Preserve canonical ShipFlow paths, documentation architecture, and metadata rules through the shared governance references instead of inventing local placement doctrine.
 - For migration or consolidation work, treat local docs as source material until preservation is proven. Before replacing a local doc with a compatibility facade or deleting it, map it to a canonical destination, preserve non-redundant content, and record any intentional rejection.
 - When a project declares products, preserve the product-governance contract in docs: product inventory, canonical product/sales surfaces, delivery-path documentation, and claim-evidence references must remain explicit enough for other skills to reuse without discovery drift.
 - `TEST_LOG.md`, `BUGS.md`, `PROJECTS.md`, and canonical workflow trackers are operational trackers, not frontmatter-required decision artifacts.

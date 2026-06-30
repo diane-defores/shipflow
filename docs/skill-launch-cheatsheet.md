@@ -127,6 +127,23 @@ Example:
 
 Here, `Ariane` structures the work, `#Adhesion` keeps end-user clarity and friction visible, and `000-shipflow` still chooses the owner skill.
 
+Common documentation and governance focus tags:
+
+- `#rules` -> reload the governed-project rule set
+- `#docs` -> enforce strict documentation architecture, metadata, placement, and update discipline
+- `#public-docs` -> bias toward public/editorial documentation surfaces
+- `#internal-docs` -> bias toward internal technical and operator-facing documentation
+- `#canon` -> bias toward the canonical source of truth
+- `#owner` -> bias toward the owning artifact instead of duplicated surfaces
+
+Example:
+
+```text
+000-shipflow #docs #canon #internal-docs audit this repo before we touch the docs
+```
+
+Here, `#docs` tightens documentation-governance compliance, `#canon` keeps the source of truth explicit, and `#internal-docs` biases the route toward internal governance artifacts rather than public copy.
+
 ## Current Runtime Families
 
 Public categories make the catalog easier to browse. Runtime families explain how ShipFlow routes work internally.
