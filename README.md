@@ -72,8 +72,9 @@ next_step: "/300-sf-docs audit README.md"
 ShipFlow is a unified framework for server delivery and AI-assisted execution discipline.
 It also includes OpenCode-compatible skill shims under `.opencode/skills/shipflow/` and `.agents/skills/shipflow/` so the same top-level workflow entrypoint can be discovered outside Codex.
 
-It has three layers:
+It has four active layers:
 - a CLI for managing project environments on a server
+- an optional read-only terminal TUI for operational visibility
 - a skill system for structured coding workflows, audits, documentation, and shipping
 - a lightweight Codex plugin and public site for distribution, onboarding, and pack discovery
 
@@ -110,7 +111,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 
 ## Core Docs
 
-- Note: in this repository, ShipFlow-owned governance and workflow docs are in `shipflow_data/` by default. Only compatibility entrypoints remain at root (`AGENT.md`, `AGENTS.md`, `CLAUDE.md`).
+- Note: the canonical governance corpus lives under `shipflow_data/`. Root-level docs outside `AGENT.md`, `AGENTS.md`, `CLAUDE.md`, `README.md`, `CHANGELOG.md`, compatibility shell wrappers, and bootstrap entrypoints should be treated as migration debt or explicit compatibility facades, not as the durable source of truth.
 
 - [AGENT.md](./AGENT.md) — agent entrypoint: where to look first depending on the task
 - [shipflow_data/technical/context.md](./shipflow_data/technical/context.md) — compact operational map of the project, hotspots, invariants, and edit routing
@@ -144,7 +145,7 @@ It helps operators run apps on servers, but its deeper job is to reduce ambiguit
 - [shipflow-spec-driven-workflow.md](./shipflow-spec-driven-workflow.md) — ShipFlow V3 workflow for `700-sf-explore`, `100-sf-spec`, `101-sf-ready`, `102-sf-start`, `103-sf-verify`, and `104-sf-end`
 - [shipflow-metadata-migration-guide.md](./shipflow-metadata-migration-guide.md) — how to adopt ShipFlow metadata and versioning in an existing project
 - [skills/references/canonical-paths.md](./skills/references/canonical-paths.md) — path resolution rules for ShipFlow-owned tools, references, templates, and project-local artifacts
-- [ECOSYSTEM-AND-PORTS.md](./ECOSYSTEM-AND-PORTS.md) — persistent PM2 ecosystem files and port management
+- [ECOSYSTEM-AND-PORTS.md](./ECOSYSTEM-AND-PORTS.md) — legacy root technical note pending consolidation into the canonical technical layer
 - [local/README.md](./local/README.md) — local tunnel setup
 - [tools/codebase-mcp/README.md](./tools/codebase-mcp/README.md) — local MCP server for codebase context management
 - [archive/README.md](./archive/README.md) — historical docs and old reports
@@ -259,6 +260,19 @@ Markdown files as the source of truth. See
 [tui/README.md](./tui/README.md) for keys and
 [shipflow_data/technical/terminal-tui.md](./shipflow_data/technical/terminal-tui.md)
 for the internal architecture contract.
+
+## Repository Shape
+
+The current repository is split by ownership, not only by technology:
+
+- `cli/` is the canonical server/runtime CLI layer. Root shell files such as `shipflow.sh`, `lib.sh`, `config.sh`, `install.sh`, and `shipflow_devserver_*` are deprecated compatibility wrappers.
+- `tui/` is the optional terminal cockpit. It is a visibility layer, not a second workflow engine.
+- `skills/` contains the ShipFlow execution system and shared references.
+- `shipflow_data/` is the canonical internal governance corpus for technical, editorial, business, and workflow artifacts.
+- `shipflow-site/` is the public site runtime.
+- `docs/` holds repo-visible public or operator-facing supporting pages, not the canonical internal governance layer.
+
+If a root document duplicates a `shipflow_data/` artifact, the `shipflow_data/` artifact wins and the root file should be reduced to a compatibility facade or removed after preservation.
 
 ## Codex TUI Defaults
 

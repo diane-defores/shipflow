@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "1.9.0"
 project: ShipFlow
 created: "2026-05-01"
-updated: "2026-06-11"
+updated: "2026-06-30"
 status: reviewed
 source_skill: sf-start
 scope: technical-docs-index
@@ -54,6 +54,8 @@ This layer complements the existing docs:
 - `shipflow_data/workflow/specs/*.md` stay chantier contracts and run history.
 - `shipflow_data/technical/*.md` documents durable subsystem behavior near the code.
 
+It does not share canonical ownership with random root notes. When a root technical document overlaps this layer, the technical layer wins and the root note should be treated as migration debt or a compatibility facade until a preservation pass finishes.
+
 ## Read Order
 
 1. Open `shipflow_data/technical/code-docs-map.md` and match the changed path.
@@ -68,6 +70,7 @@ This layer complements the existing docs:
 | --- | --- |
 | `code-docs-map.md` | Any code change, Reader pass, final integration, or docs gate |
 | `runtime-cli.md` | `shipflow.sh`, `lib.sh`, `config.sh`, PM2/Flox/Caddy/DuckDNS flows |
+| `terminal-tui.md` | `tui/`, read-only dashboard behavior, task/audit/spec readers, and operator visibility rules |
 | `local-tunnels-and-mcp-login.md` | `local/`, SSH tunnels, remote helper scripts, MCP OAuth login |
 | `skill-runtime-and-lifecycle.md` | `skills/`, lifecycle skills, references, templates, Reader/Executor rules |
 | `agent-clarity-pass-playbook.md` | Future agent-clarity hardening passes across overlapping skills, batching rules, and first-screen boundary method |
@@ -98,7 +101,7 @@ This layer complements the existing docs:
 
 ## Non-Coverage
 
-The layer does not create one doc per file. Small legacy files such as menu frontend variants, historical archives, and standalone test fixtures are covered through the closest subsystem doc or through an explicit Reader note when a change proves they need a dedicated doc.
+The layer does not create one doc per file. Small legacy files such as menu frontend variants, compatibility wrappers, historical archives, and standalone test fixtures are covered through the closest subsystem doc or through an explicit Reader note when a change proves they need a dedicated doc.
 
 ## Validation
 

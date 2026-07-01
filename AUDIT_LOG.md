@@ -1,6 +1,9 @@
-# Audit Log
+# Legacy Compatibility Facade
 
-🟢 [ShipFlow] audit: Translate public site French locale | date: 2026-06-11 | overall: accepted | issues: main routes translated; skill Markdown intentionally remains English for agent contract reliability | scope: site
-🟠 [ShipFlow] audit: Site design tokens | date: 2026-06-12 | overall: D | issues: 3 high / 4 medium | scope: site
-🟠 [ShipFlow] audit: Dependency health for site | date: 2026-06-20 | overall: C | issues: 2 high / 1 moderate / 1 low / 1 major upgrade | scope: site
-🟡 [ShipFlow] audit: Dependency health for tui | date: 2026-06-20 | overall: C | issues: 1 missing lockfile / 1 unpinned toolchain / 1 proof gap | scope: tui
+This root `AUDIT_LOG.md` is no longer the canonical audit index.
+
+Use `shipflow_data/workflow/AUDIT_LOG.md` as the source of truth for project audits:
+
+- canonical audit log: `shipflow_data/workflow/AUDIT_LOG.md`
+- why this file still exists: compatibility fallback for older references and prompts
+- rule: append or update audit records in the canonical tracker only

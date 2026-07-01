@@ -1,18 +1,9 @@
-# Tasks — ShipFlow
+# Legacy Compatibility Facade
 
-🟢 [ShipFlow] task: Conserver les fiches skills en anglais et l’expliquer sur le site français | status: done | area: site-i18n
-🟢 [ShipFlow] task: Durcir la clarté des handoffs publics/docs entre aide, runtime, invocation et ownership d'execution sur `302-sf-help`, la doc runtime, le README, le workflow et les cheatsheets | status: done | area: skills-agent-clarity-public-docs | spec: shipflow_data/workflow/specs/agent-clarity-public-docs-handoffs-phase-2.md | next: /005-sf-ship agent-clarity-public-docs-handoffs-phase-2
-🟢 [ShipFlow] task: Documenter une page OpenCode et une page KiloCode pour expliquer comment les skills ShipFlow sont découverts, invoqués et configurés selon chaque runtime, en précisant que dans OpenCode l'utilisateur écrit simplement "utilise le skill shipflow" et que `skill({ name: "shipflow" })` est un appel interne du runtime, pas une commande manuelle | status: done | area: skills-discovery | spec: shipflow_data/workflow/specs/opencode-and-kilocode-runtime-doc-pages.md | next: /005-sf-ship opencode-and-kilocode-runtime-doc-pages
-🟢 [ShipFlow] task: Compacter semantiquement le Batch A des skills lifecycle (`100`, `101`, `103`, `104`, `005`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-core-shipflow-skills.md | next: none
-🟢 [ShipFlow] task: Compacter semantiquement le Batch C des skills specialists source (`105`, `106`, `107`, `108`, `109`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-source-specialist-skills.md | next: none
-🟢 [ShipFlow] task: Compacter semantiquement le Batch D1 des master skills maintenance/release (`002`, `003`, `004`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-maintenance-and-release-master-skills.md | next: none
-🟢 [ShipFlow] task: Compacter semantiquement le Batch D2 des master skills design/content/skill-build (`006`, `007`, `009`) selon la taxonomie d'artefacts | status: done | area: skills | spec: shipflow_data/workflow/specs/semantic-compaction-of-design-content-and-skill-build-master-skills.md | next: none
-🟢 [ShipFlow] task: Publier un chemin d'installation marketplace repo-backed pour le plugin Codex `shipflow` et documenter l'installation sur le site ShipFlow | status: done | area: plugin-distribution | spec: shipflow_data/workflow/specs/shipflow-main-plugin-and-pack-portability.md | next: none
-🟠 [ShipFlow] task: Migrer les valeurs visuelles hardcodees du site ShipFlow vers des design tokens semantiques centralises dans `site/src/styles/global.css` et leurs usages partages | status: todo | area: site-design-system | spec: shipflow_data/workflow/specs/shipflow-site-token-hardening-and-visual-standardization.md | next: /102-sf-start ShipFlow site token hardening and visual standardization
-🟠 [ShipFlow] task: Completer le socle des design tokens ShipFlow avec palette semantique, surfaces et motion pour le site public | status: todo | area: site-design-tokens | spec: shipflow_data/workflow/specs/shipflow-site-token-hardening-and-visual-standardization.md | next: /102-sf-start ShipFlow site token hardening and visual standardization
-🟡 [ShipFlow] task: Justifier explicitement le mode unique du theme site dans la gouvernance ou ajouter une couverture multi-mode et une architecture de preference coherente | status: todo | area: site-theme-architecture | spec: shipflow_data/workflow/specs/shipflow-site-token-hardening-and-visual-standardization.md | next: /102-sf-start ShipFlow site token hardening and visual standardization
+This root `TASKS.md` is no longer the canonical tracker.
 
-### Audit: Deps
+Use `shipflow_data/workflow/TASKS.md` as the source of truth for active project work:
 
-🟠 [ShipFlow] task: Remediate the site Astro advisory with the planned major upgrade path | status: todo | area: site-deps | next: /404-sf-migrate astro 6.x upgrade
-🟡 [ShipFlow] task: Add a committed lockfile and pin the tui toolchain for reproducible dependency audits | status: todo | area: tui-deps | next: bun install --lockfile-only
+- canonical tracker: `shipflow_data/workflow/TASKS.md`
+- why this file still exists: compatibility fallback for older habits, prompts, and repo links
+- rule: update the canonical tracker, not this facade

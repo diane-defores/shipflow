@@ -4,7 +4,7 @@ metadata_schema_version: "1.0"
 artifact_version: "0.6.0"
 project: "shipflow"
 created: "2026-04-25"
-updated: "2026-06-27"
+updated: "2026-06-30"
 status: draft
 source_skill: manual
 scope: "context"
@@ -51,12 +51,15 @@ ShipFlow combine deux couches :
 - `cli/shipflow.sh`, `cli/lib.sh`, `cli/config.sh`, `cli/install.sh`: couche serveur/CLI.
 - `local/`: outils locaux d'acces a un serveur ShipFlow.
 - `skills/`: skills ShipFlow pour exploration, spec, execution, verif, docs, audits.
+- `tui/`: cockpit terminal optionnel en lecture seule pour projets, taches, audits, specs et diagnostics.
 - `templates/artifacts/`: templates d'artefacts versionnes.
 - `tools/shipflow_metadata_lint.py`: linter des frontmatters ShipFlow.
 - `shipflow-spec-driven-workflow.md`: doctrine de workflow.
 - `shipflow-metadata-migration-guide.md`: doctrine de migration metadata.
 - `shipflow_data/editorial/content-map.md`: carte des surfaces de contenu, pages piliers, cocons semantiques et destinations de repurposing.
 - `shipflow_data/technical/`: couche interne de documentation technique proche du code.
+- wrappers shell de racine (`shipflow.sh`, `lib.sh`, `config.sh`, `install.sh`, `shipflow_devserver_*`): surfaces de compatibilite depreciees; la source canonique runtime reste `cli/`.
+- trackers/docs legacy de racine (`TASKS.md`, `AUDIT_LOG.md`, `concurrent.md`, autres notes historiques): dette de migration ou facades de compatibilite, pas source de verite durable quand un artefact canonique existe sous `shipflow_data/`.
 - `shipflow_data/business/business.md`, `shipflow_data/business/product.md`, `shipflow_data/branding/branding.md`, `shipflow_data/business/gtm.md`: contrats business, produit et promesse publique.
 - `shipflow_data/business/project-competitors-and-inspirations.md`: registre par projet des concurrents, alternatives, inspirations et anti-patterns.
 - `shipflow_data/business/affiliate-programs.md`: registre par projet des affiliations, referrals, partners, disclosures et contraintes non secretes.
@@ -155,6 +158,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - Les operations destructives doivent rester idempotentes.
 - Les paths projet doivent etre absolus et valides.
 - Les docs ShipFlow actives doivent avoir un frontmatter versionne.
+- La racine du repo ne doit pas redevenir une deuxieme couche de gouvernance active; quand une doc canonique existe sous `shipflow_data/`, la version racine doit etre supprimee ou reduite a une facade explicite.
 - Les changements de code mappes par `shipflow_data/technical/code-docs-map.md` doivent produire un `Documentation Update Plan` ou une justification no-impact.
 - `shipflow_data/editorial/content-map.md` doit rester structurel : surfaces, roles, clusters et regles de mise a jour, pas backlog editorial.
 - Les focus tags ne sont pas de simples rappels de contexte : ils peuvent biaiser le owner skill, la surface d'artefact et la posture d'execution sur le tour courant.
@@ -178,6 +182,7 @@ launcher active uniquement les MCP demandes pour la nouvelle session.
 - `lib.sh::action_publish`: integration Caddy + DuckDNS.
 - `local/local.sh::main`: UX locale complete pour tunnels.
 - `lib.sh::action_flutter_web`: session Flutter Web interactive en tmux et hot reload.
+- `tui/`: lecture consolidee de `shipflow_data/workflow/*`, diagnostics, specs, et filtres multi-projets.
 - `skills/300-sf-docs/SKILL.md`: logique de migration metadata et audit documentaire.
 - `skills/references/entrypoint-routing.md`: routeur canonique, y compris les implications d'execution des focus tags.
 - `shipflow_data/technical/code-docs-map.md`: fichier partage qui mappe code, docs primaires, validations et triggers de mise a jour.
